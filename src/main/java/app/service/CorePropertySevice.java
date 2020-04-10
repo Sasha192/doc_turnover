@@ -1,6 +1,6 @@
 package app.service;
 
-import app.dao.CorePropertyDao;
+import app.dao.ICorePropertyDao;
 import app.models.CoreProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,18 +10,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class CorePropertySevice {
 
     @Autowired
-    private CorePropertyDao corePropertyDao;
+    private ICorePropertyDao ICorePropertyDao;
 
     @Transactional
     public Integer insert(CoreProperty property) {
-        return corePropertyDao.insert(property);
+        return ICorePropertyDao.insert(property);
     }
 
-    public CorePropertyDao getCorePropertyDao() {
-        return corePropertyDao;
+    @Transactional
+    public CoreProperty findByName(String name) {
+        return ICorePropertyDao.findByName(name);
     }
 
-    public void setCorePropertyDao(CorePropertyDao corePropertyDao) {
-        this.corePropertyDao = corePropertyDao;
+    public ICorePropertyDao getICorePropertyDao() {
+        return ICorePropertyDao;
+    }
+
+    public void setICorePropertyDao(ICorePropertyDao ICorePropertyDao) {
+        this.ICorePropertyDao = ICorePropertyDao;
     }
 }
