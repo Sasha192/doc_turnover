@@ -1,16 +1,25 @@
 package app.models;
 
+import app.models.serialization.NoOneToManySerialization;
 import java.io.Serializable;
 import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "brief_documents")
-public class BriefDocument extends DomainObject implements Serializable {
+public class BriefDocument implements Serializable,
+        NoOneToManySerialization {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "creation_date")
     private Date creationDate;
@@ -77,7 +86,6 @@ public class BriefDocument extends DomainObject implements Serializable {
         this.path = path;
     }
 
-
     public Boolean getDeadline() {
         return this.deadline;
     }
@@ -92,5 +100,13 @@ public class BriefDocument extends DomainObject implements Serializable {
 
     public void setSignificance(final Integer significance) {
         this.significance = significance;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
     }
 }

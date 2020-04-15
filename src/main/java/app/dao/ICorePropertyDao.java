@@ -1,12 +1,12 @@
 package app.dao;
 
+import app.dao.persistance.IGenericDao;
 import app.models.CoreProperty;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ICorePropertyDao {
+import java.rmi.NoSuchObjectException;
 
-    Integer insert(CoreProperty property);
+public interface ICorePropertyDao extends IGenericDao<CoreProperty> {
 
-    CoreProperty findByName(String name);
+    CoreProperty retrieveByName(String name) throws NoSuchObjectException;
+
 }

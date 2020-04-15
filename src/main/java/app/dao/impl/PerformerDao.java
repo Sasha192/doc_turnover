@@ -1,11 +1,11 @@
 package app.dao.impl;
 
-import app.dao.persistance.AbstractHibernateDao;
+import app.dao.IPerformerDao;
+import app.dao.persistance.GenericJpaDao;
 import app.models.Performer;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public class PerformerDao extends AbstractHibernateDao<Performer> {
+public class PerformerDao extends GenericJpaDao<Performer>
+        implements IPerformerDao {
 
     public PerformerDao() {
         setClazz(Performer.class);

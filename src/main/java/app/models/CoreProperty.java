@@ -3,11 +3,18 @@ package app.models;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "core_properties")
-public class CoreProperty extends DomainObject implements Serializable {
+public class CoreProperty implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(name = "name")
     private String name;
@@ -43,5 +50,13 @@ public class CoreProperty extends DomainObject implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(final Integer id) {
+        this.id = id;
     }
 }

@@ -1,7 +1,10 @@
 package app.controllers;
 
-import app.models.CoreProperty;
-import app.service.CorePropertySevice;
+import app.models.BriefDocument;
+import app.service.IBriefDocumentService;
+
+import java.sql.Date;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,14 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HwController {
 
     @Autowired
-    private CorePropertySevice corePropertySevice;
+    private IBriefDocumentService service;
 
     @RequestMapping("/helloworld")
     public String handler(Model model) {
-        CoreProperty coreProperty = new CoreProperty();
-        coreProperty.setName("core");
-        coreProperty.setValue("property");
-        Integer id = corePropertySevice.insert(coreProperty);
+        BriefDocument briefDocument = new BriefDocument();
+        briefDocument.setName("ss");
+        briefDocument.setPath("/");
+        briefDocument.setCreationDate(Date.valueOf(LocalDate.now()));
+        briefDocument.setModificationDate(Date.valueOf(LocalDate.now()));
         model.addAttribute("helloWorld", new String("hello"));
         return "helloworld";
     }

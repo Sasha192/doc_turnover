@@ -1,5 +1,6 @@
 package app.configuration.spring;
 
+import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,10 +12,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.view.mustache.MustacheViewResolver;
-import org.springframework.web.servlet.view.mustache.java.MustacheJTemplateFactory;
 
-@SuppressWarnings("checkstyle:CommentsIndentation")
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {
@@ -29,15 +27,11 @@ public class SpringMvcConfiguration implements WebMvcConfigurer {
 
     @Bean
     public ViewResolver viewResolver() {
-        MustacheViewResolver mustacheViewResolver = new MustacheViewResolver();
-        mustacheViewResolver.setPrefix("/WEB-INF/views/");
-        mustacheViewResolver.setSuffix(".mustache");
-        mustacheViewResolver.setCache(false);
-
-        MustacheJTemplateFactory templateFactory = new MustacheJTemplateFactory();
-        templateFactory.setResourceLoader(resourceLoader);
-        mustacheViewResolver.setTemplateFactory(templateFactory);
-        return mustacheViewResolver;
+        HandlebarsViewResolver handlebarsViewResolver = new HandlebarsViewResolver();
+        handlebarsViewResolver.setPrefix("/WEB-INF/views/");
+        handlebarsViewResolver.setSuffix(".hbs");
+        handlebarsViewResolver.setCache(false);
+        return handlebarsViewResolver;
     }
 
     @Override
@@ -51,21 +45,4 @@ public class SpringMvcConfiguration implements WebMvcConfigurer {
         multipartResolver.setMaxUploadSize(100000);
         return multipartResolver;
     }
-
-/*    @Bean(name = "constantsDom")
-    public Document getDocumentBean() throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        File file = new File("/home/kolmogorov/Java_Practice/bcrew/doc_turnover/src/main/java/app/configuration/constants/constants.xml");
-        Document document = null;
-        try {
-            document = builder.parse(file);
-        } catch (SAXException | IOException e) {
-            LOGGER.error("BUILDER PARSE ERROR" + e.getMessage());
-            LOGGER.error(Arrays.toString(e.getStackTrace()));
-            throw new Exception(e.getMessage());
-        }
-        document.getDocumentElement().normalize();
-        return document;
-    }*/
 }

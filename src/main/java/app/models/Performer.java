@@ -1,5 +1,9 @@
 package app.models;
 
+import app.models.serialization.NoOneToManySerialization;
+
+import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,12 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "performers")
-public class Performer extends DomainObject implements Serializable {
+public class Performer implements Serializable,
+        NoOneToManySerialization {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,12 +26,15 @@ public class Performer extends DomainObject implements Serializable {
     @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "second_name")
+    @Column(name = "last_name")
     private String lastName;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
+
+    @OneToMany(mappedBy = "performer")
+    private Set<BriefDocument> briefDocuments;
 
     public Performer() {
     }
@@ -53,5 +61,21 @@ public class Performer extends DomainObject implements Serializable {
 
     public void setDepartment(final Department department) {
         this.department = department;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(final Integer id) {
+        this.id = id;
+    }
+
+    public Set<BriefDocument> getBriefDocuments() {
+        return this.briefDocuments;
+    }
+
+    public void setBriefDocuments(final Set<BriefDocument> briefDocuments) {
+        this.briefDocuments = briefDocuments;
     }
 }

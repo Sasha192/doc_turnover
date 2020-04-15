@@ -20,7 +20,6 @@ public abstract class AbstractJpaDao<T extends Serializable> {
         return entityManager.find(clazz, id);
     }
 
-    @SuppressWarnings("unchecked")
     public List<T> findAll() {
         return entityManager.createQuery("from " + clazz.getName()).getResultList();
     }
@@ -43,4 +42,15 @@ public abstract class AbstractJpaDao<T extends Serializable> {
         delete(entity);
     }
 
+    public Class<T> getClazz() {
+        return this.clazz;
+    }
+
+    public EntityManager getEntityManager() {
+        return this.entityManager;
+    }
+
+    public void setEntityManager(final EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

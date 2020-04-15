@@ -1,11 +1,17 @@
 package app.dao;
 
-import app.dao.persistance.IOperations;
+import app.dao.persistance.IGenericDao;
 import app.models.BriefDocument;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface IBriefDocumentDao extends IOperations<BriefDocument> {
+import java.rmi.NoSuchObjectException;
 
+public interface IBriefDocumentDao extends IGenericDao<BriefDocument> {
+
+    //
+
+    BriefDocument retrieveByName(String name) throws NoSuchObjectException;
 
 }
+
+
+

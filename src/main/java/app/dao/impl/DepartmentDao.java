@@ -1,11 +1,11 @@
 package app.dao.impl;
 
-import app.dao.persistance.AbstractHibernateDao;
+import app.dao.IDepartmentDao;
+import app.dao.persistance.GenericJpaDao;
 import app.models.Department;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public class DepartmentDao extends AbstractHibernateDao<Department> {
+public class DepartmentDao extends GenericJpaDao<Department>
+        implements IDepartmentDao {
 
     public DepartmentDao() {
         setClazz(Department.class);

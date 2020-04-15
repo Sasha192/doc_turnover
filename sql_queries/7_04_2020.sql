@@ -100,11 +100,11 @@ alter table brief_documents
 alter table brief_documents
     drop foreign key files_brief_info_doc_brief_events_id_fk_2;
 
-alter table brief_documents
-    change creation_id creation_date date null;
-
-alter table brief_documents
-    change modification_id modification_date date null;
+# alter table brief_documents
+#     change creation_id creation_date date null;
+#
+# alter table brief_documents
+#     change modification_id modification_date date null;
 
 alter table brief_documents
     add is_deadline boolean null;
