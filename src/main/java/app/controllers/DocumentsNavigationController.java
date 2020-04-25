@@ -2,13 +2,11 @@ package app.controllers;
 
 import app.controllers.responses.ResponseJsonText;
 import app.models.BriefDocument;
-import app.models.Performer;
 import app.models.serialization.ExcludeStrategies;
 import app.service.IBriefDocumentService;
 import app.service.ICorePropertyService;
 import app.service.IPerformerService;
 import com.google.gson.GsonBuilder;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,12 +18,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,11 +67,11 @@ public class DocumentsNavigationController extends JsonSupportController {
         // ARCHIVE_PATH = corePropertyService.retrieveByName(ARCHIVE_PATH_NAME).getValue();
     }
 
-
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public void list(HttpServletResponse response,
                      @RequestParam(name = "page_number", defaultValue = "0") String pageNumber,
-                     @RequestParam(name = "page_size", defaultValue = "20") String pageSize) throws IOException {
+                     @RequestParam(name = "page_size", defaultValue = "20") String pageSize)
+            throws IOException {
         List<BriefDocument> briefDocuments = briefDocumentService.findAll();
         GsonBuilder builder = new GsonBuilder()
                 .setExclusionStrategies(ExcludeStrategies.ONE_TO_MANY)
@@ -139,7 +133,9 @@ public class DocumentsNavigationController extends JsonSupportController {
         toResponseDocxData(response, in.readAllBytes(), doc.getName());
     }
 
-    private void toResponseDocxData(HttpServletResponse response, byte[] data, String name) throws IOException {
+    private void toResponseDocxData(HttpServletResponse response,
+                                    byte[] data, String name)
+            throws IOException {
         response.setContentType("application/msword");
         response.setHeader("Content-disposition", "inline; filename=" + name);
         response.setContentLength(data.length);

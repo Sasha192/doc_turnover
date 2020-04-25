@@ -11,6 +11,8 @@ public interface IOperations<T extends Serializable> {
 
     List<T> findAll();
 
+    List<T> findAll(int pageNumber, int pageSize);
+
     T create(final T entity);
 
     T update(final T entity);
@@ -22,6 +24,4 @@ public interface IOperations<T extends Serializable> {
     List<T> findBy(Predicate... predicates);
 
     List<T> sortBy(Order... orders);
-
-    List<T> findAll(int pageNumber, int pageSize);
 }

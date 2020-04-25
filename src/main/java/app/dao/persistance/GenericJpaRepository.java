@@ -6,7 +6,6 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
-
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 
@@ -32,5 +31,4 @@ public class GenericJpaRepository<T extends Serializable>
         q.setMaxResults(pageSize);
         return q.getResultList();
     }
-
 }

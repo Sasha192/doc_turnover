@@ -15,6 +15,4 @@ public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
     public BriefDocumentDao() {
         setClazz(BriefDocument.class);
     }
-
-
 }

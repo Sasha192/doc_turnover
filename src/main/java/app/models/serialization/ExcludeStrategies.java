@@ -2,7 +2,6 @@ package app.models.serialization;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
-
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -20,7 +19,6 @@ public class ExcludeStrategies {
         }
     };
 
-
     public static final ExclusionStrategy ONE_TO_MANY = new ExclusionStrategy() {
         @Override
         public boolean shouldSkipClass(Class<?> clazz) {
@@ -32,5 +30,4 @@ public class ExcludeStrategies {
             return field.getAnnotation(OneToMany.class) != null;
         }
     };
-
 }
