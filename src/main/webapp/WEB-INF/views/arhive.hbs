@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	{{> head}}
+</head>
+
+<body>
+
+	{{> modal}}
+
+	<div class="wrapper">
+
+		<section class="arhive">
+
+		<table class="arhive-table">
+
+			<tr class="arhive-header">
+				<th>Название:</th>
+				<th>Дата</th>
+				<th></th>
+				<th>Отдел:</th>
+				<th>Исполнитель:</th>
+				<th></th>
+				<th></th>
+			</tr>
+			<tr class="arhive-row">
+				<td><span class="primary">Пойти пожарить шашлиндос с Михалычем</span></td>
+				<td>29.11.2021</td>
+				<td><i class="fas fa-check success"></i></td>
+				<td><a class="arhive-row__item" href="">Рукожопы</a></td>
+				<td><a class="arhive-row__item" href="">Lorem ipsum dolor sit.</a></td>
+				<td><a class="arhive-row__item" data-view="view" href="">Просмотр</i></i></a></td>
+				<td><a class="arhive-row__item" data-view="download" href=""><i class="fa fa-download"></i></a></td>
+			</tr>
+			<tr class="arhive-row">
+				<td><span class="danger">Lorem ipsum dolor sit amet consectetur.</span></td>
+				<td>29.11.2021</td>
+				<td><i class="fas fa-times danger"></i></td>
+				<td><a class="arhive-row__item" href="">Рукожопы</a></td>
+				<td><a class="arhive-row__item" href="">Гошинский Григорий Грушевский</a></td>
+				<td><a class="arhive-row__item" data-view="view" href="">Просмотр</i></i></a></td>
+				<td><a class="arhive-row__item" data-view="download" href=""><i class="fa fa-download"></i></a></td>
+			</tr>
+			<tr class="arhive-row">
+				<td><span class="warning">Пойти пожарить шашлиндос с Михалычем</span></td>
+				<td>29.11.2021</td>
+				<td><i class="fas fa-times danger"></i></td>
+				<td><a class="arhive-row__item" href="">Рукожопы</a></td>
+				<td><a class="arhive-row__item" href="">Lorem ipsum dolor sit amet consectetur.</a></td>
+				<td><a class="arhive-row__item" data-view="view" href="">Просмотр</i></i></a></td>
+				<td><a class="arhive-row__item" data-view="download" href=""><i class="fa fa-download"></i></a></td>
+			</tr>
+		</table>
+
+
+		</section>
+
+		{{> filter}}
+
+	</div>
+
+	<script src="scripts/lib.js"></script>
+	<script src="scripts/main.js"></script>
+</body>
+
+</html>
