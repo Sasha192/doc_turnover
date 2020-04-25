@@ -1,6 +1,6 @@
 package app.models;
 
-import app.models.serialization.NoOneToManySerialization;
+import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -14,8 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "departments")
-public class Department implements Serializable,
-        NoOneToManySerialization {
+public class Department implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

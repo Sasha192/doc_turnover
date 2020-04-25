@@ -5,6 +5,6 @@ import app.models.BriefDocument;
 
 public interface IBriefDocumentService extends IOperations<BriefDocument> {
 
-    BriefDocument retrieveByName(String name);
+    //BriefDocument retrieveByName(String name);
 
 }

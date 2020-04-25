@@ -11,19 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class HwController {
+public class MainController {
 
     @Autowired
     private IBriefDocumentService service;
 
     @RequestMapping("/helloworld")
     public String handler(Model model) {
-        BriefDocument briefDocument = new BriefDocument();
-        briefDocument.setName("ss");
-        briefDocument.setPath("/");
-        briefDocument.setCreationDate(Date.valueOf(LocalDate.now()));
-        briefDocument.setModificationDate(Date.valueOf(LocalDate.now()));
-        model.addAttribute("helloWorld", new String("hello"));
         return "helloworld";
     }
 

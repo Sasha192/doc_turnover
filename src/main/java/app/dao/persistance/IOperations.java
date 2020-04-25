@@ -2,6 +2,8 @@ package app.dao.persistance;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
 
 public interface IOperations<T extends Serializable> {
 
@@ -17,4 +19,9 @@ public interface IOperations<T extends Serializable> {
 
     void deleteById(final long entityId);
 
+    List<T> findBy(Predicate... predicates);
+
+    List<T> sortBy(Order... orders);
+
+    List<T> findAll(int pageNumber, int pageSize);
 }
