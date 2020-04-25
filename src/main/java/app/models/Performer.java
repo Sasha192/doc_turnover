@@ -1,6 +1,6 @@
 package app.models;
 
-import app.models.serialization.NoOneToManySerialization;
+import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -16,8 +16,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "performers")
-public class Performer implements Serializable,
-        NoOneToManySerialization {
+public class Performer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -5,4 +5,6 @@ import app.models.Performer;
 
 public interface IPerformerDao extends IGenericDao<Performer> {
 
+    //Performer retrieveByName(String name) throws NoSuchObjectException;
+
 }

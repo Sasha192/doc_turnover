@@ -5,6 +5,6 @@ import app.models.CoreProperty;
 
 public interface ICorePropertyService extends IOperations<CoreProperty> {
 
-    CoreProperty retrieveByName(String name);
+    //CoreProperty retrieveByName(String name);
 
 }

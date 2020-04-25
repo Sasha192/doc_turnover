@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
 
 public abstract class AbstractJpaDao<T extends Serializable> {
 
     private Class<T> clazz;
+
+    private CriteriaBuilder criteriaBuilder;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -52,5 +55,12 @@ public abstract class AbstractJpaDao<T extends Serializable> {
 
     public void setEntityManager(final EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    public CriteriaBuilder getCriteriaBuilder() {
+        if (this.criteriaBuilder == null) {
+            criteriaBuilder = entityManager.getCriteriaBuilder();
+        }
+        return this.criteriaBuilder;
     }
 }

@@ -1,6 +1,5 @@
 package app.models;
 
-import app.models.serialization.NoOneToManySerialization;
 import java.io.Serializable;
 import java.sql.Date;
 import javax.persistence.Column;
@@ -14,8 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "brief_documents")
-public class BriefDocument implements Serializable,
-        NoOneToManySerialization {
+public class BriefDocument implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
