@@ -10,6 +10,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -36,7 +37,8 @@ public class SpringMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry viewControllerRegistry) {
-        viewControllerRegistry.addViewController("/").setViewName("index");
+        viewControllerRegistry.addViewController("/")
+                .setViewName("index");
     }
 
     @Bean(name = "multipartResolver")
@@ -44,5 +46,19 @@ public class SpringMvcConfiguration implements WebMvcConfigurer {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
         multipartResolver.setMaxUploadSize(100000);
         return multipartResolver;
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("scripts/**")
+                .addResourceLocations("classpath:/static/scripts/");
+        registry.addResourceHandler("fonts/**")
+                .addResourceLocations("classpath:/static/fonts/");
+        registry.addResourceHandler("img/**")
+                .addResourceLocations("classpath:/static/img/");
+        registry.addResourceHandler("libs/**")
+                .addResourceLocations("classpath:/static/libs/");
+        registry.addResourceHandler("css/**")
+                .addResourceLocations("classpath:/static/css/");
     }
 }
