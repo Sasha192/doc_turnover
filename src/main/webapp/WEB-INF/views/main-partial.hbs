@@ -1,0 +1,17 @@
+<div class="wrapper">
+
+    {{> modal}}
+
+    {{> nav-bar}}
+
+    {{{ body }}}
+
+    {{#if filter}}
+
+        {{> filter}}
+
+    {{/if}}
+
+</div>
+<script src="scripts/lib.js"></script>
+<script src="scripts/main.js"></script>
