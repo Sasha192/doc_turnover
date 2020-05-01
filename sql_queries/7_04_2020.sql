@@ -83,7 +83,7 @@ alter table brief_documents
 
 alter table brief_documents
     add constraint files_brief_info_doc_brief_events_id_fk
-        foreign key (creation_date) references doc_brief_tasks (id)
+        foreign key (creation_date) references tasks (id)
             on delete set null;
 
 alter table brief_documents
@@ -91,7 +91,7 @@ alter table brief_documents
 
 alter table brief_documents
     add constraint files_brief_info_doc_brief_events_id_fk_2
-        foreign key (modification_date) references doc_brief_tasks (id)
+        foreign key (modification_date) references tasks (id)
             on delete set null;
 
 alter table brief_documents
@@ -122,4 +122,55 @@ alter table brief_documents
 
 alter table brief_documents
     add significance int null;
+
+
+create table tasks
+(
+    id                int auto_increment,
+    performer_id      int          null,
+    doc_id            int          null,
+    creation_date     DATE         null,
+    modification_date DATE         null,
+    deadline          boolean      null,
+    priority          varchar(100) null,
+    constraint tasks_pk
+        primary key (id)
+);
+
+alter table tasks
+    add task varchar(2048) null;
+
+alter table tasks
+    change deadline is_deadline tinyint(1) null;
+
+alter table tasks
+    add deadline date null;
+
+alter table tasks
+    add control_date date null;
+
+alter table tasks
+    add status boolean null;
+
+alter table tasks
+    modify status varchar(100) null;
+
+alter table tasks
+    drop column status;
+
+alter table tasks
+    add status_id int null;
+
+create table custom_status
+(
+    id          int auto_increment,
+    name        varchar(255) null,
+    customer_id int          null,
+    is_custom   boolean      not null,
+    constraint custom_status_pk
+        primary key (id)
+);
+
+alter table custom_status
+    change customer_id performer_id int null;
 

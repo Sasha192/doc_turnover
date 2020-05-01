@@ -30,4 +30,8 @@ public class CorePropertyService extends AbstractService<CoreProperty>
         this.dao = dao;
     }
 
+    @Override
+    public CoreProperty retrieveByName(String name) {
+        return null;
+    }
 }

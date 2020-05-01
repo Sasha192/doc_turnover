@@ -1,6 +1,7 @@
 package app.models;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +32,13 @@ public class Performer implements Serializable {
     private Department department;
 
     @OneToMany(mappedBy = "performer")
-    private Set<BriefDocument> briefDocuments;
+    private List<BriefDocument> briefDocuments;
+
+    @OneToMany(mappedBy = "performer")
+    private List<Task> tasks;
+
+    @OneToMany(mappedBy = "performer")
+    private List<Status> status;
 
     public Performer() {
     }
@@ -68,11 +75,27 @@ public class Performer implements Serializable {
         this.id = id;
     }
 
-    public Set<BriefDocument> getBriefDocuments() {
+    public List<BriefDocument> getBriefDocuments() {
         return this.briefDocuments;
     }
 
-    public void setBriefDocuments(final Set<BriefDocument> briefDocuments) {
+    public void setBriefDocuments(final List<BriefDocument> briefDocuments) {
         this.briefDocuments = briefDocuments;
+    }
+
+    public List<Task> getTasks() {
+        return this.tasks;
+    }
+
+    public void setTasks(final List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public List<Status> getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(final List<Status> status) {
+        this.status = status;
     }
 }

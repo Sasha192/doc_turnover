@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
+import java.util.List;
+import java.util.Map;
+
 @Service
 @Transactional
 public class BriefDocumentService
@@ -29,6 +33,13 @@ public class BriefDocumentService
 
     public void setDao(final IBriefDocumentDao dao) {
         this.dao = dao;
+    }
+
+    @Override
+    public List<BriefDocument> findBy(Map<String, String> filters) {
+        // retrieveFilter ->
+        Predicate predicate = null;
+        return this.findBy(predicate);
     }
 }
 

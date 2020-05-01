@@ -8,7 +8,6 @@ public interface IBriefDocumentDao extends IGenericDao<BriefDocument> {
     //BriefDocument retrieveByName(String name) throws NoSuchObjectException;
 
 
-
 }
 
 

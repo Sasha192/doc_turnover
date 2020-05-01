@@ -4,10 +4,16 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 public abstract class AbstractJpaDao<T extends Serializable> {
 
+    public static final String FROM = "from ";
     private Class<T> clazz;
 
     private CriteriaBuilder criteriaBuilder;
@@ -24,7 +30,7 @@ public abstract class AbstractJpaDao<T extends Serializable> {
     }
 
     public List<T> findAll() {
-        return entityManager.createQuery("from " + clazz.getName()).getResultList();
+        return entityManager.createQuery(FROM + clazz.getName()).getResultList();
     }
 
     public T create(final T entity) {
@@ -62,5 +68,32 @@ public abstract class AbstractJpaDao<T extends Serializable> {
             criteriaBuilder = entityManager.getCriteriaBuilder();
         }
         return this.criteriaBuilder;
+    }
+
+    public List<T> findBy(Predicate... predicates) {
+        CriteriaQuery<T> criteriaQuery = this.getCriteriaBuilder().createQuery(getClazz());
+        criteriaQuery.where(predicates);
+        return this.getEntityManager().createQuery(criteriaQuery).getResultList();
+    }
+
+    public List<T> sortBy(Order... orders) {
+        CriteriaQuery<T> criteriaQuery = this.getCriteriaBuilder().createQuery(getClazz());
+        criteriaQuery.orderBy(orders);
+        return this.getEntityManager().createQuery(criteriaQuery).getResultList();
+    }
+
+    public List<T> findAll(int pageNumber, int pageSize) {
+        Query q = getEntityManager().createQuery(FROM + getClazz().getName());
+        q.setFirstResult((pageNumber - 1) * pageSize);
+        q.setMaxResults(pageSize);
+        return q.getResultList();
+    }
+
+    public CriteriaQuery<T> getCriteriaQuery() {
+        return this.getCriteriaBuilder().createQuery(getClazz());
+    }
+
+    public Root<T> getRoot() {
+        return getCriteriaQuery().from(getClazz());
     }
 }
