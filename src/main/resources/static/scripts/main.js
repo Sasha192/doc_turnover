@@ -62,58 +62,22 @@ $.ajax({
 });
 
 function loadArchive(data) {
-  console.log(data);
   let archive = selector(".arсhive-table tbody");
   for (let i = 0; i < data.length; i++) {
     let row = createElem("tr");
     row.className = "archive-row";
     let obj = data[i];
+    log(obj);
       row.innerHTML = `
-        <td><a>${obj.name}</a></td>
-        <td>${obj.creationDate}</td>
-        <td><a>${obj.performer.department.departmentName}</a></td>
-        <td><a>${obj.performer.mame}</a></td>      
-        <td></td>
+        <td><a href="" data-document-id="${obj.document.id}">${obj.document.name}</a></td>
+        <td>${obj.document.creationDate}</td>
+        <td><a href="" data-department-id="${obj.department.id}">${obj.department.departmentName}</a></td>
+        <td><a href="" data-performer-id="${obj.performer.id}">${obj.performer.name}</a></td>
+        <td><a href=""></a></td>
     `;
-
-    log(row, archive);
     archive.appendChild(row);
   }
 }
-
-// '<td><span class="' +
-// obj.priority +
-// '">' +
-// obj.name +
-// "</span></td> <td>" +
-// obj.date +
-// '</td> <td><i class="fas fa-check success"></i></td> <td><a class="arhive-row__item" href="">' +
-// obj.department +
-// '</a></td> <td><a class="arhive-row__item" href="">' +
-// obj.performer +
-// '</a></td> <td><a class="arhive-row__item" data-id="' +
-// obj.id +
-// '" data-view="view" href="">Просмотр</a></td> <td><a class="arhive-row__item" data-id="${obj.id}" data-view="download" href=""><i class="fa fa-download"></i></a></td>';
-
-/*{
-  "id": 3,
-    "creationDate": "Apr 12, 2020",
-    "modificationDate": "Apr 12, 2020",
-    "name": "filename_1",
-    "path": "/home/kolmogorov/Java_Practice/bcrew/doc_turnover/src/main/webapp/archive/department__performer__15_04_2020.docx",
-    "performer": {
-  "id": 1,
-      "mame": ""
-      "department": {
-    "id": 3,
-        "departmentName": "sample3",
-        "parentDepartment": "sample_parent3"
-  }
-},
-  "deadline": false,
-    "significance": 0
-},*/
-
 
 $("body").on("click", function (e) {
   let elem = e.target;

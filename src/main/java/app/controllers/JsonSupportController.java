@@ -25,6 +25,8 @@ public abstract class JsonSupportController {
                                    Object data)
             throws IOException {
         Gson gson = builder.create();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         try (BufferedWriter out
                      = new BufferedWriter(response.getWriter())) {
             gson.toJson(data, out);

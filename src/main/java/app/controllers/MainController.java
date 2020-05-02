@@ -14,7 +14,13 @@ public class MainController {
 
     @RequestMapping("/archive")
     public String handler(ModelMap map) {
-        map.addAttribute("model_array", service.findAll());
+        //map.addAttribute("model_array", service.findAll());
         return "archive";
+    }
+
+    @RequestMapping("/profile")
+    public String controller2(ModelMap map) {
+        // map.addAttribute("model_array", service.findAll());
+        return "profile";
     }
 }
