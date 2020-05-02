@@ -3,10 +3,8 @@ package app.dao.impl;
 import app.dao.ITaskDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.Task;
-
 import java.util.List;
 import javax.persistence.TypedQuery;
-
 import org.springframework.stereotype.Repository;
 
 @Repository

@@ -5,13 +5,13 @@ import app.dao.persistance.IGenericDao;
 import app.models.BriefDocument;
 import app.service.IBriefDocumentService;
 import app.service.abstraction.AbstractService;
+
+import java.util.List;
+import java.util.Map;
+import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.criteria.Predicate;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional
@@ -40,6 +40,16 @@ public class BriefDocumentService
         // retrieveFilter ->
         Predicate predicate = null;
         return this.findBy(predicate);
+    }
+
+    @Override
+    public List<BriefDocument> findArchived() {
+        return dao.findArchived();
+    }
+
+    @Override
+    public List<BriefDocument> findActive() {
+        return dao.findActive();
     }
 }
 

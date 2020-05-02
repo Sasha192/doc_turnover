@@ -3,8 +3,8 @@ package app.controllers;
 import app.controllers.responses.ResponseJsonText;
 import app.models.BriefTask;
 import app.models.Performer;
-import app.models.Status;
 import app.models.Task;
+import app.models.TaskStatus;
 import app.models.serialization.ExcludeStrategies;
 import app.service.ICorePropertyService;
 import app.service.IStatusService;
@@ -76,7 +76,7 @@ public class TaskNavigationController extends JsonSupportController {
     public String render(HttpServletRequest request, HttpServletResponse response, ModelMap map) {
         Performer performer = (Performer) request.getSession().getAttribute(PERF_ATTR);
         int performerId = performer.getId();
-        List<Status> perfStatus = performer.getStatus();
+        List<TaskStatus> perfStatus = performer.getStatus();
         map.put("boards", perfStatus);
         map.put("performer", performer);
         List<Task> staticTasks = taskService.findByPerformerIdStaticStatus(performerId);

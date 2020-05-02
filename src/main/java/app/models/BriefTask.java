@@ -28,7 +28,7 @@ public class BriefTask {
 
     private Date controlDate;
 
-    private Task.TaskStatus status;
+    private TaskStatus status;
 
     private BriefTask() {
         ;
@@ -122,11 +122,11 @@ public class BriefTask {
         this.controlDate = controlDate;
     }
 
-    public Task.TaskStatus getStatus() {
+    public TaskStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(final Task.TaskStatus status) {
+    public void setStatus(final TaskStatus status) {
         this.status = status;
     }
 
@@ -137,11 +137,10 @@ public class BriefTask {
         btask.setDeadline(task.getDeadline());
         Performer perf = task.getPerformer();
         Department dep = perf.getDepartment();
-        String performer = perf.getLastName() + "  " + perf.getFirstName();
+        String performer = perf.getName();
         String department = dep.getDepartmentName();
         btask.setDepartment(department);
         btask.setPerformer(performer);
-        btask.setModificationDate(task.getModificationDate());
         btask.setDocId(task.getDocument().getId());
         btask.setPriority(task.getPriority());
         btask.setToDo(task.getToDo());

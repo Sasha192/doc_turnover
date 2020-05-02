@@ -2,7 +2,6 @@ package app.models;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,42 +20,28 @@ public class Performer implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "name")
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
 
     @OneToMany(mappedBy = "performer")
-    private List<BriefDocument> briefDocuments;
-
-    @OneToMany(mappedBy = "performer")
     private List<Task> tasks;
 
     @OneToMany(mappedBy = "performer")
-    private List<Status> status;
+    private List<TaskStatus> status;
 
     public Performer() {
     }
 
-    public String getFirstName() {
-        return this.firstName;
+    public String getName() {
+        return this.name;
     }
 
-    public void setFirstName(final String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return this.lastName;
-    }
-
-    public void setLastName(final String lastName) {
-        this.lastName = lastName;
+    public void setName(final String name) {
+        this.name = name;
     }
 
     public Department getDepartment() {
@@ -75,14 +60,6 @@ public class Performer implements Serializable {
         this.id = id;
     }
 
-    public List<BriefDocument> getBriefDocuments() {
-        return this.briefDocuments;
-    }
-
-    public void setBriefDocuments(final List<BriefDocument> briefDocuments) {
-        this.briefDocuments = briefDocuments;
-    }
-
     public List<Task> getTasks() {
         return this.tasks;
     }
@@ -91,11 +68,11 @@ public class Performer implements Serializable {
         this.tasks = tasks;
     }
 
-    public List<Status> getStatus() {
+    public List<TaskStatus> getStatus() {
         return this.status;
     }
 
-    public void setStatus(final List<Status> status) {
+    public void setStatus(final List<TaskStatus> status) {
         this.status = status;
     }
 }

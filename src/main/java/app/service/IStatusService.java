@@ -1,12 +1,11 @@
 package app.service;
 
 import app.dao.persistance.IOperations;
-import app.models.Status;
-
+import app.models.TaskStatus;
 import java.util.List;
 
-public interface IStatusService extends IOperations<Status> {
+public interface IStatusService extends IOperations<TaskStatus> {
 
-    List<Status> findByPerformerId(int id);
+    List<TaskStatus> findByPerformerId(int id);
 
 }

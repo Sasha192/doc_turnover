@@ -1,8 +1,9 @@
 package app.models;
 
+import app.models.serialization.ExcludeForBDocs;
+
 import java.io.Serializable;
 import java.sql.Date;
-import javax.annotation.PostConstruct;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,14 +36,12 @@ public class Task implements Serializable {
     private Performer performer;
 
     @OneToOne
-    @JoinColumn(name = "doc_id")
+    @JoinColumn(name = "doc_id", referencedColumnName = "id")
+    @ExcludeForBDocs
     private BriefDocument document;
 
     @Column(name = "creation_date")
     private Date creationDate;
-
-    @Column(name = "modification_date")
-    private Date modificationDate;
 
     @Column(name = "is_deadline")
     private Boolean deadline;
@@ -58,17 +57,10 @@ public class Task implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "status_id")
-    private Status status;
-
-    private String statusString;
+    private TaskStatus status;
 
     public Task() {
         ;
-    }
-
-    @PostConstruct
-    private void init() {
-        statusString = getStatus().getName();
     }
 
     public Long getId() {
@@ -101,14 +93,6 @@ public class Task implements Serializable {
 
     public void setCreationDate(final Date creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public Date getModificationDate() {
-        return this.modificationDate;
-    }
-
-    public void setModificationDate(final Date modificationDate) {
-        this.modificationDate = modificationDate;
     }
 
     public Boolean getDeadline() {
@@ -151,19 +135,15 @@ public class Task implements Serializable {
         this.controlDate = controlDate;
     }
 
-    public Status getStatus() {
+    public TaskStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(final Status status) {
+    public void setStatus(final TaskStatus status) {
         this.status = status;
     }
 
     public String getStatusString() {
-        return this.statusString;
-    }
-
-    public void setStatusString(final String statusString) {
-        this.statusString = statusString;
+        return getStatus().getName();
     }
 }

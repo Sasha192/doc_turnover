@@ -52,7 +52,6 @@ alter table doc_brief_events
 
 rename table doc_brief_events to doc_brief_tasks;
 
-
 create table departments
 (
     id                int auto_increment,
@@ -173,4 +172,34 @@ create table custom_status
 
 alter table custom_status
     change customer_id performer_id int null;
+
+drop index files_brief_info_doc_brief_events_id_fk on brief_documents;
+
+drop index files_brief_info_doc_brief_events_id_fk_2 on brief_documents;
+
+alter table brief_documents
+    drop column modification_date;
+
+alter table tasks
+    add constraint tasks_custom_status_id_fk
+        foreign key (status_id) references custom_status (id);
+
+alter table tasks
+    add constraint tasks_performers_id_fk
+        foreign key (performer_id) references performers (id);
+
+alter table performers
+    drop column first_name;
+
+alter table performers
+    drop column last_name;
+
+alter table performers
+    add name varchar(2048) null;
+
+alter table tasks
+    drop column modification_date;
+
+
+
 
