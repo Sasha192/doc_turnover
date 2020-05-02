@@ -1,12 +1,11 @@
 package app.dao;
 
 import app.dao.persistance.IGenericDao;
-import app.models.Status;
-
+import app.models.TaskStatus;
 import java.util.List;
 
-public interface IStatusDao extends IGenericDao<Status> {
+public interface IStatusDao extends IGenericDao<TaskStatus> {
 
-    List<Status> findByPerformerId(Integer id);
+    List<TaskStatus> findByPerformerId(Integer id);
 
 }

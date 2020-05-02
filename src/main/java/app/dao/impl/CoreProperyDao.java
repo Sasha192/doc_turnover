@@ -5,8 +5,6 @@ import app.dao.persistance.GenericJpaRepository;
 import app.models.CoreProperty;
 import org.springframework.stereotype.Repository;
 
-import java.rmi.NoSuchObjectException;
-
 @Repository
 public class CoreProperyDao extends GenericJpaRepository<CoreProperty>
         implements ICorePropertyDao {

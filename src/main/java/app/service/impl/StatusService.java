@@ -2,16 +2,16 @@ package app.service.impl;
 
 import app.dao.IStatusDao;
 import app.dao.persistance.IGenericDao;
-import app.models.Status;
+import app.models.TaskStatus;
 import app.service.IStatusService;
 import app.service.abstraction.AbstractService;
+
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class StatusService extends AbstractService<Status>
+public class StatusService extends AbstractService<TaskStatus>
         implements IStatusService {
 
     @Autowired
@@ -22,7 +22,7 @@ public class StatusService extends AbstractService<Status>
     }
 
     @Override
-    protected IGenericDao<Status> getDao() {
+    protected IGenericDao<TaskStatus> getDao() {
         return dao;
     }
 
@@ -31,7 +31,7 @@ public class StatusService extends AbstractService<Status>
     }
 
     @Override
-    public List<Status> findByPerformerId(int id) {
+    public List<TaskStatus> findByPerformerId(int id) {
         return dao.findByPerformerId(id);
     }
 }

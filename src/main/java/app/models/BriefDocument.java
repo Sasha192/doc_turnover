@@ -1,14 +1,16 @@
 package app.models;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.sql.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -17,31 +19,34 @@ public class BriefDocument implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private Long id;
 
     @Column(name = "creation_date")
+    @Expose
     private Date creationDate;
 
-    @Column(name = "modification_date")
-    private Date modificationDate;
-
     @Column(name = "file_name")
+    @Expose
     private String name;
 
     @Column(name = "full_path")
     private String path;
 
-    @ManyToOne
-    @JoinColumn(name = "performer_id")
-    private Performer performer;
-
-    @Column(name = "is_deadline")
-    private Boolean deadline;
-
-    @Column(name = "significance")
-    private Integer significance;
+    @OneToOne(mappedBy = "document", cascade = CascadeType.ALL)
+    @Expose
+    private Task task;
 
     public BriefDocument() {
+        ;
+    }
+
+    public Task getTask() {
+        return this.task;
+    }
+
+    public void setTask(final Task task) {
+        this.task = task;
     }
 
     public Date getCreationDate() {
@@ -50,22 +55,6 @@ public class BriefDocument implements Serializable {
 
     public void setCreationDate(final Date creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public Date getModificationDate() {
-        return this.modificationDate;
-    }
-
-    public void setModificationDate(final Date modificationDate) {
-        this.modificationDate = modificationDate;
-    }
-
-    public Performer getPerformer() {
-        return this.performer;
-    }
-
-    public void setPerformer(final Performer performer) {
-        this.performer = performer;
     }
 
     public String getName() {
@@ -82,22 +71,6 @@ public class BriefDocument implements Serializable {
 
     public void setPath(final String path) {
         this.path = path;
-    }
-
-    public Boolean getDeadline() {
-        return this.deadline;
-    }
-
-    public void setDeadline(final Boolean deadline) {
-        this.deadline = deadline;
-    }
-
-    public Integer getSignificance() {
-        return this.significance;
-    }
-
-    public void setSignificance(final Integer significance) {
-        this.significance = significance;
     }
 
     public Long getId() {
