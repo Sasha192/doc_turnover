@@ -1,5 +1,7 @@
 package app.models;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Column;
@@ -16,9 +18,11 @@ public class Department implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private Integer id;
 
     @Column(name = "department_name")
+    @Expose
     private String departmentName;
 
     @Column(name = "parent_department")

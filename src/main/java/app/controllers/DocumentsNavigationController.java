@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.models.BriefArchive;
 import app.models.BriefDocument;
 import app.models.serialization.ExcludeStrategies;
 import app.service.IBriefDocumentService;
@@ -42,9 +43,9 @@ public class DocumentsNavigationController extends JsonSupportController {
             list = service.findAll();
         }
         GsonBuilder builder = new GsonBuilder()
-                .setExclusionStrategies(ExcludeStrategies.EXCLUDE_BDOCS, ExcludeStrategies.ONE_TO_MANY)
+                .excludeFieldsWithoutExposeAnnotation()
                 .setPrettyPrinting();
-        writeToResponse(response, builder, list);
+        writeToResponse(response, builder, BriefArchive.toBriefArchive(list));
     }
 
 }

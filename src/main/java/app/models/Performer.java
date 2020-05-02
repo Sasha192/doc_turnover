@@ -1,5 +1,7 @@
 package app.models;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
@@ -18,9 +20,11 @@ public class Performer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private Integer id;
 
     @Column(name = "name")
+    @Expose
     private String name;
 
     @ManyToOne

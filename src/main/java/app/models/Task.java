@@ -1,6 +1,7 @@
 package app.models;
 
 import app.models.serialization.ExcludeForBDocs;
+import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -26,6 +27,7 @@ public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private Long id;
 
     @Column(name = "task")
@@ -37,7 +39,6 @@ public class Task implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "doc_id", referencedColumnName = "id")
-    @ExcludeForBDocs
     private BriefDocument document;
 
     @Column(name = "creation_date")

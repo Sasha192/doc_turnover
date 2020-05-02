@@ -1,5 +1,7 @@
 package app.models;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.sql.Date;
 import javax.persistence.CascadeType;
@@ -17,18 +19,22 @@ public class BriefDocument implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private Long id;
 
     @Column(name = "creation_date")
+    @Expose
     private Date creationDate;
 
     @Column(name = "file_name")
+    @Expose
     private String name;
 
     @Column(name = "full_path")
     private String path;
 
     @OneToOne(mappedBy = "document", cascade = CascadeType.ALL)
+    @Expose
     private Task task;
 
     public BriefDocument() {
