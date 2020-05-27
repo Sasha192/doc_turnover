@@ -20,7 +20,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@PropertySource("/WEB-INF/spring/db.properties")
+@PropertySource("/WEB-INF/spring/app.properties")
 @EnableTransactionManagement
 @ComponentScans(value = {
         @ComponentScan("app.dao"),

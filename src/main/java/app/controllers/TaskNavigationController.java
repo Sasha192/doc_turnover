@@ -161,25 +161,4 @@ public class TaskNavigationController extends JsonSupportController {
         File fileToSave = new File(filePath);
         return new ResponseJsonText(Boolean.TRUE, "Everything is Alright");
     }
-
-    @RequestMapping(path = "/download",
-            method = RequestMethod.GET)
-    public void download(@RequestParam("doc_id") String docId,
-                         HttpServletResponse response) throws Exception {
-        /*Long id = Long.valueOf(docId);
-        Task task = taskService.findOne(id);
-        File doc = new File(task.getPath());
-        InputStream in = new FileInputStream(doc);
-        toResponseDocxData(response, in.readAllBytes(), doc.getName());*/
-    }
-
-    private void toResponseDocxData(HttpServletResponse response,
-                                    byte[] data, String name)
-            throws IOException {
-        /*response.setContentType("application/msword");
-        response.setHeader("Content-disposition", "inline; filename=" + name);
-        response.setContentLength(data.length);
-        response.getOutputStream().write(data);
-        response.getOutputStream().flush();*/
-    }
 }
