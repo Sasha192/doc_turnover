@@ -138,7 +138,7 @@ public class BriefTask {
         Performer perf = task.getPerformer();
         Department dep = perf.getDepartment();
         String performer = perf.getName();
-        String department = dep.getDepartmentName();
+        String department = dep.getName();
         btask.setDepartment(department);
         btask.setPerformer(performer);
         btask.setDocId(task.getDocument().getId());

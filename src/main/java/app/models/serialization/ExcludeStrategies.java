@@ -40,7 +40,9 @@ public class ExcludeStrategies {
 
         @Override
         public boolean shouldSkipField(FieldAttributes field) {
-            return (field.getAnnotation(OneToMany.class) != null) || (field.getAnnotation(ManyToOne.class) != null);
+            return (field.getAnnotation(OneToMany.class) != null)
+                    ||
+                    (field.getAnnotation(ManyToOne.class) != null);
         }
     };
 

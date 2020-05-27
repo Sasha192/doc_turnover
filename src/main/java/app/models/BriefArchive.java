@@ -1,7 +1,6 @@
 package app.models;
 
 import com.google.gson.annotations.Expose;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,14 +48,14 @@ public class BriefArchive {
         Task task = doc.getTask();
         arch.setDocument(doc);
         Performer oldP = task.getPerformer();
-        Department oldD = oldP.getDepartment();
         Performer performer = new Performer();
         performer.setId(oldP.getId());
         performer.setName(oldP.getName());
         arch.setPerformer(performer);
         Department department = new Department();
+        Department oldD = oldP.getDepartment();
         department.setId(oldD.getId());
-        department.setDepartmentName(oldD.getDepartmentName());
+        department.setName(oldD.getName());
         arch.setDepartment(department);
         return arch;
     }

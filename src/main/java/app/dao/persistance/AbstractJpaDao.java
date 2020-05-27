@@ -33,6 +33,13 @@ public abstract class AbstractJpaDao<T extends Serializable> {
         return entityManager.createQuery(FROM + clazz.getName()).getResultList();
     }
 
+    public List<T> findAll(int pageNumber, int pageSize) {
+        Query q = getEntityManager().createQuery(FROM + getClazz().getName());
+        q.setFirstResult((pageNumber - 1) * pageSize);
+        q.setMaxResults(pageSize);
+        return q.getResultList();
+    }
+
     public T create(final T entity) {
         entityManager.persist(entity);
         return entity;
@@ -80,13 +87,6 @@ public abstract class AbstractJpaDao<T extends Serializable> {
         CriteriaQuery<T> criteriaQuery = this.getCriteriaBuilder().createQuery(getClazz());
         criteriaQuery.orderBy(orders);
         return this.getEntityManager().createQuery(criteriaQuery).getResultList();
-    }
-
-    public List<T> findAll(int pageNumber, int pageSize) {
-        Query q = getEntityManager().createQuery(FROM + getClazz().getName());
-        q.setFirstResult((pageNumber - 1) * pageSize);
-        q.setMaxResults(pageSize);
-        return q.getResultList();
     }
 
     public CriteriaQuery<T> getCriteriaQuery() {

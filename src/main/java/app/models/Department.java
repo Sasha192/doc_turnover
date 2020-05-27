@@ -1,7 +1,6 @@
 package app.models;
 
 import com.google.gson.annotations.Expose;
-
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Column;
@@ -23,7 +22,7 @@ public class Department implements Serializable {
 
     @Column(name = "department_name")
     @Expose
-    private String departmentName;
+    private String name;
 
     @Column(name = "parent_department")
     private String parentDepartment;
@@ -34,12 +33,12 @@ public class Department implements Serializable {
     public Department() {
     }
 
-    public String getDepartmentName() {
-        return this.departmentName;
+    public String getName() {
+        return this.name;
     }
 
-    public void setDepartmentName(final String departmentName) {
-        this.departmentName = departmentName;
+    public void setName(final String name) {
+        this.name = name;
     }
 
     public Integer getId() {

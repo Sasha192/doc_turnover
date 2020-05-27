@@ -3,7 +3,6 @@ package app.dao.impl;
 import app.dao.IBriefDocumentDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.BriefDocument;
-
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
