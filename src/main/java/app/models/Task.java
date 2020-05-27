@@ -1,8 +1,6 @@
 package app.models;
 
-import app.models.serialization.ExcludeForBDocs;
 import com.google.gson.annotations.Expose;
-
 import java.io.Serializable;
 import java.sql.Date;
 import javax.persistence.Column;

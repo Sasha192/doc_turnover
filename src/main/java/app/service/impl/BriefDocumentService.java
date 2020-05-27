@@ -5,7 +5,6 @@ import app.dao.persistance.IGenericDao;
 import app.models.BriefDocument;
 import app.service.IBriefDocumentService;
 import app.service.abstraction.AbstractService;
-
 import java.util.List;
 import java.util.Map;
 import javax.persistence.criteria.Predicate;

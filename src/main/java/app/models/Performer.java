@@ -1,7 +1,6 @@
 package app.models;
 
 import com.google.gson.annotations.Expose;
-
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
