@@ -21,6 +21,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 })
 public class SpringMvcConfiguration implements WebMvcConfigurer {
 
+    private static final int MAX_SIZE_UPLOAD = 200_000_000;
+
     private static final Logger LOGGER = Logger.getLogger(SpringMvcConfiguration.class);
 
     @Autowired
@@ -44,7 +46,7 @@ public class SpringMvcConfiguration implements WebMvcConfigurer {
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver multipartResolver() {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(100000);
+        multipartResolver.setMaxUploadSize(MAX_SIZE_UPLOAD);
         return multipartResolver;
     }
 
