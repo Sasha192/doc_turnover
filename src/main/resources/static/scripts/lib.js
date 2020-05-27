@@ -5,9 +5,9 @@ function log () {
 }
 
 function relSelector ( obj1, obj2 ) {
-    let obj_1 = document.querySelector(obj1);
-    let obj_2 = obj_1.querySelector(obj2);
-    return obj_2;
+	let obj_1 = document.querySelector(obj1);
+	let obj_2 = obj_1.querySelector(obj2);
+	return obj_2;
 }
 
 function relSelectorAll ( obj1, obj2 ) {

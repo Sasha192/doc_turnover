@@ -155,9 +155,9 @@ todos_active.addEventListener("dragenter", (e) => {
 todos_active.addEventListener("drop", todoDrop);
 
 
+
 let files;
-let upload_input = relSelector("#upload_documents-body", "input");
-c
+let upload_input = relSelector("#upload_documents-body", "input");c
 let upload_lable = relSelector("#upload_documents-body", "label");
 
 let file;
@@ -165,27 +165,27 @@ let upload_input = selector("#file");
 
 upload_input.onchange = () => {
 
-    file = upload_input.files[0];
-    log(file);
+  file = upload_input.files[0];
+  log(file);
 }
 
 selector("#upload_documents-submit").onclick = () => {
+  
+  let form_data = new FormData(selector(".sendform"));
+  form_data.append('file', file);
+  log(form_data);
 
-    let form_data = new FormData(selector(".sendform"));
-    form_data.append('file', file);
-    log(form_data);
 
-
-    $.ajax({
-        url: "/doc/upload",
-        type: "POST",
-        data: form_data,
-        cache: false,
-        dataType: "json",
-        processData: false,
-        contentType: false,
-        success: () => {
-            alert("success");
-        }
-    })
+  $.ajax({
+    url: "/doc/upload",
+    type: "POST",
+    data: form_data,
+    cache: false,
+    dataType: "json",
+    processData: false,
+    contentType : false,
+    success : () => {
+      alert("success");
+    }
+  })
 }
