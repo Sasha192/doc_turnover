@@ -55,7 +55,7 @@ public class BriefArchive {
         Department department = new Department();
         Department oldD = oldP.getDepartment();
         department.setId(oldD.getId());
-        department.setDepartmentName(oldD.getDepartmentName());
+        department.setName(oldD.getName());
         arch.setDepartment(department);
         return arch;
     }

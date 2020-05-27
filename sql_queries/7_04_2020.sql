@@ -200,6 +200,8 @@ alter table performers
 alter table tasks
     drop column modification_date;
 
+alter table brief_documents
+    add ext_name varchar(15) null;
 
 
 

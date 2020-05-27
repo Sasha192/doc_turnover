@@ -23,11 +23,15 @@ public class BriefDocument implements Serializable {
 
     @Column(name = "creation_date")
     @Expose
-    private Date creationDate;
+    private Date date;
 
     @Column(name = "file_name")
     @Expose
     private String name;
+
+    @Column(name = "ext_name")
+    @Expose
+    private String extName;
 
     @Column(name = "full_path")
     private String path;
@@ -48,12 +52,12 @@ public class BriefDocument implements Serializable {
         this.task = task;
     }
 
-    public Date getCreationDate() {
-        return this.creationDate;
+    public Date getDate() {
+        return this.date;
     }
 
-    public void setCreationDate(final Date creationDate) {
-        this.creationDate = creationDate;
+    public void setDate(final Date date) {
+        this.date = date;
     }
 
     public String getName() {
@@ -62,6 +66,14 @@ public class BriefDocument implements Serializable {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public String getExtName() {
+        return this.extName;
+    }
+
+    public void setExtName(final String extName) {
+        this.extName = extName;
     }
 
     public String getPath() {
