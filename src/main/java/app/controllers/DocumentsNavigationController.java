@@ -1,9 +1,11 @@
 package app.controllers;
 
+import app.controllers.responses.ResponseJsonText;
 import app.models.BriefArchive;
 import app.models.BriefDocument;
 import app.service.IBriefDocumentService;
-import app.service.MailService;
+import app.service.extapis.GMailService;
+import app.service.extapis.VirusTotalScan;
 import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,18 +17,16 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -39,11 +39,17 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     private static final FileNameMap CONTENT_TYPE_MAP = URLConnection.getFileNameMap();
 
+    private static final String EMPTY_STRING = "".intern();
+    private static final String IS_MALICIOUS = " is malicious or can not be uploaded";
+
     private static String ROOT_PATH = "/home/kolmogorov/Java_Practice/bcrew/"
             + "doc_turnover/src/main/webapp/archive";
 
     @Autowired
-    private MailService mailService;
+    private VirusTotalScan virusTotalScan;
+
+    @Autowired
+    private GMailService mailService;
 
     @Autowired
     private IBriefDocumentService service;
@@ -52,21 +58,7 @@ public class DocumentsNavigationController extends JsonSupportController {
     public void list(HttpServletResponse response, HttpServletRequest request)
             throws IOException {
         String param = request.getParameter("status");
-        List<BriefDocument> list = null;
-        if (param != null) {
-            switch (param) {
-                case "done":
-                    list = service.findArchived();
-                    break;
-                case "active":
-                    list = service.findActive();
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            list = service.findAll();
-        }
+        List<BriefDocument> list = service.findAll();
         GsonBuilder builder = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .setPrettyPrinting();
@@ -74,8 +66,8 @@ public class DocumentsNavigationController extends JsonSupportController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity upload(@RequestParam("file") MultipartFile file) {
+    public void upload(@RequestParam("file") MultipartFile[] mfiles,
+                       HttpServletResponse response) throws IOException {
         LocalDate now = LocalDate.now();
         int year = now.getYear();
         int month = now.getMonthValue();
@@ -87,27 +79,62 @@ public class DocumentsNavigationController extends JsonSupportController {
         if (!fileFolder.exists()) {
             fileFolder.mkdirs();
         }
-        try {
-            File fileToSave = new File(filePath.concat(SLASH.concat(file.getOriginalFilename())));
-            file.transferTo(fileToSave);
+        List<File> files = new LinkedList<>();
+        boolean success = true;
+        String msg = EMPTY_STRING;
+        for (int i = 0; i < mfiles.length; i++) {
+            MultipartFile mfile = mfiles[i];
+            File fileToSave = new File(filePath.concat(SLASH.concat(mfile.getOriginalFilename())));
+            mfile.transferTo(fileToSave);
+            files.add(fileToSave);
+            if (!virusTotalScan.scan(fileToSave)) {
+                success = false;
+                msg = "File : ".concat(mfile.getOriginalFilename()).concat(IS_MALICIOUS);
+                break;
+            }
+        }
+        if (!success) {
+            removeAllFiles(files);
+            sendDefaultJson(response, success, msg);
+            return;
+        }
+        for (File file : files) {
             BriefDocument briefDocument = new BriefDocument();
             briefDocument.setPath(filePath);
-            String fileName = file.getOriginalFilename();
+            String fileName = file.getName();
             String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
             briefDocument.setName(fileNameWithoutExtension);
             String filExtName = FilenameUtils.getExtension(fileName);
             briefDocument.setExtName(DOT.concat(filExtName));
             briefDocument.setDate(Date.valueOf(now));
             service.create(briefDocument);
-            return new ResponseEntity(HttpStatus.OK);
+        }
+        sendDefaultJson(response, true, "");
+    }
+
+    private void removeAllFiles(List<File> files) {
+        for (File file : files) {
+            if (!file.delete()) {
+                ; // @TODO in case it is not deleted -> it is in memory ?
+            }
+        }
+    }
+
+    private void sendDefaultJson(HttpServletResponse response, boolean b, String s) {
+        try {
+            GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
+            writeToResponse(response, gsonBuilder, new ResponseJsonText(true, ""));
         } catch (IOException e) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            ;
         }
     }
 
     @RequestMapping(path = "/send",
             method = RequestMethod.GET)
     public void sendFile(@RequestParam("id") String docId,
+                         @RequestParam("msg") String msg,
+                         @RequestParam("to") String to,
+                         @RequestParam("subject") String subject,
                          HttpServletResponse response) {
         Long id = Long.valueOf(docId);
         BriefDocument briefDocument = service.findOne(id);
@@ -116,8 +143,8 @@ public class DocumentsNavigationController extends JsonSupportController {
                 .concat(briefDocument.getName())
                 .concat(briefDocument.getExtName());
         File file = new File(filePath);
-        mailService.send("TEST", "1805bunin.oleksandr1805@gmail.com", file);
-        System.out.println();
+        mailService.sendFile(to, subject, msg, file);
+        sendDefaultJson(response, true, "");
     }
 
     @RequestMapping(path = "/download",
