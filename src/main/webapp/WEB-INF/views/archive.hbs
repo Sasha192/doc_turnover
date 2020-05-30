@@ -2,38 +2,59 @@
 <html lang="en">
 
 <head>
-    {{>head_block}}
+    {{> static_head_module}}
 </head>
 
 <body>
 
+    {{> static_modals_module}}
 
-	<div class="wrapper">
+    <header class="header-menu d-flex justify-content-between">
+        <div class="left-menu d-flex align-items-center">
+            <span class="menu-item">
+                <i class="fas fa-home"></i>
+                <a href="">Home</a>
+            </span>
+            <span class="menu-item">
+                <i class="fal fa-search"></i>
+                <a href="">Search</a>
+            </span>
+            <span class="menu-item active">
+                <i class="far fa-archive"></i>
+                <a href="">Archive</a>
+            </span>
+        </div>
+        <div class="right-menu d-flex align-items-center flex-row-reverse">
+            <span class="menu-item menu-profile">
+                <a href="">Михаил</a>
+                <img src="img/my_profile.png" alt="">
+            </span>
+            <span class="menu-item lang-selector">
+                <i class="fal fa-chevron-down mr-3"></i>
+                <ul class="d-none">
+                    <li>
+                        <img src="" alt="">
+                        <p>Ru</p>
+                    </li>
+                    <li>
+                        <img src="" alt="">
+                        <p>Ua</p>
+                    </li>
+                    <li>
+                        <img src="" alt="">
+                        <p>Eng</p>
+                    </li>
+                </ul>
+                <img src="img/lang_eng.png" alt="ru">
+            </span>
+            <span class="menu-item upload-btn" data-toggle="modal" data-target="#uploadDocs">
+                <i class="fal fa-download"></i>
+                <a href="">Upload</a>
+            </span>
+        </div>
+    </header>
 
-       {{> nav-bar}}
-
-		<section class="archive">
-
-        	<table class="arсhive-table">
-
-        		<tr class="archive-header">
-        			<th>Название:</th>
-        			<th>Дата</th>
-        			<th>Отдел:</th>
-        			<th>Исполнитель:</th>
-        			<th></th>
-        		</tr>
-        	</table>
-
-
-        </section>
-
-
-
-	</div>
-
-	<script src="scripts/lib.js"></script>
-	<script src="scripts/main.js"></script>
+    {{> static_bodyScripts_module}}
 </body>
 
 </html>

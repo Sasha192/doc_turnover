@@ -21,9 +21,9 @@ li {
   padding: 0px;
   margin: 0px;
 }
-/*
+/* 
 	---------------------------
-						NAV-BAR
+						NAV-BAR	
 	---------------------------
 */
 
@@ -87,72 +87,15 @@ li {
   margin-left: 10px;
 }
 
-/*
+/* 
 	---------------------------
-					 CALENDAR
-	---------------------------
-*/
-.calendar {
-  min-width: 250px;
-  margin-right: 20px;
-}
-
-@media screen and (max-width: 1200px) {
-  .calendar {
-    margin-right: 40px;
-  }
-}
-
-.mini-calendar:not(:last-child) {
-  margin-bottom: 30px;
-}
-
-.mini-calendar table td {
-  padding: 7px 10px;
-  text-align: center;
-}
-
-.mini-calendar table th {
-  padding: 10px 10px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 500;
-  color: #3f729b;
-}
-
-.mini-calendar table thead .active {
-  color: #fff;
-  background-color: #428bca;
-}
-
-.mini-calendar table tbody td {
-  color: #acacac;
-}
-
-.mini-calendar table tbody .td-date {
-  transition: 0.1s;
-  cursor: pointer;
-  color: #6f7782;
-}
-
-.mini-calendar table tbody .active {
-  color: #fff;
-  background-color: #428bca;
-}
-
-.mini-calendar table .td-date:hover {
-  color: #fff;
-  background-color: #428bca;
-}
-/*
-	---------------------------
-					 	archive
+					 	archive	
 	---------------------------
 */
 
 .archive {
   display: flex;
-  margin-left: 70px;
+  margin-left: 40px;
   margin-right: 400px;
   padding: 40px 0px;
   position: relative;
@@ -200,15 +143,6 @@ li {
   font-size: 16px;
 }
 
-.archive i.danger {
-  color: #f65454;
-  font-size: 24px;
-}
-
-.archive i.success {
-  color: rgb(5, 199, 83);
-}
-
 /* filter */
 
 .filter-bar {
@@ -237,7 +171,7 @@ li {
 .checkblock:not(:first-child) {
   margin-left: 10px;
 }
-/*
+/* 
 	---------------------------
 					 	PROFILE
 	---------------------------
@@ -252,12 +186,12 @@ li {
   width: 100%;
   margin: 0;
   background-color: #fff;
-  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.43);
-  font-size: 14px;
+  box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.40);
+  font-size: 12px;
 }
 
 .profile_nav-bar a {
-  height: 50px;
+  height: 40px;
   display: flex;
   align-items: center;
   border-top: 3px solid transparent;
@@ -283,15 +217,12 @@ li {
 }
 
 .profile_bar-btn i:hover {
-  color: rgb(60, 167, 209);
+  color: rgb(56, 151, 189);
 }
 
-.profile_settings:hover .profile_bar-img {
-  border: 1px solid rgb(60, 167, 209);
-}
-
-.profile_settings:hover .profile_bar-name a {
-  color: rgb(60, 167, 209);
+.profile_bar-name {
+  color: rgb(66, 180, 224);
+  font-family: "Roboto medium";
 }
 
 .profile_bar-img {
@@ -319,7 +250,7 @@ li {
   box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.43);
   display: none;
   font-size: 13px;
-
+  
 }
 
 .settings ul li {
@@ -374,7 +305,7 @@ li {
 .column_header {
   font-family: "Roboto regular";
   color:#484848;
-  font-size: 15px;
+  font-size: 14px;
   margin-bottom: 20px;
 }
 .column_header i {
@@ -399,15 +330,14 @@ li {
 
 .column .primary {
   transition: .1s;
-  cursor: pointer;
 }
 
 .column .primary i {
   color: rgb(66, 180, 224);
 }
 
-.column .primary:hover {
-  color: rgb(66, 180, 224);
+.column .primary i:hover {
+  color: rgb(60, 167, 209);
 }
 
 .column .fa-plus {

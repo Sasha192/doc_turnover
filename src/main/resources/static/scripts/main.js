@@ -50,7 +50,7 @@ function loadData(data) {
 // archive
 
 $.ajax({
-  url: "/doc/list",
+  url: "/main-arhive/data",
   type: "GET",
   contentType: "application/json",
   success: function (data) {
@@ -62,28 +62,55 @@ $.ajax({
 });
 
 function loadArchive(data) {
+  console.log(data);
   let archive = selector(".arсhive-table tbody");
   for (let i = 0; i < data.length; i++) {
     let row = createElem("tr");
     row.className = "archive-row";
     let obj = data[i];
-    log(obj);
-      row.innerHTML = `
-        <td><a href="" data-document-id="${obj.document.id}">${obj.document.name}</a></td>
-        <td>${obj.document.creationDate}</td>
-        <td><a href="" data-department-id="${obj.department.id}">${obj.department.departmentName}</a></td>
-        <td><a href="" data-performer-id="${obj.performer.id}">${obj.performer.name}</a></td>
-        <td><a href=""></a></td>
-    `;
+
+    if (obj.is_ddl) {
+      row.innerHTML =
+        '<td><span class="' +
+        obj.priority +
+        '">' +
+        obj.name +
+        "</span></td> <td>" +
+        obj.date +
+        '</td> <td><i class="fas fa-check success"></i></td> <td><a class="arhive-row__item" href="">' +
+        obj.department +
+        '</a></td> <td><a class="arhive-row__item" href="">' +
+        obj.performer +
+        '</a></td> <td><a class="arhive-row__item" data-id="' +
+        obj.id +
+        '" data-view="view" href="">Просмотр</a></td> <td><a class="arhive-row__item" data-id="${obj.id}" data-view="download" href=""><i class="fa fa-download"></i></a></td>';
+    } else {
+      row.innerHTML =
+        '<td><span class="' +
+        obj.priority +
+        '">' +
+        obj.name +
+        "</span></td> <td>" +
+        obj.date +
+        '</td> <td><i class="fal fa-times danger"></i></td> <td><a class="arhive-row__item" href="">' +
+        obj.department +
+        '</a></td> <td><a class="arhive-row__item" href="">' +
+        obj.performer +
+        '</a></td> <td><a class="arhive-row__item" data-id="' +
+        obj.id +
+        '" data-view="view" href="">Просмотр</a></td> <td><a class="arhive-row__item" data-id="${obj.id}" data-view="download" href=""><i class="fa fa-download"></i></a></td>';
+    }
+    log(row, archive);
     archive.appendChild(row);
   }
 }
 
 $("body").on("click", function (e) {
   let elem = e.target;
+  log(elem.classList.contains("profile_bar-btn"));
   if (
-      !elem.classList.contains("profile_bar-btn") &&
-      !elem.parentElement.classList.contains("profile_bar-btn")
+    !elem.classList.contains("profile_bar-btn") &&
+    !elem.parentElement.classList.contains("profile_bar-btn")
   ) {
     $(".profile_bar-btn").removeClass("active");
     $(".settings").fadeOut(100);
@@ -126,14 +153,13 @@ function todoDragEnd() {
 
 function todoDrop(e) {
   $('#modalAddTodo').modal(open);
-
-  selector("#addTodoBtn").onclick = () => {
+  addTodoBtn.onclick = () => {
     this.appendChild(todo);
     $(todo).fadeIn();
   }
   $('#modalAddTodo').on('hide.bs.modal', function (e) {
     if(todo.parentElement.getAttribute("id", "todos-no-active") ) {
-      $(todo).fadeIn();
+       $(todo).fadeIn(); 
     };
   })
 }
@@ -153,39 +179,3 @@ todos_active.addEventListener("dragenter", (e) => {
 });
 
 todos_active.addEventListener("drop", todoDrop);
-
-
-
-let files;
-let upload_input = relSelector("#upload_documents-body", "input");c
-let upload_lable = relSelector("#upload_documents-body", "label");
-
-let file;
-let upload_input = selector("#file");
-
-upload_input.onchange = () => {
-
-  file = upload_input.files[0];
-  log(file);
-}
-
-selector("#upload_documents-submit").onclick = () => {
-  
-  let form_data = new FormData(selector(".sendform"));
-  form_data.append('file', file);
-  log(form_data);
-
-
-  $.ajax({
-    url: "/doc/upload",
-    type: "POST",
-    data: form_data,
-    cache: false,
-    dataType: "json",
-    processData: false,
-    contentType : false,
-    success : () => {
-      alert("success");
-    }
-  })
-}

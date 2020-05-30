@@ -39,8 +39,7 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     private static final FileNameMap CONTENT_TYPE_MAP = URLConnection.getFileNameMap();
 
-    private static String ROOT_PATH = "/home/kolmogorov/Java_Practice/bcrew/"
-            + "doc_turnover/src/main/webapp/archive";
+    private static String ROOT_PATH = "/home/adf/bcrew_projects/doc_turnover/src/main/webapp/archive";
 
     @Autowired
     private MailService mailService;
