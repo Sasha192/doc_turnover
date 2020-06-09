@@ -37,20 +37,20 @@ alter table brief_documents
 
 alter table brief_documents
     add constraint files_brief_info_doc_brief_events_id_fk
-        foreign key (creation_date) references doc_brief_events (id)
+        foreign key (creation_date) references brief_documents (id)
             on delete cascade;
 
 alter table brief_documents
     add constraint files_brief_info_doc_brief_events_id_fk_2
-        foreign key (modification_date) references doc_brief_events (id)
+        foreign key (modification_date) references brief_documents (id)
             on delete cascade;
 
 
 
-alter table doc_brief_events
+alter table brief_documents
     drop column event_type;
 
-rename table doc_brief_events to doc_brief_tasks;
+rename table brief_documents to doc_brief_tasks;
 
 create table departments
 (
