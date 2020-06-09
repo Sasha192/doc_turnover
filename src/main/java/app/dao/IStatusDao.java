@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface IStatusDao extends IGenericDao<TaskStatus> {
 
-    List<TaskStatus> findByPerformerId(Integer id);
+    List<TaskStatus> findByPerformerId(long id);
 
 }

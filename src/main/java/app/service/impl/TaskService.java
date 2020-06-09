@@ -41,7 +41,7 @@ public class TaskService extends AbstractService<Task>
     }
 
     @Override
-    public List<Task> findByPerformerIdStaticStatus(int id) {
+    public List<Task> findByPerformerIdStaticStatus(long id) {
         return dao.findByPerformerIdStaticStatus(id);
     }
 }

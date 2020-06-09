@@ -45,9 +45,8 @@ public class BriefArchive {
 
     public static BriefArchive toBriefArchive(BriefDocument doc) {
         BriefArchive arch = new BriefArchive();
-        Task task = doc.getTask();
         arch.setDocument(doc);
-        Performer oldP = task.getPerformer();
+        Performer oldP = doc.getPerformer();
         Performer performer = new Performer();
         performer.setId(oldP.getId());
         performer.setName(oldP.getName());

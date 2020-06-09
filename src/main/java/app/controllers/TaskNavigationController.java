@@ -75,7 +75,7 @@ public class TaskNavigationController extends JsonSupportController {
     @RequestMapping(value = "/acrhive/render")
     public String render(HttpServletRequest request, HttpServletResponse response, ModelMap map) {
         Performer performer = (Performer) request.getSession().getAttribute(PERF_ATTR);
-        int performerId = performer.getId();
+        long performerId = performer.getId();
         List<TaskStatus> perfStatus = performer.getStatus();
         map.put("boards", perfStatus);
         map.put("performer", performer);

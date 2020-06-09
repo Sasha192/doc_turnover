@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface ITaskDao extends IGenericDao<Task> {
 
-    List<Task> findByPerformerId(int id);
+    List<Task> findByPerformerId(long id);
 
-    List<Task> findByPerformerIdStaticStatus(int id);
+    List<Task> findByPerformerIdStaticStatus(long id);
 
 }

@@ -27,7 +27,7 @@ public class TaskDao extends GenericJpaRepository<Task>
     }
 
     @Override
-    public List<Task> findByPerformerId(int id) {
+    public List<Task> findByPerformerId(long id) {
         TypedQuery<Task> query = getEntityManager()
                 .createQuery(FIND_BY_PERFORMER_ID, Task.class);
         query.setParameter("id", id);
@@ -35,7 +35,7 @@ public class TaskDao extends GenericJpaRepository<Task>
     }
 
     @Override
-    public List<Task> findByPerformerIdStaticStatus(int id) {
+    public List<Task> findByPerformerIdStaticStatus(long id) {
         TypedQuery<Task> query = getEntityManager()
                 .createQuery(FIND_BY_PERFORMER_ID_STATIC_STATUS, Task.class);
         query.setParameter("id", id);

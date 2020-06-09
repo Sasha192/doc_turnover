@@ -20,7 +20,7 @@ public class Performer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Expose
-    private Integer id;
+    private Long id;
 
     @Column(name = "name")
     @Expose
@@ -55,11 +55,11 @@ public class Performer implements Serializable {
         this.department = department;
     }
 
-    public Integer getId() {
-        return this.id;
+    public Long getId() {
+        return id;
     }
 
-    public void setId(final Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

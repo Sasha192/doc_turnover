@@ -20,7 +20,7 @@ public class TaskStatus implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -35,11 +35,11 @@ public class TaskStatus implements Serializable {
     @OneToMany(mappedBy = "status", fetch = FetchType.LAZY)
     private List<Task> taskList;
 
-    public Integer getId() {
-        return this.id;
+    public Long getId() {
+        return id;
     }
 
-    public void setId(final Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

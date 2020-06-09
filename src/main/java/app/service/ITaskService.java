@@ -12,5 +12,5 @@ public interface ITaskService extends IOperations<Task> {
 
     List<Task> findByPerformer(Performer performer);
 
-    List<Task> findByPerformerIdStaticStatus(int id);
+    List<Task> findByPerformerIdStaticStatus(long id);
 }

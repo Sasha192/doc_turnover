@@ -3,14 +3,7 @@ package app.models;
 import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import java.sql.Date;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "brief_documents")
@@ -39,6 +32,11 @@ public class BriefDocument implements Serializable {
     @OneToOne(mappedBy = "document", cascade = CascadeType.ALL)
     @Expose
     private Task task;
+
+    @ManyToOne
+    @JoinColumn(name = "performer_id")
+    @Expose
+    private Performer performer;
 
     public BriefDocument() {
         ;
@@ -90,5 +88,13 @@ public class BriefDocument implements Serializable {
 
     public void setId(final Long id) {
         this.id = id;
+    }
+
+    public Performer getPerformer() {
+        return performer;
+    }
+
+    public void setPerformer(Performer performer) {
+        this.performer = performer;
     }
 }

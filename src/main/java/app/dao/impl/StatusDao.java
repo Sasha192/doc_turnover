@@ -19,7 +19,7 @@ public class StatusDao extends GenericJpaRepository<TaskStatus>
     }
 
     @Override
-    public List<TaskStatus> findByPerformerId(Integer id) {
+    public List<TaskStatus> findByPerformerId(long id) {
         TypedQuery<TaskStatus> query = getEntityManager()
                 .createQuery(FIND_BY_PERFORMER_ID, TaskStatus.class);
         query.setParameter("id", id);
