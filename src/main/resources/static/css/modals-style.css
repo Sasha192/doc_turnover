@@ -1,0 +1,62 @@
+.primary-btn {
+    background-color: #0096d3;
+    color: #fff;
+}
+
+.primary-btn:hover {
+    background-color: #00a4e7;
+    color: #fff;
+}
+
+.btn {
+    font-size: 14px;
+}
+
+.upload-files {
+    margin-top:30px;
+    margin-bottom: 30px;
+
+}
+
+.upload-file {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.upload-file i {
+    margin-left: 50px;
+    color: #f73f41;
+    opacity: 0.6;
+    font-size: 18px;
+    transition: .2s;
+}
+
+.upload-file i:hover {
+    opacity: 1;
+}
+
+.upload-file {
+    margin:10px;
+    width: 130px;
+}
+
+.upload-file a {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.fileImage {
+    height:55px;
+    object-fit: cover;
+    width: 50px;
+    margin-left: -5px;
+}
+
+#progressbar {
+    background-color: #0096d3;
+    height: 10px;
+    font-size: 10px;
+}

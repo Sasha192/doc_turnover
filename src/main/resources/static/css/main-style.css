@@ -1,0 +1,175 @@
+@import "../fonts/font-manager.css";
+#colors {
+    color: #0096d3;
+    /* menu */
+    color: #00a4e7;
+    /* menu-light color */
+    color: #00d33d;
+    /* success color */
+    color: #f7c73f;
+    /* warning color */
+    color: #f73f41;
+    /* danger color */
+    color: #6610f2;
+    /* indigo color */
+    color: #333333;
+    /* dark-gray color */
+    color: #f4f6fa;
+    /* white color */
+}
+
+* {
+    color: #333333;
+    font-family: "Roboto regular";
+}
+
+a {
+    color: #00a4e7;
+    transition: 0.1s;
+    font-family: "Roboto regular";
+}
+
+a:hover {
+    color: #0096d3;
+    text-decoration: none;
+}
+
+p {
+    padding: 0px;
+    margin: 0px;
+    color: #333333;
+}
+
+ul {
+    padding: 0px;
+    margin: 0px;
+}
+
+li {
+    padding: 0px;
+    margin: 0px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+ul,
+li,
+tr,
+th,
+td,
+p {
+    color: #333333;
+    font-family: "Roboto regular";
+}
+
+
+/* header-menu */
+
+.header-menu {
+    background-color: #0096d3;
+    height: 40px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    margin: 0px 10px;
+    cursor: pointer;
+}
+
+.menu-item a {
+    color: #f4f6fa;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.menu-item i {
+    color: #f4f6fa;
+    font-size: 18px;
+    padding: 0px 15px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    transition: .2s;
+}
+
+.menu-item:hover:not(.active) a {
+    color: #b2d3e1
+}
+
+.menu-item:hover:not(.active) i {
+    color: #b2d3e1
+}
+
+.menu-item.active i {
+    background-color: #00a4e7;
+}
+
+.upload-btn i {
+    font-size: 14px;
+}
+
+.lang-selector {
+    padding: 0px 10px;
+}
+
+.lang-selector i {
+    padding: 0px;
+    font-size: 14px;
+}
+
+.lang-selector img {
+    width: 25px;
+    height: 15px;
+    object-fit: fill;
+}
+
+.menu-profile img {
+    height: 25px;
+    width: 25px;
+    border-radius: 100%;
+    object-fit: fill;
+    margin-right: 15px;
+    margin-left: 25px;
+}
+
+
+/*  archive table */
+
+.archive-table {
+    margin: 30px 25px;
+}
+
+.archive-table th, td {
+    padding-right: 100px;
+    color: #333333;
+}
+
+.archive-table th {
+    font-family: "Roboto light";
+    font-size: 15px;
+    padding-bottom: 20px;
+}
+
+.archive-table td {
+    font-size: 15px;
+    padding-bottom: 25px;
+    font-family: "Roboto regular";
+}
+
+.archive-table td i {
+    color:#00a4e7;
+    margin-right: 20px;
+    transition: .1s;
+}
+
+.archive-table td i:hover {
+    color:#0096d3;
+}

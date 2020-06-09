@@ -1,0 +1,122 @@
+<div class="modal fade" id="uploadDocs" tabindex="-1" role="dialog" aria-labelledby="uploadDocsLable"
+	aria-hidden="true">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="uploadDocsLable">Загрузить документ</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="custom-file">
+					<input id="customFile" type="file" multiple="multiple" class="custom-file-input uploadFiles"
+						accept=".jpg, .png, .pdf, .doc, .docx, .xls, .xlsx, odf, odt, ods">
+					<label class="custom-file-label" id="uploadFilesLable" for="customFile">Выберите файл</label>
+				</div>
+				<div class="upload-files d-flex justify-content-center flex-wrap">
+
+				</div>
+				<div class="progress">
+					<div id="progressbar" class="progress-bar active" role="progressbar"
+						aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+						0%
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-light" data-dismiss="modal">Отмена</button>
+				<button id="uploadFiles" type="button" class="btn btn-accept primary-btn">Загрзить</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal" id="modalAddTodo" tabindex="-1" role="dialog" aria-labelledby="modalAddTodoLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalAddTodoLabel">Добавить документ</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="" class="form-group">
+					.
+					<label>Полное описание:</label>
+					<textarea class="form-control mb-1" id="exampleFormControlTextarea1" rows="12"
+						placeholder="..."></textarea>
+					<select class="custom-select filter-select-box">
+						<option selected> Выберите отдел </option>
+					</select>
+					<select class="custom-select filter-select-box" disabled>
+						<option selected> Выберите работника </option>
+					</select>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="closeAddTodoModal" class="btn btn-light" data-dismiss="modal">Отмена</button>
+				<button type="button" id="addTodoBtn" class="btn btn-accept" data-dismiss="modal">Отправить</button>
+			</div>
+		</div>
+	</div>
+</div>
