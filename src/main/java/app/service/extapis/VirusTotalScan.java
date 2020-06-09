@@ -1,10 +1,14 @@
 package app.service.extapis;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -26,6 +30,8 @@ public class VirusTotalScan implements IMaliciousScan {
     private static final int THRESHOLD = 7;
 
     private HttpClient client;
+
+    // @TODO Benchmarking JsonReader vs JsonParser.
 
     @Autowired
     public VirusTotalScan() {
@@ -83,10 +89,44 @@ public class VirusTotalScan implements IMaliciousScan {
                 return null;
             }
             String retSrc = EntityUtils.toString(entity);
-            jsonObject = (JsonObject) new JsonParser().parse(retSrc);
+            jsonObject = (JsonObject) JsonParser.parseString(retSrc);
             return jsonObject;
         } catch (ClassCastException | IOException e) {
             return null;
         }
+    }
+
+    private boolean scanResult(String jsonString) {
+        JsonReader jsonReader = new JsonReader(new StringReader(jsonString));
+        try {
+            while (jsonReader.hasNext()) {
+                JsonToken nextToken = jsonReader.peek();
+                System.out.println(nextToken);
+
+                if (JsonToken.BEGIN_OBJECT.equals(nextToken)) {
+
+                    jsonReader.beginObject();
+
+                } else if (JsonToken.NAME.equals(nextToken)) {
+
+                    String name = jsonReader.nextName();
+                    System.out.println(name);
+
+                } else if (JsonToken.STRING.equals(nextToken)) {
+
+                    String value = jsonReader.nextString();
+                    System.out.println(value);
+
+                } else if (JsonToken.NUMBER.equals(nextToken)) {
+
+                    long value = jsonReader.nextLong();
+                    System.out.println(value);
+
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 }

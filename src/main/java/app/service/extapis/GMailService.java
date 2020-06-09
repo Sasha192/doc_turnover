@@ -29,6 +29,8 @@ public class GMailService implements IMailService {
 
     private String email;
 
+    // @TODO See, if session could be closed itself.
+
     @Autowired
     private Environment env;
 

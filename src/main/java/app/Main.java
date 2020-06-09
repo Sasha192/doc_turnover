@@ -22,8 +22,10 @@ import java.io.IOException;
 
 public class Main {
 
-    private static final String SAMPLE_URL = "https://www.virustotal.com/api/v3/files";
+    private static final String UPLOAD_URL = "https://www.virustotal.com/api/v3/files";
+    private static final String ANALYSIS_URL = "https://www.virustotal.com/api/v3/analyses/";
     private static final String X_API_KEY_VT = "309224716a9439960a3546054af7cbf68696fcb3888b587964664caf86f0a1ed";
+    private static final int THRESHOLD = 7;
 
     private static String apiKey = "27ea15ab-149f-462c-85f4-c2a0fc566b65";
 
@@ -59,16 +61,32 @@ public class Main {
                             ContentType.create("application/octet-stream"), "10.1007_978-3"
                                     + "-540-25937-4_25.bib")
                     .build();
-            HttpPost request = new HttpPost(SAMPLE_URL);
+            HttpPost request = new HttpPost(UPLOAD_URL);
             request.setEntity(entity);
             request.setHeader("x-apikey", X_API_KEY_VT);
             HttpResponse response = client.execute(request);
-            System.out.println(response);
+
         } catch (ClientProtocolException e) {
             ;
         } catch (IOException e) {
             ;
         }
 
+    }
+
+
+    private String getIdForFile(File file) throws IOException {
+        HttpEntity entity = MultipartEntityBuilder
+                .create()
+                .addBinaryBody("file", file)
+                .build();
+        HttpPost request = new HttpPost(UPLOAD_URL);
+        request.setEntity(entity);
+        request.setHeader("x-apikey", X_API_KEY_VT);
+        HttpResponse response = client.execute(request);
+        return responseToJson(response)
+                .get("data")
+                .getAsJsonObject()
+                .get("id").getAsString();
     }
 }

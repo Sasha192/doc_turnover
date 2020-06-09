@@ -7,6 +7,7 @@ import app.service.IBriefDocumentService;
 import app.service.extapis.GMailService;
 import app.service.extapis.VirusTotalScan;
 import com.google.gson.GsonBuilder;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -143,8 +145,8 @@ public class DocumentsNavigationController extends JsonSupportController {
                 .concat(briefDocument.getName())
                 .concat(briefDocument.getExtName());
         File file = new File(filePath);
-        mailService.sendFile(to, subject, msg, file);
-        sendDefaultJson(response, true, "");
+        boolean success = mailService.sendFile(to, subject, msg, file);
+        sendDefaultJson(response, success, "");
     }
 
     @RequestMapping(path = "/download",
