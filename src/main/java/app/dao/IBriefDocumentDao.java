@@ -10,6 +10,8 @@ public interface IBriefDocumentDao extends IGenericDao<BriefDocument> {
 
     List<BriefDocument> findActive();
 
+    List<BriefDocument> findSeveralById(long[] ids);
+
     //BriefDocument retrieveByName(String name) throws NoSuchObjectException;
 }
 

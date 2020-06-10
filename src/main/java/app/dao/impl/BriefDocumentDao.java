@@ -3,7 +3,9 @@ package app.dao.impl;
 import app.dao.IBriefDocumentDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.BriefDocument;
+
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
@@ -31,5 +33,18 @@ public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
     @Override
     public List<BriefDocument> findActive() {
         return getEntityManager().createQuery(WHERE_NO_ARCHIVED).getResultList();
+    }
+
+    @Override
+    public List<BriefDocument> findSeveralById(long[] ids) {
+        if (ids == null || ids.length == 0) {
+            return null;
+        }
+        String query = FROM.concat(" WHERE ");
+        query = query.concat(" id=" + ids[0]);
+        for (int i = 1; i < ids.length; i++) {
+            query = query.concat(" OR id=" + ids[i]);
+        }
+        return getEntityManager().createQuery(query).getResultList();
     }
 }

@@ -41,9 +41,7 @@ public class TaskNavigationController extends JsonSupportController {
 
     */
 
-    private static final String PERF_ATTR = "performer_object";
-
-    private static final String ARCHIVE_PATH_NAME = "ARCHIVE_PATH";
+    private static final String PERF_ATTR = "performer_object".intern();
 
     private static final String EXTENSION_FILE = ".docx";
 

@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.configuration.spring.constants.Constants;
 import app.controllers.responses.ResponseJsonText;
 import app.models.BriefArchive;
 import app.models.BriefDocument;
@@ -8,7 +9,6 @@ import app.service.IBriefDocumentService;
 import app.service.IPerformerService;
 import app.service.extapis.GMailService;
 import app.service.extapis.VirusTotalScan;
-import app.service.impl.PerformerService;
 import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +16,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.FileNameMap;
-import java.net.URLConnection;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -27,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,18 +36,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping(value = "archive/doc")
 public class DocumentsNavigationController extends JsonSupportController {
 
-    private static final String DOT = ".".intern();
-
-    private static final String SLASH = "/".intern();
-
-    private static final FileNameMap CONTENT_TYPE_MAP = URLConnection.getFileNameMap();
-
-    private static final String EMPTY_STRING = "".intern();
-    private static final String IS_MALICIOUS = " is malicious or can not be uploaded";
-
     private Performer DEFAULT_PERFORMER;
 
-    private static String ROOT_PATH = "/home/adf/bcrew_projects/doc_turnover/src/main/webapp/archive";
+    @Autowired
+    @Qualifier("app.constants")
+    private Constants constants;
 
     @Autowired
     private VirusTotalScan virusTotalScan;
@@ -85,24 +77,24 @@ public class DocumentsNavigationController extends JsonSupportController {
         int year = now.getYear();
         int month = now.getMonthValue();
         int day = now.getDayOfMonth();
-        String filePath = ROOT_PATH.concat(SLASH + year)
-                .concat(SLASH + month)
-                .concat(SLASH + day);
+        String filePath = constants.getPathToArchive().concat(Constants.SLASH + year)
+                .concat(Constants.SLASH + month)
+                .concat(Constants.SLASH + day);
         File fileFolder = new File(filePath);
         if (!fileFolder.exists()) {
             fileFolder.mkdirs();
         }
         List<File> files = new LinkedList<>();
         boolean success = true;
-        String msg = EMPTY_STRING;
+        String msg = Constants.EMPTY_STRING;
         for (int i = 0; i < mfiles.length; i++) {
             MultipartFile mfile = mfiles[i];
-            File fileToSave = new File(filePath.concat(SLASH.concat(mfile.getOriginalFilename())));
+            File fileToSave = new File(filePath.concat(Constants.SLASH.concat(mfile.getOriginalFilename())));
             mfile.transferTo(fileToSave);
             files.add(fileToSave);
             if (!virusTotalScan.scan(fileToSave)) {
                 success = false;
-                msg = "File : ".concat(mfile.getOriginalFilename()).concat(IS_MALICIOUS);
+                msg = "File : ".concat(mfile.getOriginalFilename()).concat(Constants.IS_MALICIOUS);
                 break;
             }
         }
@@ -118,7 +110,7 @@ public class DocumentsNavigationController extends JsonSupportController {
             String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
             briefDocument.setName(fileNameWithoutExtension);
             String filExtName = FilenameUtils.getExtension(fileName);
-            briefDocument.setExtName(DOT.concat(filExtName));
+            briefDocument.setExtName(Constants.DOT.concat(filExtName));
             briefDocument.setDate(Date.valueOf(now));
             briefDocument.setPerformer(DEFAULT_PERFORMER); // @TODO REMOVE DEFAULT PERFORMER
             service.create(briefDocument);
@@ -153,7 +145,7 @@ public class DocumentsNavigationController extends JsonSupportController {
         Long id = Long.valueOf(docId);
         BriefDocument briefDocument = service.findOne(id);
         String filePath = briefDocument.getPath()
-                .concat(SLASH)
+                .concat(Constants.SLASH)
                 .concat(briefDocument.getName())
                 .concat(briefDocument.getExtName());
         File file = new File(filePath);
@@ -163,21 +155,24 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     @RequestMapping(path = "/download",
             method = RequestMethod.GET)
-    public void download(@RequestParam("id") String docId,
+    public void download(@RequestParam("id") String[] docIds,
                          HttpServletResponse response) {
-        Long id = Long.valueOf(docId);
-        BriefDocument briefDocument = service.findOne(id);
-        String filePath = briefDocument.getPath()
-                .concat(SLASH)
-                .concat(briefDocument.getName())
-                .concat(briefDocument.getExtName());
-        File file = new File(filePath);
-        sendData(response, file, briefDocument.getExtName());
+        for (String docId : docIds) {
+            Long id = Long.valueOf(docId);
+            BriefDocument briefDocument = service.findOne(id);
+            String filePath = briefDocument.getPath()
+                    .concat(Constants.SLASH)
+                    .concat(briefDocument.getName())
+                    .concat(briefDocument.getExtName());
+            File file = new File(filePath);
+            sendData(response, file, briefDocument.getExtName());
+        }
+
     }
 
     private void sendData(HttpServletResponse response, File file, String ext) {
         try (InputStream in = new FileInputStream(file)) {
-            String contentType = CONTENT_TYPE_MAP.getContentTypeFor(ext);
+            String contentType = Constants.CONTENT_TYPE_MAP.getContentTypeFor(ext);
             response.setContentType(contentType);
             response.setHeader("Content-disposition", "inline; filename=" + file.getName());
             int dataSize = Math.toIntExact(file.length());

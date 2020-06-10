@@ -54,3 +54,42 @@ create table tasks
 		primary key (id)
 );
 
+alter table brief_documents
+	add performer_id bigint null;
+
+alter table performers modify id bigint auto_increment;
+
+alter table performers
+	add constraint performers_departments_id_fk
+		foreign key (department_id) references departments (id);
+
+alter table custom_status
+	add constraint custom_status_performers_id_fk
+		foreign key (performer_id) references performers (id);
+
+alter table brief_documents
+	add constraint brief_documents_performers_id_fk
+		foreign key (performer_id) references performers (id);
+
+
+alter table tasks modify performer_id bigint null;
+
+alter table tasks modify doc_id bigint null;
+
+alter table tasks modify is_deadline boolean null;
+
+alter table tasks
+	add constraint tasks_brief_documents_id_fk
+		foreign key (doc_id) references brief_documents (id);
+
+alter table tasks
+	add constraint tasks_custom_status_id_fk
+		foreign key (status_id) references custom_status (id);
+
+alter table tasks
+	add constraint tasks_performers_id_fk
+		foreign key (performer_id) references performers (id);
+
+
+
+

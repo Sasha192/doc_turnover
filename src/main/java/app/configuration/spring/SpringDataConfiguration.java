@@ -25,7 +25,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScans(value = {
         @ComponentScan("app.dao"),
         @ComponentScan("app.models"),
-        @ComponentScan("app.service")
+        @ComponentScan("app.service"),
+        @ComponentScan("app.configuration")
 })
 public class SpringDataConfiguration {
 

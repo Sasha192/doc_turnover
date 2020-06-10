@@ -50,5 +50,10 @@ public class BriefDocumentService
     public List<BriefDocument> findActive() {
         return dao.findActive();
     }
+
+    @Override
+    public List<BriefDocument> findSeveralById(long... ids) {
+        return dao.findSeveralById(ids);
+    }
 }
 

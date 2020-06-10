@@ -14,4 +14,6 @@ public interface IBriefDocumentService extends IOperations<BriefDocument> {
     List<BriefDocument> findArchived();
 
     List<BriefDocument> findActive();
+
+    List<BriefDocument> findSeveralById(long... ids);
 }
