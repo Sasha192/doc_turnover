@@ -10,7 +10,9 @@ public interface IBriefDocumentDao extends IGenericDao<BriefDocument> {
 
     List<BriefDocument> findActive();
 
-    List<BriefDocument> findSeveralById(long[] ids);
+    List<BriefDocument> findBy(int pageId, String search,
+                               Integer year, Integer month,
+                               Integer date);
 
     //BriefDocument retrieveByName(String name) throws NoSuchObjectException;
 }

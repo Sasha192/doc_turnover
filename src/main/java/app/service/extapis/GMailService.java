@@ -18,12 +18,15 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GMailService implements IMailService {
 
     private static final String EMPTY_STRING = "".intern();
+
+    private InternetAddress emailInternetAddress;
 
     private Session session;
 
@@ -39,6 +42,21 @@ public class GMailService implements IMailService {
                 return false;
             }
             Message message = createMessage(to, subject, plainText);
+            Transport.send(message);
+            return true;
+        } catch (MessagingException e) {
+            ;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean sendMimeMessage(String to, String subject, String html) {
+        try {
+            if (to == null) {
+                return false;
+            }
+            MimeMessage message = createMimeMessageHelper(to, subject, html);
             Transport.send(message);
             return true;
         } catch (MessagingException e) {
@@ -77,12 +95,27 @@ public class GMailService implements IMailService {
         multipart.addBodyPart(messageBodyPart);
     }
 
+    private MimeMessage createMimeMessageHelper(String to, String subject, String msg)
+            throws MessagingException {
+        subject = subject == null ? EMPTY_STRING : subject;
+        msg = msg == null ? EMPTY_STRING : msg;
+        Session session = getSession();
+        MimeMessage mimeMessage = new MimeMessage(session);
+        MimeMessageHelper message =
+                new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        message.setFrom(emailInternetAddress);
+        message.setTo(new InternetAddress(to));
+        message.setSubject(subject);
+        message.setText(msg, true);
+        return mimeMessage;
+    }
+
     private Message createMessage(String to, String subject, String plainText) throws MessagingException {
         subject = subject == null ? EMPTY_STRING : subject;
         plainText = plainText == null ? EMPTY_STRING : plainText;
         Session session = getSession();
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(email));
+        message.setFrom(emailInternetAddress);
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(to));
         message.setSubject(subject);
@@ -93,12 +126,13 @@ public class GMailService implements IMailService {
         return message;
     }
 
-    private Session getSession() {
+    private Session getSession() throws AddressException {
         if (session != null) {
             return session;
         }
         final String login = env.getProperty("com.gmail.login");
         this.email = login;
+        this.emailInternetAddress = new InternetAddress(this.email);
         String password = env.getProperty("com.gmail.password2f");
         if (password == null) {
             password = env.getProperty("com.gmail.password");

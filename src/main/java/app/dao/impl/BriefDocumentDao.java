@@ -1,12 +1,16 @@
 package app.dao.impl;
 
+import app.configuration.spring.constants.Constants;
 import app.dao.IBriefDocumentDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.BriefDocument;
-
 import java.util.List;
-
+import java.util.Set;
+import javax.persistence.Parameter;
+import javax.persistence.Query;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,6 +24,42 @@ public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
     private static final String WHERE_NO_ARCHIVED = FROM.concat(" WHERE is_archive=false");
 
     private static final Logger LOGGER = Logger.getLogger(BriefDocument.class);
+
+    private static final String AND = " and ";
+
+    private static final String WHERE = " WHERE ";
+    
+    /*private static final String QUERY_FIND_BY_FILTERS = FROM
+            + WHERE
+            + (" (:fileName is null or file_name = :fileName) ")
+            + (AND)
+            + (" (:extName is null or ext_name = :extName) ")
+            + (AND)
+            + (" (:fullPath is null or full_path = :fullPath) ")
+            + (AND)
+            + (" (:creationDate is null or creation_date = :creationDate) ")
+            + (AND)
+            + (" (:like is null or file_name LIKE :like or ext_name LIKE :like) ")
+            + (AND)
+            + (" (:year is null or YEAR(creation_date)=:year) ")
+            + (AND)
+            + (" (:month is null or (MONTH(creation_date) + 1) = :month) ")
+            + (AND)
+            + (" (:day is null or DAY(creation_date) = :day) ")
+            + (" ORDER BY creation_date ")
+            + (" LIMIT : :offset , :pageSize");*/
+
+    private static final String QUERY_FIND_BY_FILTERS =
+            "CALL FILTERED_BRIEF_DOC_INFO("
+                    + ":fileName, :extName, :fullPath, :creationDate,"
+                    + ":like, :year, :month, :day, :offset, :pageSize)";
+
+    private static final char PERCENTAGE = '%';
+    private static final String ROWS_ON_PAGE_ARHIVE_DOC = "rows_on_page_arhive_doc";
+
+    @Autowired
+    @Qualifier("app_constants")
+    private Constants constants;
 
     public BriefDocumentDao() {
         setClazz(BriefDocument.class);
@@ -36,15 +76,33 @@ public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
     }
 
     @Override
-    public List<BriefDocument> findSeveralById(long[] ids) {
-        if (ids == null || ids.length == 0) {
-            return null;
+    public List<BriefDocument> findBy(int pageId, String search,
+                                      Integer year, Integer month,
+                                      Integer day) {
+        int pageSize = constants
+                .retrieveByName(ROWS_ON_PAGE_ARHIVE_DOC)
+                .getIntValue();
+        final int offset = pageSize * (pageId - 1);
+        if (null != search) {
+            search = PERCENTAGE + search + PERCENTAGE;
         }
-        String query = FROM.concat(" WHERE ");
-        query = query.concat(" id=" + ids[0]);
-        for (int i = 1; i < ids.length; i++) {
-            query = query.concat(" OR id=" + ids[i]);
+        Query query = getEntityManager()
+                .createStoredProcedureQuery(QUERY_FIND_BY_FILTERS, BriefDocument.class);
+        query = setAllParametersToNull(query);
+        query.setParameter("like", search);
+        query.setParameter("year", year);
+        query.setParameter("month", month);
+        query.setParameter("day", day);
+        query.setParameter("offset", offset);
+        query.setParameter("pageSize", pageSize);
+        return query.getResultList();
+    }
+
+    private Query setAllParametersToNull(Query query) {
+        Set<Parameter<?>> parameters = query.getParameters();
+        for (Parameter<?> parameter : parameters) {
+            query.setParameter(parameter.getName(), null);
         }
-        return getEntityManager().createQuery(query).getResultList();
+        return query;
     }
 }

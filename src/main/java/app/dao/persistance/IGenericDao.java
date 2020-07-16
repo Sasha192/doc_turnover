@@ -19,5 +19,4 @@ public interface IGenericDao<T extends Serializable> extends IOperations<T> {
     List<T> sortBy(Order... orders);
 
     CriteriaBuilder getCriteriaBuilder();
-
 }

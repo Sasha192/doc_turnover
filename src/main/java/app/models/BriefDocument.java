@@ -1,8 +1,12 @@
 package app.models;
 
-import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +14,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "brief_documents")
@@ -20,42 +26,44 @@ public class BriefDocument implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Expose
+    @Access(AccessType.PROPERTY)
     private Long id;
 
     @Column(name = "creation_date")
-    @Expose
     private Date date;
 
     @Column(name = "file_name")
-    @Expose
     private String name;
 
     @Column(name = "ext_name")
-    @Expose
     private String extName;
 
     @Column(name = "full_path")
     private String path;
 
-    @OneToOne(mappedBy = "document", cascade = CascadeType.ALL)
-    @Expose
-    private Task task;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "tasks_documents",
+            joinColumns = @JoinColumn(name = "doc_id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id"))
+    private List<Task> task;
 
     @ManyToOne
     @JoinColumn(name = "performer_id")
-    @Expose
     private Performer performer;
+
+    @Transient
+    private Set<Long> taskIds;
 
     public BriefDocument() {
         ;
     }
 
-    public Task getTask() {
+    public List<Task> getTask() {
         return this.task;
     }
 
-    public void setTask(final Task task) {
+    public void setTask(final List<Task> task) {
         this.task = task;
     }
 
@@ -105,5 +113,17 @@ public class BriefDocument implements Serializable {
 
     public void setPerformer(Performer performer) {
         this.performer = performer;
+    }
+
+    public Set<Long> getTaskIds() {
+        if (taskIds == null || taskIds.isEmpty()) {
+            taskIds = new HashSet<>();
+            getTask().stream().forEach(task -> taskIds.add(task.getId()));
+        }
+        return this.taskIds;
+    }
+
+    public void setTaskIds(final Set<Long> taskIds) {
+        this.taskIds = taskIds;
     }
 }

@@ -6,8 +6,6 @@ import app.models.BriefDocument;
 import app.service.IBriefDocumentService;
 import app.service.abstraction.AbstractService;
 import java.util.List;
-import java.util.Map;
-import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,13 +33,6 @@ public class BriefDocumentService
     }
 
     @Override
-    public List<BriefDocument> findBy(Map<String, String> filters) {
-        // retrieveFilter ->
-        Predicate predicate = null;
-        return this.findBy(predicate);
-    }
-
-    @Override
     public List<BriefDocument> findArchived() {
         return dao.findArchived();
     }
@@ -52,8 +43,8 @@ public class BriefDocumentService
     }
 
     @Override
-    public List<BriefDocument> findSeveralById(long... ids) {
-        return dao.findSeveralById(ids);
+    public List<BriefDocument> findBy(int pageId, String search, Integer year, Integer month, Integer date) {
+        return dao.findBy(pageId, search, year, month, date);
     }
 }
 

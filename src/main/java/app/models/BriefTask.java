@@ -1,34 +1,66 @@
 package app.models;
 
+import java.io.Serializable;
 import java.sql.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-public class BriefTask {
+@Entity
+@Table(name = "brief_task_json_view")
+public class BriefTask implements Serializable {
 
+    @Id
+    @Access(AccessType.PROPERTY)
     private Long id;
 
-    private String toDo;
+    @Column(name = "task")
+    private String name;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "creation_date")
     private Date creationDate;
 
+    @Column(name = "modification_date")
     private Date modificationDate;
 
-    private String performer;
-
-    private String department;
-
+    @Column(name = "is_deadline")
     private boolean deadline;
 
-    private String priority;
+    @Column(name = "status_name")
+    private String status;
 
-    private Long docId;
-
+    @Column(name = "deadline")
     private Date deadlineDate;
 
+    @Column(name = "control_date")
     private Date controlDate;
 
-    private TaskStatus status;
+    @Column(name = "priority")
+    private String priority;
+
+    @Column(name = "perf_name")
+    private String performerName;
+
+    @Column(name = "perf_department")
+    private String performerDepartment;
+
+    @Column(name = "perf_id")
+    private Long performerId;
+
+    @Column(name = "owner_name")
+    private String ownerName;
+
+    @Column(name = "owner_department")
+    private String ownerDepartment;
+
+    @Column(name = "owner_id")
+    private Long ownerId;
 
     private BriefTask() {
         ;
@@ -42,12 +74,20 @@ public class BriefTask {
         this.id = id;
     }
 
-    public String getToDo() {
-        return this.toDo;
+    public String getName() {
+        return this.name;
     }
 
-    public void setToDo(final String toDo) {
-        this.toDo = toDo;
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 
     public Date getCreationDate() {
@@ -66,22 +106,6 @@ public class BriefTask {
         this.modificationDate = modificationDate;
     }
 
-    public String getPerformer() {
-        return this.performer;
-    }
-
-    public void setPerformer(final String performer) {
-        this.performer = performer;
-    }
-
-    public String getDepartment() {
-        return this.department;
-    }
-
-    public void setDepartment(final String department) {
-        this.department = department;
-    }
-
     public boolean isDeadline() {
         return this.deadline;
     }
@@ -90,20 +114,12 @@ public class BriefTask {
         this.deadline = deadline;
     }
 
-    public String getPriority() {
-        return this.priority;
+    public String getStatus() {
+        return this.status;
     }
 
-    public void setPriority(final String priority) {
-        this.priority = priority;
-    }
-
-    public Long getDocId() {
-        return this.docId;
-    }
-
-    public void setDocId(final Long docId) {
-        this.docId = docId;
+    public void setStatus(final String status) {
+        this.status = status;
     }
 
     public Date getDeadlineDate() {
@@ -122,39 +138,59 @@ public class BriefTask {
         this.controlDate = controlDate;
     }
 
-    public TaskStatus getStatus() {
-        return this.status;
+    public String getPriority() {
+        return this.priority;
     }
 
-    public void setStatus(final TaskStatus status) {
-        this.status = status;
+    public void setPriority(final String priority) {
+        this.priority = priority;
     }
 
-    public static BriefTask toBrief(Task task) {
-        BriefTask btask = new BriefTask();
-        btask.setId(task.getId());
-        btask.setCreationDate(task.getCreationDate());
-        btask.setDeadline(task.getDeadline());
-        Performer perf = task.getPerformer();
-        Department dep = perf.getDepartment();
-        String performer = perf.getName();
-        String department = dep.getName();
-        btask.setDepartment(department);
-        btask.setPerformer(performer);
-        btask.setDocId(task.getDocument().getId());
-        btask.setPriority(task.getPriority());
-        btask.setToDo(task.getToDo());
-        btask.setControlDate(task.getControlDate());
-        btask.setDeadlineDate(task.getDeadlineDate());
-        btask.setStatus(task.getStatus());
-        return btask;
+    public String getPerformerName() {
+        return this.performerName;
     }
 
-    public static List<BriefTask> toBrief(List<Task> tasks) {
-        return tasks
-                .stream()
-                .parallel()
-                .map(task -> toBrief(task))
-                .collect(Collectors.toList());
+    public void setPerformerName(final String performerName) {
+        this.performerName = performerName;
+    }
+
+    public String getPerformerDepartment() {
+        return this.performerDepartment;
+    }
+
+    public void setPerformerDepartment(final String performerDepartment) {
+        this.performerDepartment = performerDepartment;
+    }
+
+    public Long getPerformerId() {
+        return this.performerId;
+    }
+
+    public void setPerformerId(final Long performerId) {
+        this.performerId = performerId;
+    }
+
+    public String getOwnerName() {
+        return this.ownerName;
+    }
+
+    public void setOwnerName(final String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getOwnerDepartment() {
+        return this.ownerDepartment;
+    }
+
+    public void setOwnerDepartment(final String ownerDepartment) {
+        this.ownerDepartment = ownerDepartment;
+    }
+
+    public Long getOwnerId() {
+        return this.ownerId;
+    }
+
+    public void setOwnerId(final Long ownerId) {
+        this.ownerId = ownerId;
     }
 }

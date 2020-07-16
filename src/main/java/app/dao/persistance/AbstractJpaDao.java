@@ -96,4 +96,15 @@ public abstract class AbstractJpaDao<T extends Serializable> {
     public Root<T> getRoot() {
         return getCriteriaQuery().from(getClazz());
     }
+
+    public List<T> findSeveralById(long... ids) {
+        if (ids == null || ids.length == 0 || ids.length > 6) {
+            return null;
+        }
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> q = cb.createQuery(getClazz());
+        Root<T> c = q.from(getClazz());
+        return getEntityManager()
+                .createQuery(q.select(c).where(c.get("title").in(ids))).getResultList();
+    }
 }

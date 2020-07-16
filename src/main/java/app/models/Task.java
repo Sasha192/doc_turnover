@@ -1,43 +1,60 @@
 package app.models;
 
-import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tasks")
 public class Task implements Serializable {
 
-    public static final String WARNING = "warning";
-
-    public static final String PRIMARY = "primary";
-
-    public static final String DANGEROUS = "dangerous";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Expose
+    @Access(AccessType.PROPERTY)
     private Long id;
 
     @Column(name = "task")
     private String toDo;
 
-    @ManyToOne
-    @JoinColumn(name = "performer_id")
-    private Performer performer;
+    @Column(name = "description")
+    private String description;
 
-    @OneToOne
-    @JoinColumn(name = "doc_id", referencedColumnName = "id")
-    private BriefDocument document;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "tasks_performers",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "performer_id"))
+    private Set<Performer> performer;
+
+    @Transient
+    private Set<Long> performerIds;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "tasks_documents",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "doc_id"))
+    private Set<BriefDocument> document;
+
+    @Transient
+    private Set<Long> documentsIds;
 
     @Column(name = "creation_date")
     private Date creationDate;
@@ -54,12 +71,30 @@ public class Task implements Serializable {
     @Column(name = "control_date")
     private Date controlDate;
 
+    @ElementCollection
+    @CollectionTable(name = "tasks_keys",
+            joinColumns = @JoinColumn(name = "task_id")
+    )
+    @Column(name = "key")
+    private Set<String> keys;
+
     @ManyToOne
     @JoinColumn(name = "status_id")
     private TaskStatus status;
 
+    @ManyToOne
+    @JoinColumn(name = "task_owner_id")
+    private Performer taskOwner;
+
+    @Column(name = "modification_date")
+    private Date modificationDate;
+
     public Task() {
-        ;
+        Date now = Date.valueOf(LocalDate.now());
+        setCreationDate(now);
+        setDeadlineDate(now);
+        setControlDate(now);
+        setModificationDate(now);
     }
 
     public Long getId() {
@@ -70,19 +105,19 @@ public class Task implements Serializable {
         this.id = id;
     }
 
-    public Performer getPerformer() {
+    public Set<Performer> getPerformer() {
         return this.performer;
     }
 
-    public void setPerformer(final Performer performer) {
+    public void setPerformer(final Set<Performer> performer) {
         this.performer = performer;
     }
 
-    public BriefDocument getDocument() {
+    public Set<BriefDocument> getDocument() {
         return this.document;
     }
 
-    public void setDocument(final BriefDocument document) {
+    public void setDocument(final Set<BriefDocument> document) {
         this.document = document;
     }
 
@@ -92,6 +127,10 @@ public class Task implements Serializable {
 
     public void setCreationDate(final Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public void setCreationDate(final long creationDate) {
+        this.creationDate = new Date(creationDate);
     }
 
     public Boolean getDeadline() {
@@ -126,12 +165,20 @@ public class Task implements Serializable {
         this.deadlineDate = deadlineDate;
     }
 
+    public void setDeadlineDate(final long deadlineDate) {
+        this.deadlineDate = new Date(deadlineDate);
+    }
+
     public Date getControlDate() {
         return this.controlDate;
     }
 
     public void setControlDate(final Date controlDate) {
         this.controlDate = controlDate;
+    }
+
+    public void setControlDate(final long controlDate) {
+        this.controlDate = new Date(controlDate);
     }
 
     public TaskStatus getStatus() {
@@ -144,5 +191,61 @@ public class Task implements Serializable {
 
     public String getStatusString() {
         return getStatus().getName();
+    }
+
+    public Set<String> getKeys() {
+        return this.keys;
+    }
+
+    public void setKeys(final Set<String> keys) {
+        this.keys = keys;
+    }
+
+    public Performer getTaskOwner() {
+        return this.taskOwner;
+    }
+
+    public void setTaskOwner(final Performer taskOwner) {
+        this.taskOwner = taskOwner;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public Set<Long> getPerformerIds() {
+        if (performerIds == null || performerIds.isEmpty()) {
+            performerIds = new HashSet<>();
+            getPerformer().stream().forEach(perf -> performerIds.add(perf.getId()));
+        }
+        return this.performerIds;
+    }
+
+    public void setPerformerIds(final Set<Long> performerIds) {
+        this.performerIds = performerIds;
+    }
+
+    public Set<Long> getDocumentsIds() {
+        if (documentsIds == null || documentsIds.isEmpty()) {
+            documentsIds = new HashSet<>();
+            getDocument().stream().forEach(doc -> performerIds.add(doc.getId()));
+        }
+        return this.documentsIds;
+    }
+
+    public void setDocumentsIds(final Set<Long> documentsIds) {
+        this.documentsIds = documentsIds;
+    }
+
+    public Date getModificationDate() {
+        return this.modificationDate;
+    }
+
+    public void setModificationDate(final Date modificationDate) {
+        this.modificationDate = modificationDate;
     }
 }

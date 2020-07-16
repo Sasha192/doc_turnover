@@ -8,4 +8,6 @@ public interface IMailService {
 
     boolean sendFile(String to, String subject, String plaintext, File... files);
 
+    boolean sendMimeMessage(String to, String subject, String html);
+
 }

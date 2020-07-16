@@ -30,21 +30,25 @@ public abstract class AbstractService<T extends Serializable> implements IOperat
     }
 
     @Override
+    @Transactional
     public T create(final T entity) {
         return getDao().create(entity);
     }
 
     @Override
+    @Transactional
     public T update(final T entity) {
         return getDao().update(entity);
     }
 
     @Override
+    @Transactional
     public void delete(T entity) {
         getDao().delete(entity);
     }
 
     @Override
+    @Transactional
     public void deleteById(long entityId) {
         T entity = findOne(entityId);
         delete(entity);
@@ -58,6 +62,11 @@ public abstract class AbstractService<T extends Serializable> implements IOperat
     @Transactional(readOnly = true)
     public List<T> sortBy(Order... orders) {
         return getDao().sortBy(orders);
+    }
+
+    @Transactional(readOnly = true)
+    public List<T> findSeveralById(long... ids) {
+        return getDao().findSeveralById(ids);
     }
 
     protected abstract IGenericDao<T> getDao();

@@ -26,6 +26,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         @ComponentScan("app.dao"),
         @ComponentScan("app.models"),
         @ComponentScan("app.service"),
+        @ComponentScan("app.security.models"),
+        @ComponentScan("app.security.dao"),
+        @ComponentScan("app.security.service"),
         @ComponentScan("app.configuration")
 })
 public class SpringDataConfiguration {
@@ -48,7 +51,7 @@ public class SpringDataConfiguration {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(getDataSource());
-        em.setPackagesToScan(new String[]{"app.models"});
+        em.setPackagesToScan(new String[]{"app.models", "app.security.models"});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(hibernateProperties());

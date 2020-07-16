@@ -1,8 +1,11 @@
 package app.models;
 
-import com.google.gson.annotations.Expose;
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 import java.util.Set;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,11 +20,10 @@ public class Department implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Expose
+    @Access(AccessType.PROPERTY)
     private Long id;
 
     @Column(name = "department_name")
-    @Expose
     private String name;
 
     @Column(name = "parent_department")
@@ -63,5 +65,29 @@ public class Department implements Serializable {
 
     public void setPerformers(final Set<Performer> performers) {
         this.performers = performers;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Department)) return false;
+        final Department that = (Department) o;
+        return Objects.equal(this.getId(), that.getId()) &&
+                Objects.equal(this.getName(), that.getName()) &&
+                Objects.equal(this.getParentDepartment(), that.getParentDepartment());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getId(), this.getName(), this.getParentDepartment());
+    }
+
+    @Override
+    public String toString() {
+        return "Department{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", parentDepartment='" + parentDepartment + '\''
+                + '}';
     }
 }

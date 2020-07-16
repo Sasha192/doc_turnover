@@ -31,7 +31,7 @@ public class VirusTotalScan implements IMaliciousScan {
 
     @Autowired
     public VirusTotalScan(Constants constants) {
-        this.apiKeyVt = constants.retrieveByName("x_api_key_vt");
+        this.apiKeyVt = constants.retrieveByName("x_api_key_vt").getName();
     }
 
     @PostConstruct
