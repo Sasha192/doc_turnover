@@ -2,35 +2,16 @@ package app.controllers;
 
 import app.configuration.spring.constants.Constants;
 import app.controllers.utils.RunnableDatabaseStore;
-import app.dao.IBriefDocumentJsonDao;
 import app.models.BriefDocument;
 import app.models.BriefJsonDocument;
 import app.models.Performer;
 import app.security.utils.PerformerWrapper;
 import app.service.IBriefDocumentService;
+import app.service.IBriefJsonDocumentService;
 import app.service.extapis.GMailService;
 import app.service.extapis.VirusTotalScan;
 import app.service.impl.ExecutionService;
 import com.google.gson.GsonBuilder;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +22,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+import java.io.*;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 @Controller
-@RequestMapping(value = "archive/doc")
+@RequestMapping("archive/doc")
 public class DocumentsNavigationController extends JsonSupportController {
 
     private static final String IOEXCEPTION_WHILE_SENDING_DATA_ = "IOEXCEPTION WHILE SENDING DATA ";
@@ -83,7 +75,7 @@ import javax.annotation.PostConstruct;
     private IBriefDocumentService docService;
 
     @Autowired
-    private IBriefDocumentJsonDao jsonDocService;
+    private IBriefJsonDocumentService jsonDocService;
 
     @Autowired
     private PerformerWrapper performerWrapper;
@@ -92,20 +84,20 @@ import javax.annotation.PostConstruct;
     private ExecutionService executionService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public void list(HttpServletResponse response, HttpServletRequest request,
-                     @RequestParam(name = "page_id") @NotNull Integer pageId)
+    public void list(final HttpServletResponse response, final HttpServletRequest request,
+                     @RequestParam(name = "page_id") @NotNull final Integer pageId)
             throws IOException {
         // throws IOException to the top,
         // because then it is a problem with (closed response.getWriter())
         // Controller should not deal with it
         // @TODO
-        String year = request.getParameter("year");
-        String month = request.getParameter("month");
-        String day = request.getParameter("date");
+        final String year = request.getParameter("year");
+        final String month = request.getParameter("month");
+        final String day = request.getParameter("date");
         if ((day != null && day.length() > 2)
                 || (month != null && month.length() > 2)
                 || (year != null && year.length() > 6)) {
-            sendDefaultJson(response, false, "DATE NOT FOUND OR TOO BIG VALUE");
+            this.sendDefaultJson(response, false, "DATE NOT FOUND OR TOO BIG VALUE");
         }
         Integer yearInt = null;
         Integer monthInt = null;
@@ -114,66 +106,66 @@ import javax.annotation.PostConstruct;
             yearInt = year == null ? null : Integer.parseInt(year);
             monthInt = month == null ? null : Integer.parseInt(month);
             dayInt = day == null ? null : Integer.parseInt(day);
-        } catch (NumberFormatException e) {
-            getExceptionLogger().error("ERROR WHILE INTEGER PARSING ", e);
+        } catch (final NumberFormatException e) {
+            this.getExceptionLogger().error("ERROR WHILE INTEGER PARSING ", e);
         }
-        String search = request.getParameter("search");
-        List<BriefJsonDocument> list = jsonDocService.findBy(pageId, search, yearInt, monthInt, dayInt);
-        GsonBuilder builder = new GsonBuilder()
+        final String search = request.getParameter("search");
+        final List<BriefJsonDocument> list = this.jsonDocService.findBy(pageId, search, yearInt, monthInt, dayInt);
+        final GsonBuilder builder = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .setPrettyPrinting();
-        writeToResponse(response, builder, list);
+        this.writeToResponse(response, builder, list);
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public void upload(@RequestParam("file") MultipartFile[] mfiles,
-                       HttpServletResponse response) throws IOException {
-        LocalDate now = LocalDate.now();
-        int year = now.getYear();
-        int month = now.getMonthValue();
-        int day = now.getDayOfMonth();
-        String filePath = constants.getPathToArchive().concat(Constants.SLASH + year)
+    public void upload(@RequestParam("file") final MultipartFile[] mfiles,
+                       final HttpServletResponse response) throws IOException {
+        final LocalDate now = LocalDate.now();
+        final int year = now.getYear();
+        final int month = now.getMonthValue();
+        final int day = now.getDayOfMonth();
+        final String filePath = this.constants.getPathToArchive().concat(Constants.SLASH + year)
                 .concat(Constants.SLASH + month)
                 .concat(Constants.SLASH + day);
-        File fileFolder = new File(filePath);
+        final File fileFolder = new File(filePath);
         if (!fileFolder.exists()) {
             fileFolder.mkdirs();
         }
         // @TODO : CAN WE DO IT ANOTHER THREADS ?
         //  I mean, VTScanning could be performed in several threads
         //  Or leave it ???!!!
-        List<File> files = new LinkedList<>();
+        final List<File> files = new LinkedList<>();
         boolean success = true;
         String msg = Constants.EMPTY_STRING;
         for (int i = 0; i < mfiles.length; i++) {
-            MultipartFile mfile = mfiles[i];
-            File fileToSave = new File(filePath.concat(
+            final MultipartFile mfile = mfiles[i];
+            final File fileToSave = new File(filePath.concat(
                     Constants.SLASH.concat(mfile.getOriginalFilename()))
             );
             mfile.transferTo(fileToSave);
             files.add(fileToSave);
-            if (!virusTotalScan.scan(fileToSave)) {
+            if (!this.virusTotalScan.scan(fileToSave)) {
                 success = false;
                 msg = "File : ".concat(mfile.getOriginalFilename()).concat(Constants.IS_MALICIOUS);
                 break;
             }
         }
         if (!success) {
-            removeAllFiles(files);
-            sendDefaultJson(response, success, msg);
+            this.removeAllFiles(files);
+            this.sendDefaultJson(response, success, msg);
             return;
         }
-        Performer performer = performerWrapper.retrievePerformer();
-        Runnable runnable = new RunnableDatabaseStore(
-                files, docService,
+        final Performer performer = this.performerWrapper.retrievePerformer();
+        final Runnable runnable = new RunnableDatabaseStore(
+                files, this.docService,
                 filePath, performer
         );
-        executionService.pushTask(runnable);
-        sendDefaultJson(response, true, "");
+        this.executionService.pushTask(runnable);
+        this.sendDefaultJson(response, true, "");
     }
 
-    private void removeAllFiles(List<File> files) throws IOException {
-        for (File file : files) {
+    private void removeAllFiles(final List<File> files) throws IOException {
+        for (final File file : files) {
             if (!file.delete()) {
                 FileDeleteStrategy.FORCE.delete(file);
             }
@@ -182,25 +174,25 @@ import javax.annotation.PostConstruct;
 
     @RequestMapping(path = "/download",
             method = RequestMethod.GET)
-    public void download(@RequestParam("id") String[] docIds,
-                         HttpServletResponse response) {
-        File[] files = retrieveFilesByDocIds(docIds);
+    public void download(@RequestParam("id") final String[] docIds,
+                         final HttpServletResponse response) {
+        final File[] files = this.retrieveFilesByDocIds(docIds);
         if (files != null) {
             if (files.length == 1) {
-                sendFile(response, files[0]);
+                this.sendFile(response, files[0]);
             } else {
-                sendFile(response, files);
+                this.sendFile(response, files);
             }
         }
     }
 
-    private File[] retrieveFilesByDocIds(String[] docIds) {
-        File[] files = new File[docIds.length];
+    private File[] retrieveFilesByDocIds(final String[] docIds) {
+        final File[] files = new File[docIds.length];
         int i = 0;
-        for (String docId : docIds) {
-            Long id = Long.valueOf(docId);
-            BriefDocument briefDocument = docService.findOne(id);
-            String filePath = briefDocument.getPath()
+        for (final String docId : docIds) {
+            final Long id = Long.valueOf(docId);
+            final BriefDocument briefDocument = this.docService.findOne(id);
+            final String filePath = briefDocument.getPath()
                     .concat(Constants.SLASH)
                     .concat(briefDocument.getName())
                     .concat(briefDocument.getExtName());
@@ -211,60 +203,60 @@ import javax.annotation.PostConstruct;
 
     @RequestMapping(path = "/send",
             method = RequestMethod.GET)
-    public void sendFile(@RequestParam("id") String[] docId,
-                         @RequestParam("msg") String msg,
-                         @RequestParam("to") String to,
-                         @RequestParam("subject") String subject,
-                         HttpServletResponse response) {
-        File[] files = retrieveFilesByDocIds(docId);
+    public void sendFile(@RequestParam("id") final String[] docId,
+                         @RequestParam("msg") final String msg,
+                         @RequestParam("to") final String to,
+                         @RequestParam("subject") final String subject,
+                         final HttpServletResponse response) {
+        final File[] files = this.retrieveFilesByDocIds(docId);
         boolean responseBool = false;
         if (files != null && files.length > 0) {
-            responseBool = mailService.sendFile(to, subject, msg, files);
+            responseBool = this.mailService.sendFile(to, subject, msg, files);
         }
-        sendDefaultJson(response, responseBool, "");
+        this.sendDefaultJson(response, responseBool, "");
     }
 
-    private void sendFile(HttpServletResponse response, File file) {
-        try (InputStream in = new FileInputStream(file)) {
-            String extesion = FilenameUtils.getExtension(file.getAbsolutePath());
-            final String contentType = Constants.CONTENT_TYPE_MAP.getContentTypeFor(extesion);
+    private void sendFile(final HttpServletResponse response, final File file) {
+        try (final InputStream in = new FileInputStream(file)) {
+            final String extesion = FilenameUtils.getExtension(file.getAbsolutePath());
+            String contentType = Constants.CONTENT_TYPE_MAP.getContentTypeFor(extesion);
             response.setContentType(contentType);
             response.setHeader("Content-disposition", "attachment; filename=" + file.getName());
-            int dataSize = Math.toIntExact(file.length());
+            final int dataSize = Math.toIntExact(file.length());
             response.setContentLength(dataSize);
-            OutputStream out = response.getOutputStream();
-            BufferedOutputStream bufOut = new BufferedOutputStream(out);
+            final OutputStream out = response.getOutputStream();
+            final BufferedOutputStream bufOut = new BufferedOutputStream(out);
             int bytesRead = 0;
-            BufferedInputStream bufIn = new BufferedInputStream(in);
-            byte[] buf = new byte[2048];
+            final BufferedInputStream bufIn = new BufferedInputStream(in);
+            final byte[] buf = new byte[2048];
             while ((bytesRead = bufIn.read(buf)) != -1) {
                 bufOut.write(buf, 0, bytesRead);
             }
             bufOut.flush();
             bufOut.close();
             bufIn.close();
-        } catch (FileNotFoundException e) {
-            getExceptionLogger().error(FILENOTFOUNDEXCEPTION_WHILE_TRYING_TO_FIND_DOCUMENT_IN_FILESYSTEM_FILENAME + file.getAbsolutePath(), e);
-        } catch (IOException e) {
-            getExceptionLogger().error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
+        } catch (final FileNotFoundException e) {
+            this.getExceptionLogger().error(DocumentsNavigationController.FILENOTFOUNDEXCEPTION_WHILE_TRYING_TO_FIND_DOCUMENT_IN_FILESYSTEM_FILENAME + file.getAbsolutePath(), e);
+        } catch (final IOException e) {
+            this.getExceptionLogger().error(DocumentsNavigationController.IOEXCEPTION_WHILE_SENDING_DATA_, e);
         }
     }
 
-    private void sendFile(HttpServletResponse response, File... files) {
+    private void sendFile(final HttpServletResponse response, final File... files) {
         if (files.length == 0) {
             return;
         }
         try {
-            ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
+            final ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
             response.setContentType("application/zip");
-            String zipName = Constants.DATE_FORMAT.format(Date.valueOf(LocalDate.now()));
+            final String zipName = Constants.DATE_FORMAT.format(Date.valueOf(LocalDate.now()));
             response.setHeader("Content-Disposition", "attachment; filename=\"" + zipName + "\"");
-            byte[] buf = new byte[2048];
-            for (File file : files) {
+            final byte[] buf = new byte[2048];
+            for (final File file : files) {
                 try {
-                    InputStream in = new FileInputStream(file);
-                    BufferedInputStream bufIn = new BufferedInputStream(in);
-                    String entryname = file.getName();
+                    final InputStream in = new FileInputStream(file);
+                    final BufferedInputStream bufIn = new BufferedInputStream(in);
+                    final String entryname = file.getName();
                     zipOut.putNextEntry(new ZipEntry(entryname));
                     int bytesRead = 0;
                     while ((bytesRead = bufIn.read(buf)) != -1) {
@@ -273,14 +265,14 @@ import javax.annotation.PostConstruct;
                     zipOut.flush();
                     bufIn.close();
                     in.close();
-                } catch (FileNotFoundException e) {
-                    getExceptionLogger().error(FILENOTFOUNDEXCEPTION_WHILE_TRYING_TO_FIND_DOCUMENT_IN_FILESYSTEM_FILENAME + file.getAbsolutePath(), e);
-                } catch (IOException e) {
-                    getExceptionLogger().error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
+                } catch (final FileNotFoundException e) {
+                    this.getExceptionLogger().error(DocumentsNavigationController.FILENOTFOUNDEXCEPTION_WHILE_TRYING_TO_FIND_DOCUMENT_IN_FILESYSTEM_FILENAME + file.getAbsolutePath(), e);
+                } catch (final IOException e) {
+                    this.getExceptionLogger().error(DocumentsNavigationController.IOEXCEPTION_WHILE_SENDING_DATA_, e);
                 }
             }
-        } catch (IOException e) {
-            getExceptionLogger().error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
+        } catch (final IOException e) {
+            this.getExceptionLogger().error(DocumentsNavigationController.IOEXCEPTION_WHILE_SENDING_DATA_, e);
         }
     }
 }

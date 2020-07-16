@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class BriefJsonDocumentService
@@ -20,10 +22,27 @@ public class BriefJsonDocumentService
 
     @Override
     protected IGenericDao<BriefJsonDocument> getDao() {
-        return dao;
+        return this.dao;
     }
 
-    public void setDao(final IBriefDocumentJsonDao dao) {
+    public void setDao(IBriefDocumentJsonDao dao) {
         this.dao = dao;
+    }
+
+    @Override
+    public List<BriefJsonDocument> findArchived() {
+        return this.dao.findArchived();
+    }
+
+    @Override
+    public List<BriefJsonDocument> findActive() {
+        return this.dao.findActive();
+    }
+
+    @Override
+    public List<BriefJsonDocument> findBy(final int pageId, final String search,
+                                          final Integer year, final Integer month,
+                                          final Integer date) {
+        return this.dao.findBy(pageId, search, year, month, date);
     }
 }

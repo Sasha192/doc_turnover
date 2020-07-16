@@ -4,15 +4,14 @@ import app.configuration.spring.constants.Constants;
 import app.dao.IBriefDocumentJsonDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.BriefJsonDocument;
-
-import java.util.List;
-import java.util.Set;
-import javax.persistence.Parameter;
-import javax.persistence.Query;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.Parameter;
+import javax.persistence.Query;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument>
@@ -20,9 +19,9 @@ public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument
 
     private static final String FROM = " FROM " + BriefJsonDocument.class.getName() + " ";
 
-    private static final String WHERE_ARCHIVED = FROM.concat(" WHERE is_archive=true");
+    private static final String WHERE_ARCHIVED = BriefDocumentJsonDao.FROM.concat(" WHERE is_archive=true");
 
-    private static final String WHERE_NO_ARCHIVED = FROM.concat(" WHERE is_archive=false");
+    private static final String WHERE_NO_ARCHIVED = BriefDocumentJsonDao.FROM.concat(" WHERE is_archive=false");
 
     private static final Logger LOGGER = Logger.getLogger(BriefJsonDocument.class);
 
@@ -30,30 +29,18 @@ public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument
 
     private static final String WHERE = " WHERE ";
 
-    /*private static final String QUERY_FIND_BY_FILTERS = FROM
-            + WHERE
-            + (" (:fileName is null or file_name = :fileName) ")
-            + (AND)
-            + (" (:extName is null or ext_name = :extName) ")
-            + (AND)
-            + (" (:fullPath is null or full_path = :fullPath) ")
-            + (AND)
-            + (" (:creationDate is null or creation_date = :creationDate) ")
-            + (AND)
-            + (" (:like is null or file_name LIKE :like or ext_name LIKE :like) ")
-            + (AND)
-            + (" (:year is null or YEAR(creation_date)=:year) ")
-            + (AND)
-            + (" (:month is null or (MONTH(creation_date) + 1) = :month) ")
-            + (AND)
-            + (" (:day is null or DAY(creation_date) = :day) ")
-            + (" ORDER BY creation_date ")
-            + (" LIMIT : :offset , :pageSize");*/
-
     private static final String QUERY_FIND_BY_FILTERS =
-            "CALL FILTERED_BRIEF_DOC_JSON_INFO("
-                    + ":fileName, :extName, :fullPath, :creationDate,"
-                    + ":like, :year, :month, :day, :offset, :pageSize)";
+            "FROM BriefJsonDocument bd WHERE\n"
+                    + "     bd.id > :offsetValue and\n"
+                    + "    (:fileName is null or bd.name = :fileName)  and\n"
+                    + "    (:extName is null or bd.extName = :extName)  and\n"
+                    + "    (:creationDate is null or bd.date = :creationDate)  and\n"
+                    + "    (:patterLike is null or bd.name LIKE :patterLike "
+                    + "       or bd.extName LIKE :patterLike)  and\n"
+                    + "    (:yearValue is null or YEAR(bd.date)=:yearValue)  and\n"
+                    + "    (:monthValue is null or MONTH(bd.date) = :monthValue)  and\n"
+                    + "    (:dayValue is null or DAY(bd.date) = :dayValue)\n"
+                    + "     ORDER BY bd.id DESC";
 
     private static final char PERCENTAGE = '%';
     private static final String ROWS_ON_PAGE_ARHIVE_DOC = "rows_on_page_arhive_doc";
@@ -62,67 +49,68 @@ public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument
     private Constants constants;
 
     public BriefDocumentJsonDao() {
-        setClazz(BriefJsonDocument.class);
+        this.setClazz(BriefJsonDocument.class);
     }
 
     @Override
     public List<BriefJsonDocument> findArchived() {
-        return getEntityManager().createQuery(WHERE_ARCHIVED).getResultList();
+        return this.getEntityManager().createQuery(BriefDocumentJsonDao.WHERE_ARCHIVED).getResultList();
     }
 
     @Override
     public List<BriefJsonDocument> findActive() {
-        return getEntityManager().createQuery(WHERE_NO_ARCHIVED).getResultList();
+        return this.getEntityManager().createQuery(BriefDocumentJsonDao.WHERE_NO_ARCHIVED).getResultList();
     }
 
     @Override
-    public List<BriefJsonDocument> findBy(int pageId, String search,
-                                          Integer year, Integer month,
-                                          Integer day) {
-        int pageSize = constants
-                .retrieveByName(ROWS_ON_PAGE_ARHIVE_DOC)
+    public List<BriefJsonDocument> findBy(final int pageId, String search,
+                                          final Integer year, final Integer month,
+                                          final Integer day) {
+        final int pageSize = this.constants
+                .retrieveByName(BriefDocumentJsonDao.ROWS_ON_PAGE_ARHIVE_DOC)
                 .getIntValue();
-        final int offset = pageSize * (pageId - 1);
+        int offset = pageSize * (pageId - 1);
         if (null != search) {
-            search = PERCENTAGE + search + PERCENTAGE;
+            search = BriefDocumentJsonDao.PERCENTAGE + search + BriefDocumentJsonDao.PERCENTAGE;
         }
-        Query query = getEntityManager()
-                .createStoredProcedureQuery(QUERY_FIND_BY_FILTERS, BriefJsonDocument.class);
-        query = setAllParametersToNull(query);
-        query.setParameter("like", search);
-        query.setParameter("year", year);
-        query.setParameter("month", month);
-        query.setParameter("day", day);
-        query.setParameter("offset", offset);
-        query.setParameter("pageSize", pageSize);
+        Query query = this.getEntityManager()
+                .createQuery(BriefDocumentJsonDao.QUERY_FIND_BY_FILTERS, BriefJsonDocument.class);
+        query = this.setAllParametersToNull(query);
+        query.setParameter("patterLike", search);
+        query.setParameter("yearValue", year);
+        query.setParameter("monthValue", month);
+        query.setParameter("dayValue", day);
+        query.setParameter("offsetValue", Long.valueOf(offset));
+        query.setMaxResults(pageSize);
+        query.setHint("org.hibernate.readOnly", Boolean.TRUE);
         return query.getResultList();
     }
 
-    private Query setAllParametersToNull(Query query) {
-        Set<Parameter<?>> parameters = query.getParameters();
-        for (Parameter<?> parameter : parameters) {
+    private Query setAllParametersToNull(final Query query) {
+        final Set<Parameter<?>> parameters = query.getParameters();
+        for (final Parameter<?> parameter : parameters) {
             query.setParameter(parameter.getName(), null);
         }
         return query;
     }
 
     @Override
-    public BriefJsonDocument create(BriefJsonDocument entity) {
+    public BriefJsonDocument create(final BriefJsonDocument entity) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public BriefJsonDocument update(BriefJsonDocument entity) {
+    public BriefJsonDocument update(final BriefJsonDocument entity) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void delete(BriefJsonDocument entity) {
+    public void delete(final BriefJsonDocument entity) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void deleteById(long entityId) {
+    public void deleteById(final long entityId) {
         throw new UnsupportedOperationException();
     }
 }
