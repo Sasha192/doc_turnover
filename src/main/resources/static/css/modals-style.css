@@ -1,62 +1,325 @@
-.primary-btn {
-    background-color: #0096d3;
-    color: #fff;
-}
+/* -------------------
+       Main Style
+ ------------------- */
 
-.primary-btn:hover {
-    background-color: #00a4e7;
-    color: #fff;
-}
-
-.btn {
-    font-size: 14px;
-}
-
-.upload-files {
-    margin-top:30px;
-    margin-bottom: 30px;
-
-}
-
-.upload-file {
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.upload-file i {
-    margin-left: 50px;
-    color: #f73f41;
-    opacity: 0.6;
-    font-size: 18px;
+.custom-button {
+    padding: 5px 20px;
+    color: #333333;
+    font-size: 13px;
+    font-family: "Roboto light";
+    border-radius: 5px;
     transition: .2s;
+    box-shadow: 0px 0px 2px #777777;
+    margin-left: 5px;
 }
 
-.upload-file i:hover {
+.custom-button.info {
+    box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+.custom-button.info {
+    background-color: #34ace0;
+    color: #fff
+}
+
+.custom-button:hover.info {
+    background-color: #56bae5;
+}
+
+.spinner-status {
+    transition: .3s;
     opacity: 1;
 }
 
-.upload-file {
-    margin:10px;
-    width: 130px;
+.status-spinner a {
+    padding-top: 3px;
+    font-size: 14px;
+    color: #34ace0;
 }
 
-.upload-file a {
-    margin-top: 10px;
+.status-text {
+    color: #ff4959
+}
+
+/*--------------------
+        Files 
+ ------------------- */
+
+.files-container .file {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    transition: .3s;
+}
+
+.files-container .file:not(:last-child) {
+    margin-bottom: 30px;
+}
+
+.files-container .dismiss i {
+    color: #777777;
+    transition: .2s;
+    font-size: 17px;
+}
+
+.files-container .dismiss:hover i {
+    color: #333333;
+}
+
+.file-content {
+    display: flex;
+    align-items: center;
+}
+
+.files-container .file img {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    object-position: center;
+    margin-right: 15px;
+}
+
+.files-container .file .file-name {
+    color: #777777;
     font-size: 14px;
 }
 
-.fileImage {
-    height:55px;
-    object-fit: cover;
-    width: 50px;
-    margin-left: -5px;
+/*--------------------
+      Upload Files 
+ ------------------- */
+
+#uploadFilesLable {
+    overflow-x: hidden;
+    white-space: nowrap;
 }
 
-#progressbar {
-    background-color: #0096d3;
-    height: 10px;
-    font-size: 10px;
+/*--------------------
+      Add Todos 
+ ------------------- */
+
+.performers {
+    padding: 12px;
+}
+
+.performer-list {
+    white-space: normal;
+    overflow-y: auto;
+    max-height: 295px;
+}
+
+#add-NewTodo .files-container {
+    height: auto;
+    white-space: normal;
+    overflow-y: auto;
+}
+
+.performers .user {
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 35px;
+}
+
+.performers .user:not(:last-child) {
+    margin-bottom: 30px;
+}
+
+.performers .user img {
+    border-radius: 100%;
+    height: 25px;
+    width: 25px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.performers .user-meta {
+    margin-left: 15px;
+    line-height: 16px;
+}
+
+.performers .user-name {
+    color: #34ace0;
+    font-size: 13px;
+}
+
+.performers .user-department {
+    color: #777777;
+    font-size: 11px;
+}
+
+.performers .dismiss i {
+    color: #777777;
+    transition: .2s;
+    font-size: 17px;
+}
+
+.performers .dismiss i:hover {
+    color: #333333;
+}
+
+.performers .drop-down .drop-down_btn {
+    transition: .2s;
+}
+
+.performers .drop-down:hover .drop-down_btn div {
+    background-color: #56bae5;
+}
+
+.performers .drop-down:hover .drop-down_btn {
+    color: #56bae5;
+}
+
+.performers .drop-down_btn div {
+    height: 25px;
+    width: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100px;
+    background-color: #34ace0;
+    color: #f5f6fa;
+    font-weight: 600;
+    transition: .2s;
+    box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+/*--------------------
+      Drop Down 
+ ------------------- */
+
+.drop-down .user {
+    margin: 0px;
+    height: 60px;
+}
+
+.drop-down .user img {
+    margin: 0px;
+}
+
+.drop-down_item {
+    padding: 3px;
+    margin: 0px;
+    margin-top: 8px;
+}
+
+.drop-down_list#user-list .drop-down_item {
+    border: 1px dashed transparent;
+    transition: .2s;
+}
+
+.drop-down_list#user-list .drop-down_item:hover {
+    border-color: #34ace0;
+}
+
+/*------------------------
+    Add to existing Todo
+ ------------------------- */
+
+#add-ExistingTodo .add-btn {
+    font-size: 13px;
+    color: #777777;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-family: "Roboto regular";
+    margin: 30px 0px;
+    transition: .2s;
+}
+
+#add-ExistingTodo .add-btn:hover {
+    color: #56bae5
+}
+
+#add-ExistingTodo .add-btn span {
+    width: 25px;
+    height: 25px;
+    background-color: #34ace0;
+    transition: .2s;
+    border-radius: 100%;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+#add-ExistingTodo .add-btn:hover span {
+    background-color: #56bae5;
+}
+
+#add-ExistingTodo .board-item {
+    justify-content: space-between;
+    margin: 0px;
+    line-height: 0.9rem;
+    height: 35px;
+    width: 100%;
+}
+
+#add-ExistingTodo .board-item .dismiss i {
+    color: #777777;
+    transition: .2s;
+    font-size: 17px;
+}
+
+#add-ExistingTodo .board-item .dismiss i:hover {
+    color: #333333;
+}
+
+#add-ExistingTodo .board-item .board-item_content {
+    display: flex;
+    align-items: center;
+}
+
+#add-ExistingTodo .board-item.New .board-item_status {
+    color: #34ace0
+}
+
+#add-ExistingTodo .board-item.Progress .board-item_status {
+    color: #ffb142
+}
+
+#add-ExistingTodo .board-item img {
+    width: 25px;
+    height: 25px;
+}
+
+#add-ExistingTodo .board-item_title {
+    font-size: 13px;
+}
+
+#add-ExistingTodo .board-item_title span {
+    font-size: 11px;
+    color: #777777
+}
+
+#add-ExistingTodo .board-item_status {
+    font-size: 11px;
+}
+
+#add-ExistingTodo .drop-down_item {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#add-ExistingTodo .drop-down_item {
+    border: 1px dashed transparent;
+    transition: .2s;
+}
+
+#add-ExistingTodo .drop-down_item:hover {
+    border-color: #34ace0;
+}
+
+#add-ExistingTodo .drop-down_list {
+    max-height: 140px;
 }

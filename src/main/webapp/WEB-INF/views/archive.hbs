@@ -3,29 +3,145 @@
 
 <head>
     {{> static_head_module}}
+    <link rel="stylesheet" href="css/page-style.css">
 </head>
 
 <body>
-
     {{> static_modals_module}}
+    <div class="wrapper d-flex">
+        <div class="option-menu">
+            <div class="option-item">
+                <img src="img/services/gear.png" alt="">
+            </div>
+            <div class="option-item">
+                <img src="img/services/mail.png" alt="">
+            </div>
+            <div class="option-item">
+                <img src="img/services/settings.png" alt="">
+            </div>
+            <div class="option-item">
+                <img src="img/services/add.png" alt="">
+            </div>
+        </div>
+        <div class="padding-block col-0 col-sm-0 col-md-0 col-lg-0 col-xl-1"></div>
+        <div class="col-12 col-xl-10 content">
+            <div class="nav-bar">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex">
+                        <div class="nav-bar_item">
+                            <button onclick="window.location = '/teamboard'">
+                                <img src="img/services/team.png" alt="" class="bg_info">
+                                Team Board
+                            </button>
+                        </div>
+                        <div class="nav-bar_item">
+                            <button onclick="window.location = '/'">
+                                <img src="img/services/man.png" alt="" class="bg_purple">
+                                My Board
+                            </button>
+                        </div>
+                        <div class="nav-bar_item">
+                            <button onclick="window.location = '/'">
+                                <img src="img/services/list.png" alt="" class="bg_indigo">
+                                Task Table
+                            </button>
+                        </div>
+                        <div class="nav-bar_item active">
+                            <button onclick="window.location = '/'">
+                                <img src="img/services/icons8-folder-48.png" alt="" class="bg_info">
+                                Files
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex" style="margin-left:70px">
+                        <div id="archive-options" class="">
+                            <div class="d-flex">
+                                <button class="archive-options_item" id="call-add-NewTodo">
+                                    <i class="fa fa-plus-circle"></i>
+                                    Add new todo
+                                </button>
+                                <button class="archive-options_item" id="call-add-ExistingTodo">
+                                    <i class="fa fa-plus-circle"></i>
+                                    Add to existing
+                                </button>
+                                <button class="archive-options_item" id="call-DownloadDoc">
+                                    <i class="fa fa-cloud-download-alt"></i>
+                                    Download
+                                </button>
+                                <button class="archive-options_item" id="call-ShareDoc">
+                                    <i class="fa fa-envelope"></i>
+                                    Share
+                                </button>
+                            </div>
+                        </div>
+                        <button class="archive-options_item" id="call-UploadDoc">
+                            <i class="fa fa-cloud-upload-alt"></i>
+                            Upload
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="body">
+                <div class=" load-box d-flex justify-content-center align-items-center">
+                    <div class="sk-chase">
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                    </div>
+                </div>
+                <table class="archive-table">
+                    <tr class="archive-table_row">
+                        <td>
+                            <div class="archive-row_item">
+                                <div class="custom-control custom-checkbox info">
+                                    <input type="checkbox" class="option-checkbox custom-control-input"
+                                           id="${obj.document.id}" disabled>
+                                    <label class="custom-control-label" for="${obj.document.id}"></label>
+                                </div>
+                                <div id="archive-file_name">
+                                    document_3321212312412512512541.png
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="archive-row_item" id="archive-file_tasks">
+                                Related Tasks :<span id="related-tasks_value">0</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="archive-row_item" id="archive-file_performer">
+                                Lorem ipsum dolor sit.
+                            </div>
+                        </td>
+                        <td>
+                            <div class="archive-row_item" id="archive-file_department">
+                                Lorem, ipsum.
+                            </div>
+                        </td>
+                        <td>
+                            <div class="archive-row_item" id="archive-file_date">
+                                15.11.2019
+                            </div>
+                        </td>
+                    </tr>
+                </table>
 
-    {{> static_navBar_module}}
-
-    <table class="archive-table">
-        <thead>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Department</th>
-            <th>Performer</th>
-            <th></th>
-        </thead>
-        <tbody>
-
-        </tbody>
-    </table>
-
-    {{> static_bodyScripts_module}}
-
+            </div>
+        </div>
+        <div class="padding-block col-0 col-sm-0 col-md-0 col-lg-0 col-xl-1"></div>
+    </div>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <script type="module" src="scripts/main.js"></script>
 </body>
 
 </html>
