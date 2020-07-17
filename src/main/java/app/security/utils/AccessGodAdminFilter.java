@@ -1,6 +1,7 @@
 package app.security.utils;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -11,13 +12,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 
-public class AuthenticationFilter extends GenericFilterBean {
+public class AccessGodAdminFilter extends GenericFilterBean {
 
     @Override
-    public void doFilter(ServletRequest servletRequest,
-                         ServletResponse servletResponse,
-                         FilterChain filterChain)
+    public void doFilter(final ServletRequest servletRequest,
+                         final ServletResponse servletResponse,
+                         final FilterChain filterChain)
             throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
@@ -25,14 +27,17 @@ public class AuthenticationFilter extends GenericFilterBean {
             Authentication authentication = SecurityContextHolder
                     .getContext()
                     .getAuthentication();
-            if (requestUri.matches("\\/auth.*")) {
-                filterChain.doFilter(servletRequest, servletResponse);
-            } else if (requestUri.matches("\\/.*")) {
-                if (authentication != null && authentication.isAuthenticated()) {
-                    filterChain.doFilter(servletRequest, servletResponse);
-                } else {
+            final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            if (authentication.isAuthenticated()) {
+                if (requestUri.matches("\\/god\\/admin.*")) {
+                    for (final GrantedAuthority authority : authorities) {
+                        if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                            filterChain.doFilter(servletRequest, servletResponse);
+                            return;
+                        }
+                    }
                     if (servletResponse instanceof HttpServletResponse) {
-                        ((HttpServletResponse) servletResponse).sendRedirect("/auth");
+                        ((HttpServletResponse) servletResponse).sendRedirect("/access/denied");
                         return;
                     }
                 }

@@ -1,15 +1,15 @@
 package app.security.models;
 
 import app.models.CustomUser;
+import app.models.Department;
 import com.google.common.base.Preconditions;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public class DefaultUserDetails implements UserDetails {
 
@@ -21,19 +21,34 @@ public class DefaultUserDetails implements UserDetails {
 
     private boolean enabled;
 
-    public DefaultUserDetails(CustomUser customUser) {
+    private Department department;
+
+    public DefaultUserDetails(final CustomUser customUser) {
         Preconditions.checkNotNull(customUser);
-        setPassword(customUser.getPassword());
-        setUserName(customUser.getEmail());
-        setEnabled(customUser.isEnabled());
-        for (SimpleRole role : customUser.getRoles()) {
+        this.setPassword(customUser.getPassword());
+        this.setUserName(customUser.getEmail());
+        this.setEnabled(customUser.isEnabled());
+        this.setDepartment(customUser.getPerformer().getDepartment());
+        for (final SimpleRole role : customUser.getRoles()) {
             switch (role) {
                 case USER: {
-                    addAuthority(new SimpleGrantedAuthority("ROLE_USER"));
+                    this.addAuthority(new SimpleGrantedAuthority("ROLE_USER"));
                     break;
                 }
                 case ADMIN: {
-                    addAuthority(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                    this.addAuthority(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                    break;
+                }
+                case MANAGER: {
+                    this.addAuthority(new SimpleGrantedAuthority("ROLE_MANAGER"));
+                    break;
+                }
+                case G_MANAGER: {
+                    this.addAuthority(new SimpleGrantedAuthority("ROLE_G_MANAGER"));
+                    break;
+                }
+                case SECRETARY: {
+                    this.addAuthority(new SimpleGrantedAuthority("SECRETARY"));
                     break;
                 }
                 default:
@@ -44,17 +59,17 @@ public class DefaultUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return this.authorities;
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return this.email;
     }
 
     @Override
@@ -74,26 +89,34 @@ public class DefaultUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
 
-    public void setUserName(final String email) {
+    public void setUserName(String email) {
         this.email = email;
     }
 
-    public void setPassword(final String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setAuthorities(final Set<GrantedAuthority> authorities) {
+    public void setAuthorities(Set<GrantedAuthority> authorities) {
         this.authorities = authorities;
     }
 
-    public void setEnabled(final boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    public void addAuthority(final GrantedAuthority authority) {
-        authorities.add(authority);
+    public void addAuthority(GrantedAuthority authority) {
+        this.authorities.add(authority);
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

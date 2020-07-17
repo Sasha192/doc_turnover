@@ -1,5 +1,5 @@
 package app.security.models;
 
 public enum SimpleRole {
-    ADMIN, USER
+    ADMIN, USER, MANAGER, G_MANAGER, SECRETARY
 }

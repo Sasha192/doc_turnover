@@ -19,7 +19,6 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -74,7 +73,7 @@ public class SpringMvcConfiguration
 
     @Bean
     public ViewResolver viewResolver() {
-        HandlebarsViewResolver handlebarsViewResolver = new HandlebarsViewResolver();
+        final HandlebarsViewResolver handlebarsViewResolver = new HandlebarsViewResolver();
         handlebarsViewResolver.setPrefix("/WEB-INF/views/");
         handlebarsViewResolver.setSuffix(".hbs");
         handlebarsViewResolver.setCache(false);
@@ -82,20 +81,20 @@ public class SpringMvcConfiguration
     }
 
     @Override
-    public void addViewControllers(ViewControllerRegistry viewControllerRegistry) {
+    public void addViewControllers(final ViewControllerRegistry viewControllerRegistry) {
         viewControllerRegistry.addViewController("/")
                 .setViewName("index");
     }
 
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver multipartResolver() {
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(MAX_SIZE_UPLOAD);
+        final CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(SpringMvcConfiguration.MAX_SIZE_UPLOAD);
         return multipartResolver;
     }
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("scripts/**")
                 .addResourceLocations("classpath:/static/scripts/");
         registry.addResourceHandler("fonts/**")
@@ -110,7 +109,7 @@ public class SpringMvcConfiguration
 
     @Bean("for.email.template")
     public Handlebars forEmailTemplate() {
-        TemplateLoader loader = new ClassPathTemplateLoader("/WEB-INF/templates", ".hbs");
+        final TemplateLoader loader = new ClassPathTemplateLoader("/WEB-INF/templates", ".hbs");
         // verification_email_template.hbs
         return new Handlebars(loader);
     }
@@ -123,19 +122,19 @@ public class SpringMvcConfiguration
 
     @Bean
     public DaoAuthenticationProvider authProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(defaultPasswordEncoder);
+        final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(this.userDetailsService);
+        authProvider.setPasswordEncoder(this.defaultPasswordEncoder);
         return authProvider;
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider());
+    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(this.authProvider());
         super.configure(auth);
     }
 
-    @Override
+    /*@Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .logout()
@@ -143,5 +142,5 @@ public class SpringMvcConfiguration
                 .logoutSuccessUrl("/auth")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID");
-    }
+    }*/
 }
