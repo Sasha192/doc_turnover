@@ -37,74 +37,74 @@ public class BriefJsonDocument implements Serializable {
     private String departmentName;
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     public Date getDate() {
-        return this.date;
+        return date;
     }
 
-    public void setDate(final Date date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
     public String getExtName() {
-        return this.extName;
+        return extName;
     }
 
-    public void setExtName(final String extName) {
+    public void setExtName(String extName) {
         this.extName = extName;
     }
 
     public Long getTaskCount() {
-        return this.taskCount;
+        return taskCount;
     }
 
-    public void setTaskCount(final Long taskCount) {
+    public void setTaskCount(Long taskCount) {
         this.taskCount = taskCount;
     }
 
     public Long getPerformerId() {
-        return this.performerId;
+        return performerId;
     }
 
-    public void setPerformerId(final Long performerId) {
+    public void setPerformerId(Long performerId) {
         this.performerId = performerId;
     }
 
     public Long getDepartmentId() {
-        return this.departmentId;
+        return departmentId;
     }
 
-    public void setDepartmentId(final Long departmentId) {
+    public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
     }
 
     public String getPerformerName() {
-        return performerName;
+        return this.performerName;
     }
 
-    public void setPerformerName(String performerName) {
+    public void setPerformerName(final String performerName) {
         this.performerName = performerName;
     }
 
     public String getDepartmentName() {
-        return departmentName;
+        return this.departmentName;
     }
 
-    public void setDepartmentName(String departmentName) {
+    public void setDepartmentName(final String departmentName) {
         this.departmentName = departmentName;
     }
 }
