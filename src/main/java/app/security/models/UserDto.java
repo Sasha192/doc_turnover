@@ -1,7 +1,6 @@
 package app.security.models;
 
-import app.models.serialization.ExcludeThis;
-import app.security.models.annotations.ExcludeMatchingPassword;
+import app.models.VerificationCode;
 import app.security.models.annotations.FieldsValueMatch;
 import app.security.models.annotations.ValidPasswordPattern;
 import com.google.gson.annotations.Expose;
@@ -31,76 +30,82 @@ public class UserDto {
     public interface UpdatePassword extends Exist {
     }
 
-    @Null(groups = {New.class, Auth.class})
-    @NotNull(groups = {UpdatePassword.class, Exist.class})
     @Expose
-    private Long id;
+    private @Null(groups = {New.class, Auth.class}) @NotNull(groups = {UpdatePassword.class, Exist.class}) Long id;
 
-    @NotNull(groups = {New.class, Auth.class})
-    @Null(groups = {UpdatePassword.class})
     @Expose
-    @Email
-    private String email;
+    private @NotNull(groups = {New.class, Auth.class}) @Null(groups = UpdatePassword.class) @Email String email;
 
-    @NotNull(groups = {New.class, UpdatePassword.class, Auth.class})
     @ValidPasswordPattern(groups = {New.class, UpdatePassword.class})
-    private String password;
+    private @NotNull(groups = {New.class, UpdatePassword.class, Auth.class}) String password;
 
-    @NotNull(groups = {New.class, UpdatePassword.class})
-    @Null(groups = {Auth.class})
-    private String matchingPassword;
+    private @NotNull(groups = {New.class, UpdatePassword.class}) @Null(groups = Auth.class) String matchingPassword;
 
-    @Null
-    private transient String verificationCode;
+    private transient @Null String verificationCode;
 
-    @Null
-    private transient long creationTime;
+    private transient @Null long creationTime;
+
+    private transient @Null long verificationId;
 
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
-    public void setPassword(final String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
     public String getMatchingPassword() {
-        return this.matchingPassword;
+        return matchingPassword;
     }
 
-    public void setMatchingPassword(final String matchingPassword) {
+    public void setMatchingPassword(String matchingPassword) {
         this.matchingPassword = matchingPassword;
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     public String getEmail() {
-        return this.email;
+        return email;
     }
 
-    public void setEmail(final String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
     public String getVerificationCode() {
-        return this.verificationCode;
+        return verificationCode;
     }
 
-    public void setVerificationCode(final String verificationCode) {
+    public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
     }
 
-    public long getCreationTime() {
-        return this.creationTime;
+    public void setVerificationCode(VerificationCode code) {
+        this.setVerificationId(code.getId());
+        this.setVerificationCode(code.getCode());
+        this.setCreationTime(code.getCreationtime());
     }
 
-    public void setCreationTime(final long creationTime) {
+    public long getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(long creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public long getVerificationId() {
+        return verificationId;
+    }
+
+    public void setVerificationId(long verificationId) {
+        this.verificationId = verificationId;
     }
 }

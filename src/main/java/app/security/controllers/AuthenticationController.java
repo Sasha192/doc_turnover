@@ -62,14 +62,14 @@ public class AuthenticationController extends JsonSupportController {
     private AuthenticationManager authManager;
 
     @Autowired
-    public AuthenticationController(IUserService userService,
-                                    DefaultPasswordEncoder encoder,
-                                    VerificationMailTemplater templater,
-                                    IMailService mailService,
-                                    ExecutionService executionService) {
+    public AuthenticationController(final IUserService userService,
+                                    final DefaultPasswordEncoder encoder,
+                                    final VerificationMailTemplater templater,
+                                    final IMailService mailService,
+                                    final ExecutionService executionService) {
         this.userService = userService;
         this.encoder = encoder;
-        verificationMailTemplater = templater;
+        this.verificationMailTemplater = templater;
         this.mailService = mailService;
         this.executionService = executionService;
     }
@@ -80,18 +80,24 @@ public class AuthenticationController extends JsonSupportController {
     }
 
     @RequestMapping("/logout")
-    public void logout(final HttpServletRequest req, final HttpServletResponse res)
+    public void logout(HttpServletRequest req, HttpServletResponse res)
             throws IOException {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-        AuthenticationController.removeCookies(req, res);
-        logoutHandler.logout(req, res, authentication);
+        this.cleanData(req, res);
         res.sendRedirect("/auth");
     }
 
-    private static void removeCookies(final HttpServletRequest req, final HttpServletResponse res) {
-        final Cookie[] cookies = req.getCookies();
-        for (final Cookie cookie : cookies) {
+    private void cleanData(final HttpServletRequest req, final HttpServletResponse res) {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context == null ? null :
+                context.getAuthentication();
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        AuthenticationController.removeCookies(req, res);
+        logoutHandler.logout(req, res, authentication);
+    }
+
+    private static void removeCookies(HttpServletRequest req, HttpServletResponse res) {
+        Cookie[] cookies = req.getCookies();
+        for (Cookie cookie : cookies) {
             cookie.setValue(null);
             cookie.setMaxAge(0);
             cookie.setSecure(true);
@@ -102,99 +108,127 @@ public class AuthenticationController extends JsonSupportController {
     }
 
     @PostMapping("/verify")
-    public void verify(@RequestParam("verificationCode") final String verificationCode,
-                       final HttpServletRequest request, final HttpServletResponse res)
+    public void verify(@RequestParam("verificationCode") String verificationCode,
+                       HttpServletRequest request, HttpServletResponse res)
             throws IOException {
         final HttpSession session = request.getSession();
-        if (session == null) {
-            this.sendDefaultJson(res, false, "Session expired");
-        }
-        final Object o = session.getAttribute(AuthenticationController.TABLE_USER);
-        if (o == null) {
-            this.sendDefaultJson(res, false, "Session expired. Try again");
-        }
-        if (!(o instanceof UserDto)) {
-            AuthenticationController.LOGGER.debug("SHIT! session.getAttribute(TABLE_USER) in "
-                    + AuthenticationController.class
-                    + " get NOT UserDto");
-        }
-        {
-            final UserDto dto = (UserDto) o;
+        final UserDto dto = this.retrieveUserDto(session, res, request);
+        if (dto != null) {
             if (!dto.getVerificationCode().equals(verificationCode)) {
-                this.sendDefaultJson(res, false, "Wrong verification code");
+                sendDefaultJson(res, false, "Wrong verification code");
+                return;
             }
-            final VerificationCode code = this.retrieveVerificationCode(this.getVerificationKey(dto));
-            // defendinf from csrd
+            VerificationCode code = retrieveVerificationCode(this.getVerificationKey(dto));
             if (code != null) {
                 if (AuthenticationController.EXPIRATION_TIME < System.currentTimeMillis() - code.getCreationtime()) {
-                    AuthenticationController.verificationTable.remove(this.getVerificationKey(dto));
-                    this.sendDefaultJson(res, false,
+                    this.cleanData(request, res);
+                    AuthenticationController.verificationTable.remove(getVerificationKey(dto));
+                    sendDefaultJson(res, false,
                             "Verification code expired. Please perform new verification code");
                 }
-                session.invalidate();
-                final CustomUser customUser = new CustomUser(dto, this.encoder);
+                CustomUser customUser = new CustomUser(dto, encoder);
                 customUser.setEnabled(true);
-                this.userService.create(customUser);
-                AuthenticationController.verificationTable.remove(this.getVerificationKey(dto));
-                this.removeVerificationCode(this.getVerificationKey(dto));
-                this.auth(res, request, dto);
+                userService.create(customUser);
+                removeVerificationCode(getVerificationKey(dto));
+                auth(res, request, dto);
             } else {
-                this.sendDefaultJson(res, false, "You do not pass verification");
+                sendDefaultJson(res, false, "You do not pass verification");
+                return;
             }
+        } else {
+            AuthenticationController.LOGGER.debug("SHIT! session.getAttribute(TABLE_USER) in "
+                    + AuthenticationController.class
+                    + " get NOT UserDto OR Something go wrong");
+            sendDefaultJson(res, false, "Something go wrong");
+            return;
         }
     }
 
-    private void removeVerificationCode(final String verificationKey) {
-        final long id = verificationKey.hashCode();
-        final VerificationCode code = AuthenticationController.verificationTable.remove(id);
+    private void removeVerificationCode(String verificationKey) {
+        long id = verificationKey.hashCode();
+        VerificationCode code = AuthenticationController.verificationTable.remove(id);
         if (code == null) {
-            this.userService.removeVerificationCode(id);
+            userService.removeVerificationCode(id);
         }
     }
 
-    private VerificationCode retrieveVerificationCode(final String verificationKey) {
-        final long id = verificationKey.hashCode();
+    private VerificationCode retrieveVerificationCode(String verificationKey) {
+        long id = verificationKey.hashCode();
         VerificationCode code = AuthenticationController.verificationTable.get(id);
         if (code == null) {
-            code = this.userService.retrieveVerificationCode(id);
+            code = userService.retrieveVerificationCode(id);
         }
         return code;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/reg")
     public void firstStepRegistration(@Validated(UserDto.New.class)
-                                      @RequestBody final UserDto userDto,
-                                      final HttpServletRequest req,
-                                      final HttpServletResponse res) {
-        if (this.userService.retrieveByName(userDto.getEmail()) != null) {
-            this.sendDefaultJson(res, false, "User with such email is already exist");
+                                      @RequestBody UserDto userDto,
+                                      HttpServletRequest req,
+                                      HttpServletResponse res)
+            throws IOException {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            this.cleanData(req, res);
         }
-        final VerificationCode code = new VerificationCode();
-        code.setCode(VerificationCodeUtil.generate());
-        code.setId(this.getVerificationKey(userDto));
-        this.registerVerificationCode(code);
-        final String html = userDto.getVerificationCode();
-        this.executionService.pushTask(new ExecutionService
-                .MailSender(this.mailService, userDto.getEmail(), html));
-        final HttpSession session = req.getSession(true);
-        session.setAttribute(AuthenticationController.TABLE_USER, userDto);
-        this.sendDefaultJson(res, false, "success");
+        if (userService.retrieveByName(userDto.getEmail()) != null) {
+            sendDefaultJson(res, false, "User with such email is already exist");
+        }
+        this.createVerificationCode(userDto);
+        this.sendVerificationCode(userDto, req, res);
         // @TODO : verificationMailTemplater.render(user.getVerificationCode());
-        // @TODO : add VerificationCode if table.size() < 100 othrewise -> to special db_tableb
-        // @TODO : checking for expired codes -> and removing then
     }
 
-    private void registerVerificationCode(final VerificationCode code) {
+    private void sendVerificationCode(final UserDto userDto, final HttpServletRequest req, final HttpServletResponse res) {
+        String html = userDto.getVerificationCode();
+        executionService.pushTask(new ExecutionService
+                .MailSender(mailService, userDto.getEmail(), html));
+        HttpSession session = req.getSession(true);
+        session.setAttribute(AuthenticationController.TABLE_USER, userDto);
+        sendDefaultJson(res, true, "success");
+    }
+
+    private void createVerificationCode(final UserDto userDto) {
+        VerificationCode code = new VerificationCode();
+        code.setCode(VerificationCodeUtil.generate());
+        code.setId(getVerificationKey(userDto));
+        registerVerificationCode(code);
+        userDto.setVerificationCode(code);
+    }
+
+    private UserDto retrieveUserDto(final HttpSession session,
+                                    final HttpServletResponse res,
+                                    final HttpServletRequest req)
+            throws IOException {
+        if (session == null) {
+            sendDefaultJson(res, false, "Session expired");
+            return null;
+        }
+        Object o = session.getAttribute(AuthenticationController.TABLE_USER);
+        if (o == null) {
+            this.logout(req, res);
+            sendDefaultJson(res, false, "Session expired. Try again");
+            return null;
+        }
+        if (o instanceof UserDto) {
+            return (UserDto) o;
+        }
+        return null;
+    }
+
+    private void registerVerificationCode(VerificationCode code) {
+        // @TODO : Attack on Denial of Service;
+        // @TODO : Attack on collision ???
         if (AuthenticationController.verificationTable.size() < 100) {
             AuthenticationController.verificationTable.put(code.getId(), code);
         } else {
-            this.cleanVerificationTable();
-            this.userService.registerVerificationCode(code);
+            cleanVerificationTable();
+            userService.registerVerificationCode(code);
         }
     }
 
     private void cleanVerificationTable() {
-        for (final Map.Entry<Long, VerificationCode> entry : AuthenticationController.verificationTable.entrySet()) {
+        for (Map.Entry<Long, VerificationCode> entry : verificationTable.entrySet()) {
             VerificationCode code = null;
             if ((code = entry.getValue()) != null) {
                 if (AuthenticationController.EXPIRATION_TIME > System.currentTimeMillis() - code.getCreationtime()) {
@@ -204,33 +238,36 @@ public class AuthenticationController extends JsonSupportController {
         }
     }
 
-    @PostMapping(value = "auth", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void auth(@Validated(UserDto.Auth.class)
-                     @RequestBody final UserDto userDto,
-                     final HttpServletResponse res,
-                     final HttpServletRequest req)
-            throws IOException {
-        this.auth(res, req, userDto);
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void authFirstStep(@Validated(UserDto.Auth.class)
+                              @RequestBody UserDto userDto,
+                              HttpServletResponse res,
+                              HttpServletRequest req) {
+        this.createVerificationCode(userDto);
+        this.sendVerificationCode(userDto, req, res);
     }
 
-    private void auth(final HttpServletResponse res,
-                      final HttpServletRequest request,
-                      final UserDto dto) throws IOException {
-        final UsernamePasswordAuthenticationToken authReq
+    private void auth(HttpServletResponse res,
+                      HttpServletRequest request,
+                      UserDto dto) throws IOException {
+        HttpSession session = request.getSession();
+        if (session != null) {
+            this.cleanData(request, res);
+        }
+        UsernamePasswordAuthenticationToken authReq
                 = new UsernamePasswordAuthenticationToken(
                 dto.getEmail(), dto.getPassword());
-        final Authentication auth = this.authManager.authenticate(authReq);
-        final SecurityContext sc = SecurityContextHolder.getContext();
+        Authentication auth = authManager.authenticate(authReq);
+        SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
-        final HttpSession session = request.getSession(true);
+        session = request.getSession(true);
         session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 sc);
-        res.sendRedirect("/teamboard");
-        this.sendDefaultJson(res, true, "");
+        res.sendRedirect("/archive");
     }
 
-    private String getVerificationKey(final UserDto userDto) {
+    private String getVerificationKey(UserDto userDto) {
         return userDto.getVerificationCode().concat(userDto.getEmail());
     }
 }

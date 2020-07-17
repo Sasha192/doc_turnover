@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthenticationExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ModelAndView handleError(final HttpServletRequest req, final Exception ex) {
-        final ModelAndView mav = new ModelAndView();
+    public ModelAndView handleError(HttpServletRequest req, Exception ex) {
+        ModelAndView mav = new ModelAndView();
         mav.addObject("msg", ex.getMessage());
         mav.addObject("exception_code", 500);
         mav.setViewName("exception");
