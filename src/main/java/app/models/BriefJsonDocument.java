@@ -30,59 +30,81 @@ public class BriefJsonDocument implements Serializable {
     @Column(name = "department_id")
     private Long departmentId;
 
+    @Column(name = "performer_name")
+    private String performerName;
+
+    @Column(name = "department_name")
+    private String departmentName;
+
     public Long getId() {
-        return id;
+        return this.id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
     public Date getDate() {
-        return date;
+        return this.date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(final Date date) {
         this.date = date;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
     public String getExtName() {
-        return extName;
+        return this.extName;
     }
 
-    public void setExtName(String extName) {
+    public void setExtName(final String extName) {
         this.extName = extName;
     }
 
     public Long getTaskCount() {
-        return taskCount;
+        return this.taskCount;
     }
 
-    public void setTaskCount(Long taskCount) {
+    public void setTaskCount(final Long taskCount) {
         this.taskCount = taskCount;
     }
 
     public Long getPerformerId() {
-        return performerId;
+        return this.performerId;
     }
 
-    public void setPerformerId(Long performerId) {
+    public void setPerformerId(final Long performerId) {
         this.performerId = performerId;
     }
 
     public Long getDepartmentId() {
-        return departmentId;
+        return this.departmentId;
     }
 
-    public void setDepartmentId(Long departmentId) {
+    public void setDepartmentId(final Long departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getPerformerName() {
+        return performerName;
+    }
+
+    public void setPerformerName(String performerName) {
+        this.performerName = performerName;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 }

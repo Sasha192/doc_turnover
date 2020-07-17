@@ -16,19 +16,19 @@ public class MainController {
     private IBriefDocumentService service;
 
     @RequestMapping("/archive")
-    public String handler(ModelMap map) {
+    public String handler(final ModelMap map) {
         //map.addAttribute("model_array", service.findAll());
         return "archive";
     }
 
     @RequestMapping("/profile")
-    public String controller2(ModelMap map) {
+    public String controller2(final ModelMap map) {
         // map.addAttribute("model_array", service.findAll());
         return "profile";
     }
 
     @RequestMapping(value = "/auth", method = RequestMethod.GET)
-    public String loginPage(HttpServletResponse response) {
+    public String loginPage(final HttpServletResponse response) {
         return "access";
     }
 }

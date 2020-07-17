@@ -28,3 +28,13 @@ create unique index verification_code_table_id_uindex
 alter table verification_code_table
 	add creation_time bigint not null;
 
+DROP VIEW IF EXISTS json_view_brief_archive_doc;
+CREATE VIEW json_view_brief_archive_doc
+AS
+SELECT bd.id, bd.creation_date, bd.file_name, bd.ext_name, ds.task_counter as task_count,
+       bd.performer_id, perf.department_id AS department_id, perf.name as performer_name,
+       dep.department_name as department_name
+FROM brief_documents bd
+         INNER JOIN doc_statistics ds ON ds.doc_id=bd.id
+         INNER JOIN performers perf ON perf.id=bd.performer_id
+         INNER JOIN departments dep ON dep.id=perf.department_id;
