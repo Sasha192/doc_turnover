@@ -112,7 +112,6 @@ import javax.annotation.PostConstruct;
         final String search = request.getParameter("search");
         final List<BriefJsonDocument> list = this.jsonDocService.findBy(pageId, search, yearInt, monthInt, dayInt);
         final GsonBuilder builder = new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
                 .setPrettyPrinting();
         this.writeToResponse(response, builder, list);
     }

@@ -16,7 +16,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,7 +31,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ComponentScans(value = {
+@ComponentScans({
         @ComponentScan("app.controllers"),
         @ComponentScan("app.security.controllers"),
         @ComponentScan("app.security.utils")
@@ -134,16 +133,18 @@ public class SpringMvcConfiguration
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().and()
                 .authorizeRequests()
-                .antMatchers("/god/admin/*").hasRole("ADMIN")
-                .antMatchers(
+                .antMatchers("/god/admin/**").hasRole("ADMIN")
+                .antMatchers("/anonymous*").anonymous()
+                .antMatchers("/auth/**").permitAll()
+                /*.antMatchers(
                         HttpMethod.GET,
                         "/WEB-INF/views/**", "/static/**", "/*.js", "/*.json", "/*.ico")
-                .permitAll()
+                .permitAll()*/
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/login")
-                .loginProcessingUrl("/auth")
-                .defaultSuccessUrl("/profile", true)
+                .formLogin().loginPage("/auth")
+                .loginProcessingUrl("/auth/perform")
+                .defaultSuccessUrl("/archive", true)
                 //.failureUrl("/denied")
                 .successHandler(defaultAuthenticationSuccessHandler)
                 .failureHandler(defaultAuthenticationFailureHandler)
