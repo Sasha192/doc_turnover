@@ -1,21 +1,51 @@
-import {Insert_Files, Insert_Todos, Insert_Users, validation} from "./modules/form-handler.js"
+import * as service from "./modules/services.js"
+import * as animation from "./modules/animation.js"
 
 // -------------------
 //    Access Module
 // -------------------
 
+import { validation } from "./modules/form-handler.js"
+
 (function () {
 
-    if (window.location.pathname == "/access") {
+    if (window.location.pathname == "/auth") {
         document.querySelector("#login-button").onclick = () => {
-            if (validation($("#login-form"))) {
-                window.location = "/"
+            let data = validation($("#login-form"))
+            if (data) {
+                $(".access-block #confirm.signup").fadeOut(400, () => {
+                    $(".access-block #signup-form").fadeIn(400)
+                    $(".access-block #signup-form .status").html("")
+                })
+                $.post("/auth/login", data, (data) => {
+                    if (!data.success) {
+                        $("#login-form .status").html(data.message)
+                    } else {
+                        $(".access-block #login-form").fadeOut(400, () => {
+                            $(".access-block #confirm.login").fadeIn(400).css("display", "flex")
+                        })
+                    }
+                })
             }
         }
         document.querySelector("#signup-button").onclick = () => {
-            if (validation($("#signup-form"))) {
-                window.location = "/"
+            let data = validation($("#signup-form"))
+            if (data) {
+                $(".access-block #confirm.login").fadeOut(400, () => {
+                    $(".access-block #login-form").fadeIn(400)
+                    $(".access-block #login-form .status").html("")
+                })
+                $.post("/auth/reg", data, (data) => {
+                    if (!data.success) {
+                        $("#signup-form .status").html(data.message)
+                    } else {
+                        $(".access-block #signup-form").fadeOut(400, () => {
+                            $(".access-block #confirm.signup").fadeIn(400).css("display", "flex")
+                        })
+                    }
+                })
             }
+
         }
     }
 
@@ -24,6 +54,10 @@ import {Insert_Files, Insert_Todos, Insert_Users, validation} from "./modules/fo
 // -------------------
 //   Archive Options
 // -------------------
+
+import { Insert_Files } from "./modules/form-handler.js"
+import { Insert_Users } from "./modules/form-handler.js"
+import { Insert_Todos } from "./modules/form-handler.js"
 
 (function () {
     // archive options
@@ -47,9 +81,7 @@ import {Insert_Files, Insert_Todos, Insert_Users, validation} from "./modules/fo
 
                     document.querySelector("#add-NewTodo .performer-list").innerHTML = ""
                     $("#add-NewTodo").modal("show")
-                    status.find(".status-text").html("");
-                    status.css("opacity", "0");
-                    status.find(".status-spinner").removeClass("d-flex").toggle("d-none")
+                    status.find(".status-text").html(""); status.css("opacity", "0"); status.find(".status-spinner").removeClass("d-flex").toggle("d-none")
                 })
 
                 $("#add-NewTodo_btn").on("click", () => {
@@ -78,21 +110,9 @@ import {Insert_Files, Insert_Todos, Insert_Users, validation} from "./modules/fo
                         let dateDeadline_words = document.querySelector("#add-NewTodo .calendar#dateDeadline .date").textContent.replace(",", "").split(" "),
                             dateDeadline = `${dateDeadline_words[1]}.${window.months.findIndex(element => element == dateDeadline_words[0]) + 1}.${dateDeadline_words[2]}`
 
-                        let data = {
-                            name,
-                            dateControl,
-                            dateDeadline,
-                            description,
-                            managerId,
-                            performerList,
-                            docList,
-                            keyWords: [],
-                            status: "New"
-                        }
+                        let data = { name, dateControl, dateDeadline, description, managerId, performerList, docList, keyWords: [], status: "New" }
 
-                        status.find(".status-text").html("");
-                        status.css("opacity", "1");
-                        status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
+                        status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
                         $.post("/archive/doc/upload", data, () => {
                             setTimeout(() => {
@@ -175,9 +195,7 @@ import {Insert_Files, Insert_Todos, Insert_Users, validation} from "./modules/fo
 
                 let data = handle.getData()
 
-                if (data.length < 1) {
-                    return
-                } else {
+                if (data.length < 1) { return } else {
 
                     $("#upload-docs").find(".status").css("opacity", "1")
                     $("#upload-docs").find(".status-spinner").removeClass("d-none").addClass("d-flex")
@@ -220,9 +238,7 @@ import {Insert_Files, Insert_Todos, Insert_Users, validation} from "./modules/fo
             $("#call-ShareDoc").on("click", () => {
                 handle.append(window.archive_Selected_Files)
                 $('#share-docs').modal("show")
-                status.find(".status-text").html("");
-                status.css("opacity", "0");
-                status.find(".status-spinner").removeClass("d-flex").toggle("d-none")
+                status.find(".status-text").html(""); status.css("opacity", "0"); status.find(".status-spinner").removeClass("d-flex").toggle("d-none")
             })
 
             $("#share-docs_btn").on("click", () => {
@@ -244,18 +260,12 @@ import {Insert_Files, Insert_Todos, Insert_Users, validation} from "./modules/fo
                     error("Name must be no more 1024 characters")
                 } else {
 
-                    status.find(".status-text").html("");
-                    status.css("opacity", "1");
-                    status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
+                    status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
                     handle.getData().forEach(obj => {
                         docs.push(obj.id)
                     })
 
-                    let data = {
-                        email: $("#share-docs").find("#recipient").val(),
-                        message: $("#share-docs").find("#message").val(),
-                        docs
-                    }
+                    let data = { email: $("#share-docs").find("#recipient").val(), message: $("#share-docs").find("#message").val(), docs }
                     $.post("/archive/doc/share", docs, (data) => {
 
                     })

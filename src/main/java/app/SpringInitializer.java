@@ -6,9 +6,8 @@ import app.security.utils.AccessDepartment;
 import app.security.utils.AccessGodAdminFilter;
 import app.security.utils.AccessPerformer;
 import app.security.utils.AuthenticationFilter;
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
-
 import javax.servlet.Filter;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class SpringInitializer
         extends AbstractAnnotationConfigDispatcherServletInitializer {

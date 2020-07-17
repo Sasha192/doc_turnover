@@ -1,3 +1,4 @@
+
 // -------------------
 //        Date
 // -------------------
@@ -43,11 +44,13 @@
 // import { insert_toTMyBoard} from "./form-handler.js"
 // import { insert_toTaskTable} from "./form-handler.js"
 
-import {insert_toArchive} from "./form-handler.js"
+import { insert_toArchive } from "./form-handler.js"
 
 (function () {
 
-    $.get("/archive/doc/list", (data) => {
+    if(window.location.pathname == "/archive") {
+
+        $.get("/archive/doc/list?page_id=1", (data) => {
 
         let waitForData = new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -70,6 +73,7 @@ import {insert_toArchive} from "./form-handler.js"
 
         insert_toArchive($(".archive-table"), data)
     })
+    }
 
 })();
 

@@ -10,12 +10,12 @@ body, html, * {
 }
 
 a {
-    color: #34ace0;
+    color:#34ace0;
     transition: .1s;
 }
 
 a:hover {
-    color: #56bae5;
+    color:#56bae5;
     transition: .1s;
 }
 
@@ -104,11 +104,11 @@ a:hover {
 }
 
 .text_success {
-    color: #26de81;
+   color: #26de81;
 }
 
 .text_yellow {
-    color: #ffb142;
+   color: #ffb142;
 }
 
 .text_orange {
@@ -137,27 +137,27 @@ a:hover {
     margin-right: 20px;
 }
 
-.custom-checkbox.default .custom-control-input:checked ~ .custom-control-label::before {
+.custom-checkbox.default .custom-control-input:checked~.custom-control-label::before {
     background-color: #80a9d4;
     border-color: #80a9d4;
 }
 
-.custom-checkbox.danger .custom-control-input:checked ~ .custom-control-label::before {
+.custom-checkbox.danger .custom-control-input:checked~.custom-control-label::before {
     background-color: #ff4959;
     border-color: #ff5d6b;
 }
 
-.custom-checkbox.warning .custom-control-input:checked ~ .custom-control-label::before {
+.custom-checkbox.warning .custom-control-input:checked~.custom-control-label::before {
     background-color: #ffc107;
     border-color: #ffcb2e;
 }
 
-.custom-checkbox.success .custom-control-input:checked ~ .custom-control-label::before {
+.custom-checkbox.success .custom-control-input:checked~.custom-control-label::before {
     background-color: #20c997;
     border-color: #17d29b;
 }
 
-.custom-checkbox.info .custom-control-input:checked ~ .custom-control-label::before {
+.custom-checkbox.info .custom-control-input:checked~.custom-control-label::before {
     background-color: #34ace0;
     border-color: #34ace0;
 }
@@ -180,27 +180,27 @@ a:hover {
     margin-right: 20px;
 }
 
-.custom-radio.default .custom-control-input:checked ~ .custom-control-label::before {
+.custom-radio.default .custom-control-input:checked~.custom-control-label::before {
     background-color: #80a9d4;
     border-color: #80a9d4;
 }
 
-.custom-radio.danger .custom-control-input:checked ~ .custom-control-label::before {
+.custom-radio.danger .custom-control-input:checked~.custom-control-label::before {
     background-color: #ff4959;
     border-color: #ff5d6b;
 }
 
-.custom-radio.warning .custom-control-input:checked ~ .custom-control-label::before {
+.custom-radio.warning .custom-control-input:checked~.custom-control-label::before {
     background-color: #ffc107;
     border-color: #ffcb2e;
 }
 
-.custom-radio.success .custom-control-input:checked ~ .custom-control-label::before {
+.custom-radio.success .custom-control-input:checked~.custom-control-label::before {
     background-color: #20c997;
     border-color: #17d29b;
 }
 
-.custom-radio.info .custom-control-input:checked ~ .custom-control-label::before {
+.custom-radio.info .custom-control-input:checked~.custom-control-label::before {
     background-color: #34ace0;
     border-color: #34ace0;
 }
@@ -423,7 +423,7 @@ a:hover {
     background-color: #ffffff;
     z-index: 999999;
     background-color: rgb(255, 255, 255);
-    box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15) !important;
     border-radius: 1px;
     height: auto;
     min-width: 250px;
@@ -511,7 +511,7 @@ a:hover {
     max-height: 320px;
     padding: 0px 0px;
     top: 40px;
-    box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15) !important;
     background-color: #ffffff;
 }
 

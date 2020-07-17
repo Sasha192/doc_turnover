@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,11 +71,6 @@ public class AuthenticationController extends JsonSupportController {
         this.verificationMailTemplater = templater;
         this.mailService = mailService;
         this.executionService = executionService;
-    }
-
-    @RequestMapping("/")
-    public String authView() {
-        return "access";
     }
 
     @RequestMapping("/logout")

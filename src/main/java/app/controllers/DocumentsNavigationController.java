@@ -41,6 +41,8 @@ public class DocumentsNavigationController extends JsonSupportController {
     private static final String
             FILENOTFOUNDEXCEPTION_WHILE_TRYING_TO_FIND_DOCUMENT_IN_FILESYSTEM_FILENAME =
             "FILENOTFOUNDEXCEPTION WHILE TRYING TO FIND DOCUMENT IN FILESYSTEM. FILENAME = ";
+    private static final String MAX_FILES_UPLOAD = "max_files_upload";
+    private static final String MAX_FILES_DOWNLOAD = "max_files_download";
 
 
     /*private static final String PERF_ATTR = "performer_object".intern();
@@ -119,6 +121,15 @@ import javax.annotation.PostConstruct;
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(@RequestParam("file") final MultipartFile[] mfiles,
                        final HttpServletResponse response) throws IOException {
+        if (mfiles.length > constants.retrieveByName(MAX_FILES_UPLOAD).getIntValue()) {
+            sendDefaultJson(
+                    response, false,
+                    "Too many files. You can upload no more " + constants
+                            .retrieveByName(MAX_FILES_UPLOAD)
+                            .getIntValue()
+            );
+            return;
+        }
         final LocalDate now = LocalDate.now();
         final int year = now.getYear();
         final int month = now.getMonthValue();
@@ -175,6 +186,14 @@ import javax.annotation.PostConstruct;
             method = RequestMethod.GET)
     public void download(@RequestParam("id") final String[] docIds,
                          final HttpServletResponse response) {
+        if (docIds.length > constants.retrieveByName(MAX_FILES_DOWNLOAD).getIntValue()) {
+            sendDefaultJson(
+                    response, false,
+                    "You could not download more than "
+                            + constants.retrieveByName(MAX_FILES_DOWNLOAD).getIntValue()
+            );
+            return;
+        }
         final File[] files = this.retrieveFilesByDocIds(docIds);
         if (files != null) {
             if (files.length == 1) {

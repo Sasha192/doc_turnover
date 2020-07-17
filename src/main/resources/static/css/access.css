@@ -9,12 +9,15 @@ body {
     background-size: cover;
 }
 
+
+
 .default-container {
     position: fixed;
     min-height: 100%;
     width: 100%;
     top: 0;
     left: 0;
+    transition: .2s;
 }
 
 .access-block {
@@ -22,6 +25,7 @@ body {
     box-shadow: 0 0px 5px rgba(0, 0, 0, 0.46);
     background-color: #ffffff;
     position: relative;
+    height: auto;
 }
 
 .access-block .not-active {
@@ -55,6 +59,8 @@ body {
 
 .access-form {
     padding: 60px 60px;
+    display: flex;
+    flex-direction: column;
 }
 
 .access-form .title {
@@ -63,6 +69,15 @@ body {
     text-align: center;
     color: #5bb0cd;
     margin-bottom: 20px;
+}
+
+#forgot_password {
+    transition: .2s;
+    color:#777777
+}
+
+#forgot_password:hover {
+    color:#80a9d4
 }
 
 .access-form .service-item {
@@ -149,4 +164,26 @@ body {
 
 .custom-button:focus {
     outline: none;
+}
+
+#confirm .title {
+    color: #7f7f7f;
+    font-size: 16px;
+}
+
+#confirm .title .email {
+    color: #80a9d4;
+    font-size: 14px;
+}
+
+#confirm {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#confirm .body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

@@ -13,14 +13,17 @@ public class MainController {
     private IBriefDocumentService service;
 
     @RequestMapping("/archive")
-    public String handler(ModelMap map) {
-        //map.addAttribute("model_array", service.findAll());
+    public String archiveMap(ModelMap map) {
         return "archive";
     }
 
     @RequestMapping("/profile")
-    public String controller2(ModelMap map) {
-        // map.addAttribute("model_array", service.findAll());
+    public String profileMap(ModelMap map) {
         return "profile";
+    }
+
+    @RequestMapping("/auth")
+    public String authMap(ModelMap map) {
+        return "access";
     }
 }

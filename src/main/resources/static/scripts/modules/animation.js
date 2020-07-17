@@ -1,3 +1,4 @@
+
 // -------------------
 //     Scroll bar
 // -------------------
@@ -105,7 +106,7 @@
             calendar.classList.remove("droped")
             $(calendar).find(".body").fadeOut(150)
         })
-
+        
         $(".drop-down_list").each((index, dropList) => {
             dropList.closest(".drop-down").classList.remove("droped")
             $(dropList).fadeOut(150)

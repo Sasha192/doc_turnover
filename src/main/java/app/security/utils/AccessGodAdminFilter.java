@@ -2,6 +2,7 @@ package app.security.utils;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -24,21 +25,23 @@ public class AccessGodAdminFilter extends GenericFilterBean {
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
             String requestUri = req.getRequestURI();
-            Authentication authentication = SecurityContextHolder
-                    .getContext()
-                    .getAuthentication();
-            final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            if (authentication.isAuthenticated()) {
-                if (requestUri.matches("\\/god\\/admin.*")) {
-                    for (final GrantedAuthority authority : authorities) {
-                        if (authority.getAuthority().equals("ROLE_ADMIN")) {
-                            filterChain.doFilter(servletRequest, servletResponse);
+            SecurityContext context = SecurityContextHolder.getContext();
+            if (context != null) {
+                Authentication authentication = context.getAuthentication();
+                if (authentication != null && authentication.isAuthenticated()) {
+                    final Collection<? extends GrantedAuthority> authorities =
+                            authentication.getAuthorities();
+                    if (requestUri.matches("\\/god\\/admin.*")) {
+                        for (final GrantedAuthority authority : authorities) {
+                            if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                                filterChain.doFilter(servletRequest, servletResponse);
+                                return;
+                            }
+                        }
+                        if (servletResponse instanceof HttpServletResponse) {
+                            ((HttpServletResponse) servletResponse).sendRedirect("/access/denied");
                             return;
                         }
-                    }
-                    if (servletResponse instanceof HttpServletResponse) {
-                        ((HttpServletResponse) servletResponse).sendRedirect("/access/denied");
-                        return;
                     }
                 }
             }

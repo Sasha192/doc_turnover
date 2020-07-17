@@ -1,3 +1,4 @@
+
 // -------------------
 //   Files Handler
 // -------------------
@@ -56,7 +57,7 @@ class Insert_Files {
 
 }
 
-export {Insert_Files}
+export { Insert_Files }
 
 class Insert_Users {
 
@@ -104,12 +105,9 @@ class Insert_Users {
                 this.performerList.append(user)
 
                 user.querySelector(".dismiss").onclick = (e) => {
-                    let drop_Item = document.createElement("div");
-                    drop_Item.classList.add("drop-down_item");
-                    drop_Item.append(e.target.closest(".user"))
+                    let drop_Item = document.createElement("div"); drop_Item.classList.add("drop-down_item"); drop_Item.append(e.target.closest(".user"))
                     $(e.target.closest(".dismiss")).remove()
-                    this.userList.append(drop_Item);
-                    this.reload()
+                    this.userList.append(drop_Item); this.reload()
                 }
 
 
@@ -129,7 +127,7 @@ class Insert_Users {
 
 }
 
-export {Insert_Users}
+export { Insert_Users }
 
 class Insert_Todos {
 
@@ -183,12 +181,9 @@ class Insert_Todos {
 
                 {
                     if (this.insert_list.find(".board-item").length > 0) {
-                        let drop_Item = document.createElement("div");
-                        drop_Item.classList.add("drop-down_item");
-                        $(drop_Item).append(this.insert_list.find(".board-item"))
+                        let drop_Item = document.createElement("div"); drop_Item.classList.add("drop-down_item"); $(drop_Item).append(this.insert_list.find(".board-item"))
                         $(drop_Item).find(".dismiss").remove()
-                        this.todo_list.append(drop_Item);
-                        this.reload()
+                        this.todo_list.append(drop_Item); this.reload()
                     }
                 }
 
@@ -196,12 +191,9 @@ class Insert_Todos {
                 this.insert_list.append(todo)
 
                 todo.querySelector(".dismiss").onclick = (e) => {
-                    let drop_Item = document.createElement("div");
-                    drop_Item.classList.add("drop-down_item");
-                    drop_Item.append(e.target.closest(".board-item"))
+                    let drop_Item = document.createElement("div"); drop_Item.classList.add("drop-down_item"); drop_Item.append(e.target.closest(".board-item"))
                     $(e.target.closest(".dismiss")).remove()
-                    this.todo_list.append(drop_Item);
-                    this.reload()
+                    this.todo_list.append(drop_Item); this.reload()
                 }
 
             }
@@ -220,7 +212,7 @@ class Insert_Todos {
 
 }
 
-export {Insert_Todos}
+export { Insert_Todos }
 
 // -------------------
 //   Archive Handler
@@ -326,7 +318,7 @@ function selection_files() {
     })
 }
 
-export {insert_toArchive}
+export { insert_toArchive }
 
 // ------------------------------
 //    Access module Validation 
@@ -341,28 +333,39 @@ function validation(form) {
     const error = (text) => {
         status.html(text)
         status.css("opacity", "1")
-        return false
     }
 
     if (email == "" || email == " ") {
         error("Please enter e-mail")
         return false
     } else {
-        if (!window.emailValid.test(email)) error("Email format invalid")
+        if (!window.emailValid.test(email)) {
+            error("Email format invalid")
+            return false
+        }
     }
 
-    if (password == "" || password == " ") error("Please enter password")
-    if (password.length < 6) error("Password must be at least 8 characters")
+    if (password == "" || password == " ") {
+        error("Please enter password")
+        return false
+    }
+    if (password.length < 8) {
+        error("Password must be at least 8 characters")
+        return false
+    }
 
     if (form.find(".repeat-password").length == 1) {
-        if (password !== form.find(".repeat-password").val()) error("Password must be at least 8 characters")
+        if (password !== form.find(".repeat-password").val()) {
+            error("Passwords do not match")
+            return false
+        }
     }
 
-    return {email, password, remember: true}
+    return { email, password, remember: true }
 
 }
 
-export {validation}
+export { validation }
 
 // ------------------------------
 //           Calendar

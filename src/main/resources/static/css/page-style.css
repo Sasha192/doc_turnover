@@ -394,36 +394,29 @@ body {
     .wrapper {
         padding: 60px 0px;
     }
-
     .option-menu {
         flex-direction: row;
         top: 0;
         padding: 15px 10px;
         width: 100%;
     }
-
     .option-menu .option-item {
         margin: 0 5px;
     }
-
     .option-menu.avatar {
         right: 0;
     }
-
     .padding-block {
         display: none;
     }
-
     .responsive-navbar-menu .bar-block {
         flex-direction: column;
         display: none;
         position: relative;
     }
-
     .board {
         margin: 0px 0px;
     }
-
     .board:not(:last-child) {
         margin: 0px 15px;
     }
