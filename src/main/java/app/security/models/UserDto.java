@@ -4,17 +4,10 @@ import app.models.VerificationCode;
 import app.security.models.annotations.FieldsValueMatch;
 import app.security.models.annotations.ValidPasswordPattern;
 import com.google.gson.annotations.Expose;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
-@FieldsValueMatch(
-        field = "password",
-        fieldMatch = "matchingPassword",
-        message = "Passwords do not match!",
-        groups = {UserDto.New.class, UserDto.UpdatePassword.class}
-)
 public class UserDto {
 
     public interface New {
@@ -39,7 +32,7 @@ public class UserDto {
     @ValidPasswordPattern(groups = {New.class, UpdatePassword.class})
     private @NotNull(groups = {New.class, UpdatePassword.class, Auth.class}) String password;
 
-    private @NotNull(groups = {New.class, UpdatePassword.class}) @Null(groups = Auth.class) String matchingPassword;
+    private @NotNull Boolean remember;
 
     private transient @Null String verificationCode;
 
@@ -53,14 +46,6 @@ public class UserDto {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getMatchingPassword() {
-        return matchingPassword;
-    }
-
-    public void setMatchingPassword(String matchingPassword) {
-        this.matchingPassword = matchingPassword;
     }
 
     public Long getId() {
@@ -107,5 +92,13 @@ public class UserDto {
 
     public void setVerificationId(long verificationId) {
         this.verificationId = verificationId;
+    }
+
+    public Boolean getRemember() {
+        return this.remember;
+    }
+
+    public void setRemember(final Boolean remember) {
+        this.remember = remember;
     }
 }

@@ -155,7 +155,7 @@ public class AuthenticationController extends JsonSupportController {
         return code;
     }
 
-    @PostMapping("/reg")
+    @PostMapping(value = "/reg", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void firstStepRegistration(@Validated(UserDto.New.class)
                                       @RequestBody UserDto userDto,
                                       HttpServletRequest req,

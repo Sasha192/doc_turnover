@@ -35,13 +35,27 @@ import { validation } from "./modules/form-handler.js"
                     $(".access-block #login-form").fadeIn(400)
                     $(".access-block #login-form .status").html("")
                 })
-                $.post("/auth/reg", data, (data) => {
-                    if (!data.success) {
-                        $("#signup-form .status").html(data.message)
-                    } else {
-                        $(".access-block #signup-form").fadeOut(400, () => {
-                            $(".access-block #confirm.signup").fadeIn(400).css("display", "flex")
-                        })
+                console.log(data)
+                $.ajax
+                ({
+                    type: "POST",
+                    //the url where you want to sent the userName and password to
+                    url: '/auth/reg',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    async: false,
+                    //json object to sent to the authentication url
+                    data: data,
+                    success: function (data) {
+
+                        if (!data.success) {
+                            $("#signup-form .status").html(data.message)
+                        } else {
+                            $(".access-block #signup-form").fadeOut(400, () => {
+                                $(".access-block #confirm.signup").fadeIn(400).css("display", "flex")
+                            })
+                        }
+
                     }
                 })
             }

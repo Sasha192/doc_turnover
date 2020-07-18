@@ -52,7 +52,7 @@
 
 (function () {
 
-    if (window.location.pathname == "/access") {
+    if (window.location.pathname == "/auth") {
         let state = "signUp",
             stateBlock = $(".state-change")
 
