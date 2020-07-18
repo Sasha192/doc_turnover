@@ -34,11 +34,11 @@ public class UserDto {
 
     private @NotNull Boolean remember;
 
-    private transient @Null String verificationCode;
+    private transient String verificationCode;
 
-    private transient @Null long creationTime;
+    private transient long creationTime;
 
-    private transient @Null long verificationId;
+    private transient long verificationId;
 
     public String getPassword() {
         return password;

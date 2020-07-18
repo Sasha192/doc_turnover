@@ -10,6 +10,13 @@ import app.security.utils.VerificationCodeUtil;
 import app.security.utils.VerificationMailTemplater;
 import app.service.extapis.IMailService;
 import app.service.impl.ExecutionService;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,13 +33,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/auth")
@@ -185,9 +185,9 @@ public class AuthenticationController extends JsonSupportController {
     private void createVerificationCode(final UserDto userDto) {
         VerificationCode code = new VerificationCode();
         code.setCode(VerificationCodeUtil.generate());
-        code.setId(getVerificationKey(userDto));
-        registerVerificationCode(code);
+        code.setId(getVerificationKey(code, userDto));
         userDto.setVerificationCode(code);
+        registerVerificationCode(code);
     }
 
     private UserDto retrieveUserDto(final HttpSession session,
@@ -261,7 +261,14 @@ public class AuthenticationController extends JsonSupportController {
         res.sendRedirect("/archive");
     }
 
+    private String getVerificationKey(VerificationCode code, UserDto userDto) {
+        return code.getCode().concat(userDto.getEmail());
+    }
+
     private String getVerificationKey(UserDto userDto) {
-        return userDto.getVerificationCode().concat(userDto.getEmail());
+        if (userDto.getVerificationCode() != null) {
+            return userDto.getVerificationCode().concat(userDto.getEmail());
+        }
+        return null;
     }
 }
