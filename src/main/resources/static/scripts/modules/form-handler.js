@@ -12,7 +12,6 @@ class Insert_Files {
 
     append(files) {
         this.data = [...files]
-        this.container.html("")
         this.data.forEach(element => {
             this.container.append(`
             <div class="file" file-id="${element.id}">
@@ -50,9 +49,7 @@ class Insert_Files {
     }
 
     getData() {
-
         return this.data
-
     }
 
 }
@@ -142,7 +139,7 @@ class Insert_Todos {
         data.forEach(todo => {
             this.todo_list.append(`
             <div class="drop-down_item">
-                <div class="board-item ${todo.status}" todo-id=""${todo.todoId}>
+                <div class="board-item ${todo.status}" todo-id="${todo.todoId}">
                     <div class="board-item_content">
                         <img src="img/avatars/4.jpg" alt="">
                         <div>
@@ -201,13 +198,9 @@ class Insert_Todos {
     }
 
     getData() {
-        let data = []
 
-        this.insert_list.find(".board-item").each((i, todo) => {
-            data.push(todo.getAttribute("todo-id"))
-        })
+        return this.insert_list.find(".board-item").attr("todo-id")
 
-        return data
     }
 
 }

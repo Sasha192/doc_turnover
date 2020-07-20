@@ -24,6 +24,6 @@ public class MainController {
 
     @RequestMapping("/auth")
     public String authMap(ModelMap map) {
-        return "access";
+        return "auth";
     }
 }

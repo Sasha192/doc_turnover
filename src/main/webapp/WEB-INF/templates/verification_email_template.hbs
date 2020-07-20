@@ -3,29 +3,29 @@
 
 <head>
     {{> static_head_module}}
+    <link rel="stylesheet" href="css/verification.css">
 </head>
 
 <body>
 
-{{> static_modals_module}}
+    <div class="wrapper">
+        <div class="main-container">
+            <div class="verification_code">
+                <div class="verification_text">
+                    Your verification code
+                </div>
+                {{verification_code}}
+            </div>
+        </div>
+    </div>
 
-{{> static_navBar_module}}
-
-<table class="archive-table">
-    <thead>
-    <th>Date</th>
-    <th>Name</th>
-    <th>Department</th>
-    <th>Performer</th>
-    <th></th>
-    </thead>
-    <tbody>
-
-    </tbody>
-</table>
-
-{{> static_bodyScripts_module}}
-
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <script type="module" src="scripts/main.js"></script>
 </body>
 
 </html>

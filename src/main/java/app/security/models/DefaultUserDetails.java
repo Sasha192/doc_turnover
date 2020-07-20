@@ -2,14 +2,14 @@ package app.security.models;
 
 import app.models.CustomUser;
 import app.models.Department;
+import app.models.Performer;
 import com.google.common.base.Preconditions;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public class DefaultUserDetails implements UserDetails {
 
@@ -28,7 +28,13 @@ public class DefaultUserDetails implements UserDetails {
         this.setPassword(customUser.getPassword());
         this.setUserName(customUser.getEmail());
         this.setEnabled(customUser.isEnabled());
-        this.setDepartment(customUser.getPerformer().getDepartment());
+        Performer performer = customUser.getPerformer();
+        if (performer != null) {
+            Department department = performer.getDepartment();
+            if (department != null) {
+                this.setDepartment(department);
+            }
+        }
         for (final SimpleRole role : customUser.getRoles()) {
             switch (role) {
                 case USER: {

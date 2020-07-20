@@ -5,7 +5,7 @@ import app.security.utils.DefaultAuthenticationFailureHandler;
 import app.security.utils.DefaultAuthenticationSuccessHandler;
 import app.security.utils.DefaultPasswordEncoder;
 import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.FileTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver;
 import org.apache.log4j.Logger;
@@ -109,7 +109,7 @@ public class SpringMvcConfiguration
 
     @Bean("for.email.template")
     public Handlebars forEmailTemplate() {
-        final TemplateLoader loader = new ClassPathTemplateLoader("/WEB-INF/templates", ".hbs");
+        final TemplateLoader loader = new FileTemplateLoader("/home/kolmogorov/Java_Practice/bcrew/doc_turnover/src/main/webapp/WEB-INF/views", ".hbs");
         // verification_email_template.hbs
         return new Handlebars(loader);
     }

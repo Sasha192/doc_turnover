@@ -17,15 +17,37 @@ import { validation } from "./modules/form-handler.js"
                     $(".access-block #signup-form").fadeIn(400)
                     $(".access-block #signup-form .status").html("")
                 })
-                $.post("/auth/login", data, (data) => {
-                    if (!data.success) {
-                        $("#login-form .status").html(data.message)
-                    } else {
-                        $(".access-block #login-form").fadeOut(400, () => {
-                            $(".access-block #confirm.login").fadeIn(400).css("display", "flex")
-                        })
-                    }
+
+                let confirmBlock = $(".access-block #confirm.login")
+
+                confirmBlock.find("#confirm-button").on("click", () => {
+                    let confirmCode = confirmBlock.find(".confirm").val()
+
+                    $.post(`/auth/verify?verificationCode=${confirmCode}`, (data) => {
+                        if (data.success) {
+                            window.location = "/"
+                        }
+                    })
+
                 })
+
+                $.ajax({
+                    type: "POST",
+                    url: "/auth/login",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (data) {
+                        if (!data.success) {
+                            $("#login-form .status").html(data.msg)
+                            $("#login-form .status").css("opacity", "1")
+                        } else {
+                            $(".access-block #login-form").fadeOut(400, () => {
+                                confirmBlock.fadeIn(400).css("display", "flex")
+                            })
+                        }
+                    }
+                });
             }
         }
         document.querySelector("#signup-button").onclick = () => {
@@ -35,20 +57,37 @@ import { validation } from "./modules/form-handler.js"
                     $(".access-block #login-form").fadeIn(400)
                     $(".access-block #login-form .status").html("")
                 })
-                console.log(data)
 
-                let newData = JSON.stringify(data)
+                let confirmBlock = $(".access-block #confirm.signup")
+                confirmBlock.find("#confirm-button").on("click", () => {
+                    let confirmCode = confirmBlock.find(".confirm").val()
+
+                    $.post(`/auth/verify?verificationCode=${confirmCode}`, (data) => {
+                        if (data.success) {
+                            window.location = "/"
+                        }
+                    })
+
+                })
 
                 $.ajax({
                     type: "POST",
                     url: "/auth/reg",
-                    data:newData ,
+                    data: JSON.stringify(data),
                     contentType: "application/json",
                     dataType: "json",
-                    success: function(data){
-                        alert(data)
+                    success: function (data) {
+                        if (!data.success) {
+                            $("#signup-form .status").html(data.msg)
+                            $("#signup-form .status").css("opacity", "1")
+                        } else {
+                            $(".access-block #signup-form").fadeOut(400, () => {
+                                confirmBlock.fadeIn(400).css("display", "flex")
+                            })
+                        }
                     }
                 });
+
             }
 
         }
@@ -91,8 +130,8 @@ import { Insert_Todos } from "./modules/form-handler.js"
 
                 $("#add-NewTodo_btn").on("click", () => {
 
-                    let name = $("#add-NewTodo #name").val(),
-                        description = $("#add-NewTodo #description").val(),
+                    let name = $("#add-NewTodo #name").val().trim(),
+                        description = $("#add-NewTodo #description").val().trim(),
                         performerList = usersHandle.getData(),
                         docList = filesHandle.getData(),
                         managerId = "1-23980123ialskdlasdas"
@@ -113,15 +152,15 @@ import { Insert_Todos } from "./modules/form-handler.js"
                             dateControl = `${dateControl_words[1]}.${window.months.findIndex(element => element == dateControl_words[0]) + 1}.${dateControl_words[2]}`
 
                         let dateDeadline_words = document.querySelector("#add-NewTodo .calendar#dateDeadline .date").textContent.replace(",", "").split(" "),
-                            dateDeadline = `${dateDeadline_words[1]}.${window.months.findIndex(element => element == dateDeadline_words[0]) + 1}.${dateDeadline_words[2]}`
+                            deadline = `${dateDeadline_words[1]}.${window.months.findIndex(element => element == dateDeadline_words[0]) + 1}.${dateDeadline_words[2]}`
 
-                        let data = { name, dateControl, dateDeadline, description, managerId, performerList, docList, keyWords: [], status: "New" }
+                        let data = { name, dateControl, deadline, description, managerId, performerList, docList, keyWords: [], status: "New" }
 
                         status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
-                        $.post("/archive/doc/upload", data, () => {
+                        $.post("/archive/doc/upload", JSON.stringify(data), () => {
                             setTimeout(() => {
-                                window.location = window.location
+                                // window.location = window.location
                             }, 2000)
                         })
 
@@ -133,9 +172,6 @@ import { Insert_Todos } from "./modules/form-handler.js"
 
             }
 
-            $("#addExistingTodo").on("click", () => {
-                // ... some code
-            })
         }
         // add to existing todo
         {
@@ -147,9 +183,35 @@ import { Insert_Todos } from "./modules/form-handler.js"
                 $("#add-ExistingTodo").modal("show")
 
                 filesHandle.append(window.archive_Selected_Files)
-                $.get("/archive/todo/list-new", (data) => {
+                $.get("/archive/todo/list?status=New", (data) => {
                     todosHandle.append(data)
                 })
+            })
+
+            let status = $("#add-ExistingTodo").find(".status")
+
+            $("#add-ExistingTodo #add-ExistingTodo_btn").on("click", () => {
+
+                status.find(".status-text").html(""); status.css("opacity", "0"); status.find(".status-spinner").removeClass("d-flex").addClass("d-none")
+
+                if (!$("#add-ExistingTodo").find(".selected_Todo .board-item").length == 0) {
+                    let data = []
+                    filesHandle.getData().forEach(doc => {
+                        data.push(doc.id)
+                    })
+
+                    status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
+
+                    console.log(JSON.stringify({ docList: data, todoId: todosHandle.getData() }))
+
+                    $.post("/task/modify/doc", JSON.stringify({ docList: data, todoId: todosHandle.getData() }), (data) => {
+
+                    })
+                } else {
+                    status.css("opacity", "1")
+                    status.find(".status-text").html("Please select task")
+                }
+
             })
 
         }
@@ -161,8 +223,9 @@ import { Insert_Todos } from "./modules/form-handler.js"
                 window.archive_Selected_Files.forEach(obj => {
                     data.push(obj.id)
                 })
+
                 console.log(data)
-                $.post("/archive/doc/download", data, (data) => {
+                $.post("/archive/doc/download", JSON.stringify(data), (data) => {
                     alert(data)
                 })
             })
@@ -219,15 +282,15 @@ import { Insert_Todos } from "./modules/form-handler.js"
                         data: formData,
                         success: (data) => {
                             if (data.success == true) {
-                                // $("#upload-docs").find(".status").css("opacity", "0")
-                                // $("#upload-docs").find(".spinner-status").removeClass("d-flex").addClass("d-none")
+                                $("#upload-docs").find(".status").css("opacity", "0")
+                                $("#upload-docs").find(".status-spinner").removeClass("d-flex").addClass("d-none")
                             } else {
                                 // some code...
                             }
                         },
                         complete: () => {
-                            // $("#upload-docs").find(".status").css("opacity", "0")
-                            // $("#upload-docs").find(".spinner-status").removeClass("d-flex").addClass("d-none")
+                            $("#upload-docs").find(".status").css("opacity", "0")
+                            $("#upload-docs").find(".status-spinner").removeClass("d-flex").addClass("d-none")
                         }
                     })
 
@@ -243,7 +306,7 @@ import { Insert_Todos } from "./modules/form-handler.js"
             $("#call-ShareDoc").on("click", () => {
                 handle.append(window.archive_Selected_Files)
                 $('#share-docs').modal("show")
-                status.find(".status-text").html(""); status.css("opacity", "0"); status.find(".status-spinner").removeClass("d-flex").toggle("d-none")
+                status.find(".status-text").html(""); status.css("opacity", "0"); status.find(".status-spinner").removeClass("d-flex").addClass("d-none")
             })
 
             $("#share-docs_btn").on("click", () => {
@@ -271,7 +334,7 @@ import { Insert_Todos } from "./modules/form-handler.js"
                     })
 
                     let data = { email: $("#share-docs").find("#recipient").val(), message: $("#share-docs").find("#message").val(), docs }
-                    $.post("/archive/doc/share", docs, (data) => {
+                    $.post("/archive/doc/share", JSON.stringify(docs), (data) => {
 
                     })
 

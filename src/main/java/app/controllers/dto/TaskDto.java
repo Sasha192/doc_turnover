@@ -2,6 +2,7 @@ package app.controllers.dto;
 
 import java.util.Set;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -16,21 +17,25 @@ public class TaskDto {
     @NotNull
     private String deadLine;
 
-    @NotNull
-    private String priority;
+    private transient String priority;
 
     @NotNull
     private String description;
 
+    @NotNull
     private String[] keyWords;
 
     @NotNull
-    private Long[] performerId;
+    private Long[] performerList;
 
     @NotNull
     private Integer managerId;
 
-    private Long[] docsId;
+    @NotNull
+    private Long[] docList;
+
+    @NotNull
+    private String status;
 
     public String getName() {
         return this.name;
@@ -89,18 +94,18 @@ public class TaskDto {
     }
 
     public long[] getPerformerId() {
-        return ArrayUtils.toPrimitive(this.performerId);
+        return ArrayUtils.toPrimitive(this.performerList);
     }
 
     public void setPerformerId(final Long[] performerId) {
-        this.performerId = performerId;
+        this.performerList = performerId;
     }
 
     public void setPerformerId(final Set<Long> performerIds) {
-        this.performerId = new Long[performerIds.size()];
+        this.performerList = new Long[performerIds.size()];
         int i = 0;
         for (Long val : performerIds) {
-            this.performerId[i++] = val;
+            this.performerList[i++] = val;
         }
     }
 
@@ -113,18 +118,26 @@ public class TaskDto {
     }
 
     public long[] getDocsId() {
-        return ArrayUtils.toPrimitive(this.docsId);
+        return ArrayUtils.toPrimitive(this.docList);
     }
 
     public void setDocsId(final Long[] docsId) {
-        this.docsId = docsId;
+        this.docList = docsId;
     }
 
     public void setDocsId(final Set<Long> docsId) {
-        this.docsId = new Long[docsId.size()];
+        this.docList = new Long[docsId.size()];
         int i = 0;
         for (Long val : docsId) {
-            this.docsId[i++] = val;
+            this.docList[i++] = val;
         }
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(final String status) {
+        this.status = status;
     }
 }

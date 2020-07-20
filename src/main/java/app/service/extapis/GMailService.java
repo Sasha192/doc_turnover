@@ -1,6 +1,7 @@
 package app.service.extapis;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -18,8 +19,12 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class GMailService implements IMailService {
@@ -51,15 +56,17 @@ public class GMailService implements IMailService {
     }
 
     @Override
-    public boolean sendMimeMessage(String to, String subject, String html) {
+    public boolean sendMimeMessage(String to, String subject,
+                                   String html,
+                                   FileSystemResource... resources) {
         try {
             if (to == null) {
                 return false;
             }
-            MimeMessage message = createMimeMessageHelper(to, subject, html);
+            MimeMessage message = createMimeMessageHelper(to, subject, html, resources);
             Transport.send(message);
             return true;
-        } catch (MessagingException e) {
+        } catch (MessagingException | IOException e) {
             ;
         }
         return false;
@@ -95,8 +102,11 @@ public class GMailService implements IMailService {
         multipart.addBodyPart(messageBodyPart);
     }
 
-    private MimeMessage createMimeMessageHelper(String to, String subject, String msg)
-            throws MessagingException {
+    private MimeMessage createMimeMessageHelper(String to,
+                                                String subject,
+                                                String msg,
+                                                FileSystemResource...resources)
+            throws MessagingException, IOException {
         subject = subject == null ? EMPTY_STRING : subject;
         msg = msg == null ? EMPTY_STRING : msg;
         Session session = getSession();
@@ -107,6 +117,11 @@ public class GMailService implements IMailService {
         message.setTo(new InternetAddress(to));
         message.setSubject(subject);
         message.setText(msg, true);
+        if (resources != null) {
+            for (FileSystemResource resource : resources) {
+                message.addInline("email_wallpaper", resource, "image/jpeg");
+            }
+        }
         return mimeMessage;
     }
 

@@ -1,5 +1,6 @@
 package app.security.controllers;
 
+import app.configuration.spring.constants.Constants;
 import app.controllers.JsonSupportController;
 import app.models.CustomUser;
 import app.models.VerificationCode;
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,6 +62,10 @@ public class AuthenticationController extends JsonSupportController {
 
     @Autowired
     private AuthenticationManager authManager;
+
+    @Autowired
+    @Qualifier("app_constants")
+    private Constants constants;
 
     @Autowired
     public AuthenticationController(final IUserService userService,
@@ -120,11 +127,14 @@ public class AuthenticationController extends JsonSupportController {
                     sendDefaultJson(res, false,
                             "Verification code expired. Please perform new verification code");
                 }
-                CustomUser customUser = new CustomUser(dto, encoder);
-                customUser.setEnabled(true);
-                userService.create(customUser);
+                if (userService.retrieveByName(dto.getEmail()) == null) {
+                    CustomUser customUser = new CustomUser(dto, encoder);
+                    customUser.setEnabled(true);
+                    userService.create(customUser);
+                }
                 removeVerificationCode(getVerificationKey(dto));
                 auth(res, request, dto);
+                this.sendDefaultJson(res, true, "");
             } else {
                 sendDefaultJson(res, false, "You do not pass verification");
                 return;
@@ -161,25 +171,38 @@ public class AuthenticationController extends JsonSupportController {
                                       HttpServletRequest req,
                                       HttpServletResponse res)
             throws IOException {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
         if (authentication != null) {
             this.cleanData(req, res);
         }
         if (userService.retrieveByName(userDto.getEmail()) != null) {
             sendDefaultJson(res, false, "User with such email is already exist");
+            return;
         }
         this.createVerificationCode(userDto);
         this.sendVerificationCode(userDto, req, res);
         // @TODO : verificationMailTemplater.render(user.getVerificationCode());
     }
 
-    private void sendVerificationCode(final UserDto userDto, final HttpServletRequest req, final HttpServletResponse res) {
+    private void sendVerificationCode(final UserDto userDto,
+                                      final HttpServletRequest req,
+                                      final HttpServletResponse res)
+            throws IOException {
         String html = userDto.getVerificationCode();
+        html = verificationMailTemplater.render(html);
+        String attachment = constants.retrieveByName("email_template_path").getStringValue();
+        FileSystemResource file = new FileSystemResource(attachment);
         executionService.pushTask(new ExecutionService
-                .MailSender(mailService, userDto.getEmail(), html));
-        HttpSession session = req.getSession(true);
-        session.setAttribute(AuthenticationController.TABLE_USER, userDto);
-        sendDefaultJson(res, true, "success");
+                .MailSender(mailService, userDto.getEmail(), html, file));
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        session = req.getSession(true);
+        session.setAttribute(TABLE_USER, userDto);
+        sendDefaultJson(res, true, "");
     }
 
     private void createVerificationCode(final UserDto userDto) {
@@ -236,7 +259,8 @@ public class AuthenticationController extends JsonSupportController {
     public void authFirstStep(@Validated(UserDto.Auth.class)
                               @RequestBody UserDto userDto,
                               HttpServletResponse res,
-                              HttpServletRequest req) {
+                              HttpServletRequest req)
+            throws IOException {
         this.createVerificationCode(userDto);
         this.sendVerificationCode(userDto, req, res);
     }
@@ -258,7 +282,6 @@ public class AuthenticationController extends JsonSupportController {
         session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 sc);
-        res.sendRedirect("/archive");
     }
 
     private String getVerificationKey(VerificationCode code, UserDto userDto) {

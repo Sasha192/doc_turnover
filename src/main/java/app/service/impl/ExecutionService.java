@@ -1,11 +1,10 @@
 package app.service.impl;
 
+import app.service.extapis.IMailService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
-
-import app.models.CustomUser;
-import app.service.extapis.IMailService;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,16 +32,19 @@ public class ExecutionService {
         private IMailService mailService;
         private String email;
         private String html;
+        private FileSystemResource[] resources;
 
-        public MailSender(final IMailService mailService, final String email, final String html) {
+        public MailSender(final IMailService mailService, final String email,
+                          final String html, FileSystemResource... resources) {
             this.mailService = mailService;
             this.email = email;
             this.html = html;
+            this.resources = resources;
         }
 
         @Override
         public void run() {
-            mailService.sendMimeMessage(email, "Verification Code", html);
+            mailService.sendMimeMessage(email, "Verification Code", html, resources);
         }
     }
 }
