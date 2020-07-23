@@ -3,7 +3,6 @@ package app.models.serialization;
 import app.security.models.annotations.ExcludeMatchingPassword;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
-
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;

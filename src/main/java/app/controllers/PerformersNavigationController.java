@@ -8,11 +8,9 @@ import app.models.serialization.ExcludeStrategies;
 import app.service.IDepartmentService;
 import app.service.IPerformerService;
 import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;

@@ -1,12 +1,11 @@
 package app.security.utils;
 
-import org.springframework.web.filter.GenericFilterBean;
-
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import java.io.IOException;
+import org.springframework.web.filter.GenericFilterBean;
 
 public class AccessPerformer extends GenericFilterBean {
 

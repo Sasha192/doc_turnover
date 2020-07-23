@@ -43,7 +43,11 @@ public class BriefDocumentService
     }
 
     @Override
-    public List<BriefDocument> findBy(int pageId, String search, Integer year, Integer month, Integer date) {
+    public List<BriefDocument> findBy(int pageId,
+                                      String search,
+                                      Integer year,
+                                      Integer month,
+                                      Integer date) {
         return dao.findBy(pageId, search, year, month, date);
     }
 }

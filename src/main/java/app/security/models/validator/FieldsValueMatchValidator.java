@@ -1,10 +1,8 @@
 package app.security.models.validator;
 
 import app.security.models.annotations.FieldsValueMatch;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
 import org.springframework.beans.BeanWrapperImpl;
 
 public class FieldsValueMatchValidator

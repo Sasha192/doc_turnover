@@ -4,12 +4,10 @@ import app.configuration.spring.constants.Constants;
 import app.models.BriefDocument;
 import app.models.Performer;
 import app.service.IBriefDocumentService;
-
 import java.io.File;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.apache.commons.io.FilenameUtils;
 
 public class RunnableDatabaseStore implements Runnable {

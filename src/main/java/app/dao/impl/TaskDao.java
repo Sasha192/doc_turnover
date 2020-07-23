@@ -3,7 +3,6 @@ package app.dao.impl;
 import app.dao.ITaskDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.Task;
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;

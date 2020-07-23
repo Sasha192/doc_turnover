@@ -4,14 +4,13 @@ import app.configuration.spring.constants.Constants;
 import app.dao.IBriefDocumentJsonDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.BriefJsonDocument;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.Parameter;
+import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.Parameter;
-import javax.persistence.Query;
-import java.util.List;
-import java.util.Set;
 
 @Repository
 public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument>
@@ -19,9 +18,9 @@ public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument
 
     private static final String FROM = " FROM " + BriefJsonDocument.class.getName() + " ";
 
-    private static final String WHERE_ARCHIVED = BriefDocumentJsonDao.FROM.concat(" WHERE is_archive=true");
+    private static final String WHERE_ARCHIVED = FROM.concat(" WHERE is_archive=true");
 
-    private static final String WHERE_NO_ARCHIVED = BriefDocumentJsonDao.FROM.concat(" WHERE is_archive=false");
+    private static final String WHERE_NO_ARCHIVED = FROM.concat(" WHERE is_archive=false");
 
     private static final Logger LOGGER = Logger.getLogger(BriefJsonDocument.class);
 
@@ -54,12 +53,12 @@ public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument
 
     @Override
     public List<BriefJsonDocument> findArchived() {
-        return this.getEntityManager().createQuery(BriefDocumentJsonDao.WHERE_ARCHIVED).getResultList();
+        return this.getEntityManager().createQuery(WHERE_ARCHIVED).getResultList();
     }
 
     @Override
     public List<BriefJsonDocument> findActive() {
-        return this.getEntityManager().createQuery(BriefDocumentJsonDao.WHERE_NO_ARCHIVED).getResultList();
+        return this.getEntityManager().createQuery(WHERE_NO_ARCHIVED).getResultList();
     }
 
     @Override
@@ -67,19 +66,19 @@ public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument
                                           final Integer year, final Integer month,
                                           final Integer day) {
         final int pageSize = this.constants
-                .retrieveByName(BriefDocumentJsonDao.ROWS_ON_PAGE_ARHIVE_DOC)
+                .retrieveByName(ROWS_ON_PAGE_ARHIVE_DOC)
                 .getIntValue();
-        int offset = pageSize * (pageId - 1);
         if (null != search) {
-            search = BriefDocumentJsonDao.PERCENTAGE + search + BriefDocumentJsonDao.PERCENTAGE;
+            search = PERCENTAGE + search + PERCENTAGE;
         }
         Query query = this.getEntityManager()
-                .createQuery(BriefDocumentJsonDao.QUERY_FIND_BY_FILTERS, BriefJsonDocument.class);
+                .createQuery(QUERY_FIND_BY_FILTERS, BriefJsonDocument.class);
         query = this.setAllParametersToNull(query);
         query.setParameter("patterLike", search);
         query.setParameter("yearValue", year);
         query.setParameter("monthValue", month);
         query.setParameter("dayValue", day);
+        int offset = pageSize * (pageId - 1);
         query.setParameter("offsetValue", Long.valueOf(offset));
         query.setMaxResults(pageSize);
         query.setHint("org.hibernate.readOnly", Boolean.TRUE);

@@ -12,6 +12,23 @@ import app.service.extapis.GMailService;
 import app.service.extapis.VirusTotalScan;
 import app.service.impl.ExecutionService;
 import com.google.gson.GsonBuilder;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,24 +39,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-import java.io.*;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
 @Controller
 @RequestMapping("archive/doc")
 public class DocumentsNavigationController extends JsonSupportController {
 
     private static final String IOEXCEPTION_WHILE_SENDING_DATA_ = "IOEXCEPTION WHILE SENDING DATA ";
     private static final String
-            FILENOTFOUNDEXCEPTION_WHILE_TRYING_TO_FIND_DOCUMENT_IN_FILESYSTEM_FILENAME =
+            FILE_NOT_FOUND_EXC =
             "FILENOTFOUNDEXCEPTION WHILE TRYING TO FIND DOCUMENT IN FILESYSTEM. FILENAME = ";
     private static final String MAX_FILES_UPLOAD = "max_files_upload";
     private static final String MAX_FILES_DOWNLOAD = "max_files_download";
@@ -112,7 +118,11 @@ import javax.annotation.PostConstruct;
             this.getExceptionLogger().error("ERROR WHILE INTEGER PARSING ", e);
         }
         final String search = request.getParameter("search");
-        final List<BriefJsonDocument> list = this.jsonDocService.findBy(pageId, search, yearInt, monthInt, dayInt);
+        final List<BriefJsonDocument> list = this.jsonDocService.findBy(pageId,
+                search,
+                yearInt,
+                monthInt,
+                dayInt);
         final GsonBuilder builder = new GsonBuilder()
                 .setPrettyPrinting();
         this.writeToResponse(response, builder, list);
@@ -254,9 +264,11 @@ import javax.annotation.PostConstruct;
             bufOut.close();
             bufIn.close();
         } catch (final FileNotFoundException e) {
-            this.getExceptionLogger().error(DocumentsNavigationController.FILENOTFOUNDEXCEPTION_WHILE_TRYING_TO_FIND_DOCUMENT_IN_FILESYSTEM_FILENAME + file.getAbsolutePath(), e);
+            this.getExceptionLogger()
+                    .error(FILE_NOT_FOUND_EXC + file.getAbsolutePath(), e);
         } catch (final IOException e) {
-            this.getExceptionLogger().error(DocumentsNavigationController.IOEXCEPTION_WHILE_SENDING_DATA_, e);
+            this.getExceptionLogger()
+                    .error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
         }
     }
 
@@ -284,13 +296,15 @@ import javax.annotation.PostConstruct;
                     bufIn.close();
                     in.close();
                 } catch (final FileNotFoundException e) {
-                    this.getExceptionLogger().error(DocumentsNavigationController.FILENOTFOUNDEXCEPTION_WHILE_TRYING_TO_FIND_DOCUMENT_IN_FILESYSTEM_FILENAME + file.getAbsolutePath(), e);
+                    this.getExceptionLogger()
+                            .error(FILE_NOT_FOUND_EXC + file.getAbsolutePath(), e);
                 } catch (final IOException e) {
-                    this.getExceptionLogger().error(DocumentsNavigationController.IOEXCEPTION_WHILE_SENDING_DATA_, e);
+                    this.getExceptionLogger()
+                            .error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
                 }
             }
         } catch (final IOException e) {
-            this.getExceptionLogger().error(DocumentsNavigationController.IOEXCEPTION_WHILE_SENDING_DATA_, e);
+            this.getExceptionLogger().error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
         }
     }
 }

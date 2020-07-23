@@ -1,7 +1,6 @@
 package app.models;
 
 import com.google.common.base.Objects;
-
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Access;
@@ -69,12 +68,17 @@ public class Department implements Serializable {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Department)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Department)) {
+            return false;
+        }
         final Department that = (Department) o;
-        return Objects.equal(this.getId(), that.getId()) &&
-                Objects.equal(this.getName(), that.getName()) &&
-                Objects.equal(this.getParentDepartment(), that.getParentDepartment());
+        return Objects.equal(this.getId(), that.getId())
+                && Objects.equal(this.getName(), that.getName())
+                && Objects.equal(this.getParentDepartment(),
+                that.getParentDepartment());
     }
 
     @Override

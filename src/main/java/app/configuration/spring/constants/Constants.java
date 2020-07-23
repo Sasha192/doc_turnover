@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 @Component("app_constants")
 public class Constants {
 
+    // @TODO : schedulled updating constants;
+
     public static final String DOT = ".".intern();
     public static final String SLASH = "/".intern();
     public static final FileNameMap CONTENT_TYPE_MAP = URLConnection.getFileNameMap();

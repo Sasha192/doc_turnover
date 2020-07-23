@@ -2,7 +2,6 @@ package app.dao;
 
 import app.dao.persistance.IGenericDao;
 import app.models.BriefJsonDocument;
-
 import java.util.List;
 
 public interface IBriefDocumentJsonDao extends IGenericDao<BriefJsonDocument> {

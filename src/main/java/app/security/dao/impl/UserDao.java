@@ -4,10 +4,8 @@ import app.dao.persistance.GenericJpaRepository;
 import app.models.CustomUser;
 import app.models.VerificationCode;
 import app.security.dao.IUserDao;
-
 import java.util.List;
 import javax.persistence.TypedQuery;
-
 import org.springframework.stereotype.Repository;
 
 @Repository

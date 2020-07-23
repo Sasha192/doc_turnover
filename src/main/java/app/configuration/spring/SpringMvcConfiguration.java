@@ -1,5 +1,6 @@
 package app.configuration.spring;
 
+import app.configuration.spring.constants.Constants;
 import app.security.service.impl.DefaultUserDetailsService;
 import app.security.utils.DefaultAuthenticationFailureHandler;
 import app.security.utils.DefaultAuthenticationSuccessHandler;
@@ -8,6 +9,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.io.FileTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver;
+import javax.servlet.Filter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,8 +30,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import javax.servlet.Filter;
 
 @Configuration
 @ComponentScans({
@@ -71,6 +71,10 @@ public class SpringMvcConfiguration
     @Autowired
     private Filter authenticationFilter;
 
+    @Autowired
+    @Qualifier("app_constants")
+    private Constants constants;
+
     @Bean
     public ViewResolver viewResolver() {
         final HandlebarsViewResolver handlebarsViewResolver = new HandlebarsViewResolver();
@@ -109,8 +113,12 @@ public class SpringMvcConfiguration
 
     @Bean("for.email.template")
     public Handlebars forEmailTemplate() {
-        final TemplateLoader loader = new FileTemplateLoader("/home/kolmogorov/Java_Practice/bcrew/doc_turnover/src/main/webapp/WEB-INF/views", ".hbs");
-        // verification_email_template.hbs
+        final TemplateLoader loader =
+                new FileTemplateLoader(
+                        constants
+                        .retrieveByName("file_template_loader_base_dir")
+                        .getStringValue(),
+                        ".hbs");
         return new Handlebars(loader);
     }
 

@@ -43,7 +43,8 @@ public class AuthenticationController extends JsonSupportController {
 
     // @TODO Verification code : поскольку они хранятся в памяти. Можно ли осуществить атаку DDOS ?
     // @TODO Можно построить эскплоит на overhead main memory
-    // @TODO Решение : как - только происходит overhead, например больше 100 элементов, то убирать буфер и юзать DB.
+    // @TODO Решение : как - только происходит overhead,
+    //  например больше 100 элементов, то убирать буфер и юзать DB.
 
     private static final Map<Long, VerificationCode> verificationTable = new HashMap<>();
     private static final String TABLE_USER = "TABLE_USER";
@@ -121,9 +122,10 @@ public class AuthenticationController extends JsonSupportController {
             }
             VerificationCode code = retrieveVerificationCode(this.getVerificationKey(dto));
             if (code != null) {
-                if (AuthenticationController.EXPIRATION_TIME < System.currentTimeMillis() - code.getCreationtime()) {
+                if (EXPIRATION_TIME
+                        < System.currentTimeMillis() - code.getCreationtime()) {
                     this.cleanData(request, res);
-                    AuthenticationController.verificationTable.remove(getVerificationKey(dto));
+                    verificationTable.remove(getVerificationKey(dto));
                     sendDefaultJson(res, false,
                             "Verification code expired. Please perform new verification code");
                 }
@@ -140,7 +142,7 @@ public class AuthenticationController extends JsonSupportController {
                 return;
             }
         } else {
-            AuthenticationController.LOGGER.debug("SHIT! session.getAttribute(TABLE_USER) in "
+            LOGGER.debug("SHIT! session.getAttribute(TABLE_USER) in "
                     + AuthenticationController.class
                     + " get NOT UserDto OR Something go wrong");
             sendDefaultJson(res, false, "Something go wrong");
@@ -248,8 +250,8 @@ public class AuthenticationController extends JsonSupportController {
         for (Map.Entry<Long, VerificationCode> entry : verificationTable.entrySet()) {
             VerificationCode code = null;
             if ((code = entry.getValue()) != null) {
-                if (AuthenticationController.EXPIRATION_TIME > System.currentTimeMillis() - code.getCreationtime()) {
-                    AuthenticationController.verificationTable.remove(entry.getKey());
+                if (EXPIRATION_TIME > System.currentTimeMillis() - code.getCreationtime()) {
+                    verificationTable.remove(entry.getKey());
                 }
             }
         }

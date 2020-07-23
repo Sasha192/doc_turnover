@@ -4,10 +4,8 @@ import app.dao.IBriefTaskDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.BriefTask;
 import app.models.Performer;
-
 import java.util.List;
 import javax.persistence.TypedQuery;
-
 import org.springframework.stereotype.Repository;
 
 @Repository

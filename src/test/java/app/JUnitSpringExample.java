@@ -5,8 +5,17 @@ import app.models.BriefDocument;
 import app.models.Department;
 import app.models.Performer;
 import app.models.Task;
-import app.service.*;
+import app.service.IBriefDocumentService;
+import app.service.IBriefJsonDocumentService;
+import app.service.ICorePropertyService;
+import app.service.IDepartmentService;
+import app.service.IPerformerService;
+import app.service.IStatusService;
+import app.service.ITaskService;
 import app.spring.TestSpringDataConfiguration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestSpringDataConfiguration.class,
@@ -46,12 +51,15 @@ public class JUnitSpringExample {
     @Autowired
     private ITaskService taskService;
 
-    private IOperations<?>[] iOperations;
+    private IOperations<?>[] operations;
 
     @BeforeEach
     private void init() {
-        this.iOperations = new IOperations<?>[]{this.departmentService, this.documentService,
-                this.jsonDocumentService, this.corePropertyService, this.performerService, this.statusService, this.taskService};
+        this.operations = new IOperations<?>[]{this.departmentService, this.documentService,
+                this.jsonDocumentService,
+                this.corePropertyService,
+                this.performerService,
+                this.statusService, this.taskService};
     }
 
     @Test
@@ -81,9 +89,9 @@ public class JUnitSpringExample {
     }
 
     @Test
-    public void PerforDepoTest() {
+    public void performerDepoTest() {
         System.out.println(this.performerService.findAll());
-        System.out.println(this.performerService.findByDepartmentId(1l));
+        System.out.println(this.performerService.findByDepartmentId(1L));
     }
 
     @Test
@@ -98,11 +106,11 @@ public class JUnitSpringExample {
     }
 
     private void selectAll() {
-        Arrays.stream(this.iOperations).forEach(IOperations::findAll);
+        Arrays.stream(this.operations).forEach(IOperations::findAll);
     }
 
     private void selectSpecificIds() {
-        Arrays.stream(this.iOperations).forEach(var -> {
+        Arrays.stream(this.operations).forEach(var -> {
             var.findOne(1);
         });
     }

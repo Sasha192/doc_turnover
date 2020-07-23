@@ -2,7 +2,6 @@ package app.service;
 
 import app.dao.persistance.IOperations;
 import app.models.BriefJsonDocument;
-
 import java.util.List;
 
 public interface IBriefJsonDocumentService extends IOperations<BriefJsonDocument> {

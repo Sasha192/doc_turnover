@@ -5,11 +5,10 @@ import app.dao.persistance.IGenericDao;
 import app.models.BriefJsonDocument;
 import app.service.IBriefJsonDocumentService;
 import app.service.abstraction.AbstractService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)

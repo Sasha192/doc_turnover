@@ -1,7 +1,6 @@
 package app.security.models;
 
 import app.models.VerificationCode;
-import app.security.models.annotations.FieldsValueMatch;
 import app.security.models.annotations.ValidPasswordPattern;
 import com.google.gson.annotations.Expose;
 import javax.validation.constraints.Email;
@@ -24,13 +23,19 @@ public class UserDto {
     }
 
     @Expose
-    private @Null(groups = {New.class, Auth.class}) @NotNull(groups = {UpdatePassword.class, Exist.class}) Long id;
+    @Null(groups = {New.class, Auth.class})
+    @NotNull(groups = {UpdatePassword.class, Exist.class})
+    private Long id;
 
     @Expose
-    private @NotNull(groups = {New.class, Auth.class}) @Null(groups = UpdatePassword.class) @Email String email;
+    @NotNull(groups = {New.class, Auth.class})
+    @Null(groups = UpdatePassword.class)
+    @Email
+    private String email;
 
     @ValidPasswordPattern(groups = {New.class, UpdatePassword.class})
-    private @NotNull(groups = {New.class, UpdatePassword.class, Auth.class}) String password;
+    @NotNull(groups = {New.class, UpdatePassword.class, Auth.class})
+    private String password;
 
     private @NotNull Boolean remember;
 

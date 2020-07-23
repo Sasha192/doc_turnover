@@ -19,12 +19,9 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class GMailService implements IMailService {
@@ -125,7 +122,8 @@ public class GMailService implements IMailService {
         return mimeMessage;
     }
 
-    private Message createMessage(String to, String subject, String plainText) throws MessagingException {
+    private Message createMessage(String to, String subject, String plainText)
+            throws MessagingException {
         subject = subject == null ? EMPTY_STRING : subject;
         plainText = plainText == null ? EMPTY_STRING : plainText;
         Session session = getSession();

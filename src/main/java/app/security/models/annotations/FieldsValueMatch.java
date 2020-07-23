@@ -1,7 +1,6 @@
 package app.security.models.annotations;
 
 import app.security.models.validator.FieldsValueMatchValidator;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

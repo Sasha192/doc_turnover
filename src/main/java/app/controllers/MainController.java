@@ -17,10 +17,10 @@ public class MainController {
         return "archive";
     }
 
-    @RequestMapping("/profile")
+    /*@RequestMapping("/profile")
     public String profileMap(ModelMap map) {
         return "profile";
-    }
+    }*/
 
     @RequestMapping("/auth")
     public String authMap(ModelMap map) {

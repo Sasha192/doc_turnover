@@ -4,13 +4,10 @@ import app.dao.IPerformerDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.CustomUser;
 import app.models.Performer;
-
+import java.util.List;
 import javax.persistence.TypedQuery;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class PerformerDao extends GenericJpaRepository<Performer>

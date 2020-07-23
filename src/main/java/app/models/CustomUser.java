@@ -4,7 +4,6 @@ import app.security.models.SimpleRole;
 import app.security.models.UserDto;
 import app.security.utils.DefaultPasswordEncoder;
 import com.google.common.base.Preconditions;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;

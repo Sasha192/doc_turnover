@@ -3,7 +3,6 @@ package app.dao;
 import app.dao.persistance.IGenericDao;
 import app.models.BriefTask;
 import app.models.Performer;
-
 import java.util.List;
 
 public interface IBriefTaskDao extends IGenericDao<BriefTask> {

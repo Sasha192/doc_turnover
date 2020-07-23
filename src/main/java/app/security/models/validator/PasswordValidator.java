@@ -1,7 +1,6 @@
 package app.security.models.validator;
 
 import app.security.models.annotations.ValidPasswordPattern;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 

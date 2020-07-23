@@ -6,7 +6,6 @@ import app.models.CustomUser;
 import app.models.Performer;
 import app.service.IPerformerService;
 import app.service.abstraction.AbstractService;
-
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
