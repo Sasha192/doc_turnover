@@ -1,2 +1,0 @@
-# ADD archive_path to core_properties and archive[description='core']
-
