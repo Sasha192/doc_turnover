@@ -20,7 +20,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "tasks")
 public class Task
-        extends IdentityEntity
+        extends IdentityBaseEntity
         implements Serializable {
 
     @Column(name = "task")

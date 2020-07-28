@@ -18,7 +18,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "brief_documents")
 public class BriefDocument
-        extends IdentityEntity
+        extends IdentityBaseEntity
         implements Serializable {
 
     @Column(name = "creation_date")

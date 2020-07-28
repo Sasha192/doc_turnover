@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "departments")
 public class Department
-        extends IdentityEntity
+        extends IdentityBaseEntity
         implements Serializable {
 
     @Column(name = "department_name")

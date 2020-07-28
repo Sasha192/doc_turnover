@@ -18,6 +18,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,6 +38,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         @ComponentScan("app.security.controllers"),
         @ComponentScan("app.security.utils")
 })
+@EnableScheduling
 @EnableWebMvc
 @EnableWebSecurity
 public class SpringMvcConfiguration

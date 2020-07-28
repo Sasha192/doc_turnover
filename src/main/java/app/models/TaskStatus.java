@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "custom_status")
 public class TaskStatus
-        extends IdentityEntity
+        extends IdentityBaseEntity
         implements Serializable {
 
     @Column(name = "name")

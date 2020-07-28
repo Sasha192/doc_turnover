@@ -144,7 +144,8 @@ import javax.annotation.PostConstruct;
         final int year = now.getYear();
         final int month = now.getMonthValue();
         final int day = now.getDayOfMonth();
-        final String filePath = this.constants.getPathToArchive()
+        final String filePath = this.constants.get("path_to_archive")
+                .getStringValue()
                 .concat(Constants.SLASH + year)
                 .concat(Constants.SLASH + month)
                 .concat(Constants.SLASH + day);

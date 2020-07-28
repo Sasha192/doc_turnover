@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class IdentityEntity {
+public abstract class IdentityBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
