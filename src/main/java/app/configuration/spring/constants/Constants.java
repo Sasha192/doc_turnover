@@ -5,6 +5,7 @@ import app.service.ICorePropertyService;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
@@ -17,7 +18,8 @@ import org.springframework.stereotype.Component;
  *
  *
  *     Constants class - store all vital constants for app.
- *     Using ConcurrentHashMap is required for sync with DB.
+ *     Using ConcurrentHashMap is required for sync with DB and decreasing
+ *     number of requests to DB.
  *     ConcurrentHashMap uses row-locking mechanism for updates, inserts
  *     and no-locking for reading
  *
