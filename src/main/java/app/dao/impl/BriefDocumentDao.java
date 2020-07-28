@@ -80,7 +80,7 @@ public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
                                       Integer year, Integer month,
                                       Integer day) {
         int pageSize = constants
-                .retrieveByName(ROWS_ON_PAGE_ARHIVE_DOC)
+                .get(ROWS_ON_PAGE_ARHIVE_DOC)
                 .getIntValue();
         final int offset = pageSize * (pageId - 1);
         if (null != search) {

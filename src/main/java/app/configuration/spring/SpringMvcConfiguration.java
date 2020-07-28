@@ -116,7 +116,7 @@ public class SpringMvcConfiguration
         final TemplateLoader loader =
                 new FileTemplateLoader(
                         constants
-                        .retrieveByName("file_template_loader_base_dir")
+                        .get("file_template_loader_base_dir")
                         .getStringValue(),
                         ".hbs");
         return new Handlebars(loader);

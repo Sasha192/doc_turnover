@@ -131,11 +131,11 @@ import javax.annotation.PostConstruct;
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(@RequestParam("file") final MultipartFile[] mfiles,
                        final HttpServletResponse response) throws IOException {
-        if (mfiles.length > constants.retrieveByName(MAX_FILES_UPLOAD).getIntValue()) {
+        if (mfiles.length > constants.get(MAX_FILES_UPLOAD).getIntValue()) {
             sendDefaultJson(
                     response, false,
                     "Too many files. You can upload no more " + constants
-                            .retrieveByName(MAX_FILES_UPLOAD)
+                            .get(MAX_FILES_UPLOAD)
                             .getIntValue()
             );
             return;
@@ -144,7 +144,8 @@ import javax.annotation.PostConstruct;
         final int year = now.getYear();
         final int month = now.getMonthValue();
         final int day = now.getDayOfMonth();
-        final String filePath = this.constants.getPathToArchive().concat(Constants.SLASH + year)
+        final String filePath = this.constants.getPathToArchive()
+                .concat(Constants.SLASH + year)
                 .concat(Constants.SLASH + month)
                 .concat(Constants.SLASH + day);
         final File fileFolder = new File(filePath);
@@ -196,11 +197,11 @@ import javax.annotation.PostConstruct;
             method = RequestMethod.GET)
     public void download(@RequestParam("id") final String[] docIds,
                          final HttpServletResponse response) {
-        if (docIds.length > constants.retrieveByName(MAX_FILES_DOWNLOAD).getIntValue()) {
+        if (docIds.length > constants.get(MAX_FILES_DOWNLOAD).getIntValue()) {
             sendDefaultJson(
                     response, false,
                     "You could not download more than "
-                            + constants.retrieveByName(MAX_FILES_DOWNLOAD).getIntValue()
+                            + constants.get(MAX_FILES_DOWNLOAD).getIntValue()
             );
             return;
         }

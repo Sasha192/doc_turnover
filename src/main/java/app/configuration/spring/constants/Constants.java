@@ -47,8 +47,40 @@ public class Constants {
         pathToArchive = this.properties.get("path_to_archive").getStringValue();
     }
 
-    public CoreProperty retrieveByName(String name) {
+    public CoreProperty get(String name) {
         return properties.get(name);
+    }
+
+    public void put(CoreProperty newProperty) {
+        CoreProperty property = corePropertyService
+                .retrieveByName(newProperty.getName());
+        if (property != null) {
+            if (!(property.equals(newProperty))) {
+                switch (property.getTypeValue()) {
+                    case NUMBER: {
+                        property.setIntValue(
+                                newProperty.getIntValue()
+                        );
+                        break;
+                    }
+                    case STRING: {
+                        property.setStringValue(
+                                newProperty.getStringValue()
+                        );
+                        break;
+                    }
+                    case DECIMAL: {
+                        property.setFloatValue(
+                                newProperty.getFloatValue()
+                        );
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public String getPathToArchive() {

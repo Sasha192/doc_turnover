@@ -5,14 +5,9 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -22,12 +17,9 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "brief_documents")
-public class BriefDocument implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Access(AccessType.PROPERTY)
-    private Long id;
+public class BriefDocument
+        extends IdentityEntity
+        implements Serializable {
 
     @Column(name = "creation_date")
     private Date date;

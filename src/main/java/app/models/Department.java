@@ -3,24 +3,16 @@ package app.models;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.Set;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "departments")
-public class Department implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Access(AccessType.PROPERTY)
-    private Long id;
+public class Department
+        extends IdentityEntity
+        implements Serializable {
 
     @Column(name = "department_name")
     private String name;

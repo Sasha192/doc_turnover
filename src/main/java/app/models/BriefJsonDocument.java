@@ -11,7 +11,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "json_view_brief_archive_doc")
-public class BriefJsonDocument implements Serializable {
+public class BriefJsonDocument
+        implements Serializable {
 
     @Id
     @Access(AccessType.PROPERTY)

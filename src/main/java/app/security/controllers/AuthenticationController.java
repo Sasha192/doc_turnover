@@ -194,7 +194,7 @@ public class AuthenticationController extends JsonSupportController {
             throws IOException {
         String html = userDto.getVerificationCode();
         html = verificationMailTemplater.render(html);
-        String attachment = constants.retrieveByName("email_template_path").getStringValue();
+        String attachment = constants.get("email_template_path").getStringValue();
         FileSystemResource file = new FileSystemResource(attachment);
         executionService.pushTask(new ExecutionService
                 .MailSender(mailService, userDto.getEmail(), html, file));

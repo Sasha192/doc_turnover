@@ -23,11 +23,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class CustomUser implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CustomUser
+        extends IdentityEntity
+        implements Serializable {
 
     @Column(name = "email")
     private String email;

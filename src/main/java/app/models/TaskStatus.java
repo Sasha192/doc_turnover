@@ -3,14 +3,9 @@ package app.models;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -18,12 +13,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "custom_status")
-public class TaskStatus implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Access(AccessType.PROPERTY)
-    private Long id;
+public class TaskStatus
+        extends IdentityEntity
+        implements Serializable {
 
     @Column(name = "name")
     private String name;
