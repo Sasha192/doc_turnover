@@ -5,7 +5,6 @@ import app.service.ICorePropertyService;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
