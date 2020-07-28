@@ -148,14 +148,13 @@ body {
 }
 
 .show_more {
-     color:#34ace0;
-     transition: color .2s;
-     cursor: pointer;
+    color: #34ace0;
+    transition: color .2s;
+    cursor: pointer;
 }
 
-
-.show_more:hover{
-     color:#56bae5;
+.show_more:hover {
+    color: #56bae5;
 }
 
 .board .title {
@@ -203,11 +202,14 @@ body {
     width: 250px;
 }
 
+.board-body {
+    padding-bottom: 60px;
+}
+
 .board-item {
     margin-bottom: 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
 }
 
 .board-item img {
@@ -224,7 +226,14 @@ body {
     font-family: "Helvetica regular";
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
+    cursor: pointer;
+    transition: .2s;
+    width: 100%;
+}
+
+.board-item_title:hover {
+    color: #34ace0;
 }
 
 .board-item_title span {
@@ -245,6 +254,12 @@ body {
     font-size: 13px;
 }
 
+.overdue .board-item_status {
+    color: #ff5252;
+    font-family: "Roboto regular";
+    font-size: 13px;
+}
+
 .InProgress .board-item_status {
     color: #ffb142;
     font-family: "Roboto regular";
@@ -259,6 +274,10 @@ body {
 
 .board.new .title::after {
     background-image: linear-gradient(to top right, #33d9b2 0%, #34ace0 100%);
+}
+
+.board.overdue .title:after {
+    background-image: linear-gradient(to top left, #ffb142 30%, #ff5252 100%);
 }
 
 .board.InProgress .title:after {
@@ -366,7 +385,8 @@ body {
     margin-right: 10px;
 }
 
-.archive-options_item#downloadDoc i, .archive-options_item#uploadDoc i {
+.archive-options_item#downloadDoc i,
+.archive-options_item#uploadDoc i {
     color: #17c0eb;
 }
 
@@ -382,7 +402,8 @@ body {
     color: #24c19c;
 }
 
-.archive-options_item#downloadDoc:hover, .archive-options_item#uploadDoc:hover {
+.archive-options_item#downloadDoc:hover,
+.archive-options_item#uploadDoc:hover {
     color: #17c0eb;
 }
 
@@ -408,34 +429,40 @@ body {
     -------------------
 */
 
-
 @media screen and (max-width: 1200px) {
     .wrapper {
         padding: 60px 0px;
     }
+
     .option-menu {
         flex-direction: row;
         top: 0;
         padding: 15px 10px;
         width: 100%;
     }
+
     .option-menu .option-item {
         margin: 0 5px;
     }
+
     .option-menu.avatar {
         right: 0;
     }
+
     .padding-block {
         display: none;
     }
+
     .responsive-navbar-menu .bar-block {
         flex-direction: column;
         display: none;
         position: relative;
     }
+
     .board {
         margin: 0px 0px;
     }
+
     .board:not(:last-child) {
         margin: 0px 15px;
     }

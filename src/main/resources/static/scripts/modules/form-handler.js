@@ -1,8 +1,4 @@
 
-// -------------------
-//   Files Handler
-// -------------------
-
 class Insert_Files {
 
     constructor(container) {
@@ -11,6 +7,8 @@ class Insert_Files {
     }
 
     append(files) {
+        this.container.html("")
+
         this.data = [...files]
         this.data.forEach(element => {
             this.container.append(`
@@ -18,11 +16,11 @@ class Insert_Files {
                 <div class="file-content">
                     <img src="img/docs-img/${element.name.substr(element.name.lastIndexOf('.') + 1).replace(/\s+/g, ' ').trim()}.png" alt="">
                     <div class="file-name">
-                        ${element.name.substr(0, 32)}..
+                        ${element.name.substr(0, 22)}..
                     </div>
                 </div>
                 <button class="dismiss" id="${element.id}">
-                     <i class="fal fa-times"></i>
+                    <i class="fas fa-trash"></i>
                 </button>
             </div>
          `)
@@ -50,6 +48,10 @@ class Insert_Files {
 
     getData() {
         return this.data
+    }
+
+    clean() {
+        this.data = []
     }
 
 }
@@ -94,7 +96,7 @@ class Insert_Users {
 
                 $(user).append(`
                     <button class="dismiss">
-                        <i class="fal fa-times"></i>
+                        <i class="fas fa-trash"></i>
                     </button>
                 `)
 
@@ -169,7 +171,7 @@ class Insert_Todos {
 
                 $(todo).append(`
                     <button class="dismiss">
-                        <i class="fal fa-times"></i>
+                        <i class="fas fa-trash"></i>
                     </button>
                 `)
 
@@ -207,16 +209,284 @@ class Insert_Todos {
 
 export { Insert_Todos }
 
-// -------------------
-//   Archive Handler
-// -------------------
+
+let reportUpload = new Insert_Files($("#task-info .report-upload-files"))
+class Insert_Tasks {
+
+    constructor(inserList) {
+        this.insertList = inserList
+    }
+
+
+    append(data) {
+
+        this.insertList.find(".todo-count").html(`(${data.length})`)
+
+        data.forEach(todo => {
+            this.insertList.find(".board-body").append(
+                `<div class="board-item" todo-id="${todo.id}">
+                <img src=${todo.performerImgPath} alt="">
+                <div class="w-100">
+                    <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.dateDeadline}</span></div>
+                    <div class="board-item_status">${todo.status}</div>
+                </div>
+                </div>`
+            )
+        })
+
+        this.insertList.find(".board-item_title").each((i, task) => {
+            task.onclick = (e) => {
+                $("#task-info").modal("show")
+                $.get(`/task?todoId=${e.target.closest(".board-item").getAttribute("id")}`, (data) => {
+                    $("#task-info").modal("show")
+                    $("#task-info").find("#add-modify").fadeOut(200)
+                    $("#task-info").find("#add-report").fadeOut(200)
+                    $("#todo-slider").carousel(0)
+                    $("#todo-slider").carousel('pause')
+                    this.insert_TodoInfo(data)
+                })
+            }
+        })
+
+
+    }
+
+    insert_TodoInfo(info) {
+
+        $("#task-info").find(".todo-title").val(info.name)
+        $("#task-info").find(".todo-title").on("change", (e) => {
+            if (e.target.value.length == 0) {
+                e.target.value = info.name
+            }
+        })
+
+        // download detail files
+
+        {
+            document.querySelector("#download-details-files").onclick = (e) => {
+                let data = []
+                $("#task-info #details-files .file").each((i, file) =>{
+                    data.push(file.getAttribute("file-id"))
+                })
+                console.log(data)
+                $.post("/test", JSON.stringify(data), (data) => {
+                    console.log(data)
+                })
+            }
+        }
+        // download report files
+
+        {
+            document.querySelector("#download-report-files").onclick = (e) => {
+                let data = []
+                $("#task-info .files-container-report .file").each((i, file) =>{
+                    data.push(file.getAttribute("file-id"))
+                })
+                console.log(data)
+                $.post("/test", JSON.stringify(data), (data) => {
+                    console.log(data)
+                })
+            }
+        }
+
+        // Append files
+
+        {
+            let files = $("#task-info").find("#details-files")
+            files.html("")
+            $("#task-info .details-files #count").html(`(${info.docList.length})`)
+
+            info.docList.forEach(doc => {
+                files.append(
+                    `<div class="file" file-id="${doc.id}">
+                        <div class="file-content">
+                            <img src="img/docs-img/${doc.extName}.png" alt="">
+                            <div class="file-name">
+                                ${doc.name.substring(0, 26)}...
+                            </div>
+                        </div>
+                    </div>`
+                )
+            })
+
+        }
+
+        // Append performers
+
+        {
+            let performers = $("#task-info").find(".performers")
+            performers.html("")
+            $("#task-info .performers-container #count").html(`(${info.performerList.length})`)
+
+            info.performerList.forEach(user => {
+                performers.append(
+                    `<div class="user">
+                    <div class="d-flex align-items-center">
+                        <img src="${user.imgPath}" alt="">
+                        <div class="user-meta">
+                            <a href="#" class="user-name">${user.name.substring(0, 28)}...</a>
+                            <div class="user-department">
+                                ${user.department}
+                            </div>
+                        </div>
+                    </div>
+                    </div>`
+                )
+            })
+        }
+
+        // Append comments
+
+        {
+            let comments = $("#task-info").find(".comments")
+            $("#task-info .comments #count").html(`(${info.comments.length})`)
+
+            let comments_container = comments.find(".comments-container")
+            comments_container.html("")
+
+            info.comments.forEach(comment => {
+                comments_container.append(
+                    `<div class="comment">
+                        <img class="author-image" src="${comment.author.imgPath}" alt="">
+                        <div class="comment-body">
+                            <div class="author-name">${comment.author.name}</div>
+                            <div class="comment-text">
+                                ${comment.comment.substring(0, 64)}..
+                            </div>
+                            <div class="comment-date">${comment.date}</div>
+                        </div>
+                    </div>`
+                )
+            })
+        }
+
+        // Append description
+
+        {
+            let description = $("#task-info").find(".description-text")
+            description.html(info.description)
+
+            description.on("blur", (e) => {
+                if (e.target.textContent.length == 0) {
+                    e.target.innerHTML = info.description
+                    $("#task-info").find("#add-modify").fadeOut(200)
+                } else if (e.target.textContent !== info.description && e.target.textContent.length !== 0) {
+                    $("#task-info").find("#add-modify").fadeIn(200)
+                }
+            })
+
+            description.on("input", (e) => {
+                if (e.target.innerHTML.length > 1024) {
+                    e.target.innerHTML = e.target.innerHTML.substring(0, 1024)
+                }
+            })
+        }
+
+        // Upload report-files + Send report
+
+        {
+
+            {
+                $("#task-info").find(".report-upload-files").html("")
+                $("#task-info").find("#report-file-lable").html("Choose file")
+
+                let data = [],
+                    id = 0,
+                    formData = new FormData()
+
+                reportUpload.clean()
+
+                document.querySelector("#task-info").querySelector("#report-upload-file").onchange = function () {
+                    data = []
+                    data = [...reportUpload.getData()]
+
+                    if (data.length > 5) return
+                    let file = this.files[0]
+
+                    data.push({ name: file.name, id: id, file: file })
+                    id++
+
+                    reportUpload.append(data)
+                    if (reportUpload.getData().length !== 0) {
+                        $("#task-info").find("#add-report").fadeIn(200)
+                    } else {
+                        $("#task-info").find("#add-report").fadeOut(200)
+                    }
+                }
+            }
+            
+            {
+                document.querySelector("#task-info .report-msg textarea").oninput = (e) => {
+                    if(e.target.value.length !== 0) {
+                        $("#task-info").find("#add-report").fadeIn(200)
+                    } else {
+                        if($("#task-info .report-upload-files .file").length == 0) {
+                            $("#task-info").find("#add-report").fadeOut(200)
+                        }
+                    }
+                }
+            }
+
+
+
+
+        }
+
+        // Append report comments
+
+        {
+            $("#task-info .report-list").html("")
+            info.report.comments.forEach(comment => {
+                $("#task-info .report-list").append(
+                    `<div class="comment">
+                        <img class="author-image" src="${comment.author.imgPath}" alt="">
+                        <div class="comment-body">
+                            <div class="author-name">${comment.author.name}</div>
+                            <div class="comment-text">
+                                ${comment.comment}..
+                            </div>
+                            <div class="comment-date">${comment.date}</div>
+                        </div>
+                    </div>`
+                )
+            })
+        }
+
+        // Append report files
+
+        {
+
+            $("#task-info .files-report #count").html(`(${info.report.docList.length})`)
+            $("#task-info .files-container-report").html("")
+
+            info.report.docList.forEach(doc => {
+                $("#task-info .files-container-report").append(
+                    `<div class="file" file-id="${doc.id}">
+                    <div class="file-content">
+                        <img src="img/docs-img/${doc.extName}.png" alt="">
+                        <div class="file-name">
+                            ${doc.name.substring(0, 26)}...
+                        </div>
+                    </div>
+                    </div>`
+                )
+            })
+        }
+
+
+
+    }
+
+}
+
+export { Insert_Tasks }
 
 function insert_toArchive(table, data) {
 
     table.html("")
     data.forEach(element => {
-        table.append(`
-        <tr class="archive-table_row" id="${element.document.id}">
+        table.append(
+            `<tr class="archive-table_row" id="${element.document.id}">
         <td>
         <div class="archive-row_item">
         <div class="custom-control custom-checkbox info">
@@ -225,7 +495,7 @@ function insert_toArchive(table, data) {
         <label class="custom-control-label" for="checkbox"></label>
         </div>
             <div id="archive-file_name">
-${element.document.name}
+        ${element.document.name}
             </div>
         </div>
         </td>
@@ -236,17 +506,17 @@ ${element.document.name}
         </td>
         <td>
         <div class="archive-row_item" id="archive-file_performer" performer-id="${element.performer.id}">
-            ${element.performer.name}
+        ${element.performer.name}
         </div>
         </td>
         <td>
         <div class="archive-row_item" id="archive-file_department" department-id="${element.department.id}">
-            ${element.department.name}
+        ${element.department.name}
         </div>
         </td>
         <td>
         <div class="archive-row_item" id="archive-file_date">
-            ${element.document.date}
+        ${element.document.date}
         </div>
         </td>
         </tr>
@@ -292,7 +562,7 @@ function selection_files() {
                 if (selected_files.length == 1) $("#archive-options").fadeIn(100)
                 if (selected_files.length == 0) $("#archive-options").fadeOut(100)
 
-                if (selected_files.length == 7) {
+                if (selected_files.length == 10) {
                     let prevousElement = selected_files[selected_files.length - 2]
                     let row = $(table).find(`.archive-table_row#${prevousElement.id}`)
                     let checkbox = row.find(".custom-checkbox")
@@ -312,10 +582,6 @@ function selection_files() {
 }
 
 export { insert_toArchive }
-
-// ------------------------------
-//    Access module Validation 
-// ------------------------------
 
 function validation(form) {
 

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {{> static_head_module}}
+    <link rel="stylesheet" href="css/page-style.css">
+    <link rel="stylesheet" href="css/boards.css">
+</head>
+
+<body>
+
+    {{> static_modals_module}}
+    <div class="wrapper d-flex">
+        <div class="option-menu">
+            <div class="option-item">
+                <img src="img/services/gear.png" alt="">
+            </div>
+            <div class="option-item" data-count="3">
+                <img src="img/services/mail.png" alt="">
+            </div>
+            <div class="option-item">
+                <img src="img/services/settings.png" alt="">
+            </div>
+            <div class="option-item">
+                <img src="img/services/add.png" alt="">
+            </div>
+        </div>
+        <div class="padding-block col-0 col-sm-0 col-md-0 col-lg-0 col-xl-1"> </div>
+        <div class="col-sm-12 col-xl-10 content">
+            <div class="nav-bar">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="responsive-navbar-menu">
+                        <div class="bar-block">
+                            <div class="nav-bar_item">
+                                <button onclick="window.location = '/teamboard'">
+                                    <img src="img/services/team.png" alt="" class="bg_info">
+                                    Team Dashboard
+                                </button>
+                            </div>
+                            <div class="nav-bar_item active">
+                                <button onclick="window.location = '/myboard?id=2312948102'">
+                                    <img src="img/services/man.png" alt="" class="bg_purple">
+                                    Мои Задачи
+                                </button>
+                            </div>
+                            {{!-- <div class="nav-bar_item">
+                                <button onclick="window.location = '/'">
+                                    <img src="img/services/list.png" alt="" class="bg_indigo">
+                                    Task Table
+                                </button>
+                            </div> --}}
+                            <div class="nav-bar_item">
+                                <button onclick="window.location = '/'">
+                                    <img src="img/services/icons8-folder-48.png" alt="" class="bg_info">
+                                    Файлы
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="nav-bar_item user-options">
+
+                            <div class="drop-down">
+                                <button class="drop-down_btn d-flex align-items-center">
+                                    <i class="far fa-chevron-down"></i>
+                                    <div class="user-name">
+                                        Михаил
+                                    </div>
+                                </button>
+                                <div class="drop-down_list">
+                                    <div class="drop-down_item">
+                                        Настройки
+                                        <i class="fa fa-cog"></i>
+                                    </div>
+                                    <div class="drop-down_item">
+                                        Выйти
+                                        <i class="fa fa-power-off"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="user-img">
+                                <img data-user-status="online" src="img/avatars/5.jpg">
+                                <div data-type="status" class="online"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="body">
+                <div class="board new">
+                    <div class="title">
+                        <div class="d-flex align-items-baseline justify-content-between">
+                            <div>
+                                Новые
+                                <span class="todo-count">(3)</span>
+                            </div>
+                            {{!-- <div class="ml-auto">
+                                <img src="img/services/add.png" alt="">
+                            </div> --}}
+                        </div>
+                    </div>
+                    <div class="board-wrapper">
+                        <div class="board-body">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="board InProgress">
+                    <div class="title">
+                        <div class="d-flex align-items-baseline justify-content-between">
+                            <div>
+                                 В прогрессе
+                                <span class="todo-count">(1)</span>
+                            </div>
+                            <div class="ml-auto">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="board-wrapper">
+                        <div class="board-body">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="board completed">
+                    <div class="title">
+                        <div class="d-flex align-items-baseline justify-content-between">
+                            <div class="">
+                                Завершённые
+                                <span class="todo-count">(1)</span>
+                            </div>
+                            <div class="ml-auto">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="board-wrapper">
+                        <div class="board-body">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="board overdue">
+                    <div class="title">
+                        <div class="d-flex align-items-baseline justify-content-between">
+                            <div>
+                                Переделать
+                                <span class="todo-count">(0)</span>
+                            </div>
+                            {{!-- <div class="ml-auto">
+                                <img src="img/services/add.png" alt="">
+                            </div> --}}
+                        </div>
+                    </div>
+                    <div class="board-wrapper">
+                        <div class="board-body">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="board onhold">
+                    <div class="title">
+                        <div class="d-flex align-items-baseline justify-content-between">
+                            <div>
+                                Отложенные
+                                <span class="todo-count">(0)</span>
+                            </div>
+                            {{!-- <div class="ml-auto">
+                                <img src="img/services/add.png" alt="">
+                            </div> --}}
+                        </div>
+                    </div>
+                    <div class="board-wrapper">
+                        <div class="board-body">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="padding-block col-0 col-sm-0 col-md-0 col-lg-0 col-xl-1"></div>
+    </div>
+
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <script type="module" src="scripts/main.js"></script>
+</body>
+
+</html>

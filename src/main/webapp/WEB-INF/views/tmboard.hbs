@@ -4,15 +4,17 @@
 <head>
     {{> static_head_module}}
     <link rel="stylesheet" href="css/page-style.css">
+    <link rel="stylesheet" href="css/boards.css">
 </head>
 
 <body>
+    {{> static_modals_module}}
     <div class="wrapper d-flex">
         <div class="option-menu">
             <div class="option-item">
                 <img src="img/services/gear.png" alt="">
             </div>
-            <div class="option-item">
+            <div class="option-item" data-count="3">
                 <img src="img/services/mail.png" alt="">
             </div>
             <div class="option-item">
@@ -21,24 +23,12 @@
             <div class="option-item">
                 <img src="img/services/add.png" alt="">
             </div>
-            <div class="option-item">
-                <img src="img/services/gear.png" alt="">
-            </div>
-            <div class="option-item">
-                <img src="img/services/mail.png" alt="">
-            </div>
-            <div class="option-item">
-                <img src="img/services/settings.png" alt="">
-            </div>
         </div>
         <div class="padding-block col-0 col-sm-0 col-md-0 col-lg-0 col-xl-1"> </div>
         <div class="col-sm-12 col-xl-10 content">
             <div class="nav-bar">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="responsive-navbar-menu">
-                        <span class="menu-btn">
-
-                        </span>
                         <div class="bar-block">
                             <div class="nav-bar_item active">
                                 <button onclick="window.location = '/teamboard'">
@@ -47,17 +37,17 @@
                                 </button>
                             </div>
                             <div class="nav-bar_item">
-                                <button onclick="window.location = '/'">
+                                <button onclick="window.location = '/myboard?id=2312948102'">
                                     <img src="img/services/man.png" alt="" class="bg_purple">
                                     My Board
                                 </button>
                             </div>
-                            <div class="nav-bar_item">
+                            {{!-- <div class="nav-bar_item">
                                 <button onclick="window.location = '/'">
                                     <img src="img/services/list.png" alt="" class="bg_indigo">
                                     Task Table
                                 </button>
-                            </div>
+                            </div> --}}
                             <div class="nav-bar_item">
                                 <button onclick="window.location = '/'">
                                     <img src="img/services/icons8-folder-48.png" alt="" class="bg_info">
@@ -67,8 +57,31 @@
                         </div>
                     </div>
                     <div class="d-flex">
-                        <div class="nav-bar_item option">
+                        <div class="nav-bar_item user-options">
 
+                            <div class="drop-down">
+                                <button class="drop-down_btn d-flex align-items-center">
+                                    <i class="far fa-chevron-down"></i>
+                                    <div class="user-name">
+                                        Михаил
+                                    </div>
+                                </button>
+                                <div class="drop-down_list">
+                                    <div class="drop-down_item">
+                                        Settings
+                                        <i class="fa fa-cog"></i>
+                                    </div>
+                                    <div class="drop-down_item">
+                                        Sign Out
+                                        <i class="fa fa-power-off"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="user-img">
+                                <img data-user-status="online" src="img/avatars/5.jpg">
+                                <div data-type="status" class="online"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -77,68 +90,27 @@
                 <div class="board new">
                     <div class="title">
                         <div class="d-flex align-items-baseline justify-content-between">
-                            <div class="">
+                            <div>
                                 New
-                                <span>(3)</span>
+                                <span class="todo-count">(3)</span>
                             </div>
-                            <div class="ml-auto">
+                            {{!-- <div class="ml-auto">
                                 <img src="img/services/add.png" alt="">
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="board-wrapper">
                         <div class="board-body">
-                            <div class="board-item">
-                                <img src="img/avatars/6.jpg" alt="">
-                                <div>
-                                    <div class="board-item_title">
-                                        Karrlo logo for brand..
-                                        <span>
-                                            13.03.2020
-                                        </span>
-                                    </div>
-                                    <div class="board-item_status">
-                                        New
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="board-item">
-                                <img src="img/avatars/4.jpg" alt="">
-                                <div>
-                                    <div class="board-item_title">
-                                        Karrlo logo for brand..
-                                        <span>
-                                            13.03.2020
-                                        </span>
-                                    </div>
-                                    <div class="board-item_status">
-                                        New
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="board-item">
-                                <img src="img/avatars/2.jpg" alt="">
-                                <div>
-                                    <div class="board-item_title">
-                                        Karrlo logo for brand..
-                                        <span>
-                                            13.03.2020
-                                        </span>
-                                    </div>
-                                    <div class="board-item_status">
-                                        New
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
                 <div class="board InProgress">
                     <div class="title">
                         <div class="d-flex align-items-baseline justify-content-between">
-                            <div class="">
+                            <div>
                                 In Progress
-                                <span>(1)</span>
+                                <span class="todo-count">(1)</span>
                             </div>
                             <div class="ml-auto">
 
@@ -147,20 +119,7 @@
                     </div>
                     <div class="board-wrapper">
                         <div class="board-body">
-                            <div class="board-item">
-                                <img src="img/avatars/2.jpg" alt="">
-                                <div>
-                                    <div class="board-item_title">
-                                        Karrlo logo for brand..
-                                        <span>
-                                            13.03.2020
-                                        </span>
-                                    </div>
-                                    <div class="board-item_status">
-                                        In Progress
-                                    </div>
-                                </div>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -169,7 +128,7 @@
                         <div class="d-flex align-items-baseline justify-content-between">
                             <div class="">
                                 Completed
-                                <span>(1)</span>
+                                <span class="todo-count">(1)</span>
                             </div>
                             <div class="ml-auto">
 
@@ -178,97 +137,43 @@
                     </div>
                     <div class="board-wrapper">
                         <div class="board-body">
-                            <div class="board-item">
-                                <img src="img/avatars/4.jpg" alt="">
-                                <div>
-                                    <div class="board-item_title">
-                                        Karrlo logo for brand..
-                                        <span>
-                                            13.03.2020
-                                        </span>
-                                    </div>
-                                    <div class="board-item_status">
-                                        Completed
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="board-item">
-                                <img src="img/avatars/4.jpg" alt="">
-                                <div>
-                                    <div class="board-item_title">
-                                        Karrlo logo for brand..
-                                        <span>
-                                            13.03.2020
-                                        </span>
-                                    </div>
-                                    <div class="board-item_status">
-                                        Completed
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="board-item">
-                                <img src="img/avatars/4.jpg" alt="">
-                                <div>
-                                    <div class="board-item_title">
-                                        Karrlo logo for brand..
-                                        <span>
-                                            13.03.2020
-                                        </span>
-                                    </div>
-                                    <div class="board-item_status">
-                                        Completed
-                                    </div>
-                                </div>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>
-                <div class="board">
+                <div class="board overdue">
                     <div class="title">
                         <div class="d-flex align-items-baseline justify-content-between">
-                            <div class="">
+                            <div>
+                                Overdue
+                                <span class="todo-count">(0)</span>
+                            </div>
+                            {{!-- <div class="ml-auto">
+                                <img src="img/services/add.png" alt="">
+                            </div> --}}
+                        </div>
+                    </div>
+                    <div class="board-wrapper">
+                        <div class="board-body">
+                          
+                        </div>
+                    </div>
+                </div>
+                <div class="board onhold">
+                    <div class="title">
+                        <div class="d-flex align-items-baseline justify-content-between">
+                            <div>
                                 On Hold
-                                <span>(0)</span>
+                                <span class="todo-count">(0)</span>
                             </div>
-                            <div class="ml-auto">
+                            {{!-- <div class="ml-auto">
                                 <img src="img/services/add.png" alt="">
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="board-wrapper">
                         <div class="board-body">
-                            <div class="board-item">
-                                <img src="img/avatars/4.jpg" alt="">
-                                <div>
-                                    <div class="board-item_title">
-                                        Karrlo logo for brand..
-                                        <span>
-                                            13.03.2020
-                                        </span>
-                                    </div>
-                                    <div class="board-item_status">
-                                        Status
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="board">
-                    <div class="title">
-                        <div class="d-flex align-items-baseline justify-content-between">
-                            <div class="">
-                                Redo
-                                <span>(0)</span>
-                            </div>
-                            <div class="ml-auto">
-                                <img src="img/services/add.png" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="board-wrapper">
-                        <div class="board-body">
-
+                            
                         </div>
                     </div>
                 </div>

@@ -45,7 +45,8 @@
         Files 
  ------------------- */
 
-.files-container .file {
+.files-container .file,
+.report-upload-files .file {
     margin: 0px;
     padding: 0px;
     width: 100%;
@@ -56,18 +57,21 @@
     transition: .3s;
 }
 
-.files-container .file:not(:last-child) {
+.files-container .file:not(:last-child),
+.report-upload-files .file:not(:last-child) {
     margin-bottom: 30px;
 }
 
-.files-container .dismiss i {
-    color: #777777;
+.files-container .dismiss i,
+.report-upload-files .dismiss i {
+    color: #ababab;
     transition: .2s;
     font-size: 17px;
 }
 
-.files-container .dismiss:hover i {
-    color: #333333;
+.files-container .dismiss:hover i,
+.report-upload-files.dismiss:hover i {
+    color: #777777;
 }
 
 .file-content {
@@ -75,7 +79,8 @@
     align-items: center;
 }
 
-.files-container .file img {
+.files-container .file img ,
+.report-upload-files .file img {
     width: 35px;
     height: 35px;
     object-fit: cover;
@@ -83,7 +88,8 @@
     margin-right: 15px;
 }
 
-.files-container .file .file-name {
+.files-container .file .file-name ,
+.report-upload-files .file .file-name {
     color: #777777;
     font-size: 14px;
 }
@@ -111,10 +117,11 @@
     max-height: 295px;
 }
 
-#add-NewTodo .files-container {
+.files-container:not(.responsive) {
     height: auto;
-    white-space: normal;
+    white-space: nowrap;
     overflow-y: auto;
+    height: 384px;
 }
 
 .performers .user {
@@ -154,13 +161,13 @@
 }
 
 .performers .dismiss i {
-    color: #777777;
+    color: #ababab;
     transition: .2s;
     font-size: 17px;
 }
 
 .performers .dismiss i:hover {
-    color: #333333;
+    color: #777777;
 }
 
 .performers .drop-down .drop-down_btn {
@@ -264,13 +271,13 @@
 }
 
 #add-ExistingTodo .board-item .dismiss i {
-    color: #777777;
+    color: #ababab;
     transition: .2s;
     font-size: 17px;
 }
 
 #add-ExistingTodo .board-item .dismiss i:hover {
-    color: #333333;
+    color: #777777;
 }
 
 #add-ExistingTodo .board-item .board-item_content {
@@ -323,3 +330,160 @@
 #add-ExistingTodo .drop-down_list {
     max-height: 140px;
 }
+
+/*------------------------
+        Task Info
+ ------------------------- */
+
+.performers-container .performers {
+    padding: 0px;
+    overflow-y: auto;
+    white-space: nowrap;
+}
+
+.performers-container .user-name {
+    color: #424242;
+    font-size: 14px;
+}
+
+.performers-container .user-department {
+    color: #34ace0;
+    font-size: 12px;
+}
+
+.files .title,
+.comments .title,
+.performers-container .title,
+.description .title,
+.report .title,
+.report-msg .title {
+    color: #757575;
+    font-size: 14px;
+    margin-bottom: 24px;
+    transition: .2s;
+}
+
+/* files download icon */
+.files .title i {
+    color: #34ace0;
+    margin-right: 20px;
+    font-size: 16px;
+}
+
+/* info count */
+.files #count,
+.comments #count,
+.performers-container #count {
+    color: #757575;
+    margin-left: 10px;
+}
+
+/* download */
+
+.files .title:hover {
+    color: #34ace0
+}
+
+/* comment */
+
+.comments-container {
+    height: 360px;
+    overflow-y: auto;
+    white-space: normal;
+}
+
+.comment {
+    display: flex;
+    align-items: flex-start;
+}
+
+.comment:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.comment img {
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 100%
+}
+
+.comment-body {
+    margin-left: 20px;
+}
+
+.comment .author-name {
+    color: #424242;
+    font-size: 14px;
+    line-height: 25px;
+}
+
+.comment-text {
+    margin: 5px 0px;
+    color: #757575;
+    font-size: 12px;
+}
+
+.comment-date {
+    color: #34ace0;
+    font-size: 11px;
+}
+
+/* description */
+
+.description-container {
+    height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.description-text {
+    color: #424242;
+    font-size: 14px;
+    height: 320px;
+    overflow-y: auto;
+    white-space: normal;
+    margin-bottom: 24px;
+}
+
+.description-lm_date {
+    color: #757575;
+    font-size: 13px;
+}
+
+.description-lm_val {
+    color: #34ace0;
+    font-size: 11px;
+    margin-left: 10px;
+}
+
+input[contenteditable] {
+    width: 100%;
+
+    outline: 1px dashed transparent;
+    border: none;
+
+    padding: 5px;
+    margin: 0px;
+
+    display: inline-block;
+    white-space: pre-wrap;
+    transition: .2s;
+}
+
+input[contenteditable]:focus {
+    outline-color: #34ace0
+}
+
+/* slider */
+
+/* .slider-indicators span {
+    color:#777777;
+    cursor: pointer;
+}
+
+.slider-indicators .active {
+    color:#34ace0
+} */

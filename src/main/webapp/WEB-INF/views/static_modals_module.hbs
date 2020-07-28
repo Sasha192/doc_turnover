@@ -18,7 +18,7 @@
 						accept=".jpg, .png, .pdf, .doc, .docx, .xls, .xlsx, odf, .odt, .ods, .ppt, .pptx, .html, .txt, .csv, .dbf, .htm, .html, .info, .nfo, .rtf, .vcf, .xml, .zip">
 					<label class="custom-file-label" id="uploadFilesLable" for="">Choose file</label>
 				</div>
-				<div class="w-100 files-container mt-4 mb-4">
+				<div class="w-100 files-container mt-4 mb-4 responsive">
 
 				</div>
 			</div>
@@ -101,7 +101,7 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			<div class="modal-body d-flex" style="padding:12px">
+			<dioiv class="modal-body d-flex" style="padding:12px">
 				<div class="col-4" style="height:462px">
 
 					<div class="calendar" id="dateControl">
@@ -245,7 +245,7 @@
 						style="min-height: 367px;"></textarea>
 
 				</div>
-			</div>
+			</dioiv>
 			<div class="modal-footer">
 
 				<div class="status mr-2">
@@ -318,6 +318,161 @@
 				<div class="d-flex">
 					<button class="ml-auto custom-button" data-dismiss="modal">Close</button>
 					<button id="add-ExistingTodo_btn" class="custom-button info">Modify</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="modal fade" id="task-info" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-header" style="padding: 12px; padding-bottom:0px">
+				<h5 class="modal-title w-100" id="lable"><input class="todo-title" value="" type="text" maxlength="128"
+						contenteditable></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="padding:12px">
+
+				<div id="todo-slider" class="carousel slide" data-tide="false">
+
+					<div class="carousel-inner" role="listbox">
+
+						<div class="carousel-item active">
+							<div class="d-flex">
+								<div class="col-3 files details-files">
+									<button class="title" id="download-details-files">
+										<i class="far fa-cloud-download-alt"></i>
+										Скачать <span id="count">(0)</span>
+									</button>
+									<div id="details-files" class="files-container" style="height: 360px;">
+
+									</div>
+								</div>
+
+								<div class="col-3 w-100 performers-container">
+									<div class="title">
+										Исполнители <span id="count">(0)</span>
+									</div>
+									<div class="performers" style="height: 360px;"></div>
+								</div>
+
+								<div class="col-3 comments">
+									<div class="title">
+										Комментарии <span id="count">(0)</span>
+									</div>
+									<div class="comments-container">
+										<div class="comment">
+											<img class="author-image" src="img/avatars/5.jpg" alt="">
+											<div class="comment-body">
+												<div class="author-name">Jorj Bush Beckley</div>
+												<div class="comment-text">
+													Lorem ipsum dolor, sit amet consectetur adipisicing elit. Beatae,
+													est.
+													Lorem, ipsum.
+												</div>
+												<div class="comment-date">24.05.2020</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-3 description">
+									<div class="title">
+										Описание
+									</div>
+									<div class="description-container">
+										<div class="description-text" maxlength="64" contenteditable>
+
+										</div>
+
+										<div class="description-lm_date">
+											Последние изменения: <span class="description-lm_val">13.06.2020</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="carousel-item">
+							<div class="d-flex">
+								<div class="col-3 files files-report">
+									<button class="title" id="download-report-files">
+										<i class="far fa-cloud-download-alt"></i>
+										Скачать <span id="count">(0)</span>
+									</button>
+									<div class="files-container-report files-container" style="height: 360px; overflow-y:auto">
+
+									</div>
+									<div class="no-files d-none justify-content-center align-items-center"
+										style="color:#999999; height:360px; font-size:14px; border:1px dashed #bbbaba">
+										Нет файлов
+									</div>
+								</div>
+								<div class="col-3 report">
+									<div class="title">
+										Загрузить файлы
+									</div>
+									<div class="custom-file" style="margin-bottom: 10px;">
+										<input id="report-upload-file" type="file" class="custom-file-input"
+											accept=".jpg, .png, .pdf, .doc, .docx, .xls, .xlsx, odf, .odt, .ods, .ppt, .pptx, .html, .txt, .csv, .dbf, .htm, .html, .info, .nfo, .rtf, .vcf, .xml, .zip">
+										<label class="custom-file-label" id="report-file-lable" for=""
+											style="white-space:nowrap; overflow-x:hidden">Choose
+											file</label>
+									</div>
+									<div class="report-upload-files" style="height: 312px; overflow-y:auto">
+
+									</div>
+								</div>
+								<div class="col-3 report-msg">
+									<div class="title">
+										Комментарий
+									</div>
+									<textarea maxlength="512" class="custom-textarea w-100"
+										style="height: 353px; padding:0px" placeholder="Текст..."></textarea>
+								</div>
+								<div class="col-3 report">
+									<div class="title">
+										Отчёт
+									</div>
+									<div class="report-list" style="height:360px; overflow-y:auto">
+										
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+			<div class="modal-footer d-flex justify-content-between">
+
+				<div class="slider-indicators d-flex">
+					<button id="details" data-target="#todo-slider" data-slide-to="0"
+						class="active mr-2 custom-button info">Детали</button>
+					<button data-target="#todo-slider" data-slide-to="1" class="custom-button">Отчёт</button>
+				</div>
+
+				<div class="d-flex">
+					<div class="status mr-2">
+						<div class="status-spinner d-none">
+							<div class="spinner-border mr-4" role="status"
+								style="color:#34ace0; font-size:10px; width:20px; height:20px;">
+							</div>
+							<a href="#">Sending data...</a>
+						</div>
+						<span class="status-text"></span>
+					</div>
+
+					<button id="add-modify" class="custom-button info" style="display:none">Modify</button>
+					<button id="add-report" class="custom-button info" style="display:none">Send report</button>
 				</div>
 
 			</div>

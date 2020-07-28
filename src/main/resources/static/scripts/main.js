@@ -23,9 +23,11 @@ import { validation } from "./modules/form-handler.js"
                 confirmBlock.find("#confirm-button").on("click", () => {
                     let confirmCode = confirmBlock.find(".confirm").val()
 
-                    $.post(`/auth/verify?verificationCode=${confirmCode}`, (data) => {
+                    $.post(`/auth/verify?confirmCode=${confirmCode}`, (data) => {
                         if (data.success) {
                             window.location = "/"
+                        } else {
+                            alert(data.msg)
                         }
                     })
 
@@ -62,9 +64,11 @@ import { validation } from "./modules/form-handler.js"
                 confirmBlock.find("#confirm-button").on("click", () => {
                     let confirmCode = confirmBlock.find(".confirm").val()
 
-                    $.post(`/auth/verify?verificationCode=${confirmCode}`, (data) => {
+                    $.post(`/auth/verify?confirmCode=${confirmCode}`, (data) => {
                         if (data.success) {
                             window.location = "/"
+                        } else {
+                            alert(data.msg)
                         }
                     })
 
@@ -78,13 +82,17 @@ import { validation } from "./modules/form-handler.js"
                     dataType: "json",
                     success: function (data) {
                         if (!data.success) {
-                            $("#signup-form .status").html(data.msg)
                             $("#signup-form .status").css("opacity", "1")
+                            $("#signup-form .status").html(data.msg)
                         } else {
+
                             $(".access-block #signup-form").fadeOut(400, () => {
                                 confirmBlock.fadeIn(400).css("display", "flex")
                             })
+
                         }
+
+
                     }
                 });
 
@@ -102,6 +110,7 @@ import { validation } from "./modules/form-handler.js"
 import { Insert_Files } from "./modules/form-handler.js"
 import { Insert_Users } from "./modules/form-handler.js"
 import { Insert_Todos } from "./modules/form-handler.js"
+import { Insert_Tasks } from "./modules/form-handler.js"
 
 (function () {
     // archive options
@@ -344,32 +353,148 @@ import { Insert_Todos } from "./modules/form-handler.js"
         }
     }
 
-})()
+})();
 
 
+// -------------------
+//     Team Board
+// -------------------
+
+(function () {
+    if (window.location.pathname == "/teamboard") {
+        // append new todos
+        {
+            let handlerNew = new Insert_Tasks($(".board.new")),
+                hendlerProgress = new Insert_Tasks($(".board.InProgress")),
+                hendlerCompleted = new Insert_Tasks($(".board.completed")),
+                hendlerOverdue = new Insert_Tasks($(".board.overdue")),
+                hendlerOnHold = new Insert_Tasks($(".board.onhold"))
+
+            $.get("/task/tm/list", (data) => {
+                handlerNew.append(data)
+                $(".board.new").find(".todo-count").html(`(${data.length})`)
+            })
+            $.get("/task/tm/list", (data) => {
+                hendlerProgress.append(data)
+                $(".board.InProgress").find(".todo-count").html(`(${data.length})`)
+            })
+            $.get("/task/tm/list", (data) => {
+                hendlerCompleted.append(data)
+                $(".board.completed").find(".todo-count").html(`(${data.length})`)
+            })
+            $.get("/task/tm/list", (data) => {
+                hendlerOverdue.append(data)
+                $(".board.overdue").find(".todo-count").html(`(${data.length})`)
+            })
+            $.get("/task/tm/list", (data) => {
+                hendlerOnHold.append(data)
+                $(".board.onhold").find(".todo-count").html(`(${data.length})`)
+            })
+        }
+    }
+})();
+
+// -------------------
+//      My Board
+// -------------------
+
+(function () {
+    if (window.location.pathname == "/myboard") {
+        // append new todos
+
+        let handlerNew = new Insert_Tasks($(".board.new")),
+            hendlerProgress = new Insert_Tasks($(".board.InProgress")),
+            hendlerCompleted = new Insert_Tasks($(".board.completed")),
+            hendlerOverdue = new Insert_Tasks($(".board.overdue")),
+            hendlerOnHold = new Insert_Tasks($(".board.onhold"));
+
+        (async () => {
+
+            await $.get("/task/mb/list", (data) => {
+                handlerNew.append(data)
+                $(".board.new").find(".todo-count").html(`(${data.length})`)
+                console.log("new")
+            })
+
+            await $.get("/task/mb/list", (data) => {
+                hendlerProgress.append(data)
+                $(".board.InProgress").find(".todo-count").html(`(${data.length})`)
+                console.log("InProgress")
+            })
+
+            await $.get("/task/mb/list", (data) => {
+                hendlerCompleted.append(data)
+                $(".board.completed").find(".todo-count").html(`(${data.length})`)
+                console.log("completed")
+            })
+
+            await $.get("/task/mb/list", (data) => {
+                hendlerOverdue.append(data)
+                $(".board.overdue").find(".todo-count").html(`(${data.length})`)
+                console.log("ovedue")
+            })
 
 
+            await $.get("/task/mb/list", (data) => {
+                hendlerOnHold.append(data)
+                $(".board.onhold").find(".todo-count").html(`(${data.length})`)
+                console.log("onhold")
+            })
 
+            changeTaskState($(".board.new"), $(".board.InProgress"))
 
+        })();
 
+    }
+})();
 
+function changeTaskState(from, to) {
+    let dropItem,
+        toBoard = to.find(".board-body")
 
+    from.find(".board-item").each((i, todo) => {
+        todo.setAttribute("draggable", "true")
 
+        todo.addEventListener("dragstart", (e) => {
+            dropItem = e.target
+            $(dropItem).animate({
+                opacity:"0"
+            }, 200)
+        })
 
+        todo.addEventListener("dragend", (e) => {
+            dropItem = e.target
+            $(dropItem).animate({
+                opacity:"1"
+            }, 200)
+        })
+    })
 
+    toBoard.on("dragover", (e) => {
+        e.preventDefault()
+    })
 
+    toBoard.on("drop", (e) => {
+        console.log("drop")
+        if(e.target.closest(".board-item")) {
+            e.target.closest(".board-item").before(dropItem)
+        } else {
+            toBoard.append(dropItem)
+        }
 
+        dropItem.removeAttribute("draggable")
+        dropItem.querySelector(".board-item_status").innerHTML = "In-progress"
+    })
+}
 
+// -------------------
+//   Content Editor
+// -------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
+document.querySelectorAll("[contenteditable]").forEach(editor => {
+    editor.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+        window.document.execCommand('insertText', false, text);
+    })
+})

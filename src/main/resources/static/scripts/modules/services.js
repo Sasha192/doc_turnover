@@ -77,23 +77,4 @@ import { insert_toArchive } from "./form-handler.js"
 
 })();
 
-// $.get("/archive/doc/list", (data) => {
-//     insert_toArchive($(".archive-table"), data)
-//     selection_files()
-// })
-
-// $.get("/archive/doc/list", (data) => {
-//     insert_toArchive($(".archive-table"), data)
-//     selection_files()
-// })
-
-// $.get("/archive/doc/list", (data) => {
-//     insert_toArchive($(".archive-table"), data)
-//     selection_files()
-// })
-
-// $.get("/archive/doc/list", (data) => {
-//     insert_toArchive($(".archive-table"), data)
-//     selection_files()
-// })
 
