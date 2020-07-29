@@ -19,6 +19,7 @@ import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -55,7 +56,7 @@ public class SpringMvcConfiguration
     @Autowired
     private DefaultPasswordEncoder defaultPasswordEncoder;
 
-    @Autowired
+    /*@Autowired
     @Qualifier("default_access_denied_handler")
     private AccessDeniedHandler accessDeniedHandler;
 
@@ -65,13 +66,13 @@ public class SpringMvcConfiguration
 
     @Autowired
     @Qualifier("default.auth.failure.handler")
-    private DefaultAuthenticationFailureHandler defaultAuthenticationFailureHandler;
+    private DefaultAuthenticationFailureHandler defaultAuthenticationFailureHandler;*/
 
-    @Autowired
+    /*@Autowired
     private ResourceLoader resourceLoader;
 
     @Autowired
-    private Filter authenticationFilter;
+    private Filter authenticationFilter;*/
 
     @Autowired
     @Qualifier("app_constants")

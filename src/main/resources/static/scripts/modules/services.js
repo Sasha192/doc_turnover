@@ -48,7 +48,7 @@ import { insert_toArchive } from "./form-handler.js"
 
 (function () {
 
-    if(window.location.pathname == "/") {
+    if(window.location.pathname == "/archive") {
 
         $.get("/archive/doc/list?page_id=1", (data) => {
 

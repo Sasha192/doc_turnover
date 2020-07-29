@@ -1,9 +1,10 @@
-import * as service from "./modules/services.js"
-import * as animation from "./modules/animation.js"
-
 // -------------------
 //    Access Module
 // -------------------
+
+
+import * as service from "./modules/services.js"
+import * as animation from "./modules/animation.js"
 
 import { validation } from "./modules/form-handler.js"
 
@@ -23,11 +24,12 @@ import { validation } from "./modules/form-handler.js"
                 confirmBlock.find("#confirm-button").on("click", () => {
                     let confirmCode = confirmBlock.find(".confirm").val()
 
-                    $.post(`/auth/verify?confirmCode=${confirmCode}`, (data) => {
-                        if (data.success) {
-                            window.location = "/"
+                    $.post(`/auth/verify?verificationCode=${confirmCode}`, (data) => {
+                        if(data.success) {
+                            window.location = "/archive"
                         } else {
-                            alert(data.msg)
+                            alert(data.msg);
+                            console.log(data.msg)
                         }
                     })
 
@@ -64,11 +66,12 @@ import { validation } from "./modules/form-handler.js"
                 confirmBlock.find("#confirm-button").on("click", () => {
                     let confirmCode = confirmBlock.find(".confirm").val()
 
-                    $.post(`/auth/verify?confirmCode=${confirmCode}`, (data) => {
-                        if (data.success) {
-                            window.location = "/"
+                    $.post(`/auth/verify?verificationCode=${confirmCode}`, (data) => {
+                        if(data.success) {
+                            window.location = "/archive"
                         } else {
-                            alert(data.msg)
+                            alert(data.msg);
+                            console.log(data.msg)
                         }
                     })
 
@@ -115,7 +118,7 @@ import { Insert_Tasks } from "./modules/form-handler.js"
 (function () {
     // archive options
 
-    if (window.location.pathname == "/") {
+    if (window.location.pathname == "/archive") {
 
         // add new todo
         {
@@ -234,7 +237,7 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                 })
 
                 console.log(data)
-                $.post("/archive/doc/download", JSON.stringify(data), (data) => {
+                $.post("/storage/download", JSON.stringify(data), (data) => {
                     alert(data)
                 })
             })

@@ -60,8 +60,8 @@ public class CustomUser
         addRole(SimpleRole.USER);
     }
 
-    public long getId() {
-        return this.id;
+    public Long getId() {
+        return id;
     }
 
     public void setId(final long id) {

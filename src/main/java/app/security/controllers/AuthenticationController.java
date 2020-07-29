@@ -137,6 +137,7 @@ public class AuthenticationController extends JsonSupportController {
                 removeVerificationCode(getVerificationKey(dto));
                 auth(res, request, dto);
                 this.sendDefaultJson(res, true, "");
+                return;
             } else {
                 sendDefaultJson(res, false, "You do not pass verification");
                 return;
@@ -263,6 +264,15 @@ public class AuthenticationController extends JsonSupportController {
                               HttpServletResponse res,
                               HttpServletRequest req)
             throws IOException {
+        CustomUser user = userService.retrieveByName(userDto.getEmail());
+        if (user == null) {
+            this.sendDefaultJson(res, false, "Wrong credentials!");
+            return;
+        }
+        if (!encoder.matches(userDto.getPassword(), user.getPassword())) {
+            this.sendDefaultJson(res, false, "Wrong Credentials");
+            return;
+        }
         this.createVerificationCode(userDto);
         this.sendVerificationCode(userDto, req, res);
     }
@@ -274,13 +284,13 @@ public class AuthenticationController extends JsonSupportController {
         if (session != null) {
             this.cleanData(request, res);
         }
+        session = request.getSession(true);
         UsernamePasswordAuthenticationToken authReq
                 = new UsernamePasswordAuthenticationToken(
                 dto.getEmail(), dto.getPassword());
         Authentication auth = authManager.authenticate(authReq);
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
-        session = request.getSession(true);
         session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 sc);

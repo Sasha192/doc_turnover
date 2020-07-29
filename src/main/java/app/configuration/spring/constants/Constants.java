@@ -87,7 +87,7 @@ public class Constants {
         corePropertyService.update(property);
     }
 
-    @Scheduled(fixedDelay = 1_000 * 10)
+    @Scheduled(fixedDelay = 1_000 * 60 * 10)
     public void updateConstants() {
         List<CoreProperty> properties = corePropertyService.findAll();
         for (CoreProperty property : properties) {

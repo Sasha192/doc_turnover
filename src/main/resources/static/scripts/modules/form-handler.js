@@ -269,11 +269,12 @@ class Insert_Tasks {
                     data.push(file.getAttribute("file-id"))
                 })
                 console.log(data)
-                $.post("/test", JSON.stringify(data), (data) => {
+                $.post("/archive/doc/download", JSON.stringify(data), (data) => {
                     console.log(data)
                 })
             }
         }
+
         // download report files
 
         {
@@ -283,7 +284,7 @@ class Insert_Tasks {
                     data.push(file.getAttribute("file-id"))
                 })
                 console.log(data)
-                $.post("/test", JSON.stringify(data), (data) => {
+                $.post("/archive/doc/download", JSON.stringify(data), (data) => {
                     console.log(data)
                 })
             }
