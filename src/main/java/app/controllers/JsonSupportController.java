@@ -17,7 +17,7 @@ public abstract class JsonSupportController {
     private static final String EXCEPTION_SENDING_JSON =
             "ERROR WHILE SENDING STANDART JSON RESPONSE : ";
 
-    protected void sendDefaultJson(HttpServletResponse response, boolean b, String s) {
+    protected static void sendDefaultJson(HttpServletResponse response, boolean b, String s) {
         try {
             GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
             writeToResponse(response, gsonBuilder, new ResponseJsonText(b, s));
@@ -26,13 +26,13 @@ public abstract class JsonSupportController {
         }
     }
 
-    protected void sendDefaultJson(HttpServletResponse response, Object o)
+    protected static void sendDefaultJson(HttpServletResponse response, Object o)
             throws IOException {
         GsonBuilder gb = new GsonBuilder().setPrettyPrinting();
         writeToResponse(response, gb, o);
     }
 
-    protected void writeToResponseComplexMapKeySerialization(HttpServletResponse response,
+    protected static void writeToResponseComplexMapKeySerialization(HttpServletResponse response,
                                                              Object obj)
             throws IOException {
         GsonBuilder builder = new GsonBuilder()
@@ -41,7 +41,7 @@ public abstract class JsonSupportController {
         writeToResponse(response, builder, obj);
     }
 
-    protected void writeToResponse(HttpServletResponse response,
+    protected static void writeToResponse(HttpServletResponse response,
                                    GsonBuilder builder,
                                    Object data)
             throws IOException {
@@ -54,7 +54,7 @@ public abstract class JsonSupportController {
         }
     }
 
-    protected void writeToResponse(HttpServletResponse response,
+    protected static void writeToResponse(HttpServletResponse response,
                                    TypeAdapter adapter, TypeToken typeToken,
                                    Object data)
             throws IOException {
@@ -64,7 +64,7 @@ public abstract class JsonSupportController {
 
     }
 
-    protected void writeToResponse(HttpServletResponse response,
+    protected static void writeToResponse(HttpServletResponse response,
                                    TypeAdapterFactory factory,
                                    Object data)
             throws IOException {

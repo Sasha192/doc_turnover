@@ -31,7 +31,7 @@ public class AuthenticationFilter extends GenericFilterBean {
                          ServletResponse servletResponse,
                          FilterChain filterChain)
             throws IOException, ServletException {
-        if (servletRequest instanceof HttpServletRequest) {
+        /*if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
             String requestUri = req.getRequestURI();
             HttpSession session = req.getSession();
@@ -60,12 +60,11 @@ public class AuthenticationFilter extends GenericFilterBean {
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     // @TODO : what if context == null ???
                 }
             }
-        }
+        }*/
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

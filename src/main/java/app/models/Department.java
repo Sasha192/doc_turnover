@@ -1,5 +1,6 @@
 package app.models;
 
+import app.models.serialization.ExcludeForJsonPerformer;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class Department
     private String parentDepartment;
 
     @OneToMany(mappedBy = "department")
+    @ExcludeForJsonPerformer
     private Set<Performer> performers;
 
     public Department() {

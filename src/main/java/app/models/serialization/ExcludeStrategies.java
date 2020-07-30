@@ -1,5 +1,6 @@
 package app.models.serialization;
 
+import app.models.Performer;
 import app.security.models.annotations.ExcludeMatchingPassword;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -111,4 +112,61 @@ public class ExcludeStrategies {
             return false;
         }
     };
+
+    public static final ExclusionStrategy EXCLUDE_FOR_JSON_PERFORMER = new ExclusionStrategy() {
+        @Override
+        public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+            return fieldAttributes.getAnnotation(ExcludeForJsonPerformer.class) != null;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return false;
+        }
+    };
+
+    public static class ExcludeThisClass implements ExclusionStrategy {
+
+        private Class<?> clazz;
+
+        public ExcludeThisClass(Class<?> clazz) {
+            this.clazz = clazz;
+        }
+
+        @Override
+        public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+            return false;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> aclazz) {
+            return aclazz.getName().equals(clazz.getName());
+        }
+    }
+
+    public static class ExcludeThisClasses implements ExclusionStrategy {
+
+        private Class<?>[] clazzes;
+
+        public ExcludeThisClasses(Class<?>... clazz) {
+            this.clazzes = clazz;
+        }
+
+        @Override
+        public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+            return false;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> aclazz) {
+            for (Class clazz : this.clazzes) {
+                if (!aclazz.getName().equals(clazz.getName())) {
+                    continue;
+                } else {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }

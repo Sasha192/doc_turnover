@@ -31,7 +31,7 @@ public class VirusTotalScan implements IMaliciousScan {
 
     @Autowired
     public VirusTotalScan(Constants constants) {
-        this.apiKeyVt = constants.get("x_api_key_vt").getName();
+        this.apiKeyVt = constants.get("x_api_key_vt").getStringValue();
     }
 
     @PostConstruct
@@ -68,8 +68,16 @@ public class VirusTotalScan implements IMaliciousScan {
         HttpPost request = new HttpPost(UPLOAD_URL);
         request.setEntity(entity);
         request.setHeader("x-apikey", apiKeyVt);
-        HttpResponse response = client.execute(request);
-        return responseToJson(response, "data", "id").getAsString();
+        HttpResponse response = null;
+        try {
+            response = client.execute(request);
+            return responseToJson(response, "data", "id").getAsString();
+        } catch (IOException e) {
+            EXCEPTIONS_LOGGER.error("IOEXCEPTION : " + e.getMessage());
+            return null;
+        } finally {
+            request.releaseConnection();
+        }
     }
 
     private JsonElement responseToJson(HttpResponse response, String... names) {

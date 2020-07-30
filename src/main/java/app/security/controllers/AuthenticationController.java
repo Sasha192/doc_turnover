@@ -44,7 +44,6 @@ public class AuthenticationController extends JsonSupportController {
     // @TODO Verification code : поскольку они хранятся в памяти. Можно ли осуществить атаку DDOS ?
     // @TODO Можно построить эскплоит на overhead main memory
     // @TODO Решение : как - только происходит overhead,
-    //  например больше 100 элементов, то убирать буфер и юзать DB.
 
     private static final Map<Long, VerificationCode> verificationTable = new HashMap<>();
     private static final String TABLE_USER = "TABLE_USER";

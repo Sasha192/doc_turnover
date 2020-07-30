@@ -1,6 +1,7 @@
 package app.models;
 
 import app.controllers.dto.PerformerDto;
+import app.models.serialization.ExcludeForJsonPerformer;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.List;
@@ -34,10 +35,15 @@ public class Performer
             name = "tasks_performers",
             joinColumns = @JoinColumn(name = "performer_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id"))
+    @ExcludeForJsonPerformer
     private List<Task> tasks;
 
     @OneToMany(mappedBy = "performer")
+    @ExcludeForJsonPerformer
     private List<TaskStatus> status;
+
+    @Column(name = "img_path")
+    private String imgPath;
 
     @OneToOne(mappedBy = "performer", cascade = CascadeType.ALL,
             fetch = FetchType.LAZY, optional = false)
@@ -124,5 +130,13 @@ public class Performer
 
     public void setUser(final CustomUser user) {
         this.user = user;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 }

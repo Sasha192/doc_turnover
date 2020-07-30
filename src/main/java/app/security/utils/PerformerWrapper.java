@@ -1,57 +1,61 @@
 package app.security.utils;
 
 import app.models.Performer;
+import app.security.models.AuthenticationWrapper;
 import app.service.IPerformerService;
 import com.google.common.base.Preconditions;
 import java.security.Principal;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
-
 @Component
 public class PerformerWrapper {
 
-    @Autowired
     private IPerformerService performerService;
 
-    public Performer retrievePerformer() {
-        Principal principal = (Principal) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        Performer performer = null;
-        if ((principal instanceof UserDetails)) {
-            performer = performerService.retrieveByUsername(
-                    ((UserDetails) principal).getUsername()
-            );
-        }
-        Preconditions.checkNotNull(performer);
-        return performer;
+    private AuthenticationWrapper authenticationWrapper;
+
+    @Autowired
+    public PerformerWrapper(IPerformerService performerService,
+                            AuthenticationWrapper authenticationWrapper) {
+        this.performerService = performerService;
+        this.authenticationWrapper = authenticationWrapper;
     }
 
-    public Performer retrievePerformer(HttpServletRequest  request) {
-        SecurityContext sc = null;
-        HttpSession session = request.getSession();
-        if (session != null) {
-            Object o = session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-            if (o != null && o instanceof SecurityContext) {
-                sc = (SecurityContext) o;
+    /**
+     * Used for assigning default performer, user;
+     *
+     * @deprecated use {@link #retrievePerformer(HttpServletRequest)} instead.
+     */
+    @Deprecated
+    public Performer retrievePerformer() {
+        try {
+            Principal principal = (Principal) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+            Performer performer = null;
+            if ((principal instanceof UserDetails)) {
+                performer = performerService.retrieveByUsername(
+                        ((UserDetails) principal).getUsername()
+                );
             }
-        } else {
-            sc = SecurityContextHolder
-                    .getContext();
+            Preconditions.checkNotNull(performer);
+            return performer;
+        } catch (Exception e) {
+            return performerService.findOne(1);
         }
-        Authentication authentication = sc.getAuthentication();
+    }
+    // @TODO : change default performer!
+
+    public Performer retrievePerformer(HttpServletRequest request) {
+        Authentication authentication = authenticationWrapper.getAuthentication(request);
         Preconditions.checkNotNull(authentication);
-        Principal principal = (Principal) sc.getAuthentication().getPrincipal();
+        Principal principal = (Principal) authentication.getPrincipal();
         Performer performer = null;
         if ((principal instanceof UserDetails)) {
             performer = performerService.retrieveByUsername(

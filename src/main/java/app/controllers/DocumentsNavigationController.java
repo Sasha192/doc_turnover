@@ -39,66 +39,57 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+
+// @TODO : Handle Exceptions!!!
 @Controller
 @RequestMapping("archive/doc")
 public class DocumentsNavigationController extends JsonSupportController {
 
     private static final String IOEXCEPTION_WHILE_SENDING_DATA_ = "IOEXCEPTION WHILE SENDING DATA ";
+
     private static final String
             FILE_NOT_FOUND_EXC =
             "FILENOTFOUNDEXCEPTION WHILE TRYING TO FIND DOCUMENT IN FILESYSTEM. FILENAME = ";
+
     private static final String MAX_FILES_UPLOAD = "max_files_upload";
+
     private static final String MAX_FILES_DOWNLOAD = "max_files_download";
-
-
-    /*private static final String PERF_ATTR = "performer_object".intern();
-
-    private static final String EXTENSION_FILE = ".docx";
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern("dd_MM_yyyy");
-import javax.annotation.PostConstruct;
-    private static final String SEPARATOR_FILE_SYSTEM = null;
-
-    private static final String FILE_PATH_SEPARATOR = File.separator;
-
-    private static final String UNDERSCORE = "_";
-
-    private static final Logger LOGGER = Logger.getLogger(TaskNavigationController.class);
-
-    private static final String FILE_TRANSFER_ERROR =
-            "==================FILE TRANSFER ERROR==================";*/
 
     @Autowired
     @Qualifier("app_constants")
     private Constants constants;
 
-    @Autowired
     private VirusTotalScan virusTotalScan;
 
-    @Autowired
     private GMailService mailService;
 
-    @Autowired
     private IBriefDocumentService docService;
 
-    @Autowired
     private IBriefJsonDocumentService jsonDocService;
 
-    @Autowired
     private PerformerWrapper performerWrapper;
 
-    @Autowired
     private ExecutionService executionService;
+
+    @Autowired
+    public DocumentsNavigationController(VirusTotalScan virusTotalScan,
+                                         GMailService mailService,
+                                         IBriefDocumentService docService,
+                                         IBriefJsonDocumentService jsonDocService,
+                                         PerformerWrapper performerWrapper,
+                                         ExecutionService executionService) {
+        this.virusTotalScan = virusTotalScan;
+        this.mailService = mailService;
+        this.docService = docService;
+        this.jsonDocService = jsonDocService;
+        this.performerWrapper = performerWrapper;
+        this.executionService = executionService;
+    }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public void list(final HttpServletResponse response, final HttpServletRequest request,
                      @RequestParam(name = "page_id") @NotNull final Integer pageId)
             throws IOException {
-        // throws IOException to the top,
-        // because then it is a problem with (closed response.getWriter())
-        // Controller should not deal with it
-        // @TODO
         final String year = request.getParameter("year");
         final String month = request.getParameter("month");
         final String day = request.getParameter("date");
@@ -106,6 +97,7 @@ import javax.annotation.PostConstruct;
                 || (month != null && month.length() > 2)
                 || (year != null && year.length() > 6)) {
             this.sendDefaultJson(response, false, "DATE NOT FOUND OR TOO BIG VALUE");
+            return;
         }
         Integer yearInt = null;
         Integer monthInt = null;
@@ -144,18 +136,16 @@ import javax.annotation.PostConstruct;
         final int year = now.getYear();
         final int month = now.getMonthValue();
         final int day = now.getDayOfMonth();
-        final String filePath = this.constants.get("path_to_archive")
+        final String filePath;
+        filePath = this.constants.get("path_to_archive")
                 .getStringValue()
-                .concat(Constants.SLASH + year)
-                .concat(Constants.SLASH + month)
-                .concat(Constants.SLASH + day);
+                 + (Constants.SLASH + year)
+                 + (Constants.SLASH + month)
+                 + (Constants.SLASH + day);
         final File fileFolder = new File(filePath);
         if (!fileFolder.exists()) {
             fileFolder.mkdirs();
         }
-        // @TODO : CAN WE DO IT ANOTHER THREADS ?
-        //  I mean, VTScanning could be performed in several threads
-        //  Or leave it ???!!!
         final List<File> files = new LinkedList<>();
         boolean success = true;
         String msg = Constants.EMPTY_STRING;
@@ -177,8 +167,8 @@ import javax.annotation.PostConstruct;
             this.sendDefaultJson(response, success, msg);
             return;
         }
-        final Performer performer = this.performerWrapper.retrievePerformer();
-        final Runnable runnable = new RunnableDatabaseStore(
+        Performer performer = this.performerWrapper.retrievePerformer();
+        Runnable runnable = new RunnableDatabaseStore(
                 files, this.docService,
                 filePath, performer
         );

@@ -485,9 +485,9 @@ export { Insert_Tasks }
 function insert_toArchive(table, data) {
 
     table.html("")
-    data.forEach(element => {
+    data.forEach(doc => {
         table.append(
-            `<tr class="archive-table_row" id="${element.document.id}">
+            `<tr class="archive-table_row" id="${doc.id}">
         <td>
         <div class="archive-row_item">
         <div class="custom-control custom-checkbox info">
@@ -496,28 +496,28 @@ function insert_toArchive(table, data) {
         <label class="custom-control-label" for="checkbox"></label>
         </div>
             <div id="archive-file_name">
-        ${element.document.name}
+            ${doc.name.substring(0, 32)}.. .${doc.extName}
             </div>
         </div>
         </td>
         <td>
         <div class="archive-row_item" id="archive-file_tasks">
-            Related Tasks :<span id="related-tasks_value">${element.document.tasks}</span>
+            Related Tasks :<span id="related-tasks_value">${doc.taskCount}</span>
         </div>
         </td>
         <td>
-        <div class="archive-row_item" id="archive-file_performer" performer-id="${element.performer.id}">
-        ${element.performer.name}
+        <div class="archive-row_item" id="archive-file_performer" performer-id="${doc.performerId}">
+        ${doc.performerName}
         </div>
         </td>
         <td>
-        <div class="archive-row_item" id="archive-file_department" department-id="${element.department.id}">
-        ${element.department.name}
+        <div class="archive-row_item" id="archive-file_department" department-id="${doc.departmentId}">
+        ${doc.departmentName}
         </div>
         </td>
         <td>
         <div class="archive-row_item" id="archive-file_date">
-        ${element.document.date}
+        ${doc.date}
         </div>
         </td>
         </tr>

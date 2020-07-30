@@ -283,7 +283,7 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                     data.forEach(obj => {
                         formData.append("file", obj.file)
                     })
-
+                    console.log(data);
                     $.ajax({
                         type: "post",
                         url: "/archive/doc/upload",
@@ -303,6 +303,8 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                         complete: () => {
                             $("#upload-docs").find(".status").css("opacity", "0")
                             $("#upload-docs").find(".status-spinner").removeClass("d-flex").addClass("d-none")
+                            formData = null;
+                            formData = new FormData();
                         }
                     })
 
