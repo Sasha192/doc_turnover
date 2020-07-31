@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
@@ -252,9 +253,14 @@ public class DocumentsNavigationController extends JsonSupportController {
     private void sendFile(final HttpServletResponse response, final File file) {
         try (final InputStream in = new FileInputStream(file)) {
             final String extesion = FilenameUtils.getExtension(file.getAbsolutePath());
-            String contentType = Constants.CONTENT_TYPE_MAP.getContentTypeFor(extesion);
+            String contentType = Constants.CONTENT_TYPE_MAP.getContentTypeFor(Constants.DOT.concat(extesion));
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            contentType = contentType.concat("; charset=UTF-8");
             response.setContentType(contentType);
-            response.setHeader("Content-disposition", "attachment; filename=" + file.getName());
+            response.setHeader("Content-disposition", String.format("attachment; filename=%s", URLEncoder
+                    .encode(file.getName(), StandardCharsets.UTF_8)));
             final int dataSize = Math.toIntExact(file.length());
             response.setContentLength(dataSize);
             final OutputStream out = response.getOutputStream();

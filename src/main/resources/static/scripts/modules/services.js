@@ -78,3 +78,10 @@ import { insert_toArchive } from "./form-handler.js"
 })();
 
 
+// -------------------
+//   Download files
+// -------------------
+
+window.downloadFile = function(sUrl) {
+    window.open(sUrl, '_self');
+};

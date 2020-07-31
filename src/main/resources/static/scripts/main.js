@@ -236,10 +236,8 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                     data.push(obj.id)
                 })
 
-                console.log(data)
-                $.post("/storage/download", JSON.stringify(data), (data) => {
-                    alert(data)
-                })
+                window.downloadFile(`/archive/doc/download?id=${data}`)
+
             })
         }
         // upload handler
@@ -283,7 +281,6 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                     data.forEach(obj => {
                         formData.append("file", obj.file)
                     })
-                    console.log(data);
                     $.ajax({
                         type: "post",
                         url: "/archive/doc/upload",
@@ -299,12 +296,15 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                             } else {
                                 // some code...
                             }
+
+                            window.location = window.location
                         },
-                        complete: () => {
+                        complete: (error) => {
                             $("#upload-docs").find(".status").css("opacity", "0")
                             $("#upload-docs").find(".status-spinner").removeClass("d-flex").addClass("d-none")
                             formData = null;
                             formData = new FormData();
+
                         }
                     })
 
