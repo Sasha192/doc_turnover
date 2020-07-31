@@ -16,6 +16,10 @@ public class AccessPerformer extends GenericFilterBean {
     @Autowired
     private AuthenticationWrapper authenticationWrapper;
 
+    public AccessPerformer(AuthenticationWrapper authenticationWrapper) {
+        this.authenticationWrapper = authenticationWrapper;
+    }
+
     @Override
     public void doFilter(final ServletRequest servletRequest,
                          final ServletResponse servletResponse,

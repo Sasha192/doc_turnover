@@ -4,9 +4,9 @@ import app.models.CustomUser;
 import app.models.Performer;
 import app.models.serialization.ExcludeStrategies;
 import app.security.models.AuthenticationWrapper;
-import app.security.service.impl.UserService;
+import app.security.service.IUserService;
 import app.security.utils.DefaultPasswordEncoder;
-import app.service.impl.PerformerService;
+import app.service.IPerformerService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.security.Principal;
@@ -26,15 +26,15 @@ public class PerformerController extends JsonSupportController {
     // @TODO : What should we do if connection is not via http ??? Could it be ???
     // @TODO : any operations to DB perform in queue???
 
-    private UserService userService;
+    private IUserService userService;
     private AuthenticationWrapper authenticationWrapper;
-    private PerformerService performerService;
+    private IPerformerService performerService;
     private DefaultPasswordEncoder encoder;
 
     @Autowired
-    public PerformerController(UserService userService,
+    public PerformerController(IUserService userService,
                                AuthenticationWrapper authenticationWrapper,
-                               PerformerService performerService,
+                               IPerformerService performerService,
                                DefaultPasswordEncoder encoder) {
         this.userService = userService;
         this.authenticationWrapper = authenticationWrapper;

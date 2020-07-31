@@ -37,3 +37,23 @@ BEGIN
         doc_counter=doc_counter+1;
 END$$
 DELIMITER ;
+
+SELECT CONCAT('ALTER TABLE ',TABLE_SCHEMA,'.',TABLE_NAME,' CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;') FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'bcrew';
+
+ALTER DATABASE bcrew CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+ALTER TABLE archive CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.brief_documents CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.core_properties CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.custom_status CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.departments CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.doc_statistics CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.performers CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.task_statistics CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.tasks CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.tasks_documents CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.tasks_keys CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.tasks_performers CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.users CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.users_roles CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew.verification_code_table CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;

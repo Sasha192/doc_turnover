@@ -21,7 +21,7 @@ public class AuthenticationWrapper {
                 sc = (SecurityContext) o;
             }
         }
-        if (sc != null) {
+        if (sc == null) {
             sc = SecurityContextHolder.getContext();
         }
         return sc.getAuthentication();

@@ -20,7 +20,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +32,8 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
+
+import com.sun.xml.bind.api.impl.NameConverter;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,8 +156,16 @@ public class DocumentsNavigationController extends JsonSupportController {
         String msg = Constants.EMPTY_STRING;
         for (int i = 0; i < mfiles.length; i++) {
             final MultipartFile mfile = mfiles[i];
+            String fileName = new String(
+                    mfile.getOriginalFilename()
+                            .getBytes(StandardCharsets.ISO_8859_1),
+                    StandardCharsets.UTF_8);
+            // @TODO : Change this for different Charsets.
+            //  e.g. There was problem with CharsetDetector(CD)
+            //  CD works incorrect!!!
+            // @TODO : Think about it could be
             final File fileToSave = new File(filePath.concat(
-                    Constants.SLASH.concat(mfile.getOriginalFilename()))
+                    Constants.SLASH.concat(fileName))
             );
             mfile.transferTo(fileToSave);
             files.add(fileToSave);
@@ -272,7 +285,8 @@ public class DocumentsNavigationController extends JsonSupportController {
             final ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
             response.setContentType("application/zip");
             final String zipName = Constants.DATE_FORMAT.format(Date.valueOf(LocalDate.now()));
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + zipName + "\"");
+            response.setHeader("Content-Disposition", MessageFormat
+                    .format("attachment; filename=\"{0}.zip\"", zipName));
             final byte[] buf = new byte[2048];
             for (final File file : files) {
                 try {
@@ -295,6 +309,7 @@ public class DocumentsNavigationController extends JsonSupportController {
                             .error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
                 }
             }
+            zipOut.close();
         } catch (final IOException e) {
             this.getExceptionLogger().error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
         }
