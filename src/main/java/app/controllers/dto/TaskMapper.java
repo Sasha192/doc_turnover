@@ -4,6 +4,7 @@ import app.configuration.spring.constants.Constants;
 import app.models.BriefDocument;
 import app.models.Performer;
 import app.models.Task;
+import app.models.TaskStatus;
 import app.service.IBriefDocumentService;
 import app.service.IPerformerService;
 import app.service.IStatusService;
@@ -57,28 +58,34 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
     public Task getEntity(TaskDto dto) {
         Task task = new Task();
         try {
-            task = setTaskFields(dto, task);
+            setTaskFields(dto, task);
         } catch (ParseException e) {
             return null;
         }
         List<Performer> performers = performerService.findSeveralById(dto.getPerformerId());
-        if (dto.getPerformerId() != null) {
-            List<BriefDocument> documents = documentService.findSeveralById(dto.getDocsId());
+        Long[] docIds = dto.getDocsId();
+        if (docIds != null && docIds.length > 0) {
+            List<BriefDocument> documents = documentService.findSeveralById(docIds);
             task.setDocument(Sets.newHashSet(documents));
+        }
+        TaskStatus taskStatus = statusService.findByTitle(dto.getStatus());
+        if (taskStatus != null) {
+            task.setStatus(taskStatus);
+        } else {
+            throw new IllegalArgumentException("Not valid TaskStatus. Actual : " + dto.getStatus());
         }
         task.setDeadline(false);
         task.setPerformer(Sets.newHashSet(performers));
         return task;
     }
 
-    private Task setTaskFields(TaskDto dto, Task task) throws ParseException {
+    private void setTaskFields(TaskDto dto, Task task) throws ParseException {
         Date now = Date.valueOf(LocalDate.now());
         task.setToDo(dto.getName());
         task.setControlDate(FORMATTER.parse(dto.getDateControl()).getTime());
         task.setDeadlineDate(FORMATTER.parse(dto.getDeadline()).getTime());
         task.setCreationDate(now);
-        task.setPriority(dto.getPriority());
-        //task.setStatus();
+        task.setPriority(Constants.EMPTY_STRING);
         task.setDescription(dto.getDescription());
         Set<String> keys = new HashSet<>();
         task.setKeys(keys);
@@ -87,6 +94,5 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
                 keys.add(key.toString());
             }
         }
-        return task;
     }
 }

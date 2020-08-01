@@ -30,7 +30,7 @@ public class Performer
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(
             name = "tasks_performers",
             joinColumns = @JoinColumn(name = "performer_id"),
@@ -45,7 +45,7 @@ public class Performer
     @Column(name = "img_path")
     private String imgPath;
 
-    @OneToOne(mappedBy = "performer", cascade = CascadeType.ALL,
+    @OneToOne(mappedBy = "performer", cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY, optional = false)
     @ExcludeForJsonPerformer
     private CustomUser user;

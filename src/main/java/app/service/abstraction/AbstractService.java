@@ -65,7 +65,7 @@ public abstract class AbstractService<T extends Serializable> implements IOperat
     }
 
     @Transactional(readOnly = true)
-    public List<T> findSeveralById(long... ids) {
+    public List<T> findSeveralById(Long... ids) {
         return getDao().findSeveralById(ids);
     }
 

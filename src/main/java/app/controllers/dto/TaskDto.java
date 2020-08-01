@@ -92,8 +92,8 @@ public class TaskDto {
         }
     }
 
-    public long[] getPerformerId() {
-        return ArrayUtils.toPrimitive(this.performerList);
+    public Long[] getPerformerId() {
+        return this.performerList;
     }
 
     public void setPerformerId(final Set<Long> performerIds) {
@@ -104,8 +104,8 @@ public class TaskDto {
         }
     }
 
-    public long[] getDocsId() {
-        return ArrayUtils.toPrimitive(this.docList);
+    public Long[] getDocsId() {
+        return this.docList;
     }
 
     public void setDocsId(final Set<Long> docsId) {

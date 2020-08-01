@@ -35,4 +35,14 @@ public class StatusService extends AbstractService<TaskStatus>
     public List<TaskStatus> findByPerformerId(long id) {
         return dao.findByPerformerId(id);
     }
+
+    @Override
+    public TaskStatus findByTitleAndPerformer(Long performerId, String title) {
+        return dao.findByTitleAndPerformer(performerId, title);
+    }
+
+    @Override
+    public TaskStatus findByTitle(String title) {
+        return dao.findByTitle(title);
+    }
 }
