@@ -222,17 +222,31 @@ class Insert_Tasks {
 
         this.insertList.find(".todo-count").html(`(${data.length})`)
 
-        data.forEach(todo => {
-            this.insertList.find(".board-body").append(
-                `<div class="board-item" todo-id="${todo.id}">
-                <img src=${todo.performerImgPath} alt="">
+        if(window.location.pathname == "/myboard") {
+            data.forEach(todo => {
+                this.insertList.find(".board-body").append(
+                    `<div class="board-item" todo-id="${todo.id}">
+                <img src=${todo.managerImgPath} alt="">
+                <div class="w-100">
+                    <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.deadline}</span></div>
+                    <div class="board-item_status">${todo.status}</div>
+                </div>
+                </div>`
+                )
+            })
+        } else {
+            data.forEach(todo => {
+                this.insertList.find(".board-body").append(
+                    `<div class="board-item" todo-id="${todo.id}">
+                <img src=${todo.} alt="">
                 <div class="w-100">
                     <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.dateDeadline}</span></div>
                     <div class="board-item_status">${todo.status}</div>
                 </div>
                 </div>`
-            )
-        })
+                )
+            })
+        }
 
         this.insertList.find(".board-item_title").each((i, task) => {
             task.onclick = (e) => {
@@ -686,10 +700,10 @@ export { validation }
             calendar.querySelector("tbody").append(row)
         }
 
-        calendar.querySelectorAll("td div").forEach(element => {
+        calendar.querySelectorAll("tr td div").forEach(element => {
             element.onclick = (e) => {
                 let date_item = e.target.closest("td div")
-                if (!date_item.classList.contains("active") && !date_item.closest("td").classList.contains("week-end")) {
+                if (!date_item.classList.contains("active") && !date_item.closest("td").classList.contains("week-day")) {
                     $(date_item.closest(".calendar")).find(".active").removeClass("active")
                     date_item.classList.add("active")
                     calendar.querySelector(".head-block .date").innerHTML = `${calendar.querySelector(".body .current-month").textContent} ${date_item.textContent}, ${calendar.querySelector(".body .current-year").textContent}`

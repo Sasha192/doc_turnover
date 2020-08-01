@@ -169,14 +169,19 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                         let dateDeadline_words = document.querySelector("#add-NewTodo .calendar#dateDeadline .date").textContent.replace(",", "").split(" "),
                             deadline = `${dateDeadline_words[1]}.${window.months.findIndex(element => element == dateDeadline_words[0]) + 1}.${dateDeadline_words[2]}`
 
-                        let data = { name, dateControl, deadline, description, performerList, docList, keyWords: [], status: "New" }
+                        let data = { name, dateControl, deadline, description, performerList, docList, keyWords: [], status: "new" }
 
                         status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
                         console.log(data)
 
-                        $.post("/task/create", JSON.stringify(data), () => {
+                        $.post("/task/create", JSON.stringify(data), (data) => {
+                            if(data.success) {
                                 window.location = window.location
+                                console.log(data)
+                            } else {
+                                alert(data.msg)
+                            }
                         }, "json")
 
                     }
@@ -416,32 +421,32 @@ import { Insert_Tasks } from "./modules/form-handler.js"
 
         (async () => {
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("task/my/list/new", (data) => {
                 handlerNew.append(data)
                 $(".board.new").find(".todo-count").html(`(${data.length})`)
                 console.log("new")
             })
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("task/my/list/inprogress", (data) => {
                 hendlerProgress.append(data)
                 $(".board.InProgress").find(".todo-count").html(`(${data.length})`)
                 console.log("InProgress")
             })
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("task/my/list/completed", (data) => {
                 hendlerCompleted.append(data)
                 $(".board.completed").find(".todo-count").html(`(${data.length})`)
                 console.log("completed")
             })
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("task/my/list/overdue", (data) => {
                 hendlerOverdue.append(data)
                 $(".board.overdue").find(".todo-count").html(`(${data.length})`)
                 console.log("ovedue")
             })
 
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("task/my/list/onhold", (data) => {
                 hendlerOnHold.append(data)
                 $(".board.onhold").find(".todo-count").html(`(${data.length})`)
                 console.log("onhold")

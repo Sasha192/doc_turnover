@@ -7,7 +7,7 @@ import app.controllers.utils.RunnableDatabaseStore;
 import app.models.BriefDocument;
 import app.models.BriefJsonDocument;
 import app.models.Performer;
-import app.security.utils.PerformerWrapper;
+import app.security.controllers.PerformerWrapper;
 import app.service.IBriefDocumentService;
 import app.service.IBriefJsonDocumentService;
 import app.service.extapis.GMailService;
@@ -128,7 +128,8 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(@RequestParam("file") final MultipartFile[] mfiles,
-                       final HttpServletResponse response) throws IOException {
+                       final HttpServletResponse response,
+                       final HttpServletRequest req) throws IOException {
         if (mfiles.length > constants.get(MAX_FILES_UPLOAD).getIntValue()) {
             sendDefaultJson(
                     response, false,
@@ -186,7 +187,7 @@ public class DocumentsNavigationController extends JsonSupportController {
             this.sendDefaultJson(response, success, msg);
             return;
         }
-        Performer performer = this.performerWrapper.retrievePerformer();
+        Performer performer = this.performerWrapper.retrievePerformer(req);
         Runnable runnable = new RunnableDatabaseStore(
                 files, this.docService,
                 filePath, performer

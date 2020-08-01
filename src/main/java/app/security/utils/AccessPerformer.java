@@ -1,6 +1,6 @@
 package app.security.utils;
 
-import app.security.models.AuthenticationWrapper;
+import app.security.controllers.AuthenticationWrapper;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

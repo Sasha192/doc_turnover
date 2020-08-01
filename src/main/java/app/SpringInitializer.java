@@ -2,7 +2,7 @@ package app;
 
 import app.configuration.spring.SpringDataConfiguration;
 import app.configuration.spring.SpringMvcConfiguration;
-import app.security.models.AuthenticationWrapper;
+import app.security.controllers.AuthenticationWrapper;
 import app.security.utils.AccessDepartment;
 import app.security.utils.AccessGodAdminFilter;
 import app.security.utils.AccessPerformer;
