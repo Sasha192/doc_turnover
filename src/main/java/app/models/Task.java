@@ -29,7 +29,7 @@ public class Task
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(name = "tasks_performers",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "performer_id"))
@@ -38,7 +38,7 @@ public class Task
     @Transient
     private Set<Long> performerIds;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(
             name = "tasks_documents",
             joinColumns = @JoinColumn(name = "task_id"),

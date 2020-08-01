@@ -18,5 +18,5 @@ public interface IOperations<T extends Serializable> {
 
     void deleteById(final long entityId);
 
-    List<T> findSeveralById(long... ids);
+    List<T> findSeveralById(Long... ids);
 }

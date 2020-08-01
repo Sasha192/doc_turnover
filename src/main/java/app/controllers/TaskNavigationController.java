@@ -10,6 +10,7 @@ import app.service.IBriefTaskService;
 import app.service.ITaskService;
 import java.io.IOException;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -57,8 +58,12 @@ public class TaskNavigationController extends JsonSupportController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public void create(@Validated @RequestBody TaskDto dto,
-                       HttpServletResponse response) {
+                       HttpServletResponse response,
+                       HttpServletRequest request) {
         Task task = taskMapper.getEntity(dto);
+        Performer ownerPerformer = performerWrapper.retrievePerformer();
+        // @TODO : change performerWrapper : we could do it via AuthFilter!!!
+        task.setTaskOwner(ownerPerformer);
         taskService.create(task);
         sendDefaultJson(response, true, "");
     }

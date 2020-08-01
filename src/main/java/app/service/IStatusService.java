@@ -7,4 +7,8 @@ import java.util.List;
 public interface IStatusService extends IOperations<TaskStatus> {
 
     List<TaskStatus> findByPerformerId(long id);
+
+    TaskStatus findByTitleAndPerformer(Long performerId, String title);
+
+    TaskStatus findByTitle(String title);
 }

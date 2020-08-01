@@ -33,7 +33,7 @@ public class BriefDocument
     @Column(name = "full_path")
     private String path;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(
             name = "tasks_documents",
             joinColumns = @JoinColumn(name = "doc_id"),

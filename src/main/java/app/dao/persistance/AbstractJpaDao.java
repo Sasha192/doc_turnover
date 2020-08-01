@@ -1,6 +1,9 @@
 package app.dao.persistance;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -97,7 +100,7 @@ public abstract class AbstractJpaDao<T extends Serializable> {
         return getCriteriaQuery().from(getClazz());
     }
 
-    public List<T> findSeveralById(long... ids) {
+    public List<T> findSeveralById(Long... ids) {
         if (ids == null || ids.length == 0 || ids.length > 6) {
             return null;
         }
@@ -105,6 +108,6 @@ public abstract class AbstractJpaDao<T extends Serializable> {
         CriteriaQuery<T> q = cb.createQuery(getClazz());
         Root<T> c = q.from(getClazz());
         return getEntityManager()
-                .createQuery(q.select(c).where(c.get("title").in(ids))).getResultList();
+                .createQuery(q.select(c).where(c.get("id").in(ids))).getResultList();
     }
 }
