@@ -145,8 +145,11 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                     let name = $("#add-NewTodo #name").val().trim(),
                         description = $("#add-NewTodo #description").val().trim(),
                         performerList = usersHandle.getData(),
-                        docList = filesHandle.getData(),
-                        managerId = "1-23980123ialskdlasdas"
+                        docList = []
+
+                    filesHandle.getData().forEach(doc => {
+                        docList.push(doc.id)
+                    })
 
                     if (name.length == 0 || name == "" || name == " " || name.length > 256 || name.length < 8) {
 
@@ -166,15 +169,15 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                         let dateDeadline_words = document.querySelector("#add-NewTodo .calendar#dateDeadline .date").textContent.replace(",", "").split(" "),
                             deadline = `${dateDeadline_words[1]}.${window.months.findIndex(element => element == dateDeadline_words[0]) + 1}.${dateDeadline_words[2]}`
 
-                        let data = { name, dateControl, deadline, description, managerId, performerList, docList, keyWords: [], status: "New" }
+                        let data = { name, dateControl, deadline, description, performerList, docList, keyWords: [], status: "New" }
 
                         status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
-                        $.post("/archive/doc/upload", JSON.stringify(data), () => {
-                                window.location = window.location
-                        })
-
                         console.log(data)
+
+                        $.post("/task/create", JSON.stringify(data), () => {
+                                window.location = window.location
+                        }, "json")
 
                     }
 

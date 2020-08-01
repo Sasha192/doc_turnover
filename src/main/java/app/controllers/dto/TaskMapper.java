@@ -44,7 +44,7 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
         dto.setKeyWords(entity.getKeys());
         dto.setDateControl(FORMATTER.format(entity.getControlDate()));
         dto.setPriority(entity.getPriority());
-        dto.setDeadLine(FORMATTER.format(entity.getDeadlineDate()));
+        dto.setDeadline(FORMATTER.format(entity.getDeadlineDate()));
         dto.setDescription(FORMATTER.format(entity.getDescription()));
         dto.setName(entity.getToDo());
         dto.setDocsId(entity.getDocumentsIds());
@@ -75,7 +75,7 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
         Date now = Date.valueOf(LocalDate.now());
         task.setToDo(dto.getName());
         task.setControlDate(FORMATTER.parse(dto.getDateControl()).getTime());
-        task.setDeadlineDate(FORMATTER.parse(dto.getDeadLine()).getTime());
+        task.setDeadlineDate(FORMATTER.parse(dto.getDeadline()).getTime());
         task.setCreationDate(now);
         task.setPriority(dto.getPriority());
         //task.setStatus();
@@ -83,8 +83,8 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
         Set<String> keys = new HashSet<>();
         task.setKeys(keys);
         if (dto.getKeyWords() != null) {
-            for (String key : dto.getKeyWords()) {
-                keys.add(key);
+            for (Object key : dto.getKeyWords()) {
+                keys.add(key.toString());
             }
         }
         return task;

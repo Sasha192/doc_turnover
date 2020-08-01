@@ -13,7 +13,7 @@ public class TaskDto {
     private String dateControl;
 
     @NotNull
-    private String deadLine;
+    private String deadline;
 
     private transient String priority;
 
@@ -21,13 +21,10 @@ public class TaskDto {
     private String description;
 
     @NotNull
-    private String[] keyWords;
+    private Object[] keyWords;
 
     @NotNull
     private Long[] performerList;
-
-    @NotNull
-    private Integer managerId;
 
     @NotNull
     private Long[] docList;
@@ -51,12 +48,12 @@ public class TaskDto {
         this.dateControl = dateControl;
     }
 
-    public String getDeadLine() {
-        return this.deadLine;
+    public String getDeadline() {
+        return deadline;
     }
 
-    public void setDeadLine(final String deadLine) {
-        this.deadLine = deadLine;
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
     }
 
     public String getPriority() {
@@ -75,12 +72,16 @@ public class TaskDto {
         this.description = description;
     }
 
-    public String[] getKeyWords() {
-        return this.keyWords;
+    public Object[] getKeyWords() {
+        return keyWords;
     }
 
-    public void setKeyWords(final String[] keyWords) {
-        this.keyWords = keyWords;
+    public Long[] getPerformerList() {
+        return performerList;
+    }
+
+    public Long[] getDocList() {
+        return docList;
     }
 
     public void setKeyWords(final Set<String> keyWords) {
@@ -95,10 +96,6 @@ public class TaskDto {
         return ArrayUtils.toPrimitive(this.performerList);
     }
 
-    public void setPerformerId(final Long[] performerId) {
-        this.performerList = performerId;
-    }
-
     public void setPerformerId(final Set<Long> performerIds) {
         this.performerList = new Long[performerIds.size()];
         int i = 0;
@@ -107,20 +104,8 @@ public class TaskDto {
         }
     }
 
-    public Integer getManagerId() {
-        return this.managerId;
-    }
-
-    public void setManagerId(final Integer managerId) {
-        this.managerId = managerId;
-    }
-
     public long[] getDocsId() {
         return ArrayUtils.toPrimitive(this.docList);
-    }
-
-    public void setDocsId(final Long[] docsId) {
-        this.docList = docsId;
     }
 
     public void setDocsId(final Set<Long> docsId) {

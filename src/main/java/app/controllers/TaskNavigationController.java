@@ -13,6 +13,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,7 @@ public class TaskNavigationController extends JsonSupportController {
 
     @Autowired
     @Qualifier("task_mapper")
-    private IEntityDtoMapper taskMapper;
+    private IEntityDtoMapper<Task, TaskDto> taskMapper;
 
     @Autowired
     private PerformerWrapper performerWrapper;
@@ -52,10 +53,12 @@ public class TaskNavigationController extends JsonSupportController {
         sendDefaultJson(response, tasks);
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    @RequestMapping(value = "/create",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public void create(@Validated @RequestBody TaskDto dto,
                        HttpServletResponse response) {
-        Task task = (Task) taskMapper.getEntity(dto);
+        Task task = taskMapper.getEntity(dto);
         taskService.create(task);
         sendDefaultJson(response, true, "");
     }

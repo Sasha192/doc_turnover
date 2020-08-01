@@ -40,6 +40,14 @@
 //     Insert Data
 // -------------------
 
+$.ajaxSetup({
+    contentType: "application/json"
+});
+
+// -------------------
+//     Insert Data
+// -------------------
+
 // import { insert_toTeamBoard} from "./form-handler.js"
 // import { insert_toTMyBoard} from "./form-handler.js"
 // import { insert_toTaskTable} from "./form-handler.js"
