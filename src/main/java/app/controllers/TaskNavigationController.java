@@ -27,7 +27,7 @@ public class TaskNavigationController extends JsonSupportController {
 
     @Autowired
     @Qualifier("task_mapper")
-    private IEntityDtoMapper taskMapper;
+    private IEntityDtoMapper<Task, TaskDto> taskMapper;
 
     @Autowired
     private PerformerWrapper performerWrapper;
@@ -55,7 +55,7 @@ public class TaskNavigationController extends JsonSupportController {
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public void create(@Validated @RequestBody TaskDto dto,
                        HttpServletResponse response) {
-        Task task = (Task) taskMapper.getEntity(dto);
+        Task task = taskMapper.getEntity(dto);
         taskService.create(task);
         sendDefaultJson(response, true, "");
     }
