@@ -44,7 +44,6 @@ public class CustomUser
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "performer_id", referencedColumnName = "id")
-    @ExcludeForJsonPerformer
     private Performer performer;
 
     public CustomUser() {

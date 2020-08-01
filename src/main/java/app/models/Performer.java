@@ -47,6 +47,7 @@ public class Performer
 
     @OneToOne(mappedBy = "performer", cascade = CascadeType.ALL,
             fetch = FetchType.LAZY, optional = false)
+    @ExcludeForJsonPerformer
     private CustomUser user;
 
     public Performer() {
