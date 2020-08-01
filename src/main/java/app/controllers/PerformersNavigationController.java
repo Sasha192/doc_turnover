@@ -47,8 +47,9 @@ public class PerformersNavigationController extends JsonSupportController {
             performers = performerService.findAll();
         }
         GsonBuilder builder = new GsonBuilder()
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_RELATIONS)
-                .setPrettyPrinting();
+                .addSerializationExclusionStrategy(
+                        ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER
+                ).setPrettyPrinting();
         writeToResponse(response, builder, performers);
     }
 

@@ -1,5 +1,6 @@
 package app.models;
 
+import app.models.serialization.ExcludeForJsonPerformer;
 import app.security.models.SimpleRole;
 import app.security.models.UserDto;
 import app.security.utils.DefaultPasswordEncoder;
@@ -43,6 +44,7 @@ public class CustomUser
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "performer_id", referencedColumnName = "id")
+    @ExcludeForJsonPerformer
     private Performer performer;
 
     public CustomUser() {
