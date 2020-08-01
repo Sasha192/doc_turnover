@@ -3,7 +3,7 @@ package app.controllers;
 import app.models.CustomUser;
 import app.models.Performer;
 import app.models.serialization.ExcludeStrategies;
-import app.security.models.AuthenticationWrapper;
+import app.security.controllers.AuthenticationWrapper;
 import app.security.service.IUserService;
 import app.security.utils.DefaultPasswordEncoder;
 import app.service.IPerformerService;

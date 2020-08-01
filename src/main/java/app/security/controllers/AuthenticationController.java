@@ -276,7 +276,7 @@ public class AuthenticationController extends JsonSupportController {
         this.sendVerificationCode(userDto, req, res);
     }
 
-    private void auth(HttpServletResponse res,
+    public void auth(HttpServletResponse res,
                       HttpServletRequest request,
                       UserDto dto) throws IOException {
         HttpSession session = request.getSession();

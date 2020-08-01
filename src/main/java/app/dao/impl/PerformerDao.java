@@ -14,11 +14,11 @@ public class PerformerDao extends GenericJpaRepository<Performer>
         implements IPerformerDao {
 
     private static final String WHERE_USERNAME =
-            "from Performer perf"
-                    + "INNER JOIN perf.user u where u.email = :email";
+            "select perf from Performer perf "
+                    + " INNER JOIN perf.user u ON u.email = :email ";
 
     private static final String WHERE_DEPARTMENT_ID =
-            "from Performer perf WHERE perf.department.id = :department_id_";
+            " from Performer perf WHERE perf.department.id = :department_id_ ";
 
     public PerformerDao() {
         setClazz(Performer.class);
@@ -36,10 +36,10 @@ public class PerformerDao extends GenericJpaRepository<Performer>
 
     @Override
     public Performer retrieveByUsername(String username) {
-        TypedQuery<Performer> typedQuery = getEntityManager()
-                .createQuery(WHERE_USERNAME, Performer.class);
-        typedQuery.setParameter("email", username);
-        List<Performer> performers = typedQuery.getResultList();
+        List<Performer> performers = getEntityManager()
+                .createQuery(WHERE_USERNAME, Performer.class)
+                .setParameter("email", username)
+                .getResultList();
         if (performers.isEmpty()) {
             return null;
         }

@@ -5,7 +5,7 @@ import app.controllers.dto.TaskDto;
 import app.models.BriefTask;
 import app.models.Performer;
 import app.models.Task;
-import app.security.utils.PerformerWrapper;
+import app.security.controllers.PerformerWrapper;
 import app.service.IBriefTaskService;
 import app.service.ITaskService;
 import java.io.IOException;
@@ -40,11 +40,11 @@ public class TaskNavigationController extends JsonSupportController {
     @Autowired
     private IBriefTaskService briefTaskService;
 
-    @RequestMapping(value = "/my/list/{task_status}")
-    public void list(HttpServletResponse response,
+    @RequestMapping(value = "/my/list/{task_status}", method = RequestMethod.GET)
+    public void list(HttpServletResponse response, HttpServletRequest request,
                      @PathVariable(value = "task_status", required = false) String status)
             throws IOException {
-        Performer performer = performerWrapper.retrievePerformer();
+        Performer performer = performerWrapper.retrievePerformer(request);
         List<BriefTask> tasks = null;
         if (status == null) {
             tasks = briefTaskService.findByPerformer(performer.getId());
@@ -61,8 +61,7 @@ public class TaskNavigationController extends JsonSupportController {
                        HttpServletResponse response,
                        HttpServletRequest request) {
         Task task = taskMapper.getEntity(dto);
-        Performer ownerPerformer = performerWrapper.retrievePerformer();
-        // @TODO : change performerWrapper : we could do it via AuthFilter!!!
+        Performer ownerPerformer = performerWrapper.retrievePerformer(request);
         task.setTaskOwner(ownerPerformer);
         taskService.create(task);
         sendDefaultJson(response, true, "");
