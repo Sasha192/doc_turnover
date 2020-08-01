@@ -131,7 +131,7 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                 $("#call-add-NewTodo").on("click", () => {
                     filesHandle.append(window.archive_Selected_Files)
 
-                    $.get("/user-list", (data) => {
+                    $.get("/performers/list", (data) => {
                         usersHandle.append(data)
                     })
 
@@ -171,9 +171,7 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                         status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
                         $.post("/archive/doc/upload", JSON.stringify(data), () => {
-                            setTimeout(() => {
-                                // window.location = window.location
-                            }, 2000)
+                                window.location = window.location
                         })
 
                         console.log(data)

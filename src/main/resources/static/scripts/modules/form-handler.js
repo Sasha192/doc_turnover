@@ -68,16 +68,16 @@ class Insert_Users {
     append(data) {
         this.userList.html("")
 
-        data.forEach(element => {
+        data.forEach(user => {
             this.userList.append(`
                 <div class="drop-down_item">
-                    <div class="user" user-id="${element.userId}">
+                    <div class="user" user-id="${user.id}">
                         <div class="d-flex align-items-center">
-                            <img src="img/services/man.png" alt="">
+                            <img src="${user.imgPath}" alt="">
                             <div class="user-meta">
-                                <a href="#" class="user-name">${element.name}</a>
+                                <a href="#" class="user-name">${user.name}</a>
                                 <div class="user-department">
-                                ${element.department}
+                                ${user.department.name}
                                 </div>
                             </div>
                         </div>
