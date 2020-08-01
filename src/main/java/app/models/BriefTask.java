@@ -1,5 +1,7 @@
 package app.models;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.io.Serializable;
 import java.sql.Date;
 import javax.persistence.Access;
@@ -62,6 +64,12 @@ public class BriefTask
 
     @Column(name = "owner_id")
     private Long ownerId;
+
+    @Column(name = "owner_img_path")
+    private String managerImgPath;
+
+    @Column(name = "perf_img_path")
+    private String perfImgPath;
 
     private BriefTask() {
         ;
@@ -193,5 +201,21 @@ public class BriefTask
 
     public void setOwnerId(final Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getManagerImgPath() {
+        return managerImgPath;
+    }
+
+    public void setManagerImgPath(String managerImgPath) {
+        this.managerImgPath = managerImgPath;
+    }
+
+    public String getPerfImgPath() {
+        return perfImgPath;
+    }
+
+    public void setPerfImgPath(String perfImgPath) {
+        this.perfImgPath = perfImgPath;
     }
 }
