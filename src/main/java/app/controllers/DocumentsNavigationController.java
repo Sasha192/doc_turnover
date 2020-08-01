@@ -1,5 +1,7 @@
 package app.controllers;
 
+import static org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.UnicodeExtraFieldPolicy;
+
 import app.configuration.spring.constants.Constants;
 import app.controllers.utils.RunnableDatabaseStore;
 import app.models.BriefDocument;
@@ -21,22 +23,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-
-import com.sun.xml.bind.api.impl.NameConverter;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -145,9 +145,9 @@ public class DocumentsNavigationController extends JsonSupportController {
         final String filePath;
         filePath = this.constants.get("path_to_archive")
                 .getStringValue()
-                 + (Constants.SLASH + year)
-                 + (Constants.SLASH + month)
-                 + (Constants.SLASH + day);
+                + (Constants.SLASH + year)
+                + (Constants.SLASH + month)
+                + (Constants.SLASH + day);
         final File fileFolder = new File(filePath);
         if (!fileFolder.exists()) {
             fileFolder.mkdirs();
@@ -158,21 +158,26 @@ public class DocumentsNavigationController extends JsonSupportController {
         for (int i = 0; i < mfiles.length; i++) {
             final MultipartFile mfile = mfiles[i];
             String fileName = new String(
-                    mfile.getOriginalFilename()
-                            .getBytes(StandardCharsets.ISO_8859_1),
-                    StandardCharsets.UTF_8);
+                    mfile.getOriginalFilename().getBytes(
+                            StandardCharsets.ISO_8859_1
+                    ),
+                    StandardCharsets.UTF_8
+            );
             // @TODO : Change this for different Charsets.
             //  e.g. There was problem with CharsetDetector(CD)
-            //  CD works incorrect!!!
-            // @TODO : Think about it could be
-            final File fileToSave = new File(filePath.concat(
-                    Constants.SLASH.concat(fileName))
+            //  CD works incorrectly!!!
+            // @TODO :
+            final File fileToSave = new File(
+                    filePath.concat(
+                            Constants.SLASH.concat(fileName)
+                    )
             );
             mfile.transferTo(fileToSave);
             files.add(fileToSave);
             if (!this.virusTotalScan.scan(fileToSave)) {
                 success = false;
-                msg = "File : ".concat(mfile.getOriginalFilename()).concat(Constants.IS_MALICIOUS);
+                msg = "File : ".concat(mfile.getOriginalFilename())
+                        .concat(Constants.IS_MALICIOUS);
                 break;
             }
         }
@@ -245,7 +250,8 @@ public class DocumentsNavigationController extends JsonSupportController {
         final File[] files = this.retrieveFilesByDocIds(docId);
         boolean responseBool = false;
         if (files != null && files.length > 0) {
-            responseBool = this.mailService.sendFile(to, subject, msg, files);
+            responseBool = this.mailService
+                    .sendFile(to, subject, msg, files);
         }
         this.sendDefaultJson(response, responseBool, "");
     }
@@ -253,14 +259,15 @@ public class DocumentsNavigationController extends JsonSupportController {
     private void sendFile(final HttpServletResponse response, final File file) {
         try (final InputStream in = new FileInputStream(file)) {
             final String extesion = FilenameUtils.getExtension(file.getAbsolutePath());
-            String contentType = Constants.CONTENT_TYPE_MAP.getContentTypeFor(Constants.DOT.concat(extesion));
+            String contentType = Constants.CONTENT_TYPE_MAP
+                    .getContentTypeFor(Constants.DOT.concat(extesion));
             if (contentType == null) {
                 contentType = "application/octet-stream";
             }
             contentType = contentType.concat("; charset=UTF-8");
             response.setContentType(contentType);
-            response.setHeader("Content-disposition", String.format("attachment; filename=%s", URLEncoder
-                    .encode(file.getName(), StandardCharsets.UTF_8)));
+            response.setHeader("Content-disposition", String.format("attachment; filename=%s",
+                    URLEncoder.encode(file.getName(), StandardCharsets.UTF_8)));
             final int dataSize = Math.toIntExact(file.length());
             response.setContentLength(dataSize);
             final OutputStream out = response.getOutputStream();
@@ -288,25 +295,25 @@ public class DocumentsNavigationController extends JsonSupportController {
             return;
         }
         try {
-            final ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
-            response.setContentType("application/zip");
+            final ZipArchiveOutputStream zipOut = new ZipArchiveOutputStream(
+                    response.getOutputStream()
+            );
+            zipOut.setCreateUnicodeExtraFields(UnicodeExtraFieldPolicy.ALWAYS);
+            response.setContentType("application/zip;charset=UTF-8");
             final String zipName = Constants.DATE_FORMAT.format(Date.valueOf(LocalDate.now()));
             response.setHeader("Content-Disposition", MessageFormat
-                    .format("attachment; filename=\"{0}.zip\"", zipName));
+                    .format("attachment; filename=\"{0}.zip\"",
+                            URLEncoder.encode(zipName, StandardCharsets.UTF_8)));
             final byte[] buf = new byte[2048];
             for (final File file : files) {
                 try {
                     final InputStream in = new FileInputStream(file);
-                    final BufferedInputStream bufIn = new BufferedInputStream(in);
                     final String entryname = file.getName();
-                    zipOut.putNextEntry(new ZipEntry(entryname));
-                    int bytesRead = 0;
-                    while ((bytesRead = bufIn.read(buf)) != -1) {
-                        zipOut.write(buf, 0, bytesRead);
-                    }
+                    zipOut.putArchiveEntry(new ZipArchiveEntry(entryname));
+                    IOUtils.copy(in, zipOut);
                     zipOut.flush();
-                    bufIn.close();
                     in.close();
+                    zipOut.closeArchiveEntry();
                 } catch (final FileNotFoundException e) {
                     this.getExceptionLogger()
                             .error(FILE_NOT_FOUND_EXC + file.getAbsolutePath(), e);
@@ -315,6 +322,7 @@ public class DocumentsNavigationController extends JsonSupportController {
                             .error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
                 }
             }
+            zipOut.finish();
             zipOut.close();
         } catch (final IOException e) {
             this.getExceptionLogger().error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
