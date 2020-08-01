@@ -169,7 +169,7 @@ import { Insert_Tasks } from "./modules/form-handler.js"
                         let dateDeadline_words = document.querySelector("#add-NewTodo .calendar#dateDeadline .date").textContent.replace(",", "").split(" "),
                             deadline = `${dateDeadline_words[1]}.${window.months.findIndex(element => element == dateDeadline_words[0]) + 1}.${dateDeadline_words[2]}`
 
-                        let data = { name, dateControl, deadline, description, performerList, docList, keyWords: [], status: "New" }
+                        let data = { name, dateControl, deadline, description, performerList, docList, keyWords: [], status: "new" }
 
                         status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
