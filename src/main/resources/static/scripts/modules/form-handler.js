@@ -228,7 +228,7 @@ class Insert_Tasks {
                     `<div class="board-item" todo-id="${todo.id}">
                 <img src=${todo.managerImgPath} alt="">
                 <div class="w-100">
-                    <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.deadline}</span></div>
+                    <div class="board-item_title">${todo.name.trim().substring(0, 14)}..<span>${todo.deadlineDate}</span></div>
                     <div class="board-item_status">${todo.status}</div>
                 </div>
                 </div>`
@@ -238,9 +238,9 @@ class Insert_Tasks {
             data.forEach(todo => {
                 this.insertList.find(".board-body").append(
                     `<div class="board-item" todo-id="${todo.id}">
-                <img src=${todo.} alt="">
+                <img src=${todo.perfImgPath} alt="">
                 <div class="w-100">
-                    <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.dateDeadline}</span></div>
+                    <div class="board-item_title">${todo.name.trim().substring(0, 14)}..<span>${todo.deadlineDate}</span></div>
                     <div class="board-item_status">${todo.status}</div>
                 </div>
                 </div>`
