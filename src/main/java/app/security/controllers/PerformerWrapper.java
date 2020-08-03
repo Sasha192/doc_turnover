@@ -1,9 +1,9 @@
 package app.security.controllers;
 
-import app.models.Performer;
+import app.models.basic.Performer;
 import app.service.IPerformerService;
 import com.google.common.base.Preconditions;
-import java.security.Principal;
+
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

@@ -1,6 +1,6 @@
 package app.configuration.spring.constants;
 
-import app.models.CoreProperty;
+import app.models.basic.CoreProperty;
 import app.service.ICorePropertyService;
 import java.net.FileNameMap;
 import java.net.URLConnection;

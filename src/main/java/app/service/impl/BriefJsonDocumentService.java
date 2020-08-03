@@ -2,7 +2,7 @@ package app.service.impl;
 
 import app.dao.IBriefDocumentJsonDao;
 import app.dao.persistance.IGenericDao;
-import app.models.BriefJsonDocument;
+import app.models.mysqlviews.BriefJsonDocument;
 import app.service.IBriefJsonDocumentService;
 import app.service.abstraction.AbstractService;
 import java.util.List;

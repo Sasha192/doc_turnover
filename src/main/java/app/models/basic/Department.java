@@ -1,5 +1,6 @@
-package app.models;
+package app.models.basic;
 
+import app.models.abstr.IdentityBaseEntity;
 import app.models.serialization.ExcludeForJsonPerformer;
 import com.google.common.base.Objects;
 import java.io.Serializable;

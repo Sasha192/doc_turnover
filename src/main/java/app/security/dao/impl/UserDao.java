@@ -1,7 +1,7 @@
 package app.security.dao.impl;
 
 import app.dao.persistance.GenericJpaRepository;
-import app.models.CustomUser;
+import app.models.basic.CustomUser;
 import app.models.VerificationCode;
 import app.security.dao.IUserDao;
 import java.util.List;

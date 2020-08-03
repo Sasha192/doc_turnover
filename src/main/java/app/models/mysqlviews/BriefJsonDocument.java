@@ -1,4 +1,4 @@
-package app.models;
+package app.models.mysqlviews;
 
 import java.io.Serializable;
 import java.sql.Date;

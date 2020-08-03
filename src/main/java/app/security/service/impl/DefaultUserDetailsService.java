@@ -1,6 +1,6 @@
 package app.security.service.impl;
 
-import app.models.CustomUser;
+import app.models.basic.CustomUser;
 import app.security.models.DefaultUserDetails;
 import app.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;

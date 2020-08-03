@@ -1,7 +1,7 @@
 package app.controllers;
 
-import app.models.CustomUser;
-import app.models.Performer;
+import app.models.basic.CustomUser;
+import app.models.basic.Performer;
 import app.models.serialization.ExcludeStrategies;
 import app.security.controllers.AuthenticationWrapper;
 import app.security.service.IUserService;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/performer")
 public class PerformerController extends JsonSupportController {
 
     // @TODO : we can create class wrapper : that will hold in htppsession and retrieve info any info about user

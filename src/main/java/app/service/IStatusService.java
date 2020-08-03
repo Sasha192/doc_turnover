@@ -1,7 +1,7 @@
 package app.service;
 
 import app.dao.persistance.IOperations;
-import app.models.TaskStatus;
+import app.models.basic.TaskStatus;
 import java.util.List;
 
 public interface IStatusService extends IOperations<TaskStatus> {

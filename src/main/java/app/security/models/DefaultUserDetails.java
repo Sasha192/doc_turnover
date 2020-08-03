@@ -1,8 +1,8 @@
 package app.security.models;
 
-import app.models.CustomUser;
-import app.models.Department;
-import app.models.Performer;
+import app.models.basic.CustomUser;
+import app.models.basic.Department;
+import app.models.basic.Performer;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.HashSet;

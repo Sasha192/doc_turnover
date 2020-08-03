@@ -1,4 +1,4 @@
-package app.models;
+package app.models.mysqlviews;
 
 import org.checkerframework.checker.units.qual.C;
 

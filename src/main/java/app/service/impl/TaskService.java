@@ -2,8 +2,8 @@ package app.service.impl;
 
 import app.dao.ITaskDao;
 import app.dao.persistance.IGenericDao;
-import app.models.Performer;
-import app.models.Task;
+import app.models.basic.Performer;
+import app.models.basic.Task;
 import app.service.ITaskService;
 import app.service.abstraction.AbstractService;
 import java.util.List;

@@ -2,7 +2,7 @@ package app.dao.impl;
 
 import app.dao.IDepartmentDao;
 import app.dao.persistance.GenericJpaRepository;
-import app.models.Department;
+import app.models.basic.Department;
 import org.springframework.stereotype.Repository;
 
 @Repository

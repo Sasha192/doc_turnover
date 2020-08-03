@@ -1,6 +1,6 @@
-package app.models;
+package app.models.basic;
 
-import app.models.serialization.ExcludeForJsonPerformer;
+import app.models.abstr.IdentityBaseEntity;
 import app.security.models.SimpleRole;
 import app.security.models.UserDto;
 import app.security.utils.DefaultPasswordEncoder;

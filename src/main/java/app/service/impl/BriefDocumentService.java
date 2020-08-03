@@ -2,7 +2,7 @@ package app.service.impl;
 
 import app.dao.IBriefDocumentDao;
 import app.dao.persistance.IGenericDao;
-import app.models.BriefDocument;
+import app.models.basic.BriefDocument;
 import app.service.IBriefDocumentService;
 import app.service.abstraction.AbstractService;
 import java.util.List;

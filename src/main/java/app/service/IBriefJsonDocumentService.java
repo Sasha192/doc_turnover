@@ -1,7 +1,7 @@
 package app.service;
 
 import app.dao.persistance.IOperations;
-import app.models.BriefJsonDocument;
+import app.models.mysqlviews.BriefJsonDocument;
 import java.util.List;
 
 public interface IBriefJsonDocumentService extends IOperations<BriefJsonDocument> {

@@ -1,7 +1,7 @@
 package app.service;
 
 import app.dao.persistance.IOperations;
-import app.models.BriefDocument;
+import app.models.basic.BriefDocument;
 import java.util.List;
 
 public interface IBriefDocumentService extends IOperations<BriefDocument> {

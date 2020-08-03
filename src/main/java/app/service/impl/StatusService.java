@@ -2,7 +2,7 @@ package app.service.impl;
 
 import app.dao.IStatusDao;
 import app.dao.persistance.IGenericDao;
-import app.models.TaskStatus;
+import app.models.basic.TaskStatus;
 import app.service.IStatusService;
 import app.service.abstraction.AbstractService;
 import java.util.List;

@@ -1,4 +1,6 @@
-package app.models;
+package app.models.basic;
+
+import app.models.abstr.IdentityBaseEntity;
 
 import java.io.Serializable;
 import java.sql.Date;

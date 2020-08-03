@@ -4,9 +4,9 @@ import static org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.U
 
 import app.configuration.spring.constants.Constants;
 import app.controllers.utils.RunnableDatabaseStore;
-import app.models.BriefDocument;
-import app.models.BriefJsonDocument;
-import app.models.Performer;
+import app.models.basic.BriefDocument;
+import app.models.mysqlviews.BriefJsonDocument;
+import app.models.basic.Performer;
 import app.security.controllers.PerformerWrapper;
 import app.service.IBriefDocumentService;
 import app.service.IBriefJsonDocumentService;

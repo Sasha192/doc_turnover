@@ -2,8 +2,8 @@ package app.dao.impl;
 
 import app.dao.IPerformerDao;
 import app.dao.persistance.GenericJpaRepository;
-import app.models.CustomUser;
-import app.models.Performer;
+import app.models.basic.CustomUser;
+import app.models.basic.Performer;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.security.core.userdetails.UserDetails;

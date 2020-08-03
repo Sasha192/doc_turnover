@@ -1,10 +1,10 @@
 package app;
 
 import app.dao.persistance.IOperations;
-import app.models.BriefDocument;
-import app.models.Department;
-import app.models.Performer;
-import app.models.Task;
+import app.models.basic.BriefDocument;
+import app.models.basic.Department;
+import app.models.basic.Performer;
+import app.models.basic.Task;
 import app.service.IBriefDocumentService;
 import app.service.IBriefJsonDocumentService;
 import app.service.ICorePropertyService;

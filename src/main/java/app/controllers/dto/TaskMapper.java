@@ -1,10 +1,10 @@
 package app.controllers.dto;
 
 import app.configuration.spring.constants.Constants;
-import app.models.BriefDocument;
-import app.models.Performer;
-import app.models.Task;
-import app.models.TaskStatus;
+import app.models.basic.BriefDocument;
+import app.models.basic.Performer;
+import app.models.basic.Task;
+import app.models.basic.TaskStatus;
 import app.service.IBriefDocumentService;
 import app.service.IPerformerService;
 import app.service.IStatusService;

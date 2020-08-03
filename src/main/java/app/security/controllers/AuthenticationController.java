@@ -2,7 +2,7 @@ package app.security.controllers;
 
 import app.configuration.spring.constants.Constants;
 import app.controllers.JsonSupportController;
-import app.models.CustomUser;
+import app.models.basic.CustomUser;
 import app.models.VerificationCode;
 import app.security.models.UserDto;
 import app.security.service.IUserService;
@@ -185,7 +185,7 @@ public class AuthenticationController extends JsonSupportController {
         }
         this.createVerificationCode(userDto);
         this.sendVerificationCode(userDto, req, res);
-        // @TODO : verificationMailTemplater.render(user.getVerificationCode());
+        // @TODO : Create more beautiful verification email
     }
 
     private void sendVerificationCode(final UserDto userDto,

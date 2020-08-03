@@ -1,4 +1,4 @@
-package app.models;
+package app.models.basic;
 
 import java.io.Serializable;
 import javax.persistence.Access;

@@ -2,7 +2,7 @@ package app.dao.impl;
 
 import app.dao.IStatusDao;
 import app.dao.persistance.GenericJpaRepository;
-import app.models.TaskStatus;
+import app.models.basic.TaskStatus;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;

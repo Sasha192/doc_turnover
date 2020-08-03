@@ -1,4 +1,4 @@
-package app.models;
+package app.models.abstr;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;

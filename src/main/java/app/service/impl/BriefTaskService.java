@@ -2,8 +2,8 @@ package app.service.impl;
 
 import app.dao.IBriefTaskDao;
 import app.dao.persistance.IGenericDao;
-import app.models.BriefTask;
-import app.models.Performer;
+import app.models.mysqlviews.BriefTask;
+import app.models.basic.Performer;
 import app.service.IBriefTaskService;
 import app.service.abstraction.AbstractService;
 import java.util.List;

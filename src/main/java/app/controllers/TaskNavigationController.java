@@ -2,9 +2,9 @@ package app.controllers;
 
 import app.controllers.dto.IEntityDtoMapper;
 import app.controllers.dto.TaskDto;
-import app.models.BriefTask;
-import app.models.Performer;
-import app.models.Task;
+import app.models.mysqlviews.BriefTask;
+import app.models.basic.Performer;
+import app.models.basic.Task;
 import app.security.controllers.PerformerWrapper;
 import app.service.IBriefTaskService;
 import app.service.ITaskService;

@@ -1,6 +1,5 @@
 package app.models.serialization;
 
-import app.models.Performer;
 import app.security.models.annotations.ExcludeMatchingPassword;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;

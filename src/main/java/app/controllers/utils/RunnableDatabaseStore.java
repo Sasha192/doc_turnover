@@ -1,8 +1,8 @@
 package app.controllers.utils;
 
 import app.configuration.spring.constants.Constants;
-import app.models.BriefDocument;
-import app.models.Performer;
+import app.models.basic.BriefDocument;
+import app.models.basic.Performer;
 import app.service.IBriefDocumentService;
 import java.io.File;
 import java.sql.Date;

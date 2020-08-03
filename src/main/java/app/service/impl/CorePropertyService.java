@@ -2,7 +2,7 @@ package app.service.impl;
 
 import app.dao.ICorePropertyDao;
 import app.dao.persistance.IGenericDao;
-import app.models.CoreProperty;
+import app.models.basic.CoreProperty;
 import app.service.ICorePropertyService;
 import app.service.abstraction.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;

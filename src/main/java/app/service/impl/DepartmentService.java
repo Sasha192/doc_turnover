@@ -2,7 +2,7 @@ package app.service.impl;
 
 import app.dao.IDepartmentDao;
 import app.dao.persistance.IGenericDao;
-import app.models.Department;
+import app.models.basic.Department;
 import app.service.IDepartmentService;
 import app.service.abstraction.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;

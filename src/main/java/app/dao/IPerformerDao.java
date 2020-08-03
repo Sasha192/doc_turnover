@@ -1,8 +1,8 @@
 package app.dao;
 
 import app.dao.persistance.IGenericDao;
-import app.models.CustomUser;
-import app.models.Performer;
+import app.models.basic.CustomUser;
+import app.models.basic.Performer;
 import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 

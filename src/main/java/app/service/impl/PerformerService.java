@@ -2,8 +2,8 @@ package app.service.impl;
 
 import app.dao.IPerformerDao;
 import app.dao.persistance.IGenericDao;
-import app.models.CustomUser;
-import app.models.Performer;
+import app.models.basic.CustomUser;
+import app.models.basic.Performer;
 import app.service.IPerformerService;
 import app.service.abstraction.AbstractService;
 import java.util.List;

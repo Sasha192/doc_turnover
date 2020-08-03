@@ -1,7 +1,7 @@
 package app.security.service.impl;
 
 import app.dao.persistance.IGenericDao;
-import app.models.CustomUser;
+import app.models.basic.CustomUser;
 import app.models.VerificationCode;
 import app.security.dao.IUserDao;
 import app.security.service.IUserService;

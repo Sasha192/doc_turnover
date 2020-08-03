@@ -1,7 +1,7 @@
 package app.service;
 
 import app.dao.persistance.IOperations;
-import app.models.CoreProperty;
+import app.models.basic.CoreProperty;
 
 public interface ICorePropertyService extends IOperations<CoreProperty> {
 

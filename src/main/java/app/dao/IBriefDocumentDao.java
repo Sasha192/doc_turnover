@@ -1,7 +1,7 @@
 package app.dao;
 
 import app.dao.persistance.IGenericDao;
-import app.models.BriefDocument;
+import app.models.basic.BriefDocument;
 import java.util.List;
 
 public interface IBriefDocumentDao extends IGenericDao<BriefDocument> {
