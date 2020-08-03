@@ -2,11 +2,13 @@ package app.controllers;
 
 import app.controllers.dto.IEntityDtoMapper;
 import app.controllers.dto.TaskDto;
-import app.models.mysqlviews.BriefTask;
-import app.models.basic.Performer;
-import app.models.basic.Task;
+import app.models.BriefTask;
+import app.models.Performer;
+import app.models.Task;
+import app.models.TaskStatus;
 import app.security.controllers.PerformerWrapper;
 import app.service.IBriefTaskService;
+import app.service.IStatusService;
 import app.service.ITaskService;
 import java.io.IOException;
 import java.util.List;
@@ -36,6 +38,9 @@ public class TaskNavigationController extends JsonSupportController {
 
     @Autowired
     private ITaskService taskService;
+
+    @Autowired
+    private IStatusService statusService;
 
     @Autowired
     private IBriefTaskService briefTaskService;
@@ -75,11 +80,15 @@ public class TaskNavigationController extends JsonSupportController {
         taskService.update(task);
     }
 
-    @RequestMapping(value = "/modify/status")
+    @RequestMapping(value = "/modify/status", method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public void changeStatus(@RequestParam("status") String newStatus,
-                             @RequestParam("task_id") Integer taskId) {
+                             @RequestParam("task_id") Integer taskId,
+                             HttpServletResponse response) {
         Task task = taskService.findOne(taskId);
-        //task.setStatus(newStatus);
+        TaskStatus status = statusService.findByTitle(newStatus);
+        task.setStatus(status);
         taskService.update(task);
+        sendDefaultJson(response, true, "");
     }
 }

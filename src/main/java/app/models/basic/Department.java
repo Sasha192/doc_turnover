@@ -5,10 +5,7 @@ import app.models.serialization.ExcludeForJsonPerformer;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "departments")
@@ -22,7 +19,8 @@ public class Department
     @Column(name = "parent_department")
     private String parentDepartment;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department",
+            cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @ExcludeForJsonPerformer
     private Set<Performer> performers;
 

@@ -494,7 +494,20 @@ function changeTaskState(from, to) {
         }
 
         dropItem.removeAttribute("draggable")
-        dropItem.querySelector(".board-item_status").innerHTML = "In-progress"
+        dropItem.querySelector(".board-item_status").innerHTML = "inprogress"
+
+        // $.get(`/task/modify/status?task_id=${dropItem.getAttribute("todo-id")}&status=inprogress`, (data) => {
+        //     console.log(data)
+        // }, "json")
+        $.ajax({
+            url: `/task/modify/status?task_id=${dropItem.getAttribute("todo-id")}&status=inprogress`,
+            success: (data) => {
+
+            },
+            dataType: "json",
+            method: "GET",
+            contentType:"application/json"
+        });
     })
 }
 

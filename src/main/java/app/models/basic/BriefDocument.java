@@ -42,7 +42,7 @@ public class BriefDocument
             inverseJoinColumns = @JoinColumn(name = "task_id"))
     private List<Task> task;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "performer_id")
     private Performer performer;
 
