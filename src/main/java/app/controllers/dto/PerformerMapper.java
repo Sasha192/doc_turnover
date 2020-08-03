@@ -2,7 +2,7 @@ package app.controllers.dto;
 
 import app.models.basic.Department;
 import app.models.basic.Performer;
-import app.service.IDepartmentService;
+import app.service.interfaces.IDepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,10 +1,10 @@
 package app.service.impl;
 
-import app.dao.IBriefTaskDao;
+import app.dao.interfaces.IBriefTaskDao;
 import app.dao.persistance.IGenericDao;
 import app.models.mysqlviews.BriefTask;
 import app.models.basic.Performer;
-import app.service.IBriefTaskService;
+import app.service.interfaces.IBriefTaskService;
 import app.service.abstraction.AbstractService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,19 +1,26 @@
 package app.controllers;
 
+import app.configuration.spring.constants.Constants;
+import app.controllers.dto.CommentDto;
 import app.controllers.dto.IEntityDtoMapper;
 import app.controllers.dto.TaskDto;
-import app.models.BriefTask;
-import app.models.Performer;
-import app.models.Task;
-import app.models.TaskStatus;
+import app.models.abstr.Comment;
+import app.models.basic.Performer;
+import app.models.basic.Task;
+import app.models.basic.TaskComment;
+import app.models.basic.TaskStatus;
+import app.models.mysqlviews.BriefTask;
+import app.models.serialization.ExcludeStrategies;
 import app.security.controllers.PerformerWrapper;
-import app.service.IBriefTaskService;
-import app.service.IStatusService;
-import app.service.ITaskService;
+import app.service.interfaces.IBriefTaskService;
+import app.service.interfaces.IStatusService;
+import app.service.interfaces.ITaskCommentService;
+import app.service.interfaces.ITaskService;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -29,21 +36,50 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(value = "/task")
 public class TaskNavigationController extends JsonSupportController {
 
+    /*private static final ExclusionStrategy FOR_COMMENT_STRATEGY;*/
+
+    private static final GsonBuilder BUILDER;
+
+    static {
+        /*FOR_COMMENT_STRATEGY =
+                new ExcludeStrategies.ExcludeThisAnnotations(
+                        ExcludeForJsonComment.class,
+                        ExcludeForJsonPerformer.class
+                );*/
+        BUILDER = new GsonBuilder().setPrettyPrinting()
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
+                .setDateFormat(Constants.DATE_FORMAT.toPattern());
+    }
+
     @Autowired
     @Qualifier("task_mapper")
     private IEntityDtoMapper<Task, TaskDto> taskMapper;
 
-    @Autowired
+    /*@Autowired
+    @Qualifier("comment_mapper")
+    private IEntityDtoMapper<Comment, CommentDto> commentMapper;*/
+
     private PerformerWrapper performerWrapper;
 
-    @Autowired
     private ITaskService taskService;
 
-    @Autowired
     private IStatusService statusService;
 
-    @Autowired
     private IBriefTaskService briefTaskService;
+
+    private ITaskCommentService taskCommentService;
+
+    public TaskNavigationController(PerformerWrapper performerWrapper,
+                                    ITaskService taskService,
+                                    IStatusService statusService,
+                                    IBriefTaskService briefTaskService,
+                                    ITaskCommentService taskCommentService) {
+        this.performerWrapper = performerWrapper;
+        this.taskService = taskService;
+        this.statusService = statusService;
+        this.briefTaskService = briefTaskService;
+        this.taskCommentService = taskCommentService;
+    }
 
     @RequestMapping(value = "/my/list/{task_status}", method = RequestMethod.GET)
     public void list(HttpServletResponse response, HttpServletRequest request,
@@ -90,5 +126,41 @@ public class TaskNavigationController extends JsonSupportController {
         task.setStatus(status);
         taskService.update(task);
         sendDefaultJson(response, true, "");
+    }
+
+    @RequestMapping(value = "/comment/add", method = RequestMethod.POST,
+                consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addTaskComment(@Validated @RequestBody CommentDto commentDto,
+                               HttpServletRequest request,
+                               HttpServletResponse response){
+        TaskComment taskComment = new TaskComment();
+        Task task = taskService.findOne(commentDto.getTodoId());
+        if (task == null) {
+            return;
+        }
+        taskComment.setTask(task);
+        taskComment.setComment(commentDto.getComment());
+        Performer performer = performerWrapper.retrievePerformer(request);
+        taskComment.setAuthor(performer);
+        taskCommentService.create(taskComment);
+        sendDefaultJson(response, true, "");
+    }
+
+    @RequestMapping(value = "/comment/list", method = RequestMethod.GET)
+    public void showTaskComments(HttpServletResponse response,
+                                 @RequestParam("todoId") Long taskId) throws IOException {
+        List<? extends Comment> taskComments = taskCommentService.retrieveByTaskId(taskId);
+        writeToResponse(response, BUILDER, taskComments);
+    }
+
+    @RequestMapping(value = "/details")
+    public void getTaskDetails(HttpServletResponse response,
+                               @RequestParam("todoId") Long taskId) {
+        Task task = taskService.findOne(taskId);
+        if (task == null) {
+            sendDefaultJson(response, false, "");
+            return;
+        }
+
     }
 }

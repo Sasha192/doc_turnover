@@ -6,7 +6,7 @@ import app.models.serialization.ExcludeStrategies;
 import app.security.controllers.AuthenticationWrapper;
 import app.security.service.IUserService;
 import app.security.utils.DefaultPasswordEncoder;
-import app.service.IPerformerService;
+import app.service.interfaces.IPerformerService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.security.Principal;

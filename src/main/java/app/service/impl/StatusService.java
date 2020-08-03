@@ -1,9 +1,9 @@
 package app.service.impl;
 
-import app.dao.IStatusDao;
+import app.dao.interfaces.IStatusDao;
 import app.dao.persistance.IGenericDao;
 import app.models.basic.TaskStatus;
-import app.service.IStatusService;
+import app.service.interfaces.IStatusService;
 import app.service.abstraction.AbstractService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

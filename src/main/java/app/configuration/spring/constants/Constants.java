@@ -1,7 +1,7 @@
 package app.configuration.spring.constants;
 
 import app.models.basic.CoreProperty;
-import app.service.ICorePropertyService;
+import app.service.interfaces.ICorePropertyService;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;

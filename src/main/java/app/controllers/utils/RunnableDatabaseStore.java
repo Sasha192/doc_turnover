@@ -3,7 +3,7 @@ package app.controllers.utils;
 import app.configuration.spring.constants.Constants;
 import app.models.basic.BriefDocument;
 import app.models.basic.Performer;
-import app.service.IBriefDocumentService;
+import app.service.interfaces.IBriefDocumentService;
 import java.io.File;
 import java.sql.Date;
 import java.time.LocalDate;

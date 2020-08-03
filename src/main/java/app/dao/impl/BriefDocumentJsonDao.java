@@ -1,7 +1,7 @@
 package app.dao.impl;
 
 import app.configuration.spring.constants.Constants;
-import app.dao.IBriefDocumentJsonDao;
+import app.dao.interfaces.IBriefDocumentJsonDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.mysqlviews.BriefJsonDocument;
 import java.util.List;

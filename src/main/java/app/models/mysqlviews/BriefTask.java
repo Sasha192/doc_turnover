@@ -1,24 +1,18 @@
 package app.models.mysqlviews;
 
+import app.models.abstr.IdentityBaseEntity;
+import app.models.basic.Report;
 import org.checkerframework.checker.units.qual.C;
 
 import java.io.Serializable;
 import java.sql.Date;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.Set;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "brief_task_json_view")
 public class BriefTask
-        implements Serializable {
-
-    @Id
-    @Access(AccessType.PROPERTY)
-    private Long id;
+        extends IdentityBaseEntity {
 
     @Column(name = "task")
     private String name;
@@ -71,8 +65,48 @@ public class BriefTask
     @Column(name = "perf_img_path")
     private String perfImgPath;
 
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
+    @JoinTable(
+            name = "tasks_documents",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "doc_id"))
+    private Set<BriefJsonDocument> docList;
+
+    @ElementCollection
+    @CollectionTable(name = "tasks_keys",
+            joinColumns = @JoinColumn(name = "task_id")
+    )
+    @Column(name = "key")
+    private Set<String> keys;
+
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
+    @JoinTable(name = "tasks_performers",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "performer_id"))
+    private Set<BriefPerformer> performer;
+
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
+    @JoinColumn(name = "report_id", referencedColumnName = "id")
+    private Report reports;
+
     private BriefTask() {
         ;
+    }
+
+    public Set<BriefPerformer> getPerformer() {
+        return performer;
+    }
+
+    public void setPerformer(Set<BriefPerformer> performer) {
+        this.performer = performer;
+    }
+
+    public Set<String> getKeys() {
+        return keys;
+    }
+
+    public void setKeys(Set<String> keys) {
+        this.keys = keys;
     }
 
     public Long getId() {
@@ -217,5 +251,21 @@ public class BriefTask
 
     public void setPerfImgPath(String perfImgPath) {
         this.perfImgPath = perfImgPath;
+    }
+
+    public Set<BriefJsonDocument> getDocList() {
+        return docList;
+    }
+
+    public void setDocList(Set<BriefJsonDocument> docList) {
+        this.docList = docList;
+    }
+
+    public Report getReports() {
+        return reports;
+    }
+
+    public void setReports(Report reports) {
+        this.reports = reports;
     }
 }

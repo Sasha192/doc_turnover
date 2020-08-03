@@ -1,7 +1,7 @@
 package app.dao.impl;
 
 import app.configuration.spring.constants.Constants;
-import app.dao.IBriefDocumentDao;
+import app.dao.interfaces.IBriefDocumentDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.basic.BriefDocument;
 import java.util.List;

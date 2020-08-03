@@ -1,7 +1,7 @@
 package app.security.controllers;
 
 import app.models.basic.Performer;
-import app.service.IPerformerService;
+import app.service.interfaces.IPerformerService;
 import com.google.common.base.Preconditions;
 
 import javax.servlet.http.HttpServletRequest;

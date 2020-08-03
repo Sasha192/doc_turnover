@@ -1,10 +1,10 @@
-package app.service;
+package app.dao.interfaces;
 
-import app.dao.persistance.IOperations;
+import app.dao.persistance.IGenericDao;
 import app.models.basic.TaskStatus;
 import java.util.List;
 
-public interface IStatusService extends IOperations<TaskStatus> {
+public interface IStatusDao extends IGenericDao<TaskStatus> {
 
     List<TaskStatus> findByPerformerId(long id);
 

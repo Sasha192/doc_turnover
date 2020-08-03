@@ -2,7 +2,6 @@ package app.controllers.dto;
 
 import java.util.Set;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class TaskDto {
 

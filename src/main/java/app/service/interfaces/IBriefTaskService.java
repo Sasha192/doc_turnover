@@ -1,14 +1,15 @@
-package app.dao;
+package app.service.interfaces;
 
-import app.dao.persistance.IGenericDao;
+import app.dao.persistance.IOperations;
 import app.models.mysqlviews.BriefTask;
 import app.models.basic.Performer;
 import java.util.List;
 
-public interface IBriefTaskDao extends IGenericDao<BriefTask> {
+public interface IBriefTaskService extends IOperations<BriefTask> {
+
     List<BriefTask> findByPerformer(Long performerId);
 
-    List<BriefTask> findByPerformer(Performer performer);
+    List<BriefTask> findByPerformer(Performer performerId);
 
     List<BriefTask> findByPerformerAndStatus(Long performerId, String status);
 

@@ -1,17 +1,8 @@
 package app;
 
 import app.dao.persistance.IOperations;
-import app.models.basic.BriefDocument;
-import app.models.basic.Department;
-import app.models.basic.Performer;
-import app.models.basic.Task;
-import app.service.IBriefDocumentService;
-import app.service.IBriefJsonDocumentService;
-import app.service.ICorePropertyService;
-import app.service.IDepartmentService;
-import app.service.IPerformerService;
-import app.service.IStatusService;
-import app.service.ITaskService;
+import app.models.basic.*;
+import app.service.interfaces.*;
 import app.spring.TestSpringDataConfiguration;
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +42,12 @@ public class JUnitSpringExample {
     @Autowired
     private ITaskService taskService;
 
+    @Autowired
+    private ITaskCommentService taskCommentService;
+
+    @Autowired
+    private IReportCommentService reportCommentService;
+
     private IOperations<?>[] operations;
 
     @BeforeEach
@@ -81,6 +78,19 @@ public class JUnitSpringExample {
                 }
             }
         }
+    }
+
+    @Test
+    public void testCommentServices() {
+        taskCommentService.findAll();
+        reportCommentService.findAll();
+        TaskComment taskComment = taskCommentService.findOne(1L);
+        ReportComment reportComment = reportCommentService.findOne(3L);
+        Task task = taskComment.getTask();
+        reportComment.getBriefDocuments();
+        Report report = reportComment.getReport();
+        Set<?> set = report.getDocuments();
+        System.out.println();
     }
 
     @Test

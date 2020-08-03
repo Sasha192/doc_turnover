@@ -1,6 +1,6 @@
 package app.dao.impl;
 
-import app.dao.ICorePropertyDao;
+import app.dao.interfaces.ICorePropertyDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.basic.CoreProperty;
 import java.util.List;

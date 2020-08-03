@@ -1,0 +1,50 @@
+package app.service.impl;
+
+import app.dao.interfaces.ITaskCommentDao;
+import app.dao.persistance.IGenericDao;
+import app.models.basic.Task;
+import app.models.basic.TaskComment;
+import app.service.abstraction.AbstractService;
+import app.service.interfaces.ITaskCommentService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
+public class TaskCommentService
+        extends AbstractService<TaskComment>
+        implements ITaskCommentService {
+
+    private ITaskCommentDao dao;
+
+    @Autowired
+    public TaskCommentService(ITaskCommentDao dao) {
+        this.dao = dao;
+    }
+
+    @Override
+    protected IGenericDao<TaskComment> getDao() {
+        return dao;
+    }
+
+    public void setDao(final ITaskCommentDao dao) {
+        this.dao = dao;
+    }
+
+    @Override
+    public List<TaskComment> retrieveByTask(Task task) {
+        return dao.retrieveByTask(task);
+    }
+
+    @Override
+    public List<TaskComment> retrieveByTaskName(String taskName) {
+        return dao.retrieveByTaskName(taskName);
+    }
+
+    @Override
+    public List<TaskComment> retrieveByTaskId(Long id) {
+        return dao.retrieveByTaskId(id);
+    }
+}

@@ -1,6 +1,9 @@
 package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
+import app.models.mysqlviews.BriefJsonDocument;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -241,5 +244,45 @@ public class Task
 
     public void setModificationDate(final Date modificationDate) {
         this.modificationDate = modificationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof Task)) return false;
+
+        Task task = (Task) o;
+
+        return new EqualsBuilder()
+                .append(getToDo(), task.getToDo())
+                .append(getDescription(), task.getDescription())
+                .append(getCreationDate(), task.getCreationDate())
+                .append(getDeadline(), task.getDeadline())
+                .append(getPriority(), task.getPriority())
+                .append(getDeadlineDate(), task.getDeadlineDate())
+                .append(getControlDate(), task.getControlDate())
+                .append(getKeys(), task.getKeys())
+                .append(getStatus(), task.getStatus())
+                .append(getTaskOwner(), task.getTaskOwner())
+                .append(getModificationDate(), task.getModificationDate())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getToDo())
+                .append(getDescription())
+                .append(getCreationDate())
+                .append(getDeadline())
+                .append(getPriority())
+                .append(getDeadlineDate())
+                .append(getControlDate())
+                .append(getKeys())
+                .append(getStatus())
+                .append(getTaskOwner())
+                .append(getModificationDate())
+                .toHashCode();
     }
 }

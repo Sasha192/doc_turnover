@@ -1,6 +1,6 @@
 package app.dao.impl;
 
-import app.dao.IBriefTaskDao;
+import app.dao.interfaces.IBriefTaskDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.mysqlviews.BriefTask;
 import app.models.basic.Performer;

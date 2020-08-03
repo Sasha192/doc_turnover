@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.service.IBriefDocumentService;
+import app.service.interfaces.IBriefDocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

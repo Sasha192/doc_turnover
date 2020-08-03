@@ -1,9 +1,9 @@
 package app.service.impl;
 
-import app.dao.IBriefDocumentDao;
+import app.dao.interfaces.IBriefDocumentDao;
 import app.dao.persistance.IGenericDao;
 import app.models.basic.BriefDocument;
-import app.service.IBriefDocumentService;
+import app.service.interfaces.IBriefDocumentService;
 import app.service.abstraction.AbstractService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

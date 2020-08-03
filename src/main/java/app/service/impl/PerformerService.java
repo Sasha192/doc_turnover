@@ -1,10 +1,10 @@
 package app.service.impl;
 
-import app.dao.IPerformerDao;
+import app.dao.interfaces.IPerformerDao;
 import app.dao.persistance.IGenericDao;
 import app.models.basic.CustomUser;
 import app.models.basic.Performer;
-import app.service.IPerformerService;
+import app.service.interfaces.IPerformerService;
 import app.service.abstraction.AbstractService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

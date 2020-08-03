@@ -7,6 +7,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 public class ExcludeStrategies {
 
@@ -124,6 +126,33 @@ public class ExcludeStrategies {
         }
     };
 
+    public static final ExclusionStrategy EXCLUDE_FOR_COMMENT = new ExclusionStrategy() {
+        @Override
+        public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+            return fieldAttributes.getAnnotation(ExcludeForJsonPerformer.class) != null
+                    ||
+                    fieldAttributes.getAnnotation(ExcludeForJsonComment.class) != null;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return false;
+        }
+    };
+
+    public static final ExclusionStrategy EXCLUDE_FOR_REPORT = new ExclusionStrategy() {
+        @Override
+        public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+            return fieldAttributes.getAnnotation(ExcludeForJsonReport.class) != null;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return false;
+        }
+    };
+
+
     public static class ExcludeThisClass implements ExclusionStrategy {
 
         private Class<?> clazz;
@@ -158,8 +187,9 @@ public class ExcludeStrategies {
 
         @Override
         public boolean shouldSkipClass(Class<?> aclazz) {
+            String className = aclazz.getName();
             for (Class clazz : this.clazzes) {
-                if (!aclazz.getName().equals(clazz.getName())) {
+                if (!className.equals(clazz.getName())) {
                     continue;
                 } else {
                     return true;
@@ -168,4 +198,30 @@ public class ExcludeStrategies {
             return false;
         }
     }
+
+   /* public static class ExcludeThisAnnotations implements ExclusionStrategy {
+
+        private Class<?>[] annotations;
+
+        public ExcludeThisAnnotations(Class<?>... annotations) {
+            this.annotations = annotations;
+        }
+
+        @Override
+        public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+            for (Class<> annotation : this.annotations) {
+                if (fieldAttributes.getAnnotation(annotation) == null) {
+                    continue;
+                } else {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> aclazz) {
+            return false;
+        }
+    }*/
 }

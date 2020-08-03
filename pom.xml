@@ -19,7 +19,6 @@
         <security.version>5.3.3.RELEASE</security.version>
     </properties>
 
-
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
         <dependency>
@@ -307,4 +306,5 @@
             </plugin-->
         </plugins>
     </build>
+
 </project>

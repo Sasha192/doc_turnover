@@ -1,6 +1,6 @@
 package app.dao.impl;
 
-import app.dao.ITaskDao;
+import app.dao.interfaces.ITaskDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.basic.Task;
 import java.sql.Date;

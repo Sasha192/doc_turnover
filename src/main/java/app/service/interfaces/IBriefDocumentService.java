@@ -1,4 +1,4 @@
-package app.service;
+package app.service.interfaces;
 
 import app.dao.persistance.IOperations;
 import app.models.basic.BriefDocument;

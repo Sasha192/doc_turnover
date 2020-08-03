@@ -1,9 +1,9 @@
 package app.service.impl;
 
-import app.dao.IDepartmentDao;
+import app.dao.interfaces.IDepartmentDao;
 import app.dao.persistance.IGenericDao;
 import app.models.basic.Department;
-import app.service.IDepartmentService;
+import app.service.interfaces.IDepartmentService;
 import app.service.abstraction.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

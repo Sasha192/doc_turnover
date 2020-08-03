@@ -1,12 +1,15 @@
-package app.dao;
+package app.service.interfaces;
 
-import app.dao.persistance.IGenericDao;
+import app.dao.persistance.IOperations;
 import app.models.basic.CustomUser;
 import app.models.basic.Performer;
 import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public interface IPerformerDao extends IGenericDao<Performer> {
+public interface IPerformerService extends IOperations<Performer> {
+
+    //Performer retrieveByName(String name);
+
     Performer retrieveByUserDetails(UserDetails userDetails);
 
     Performer retrieveByUser(CustomUser user);
@@ -14,7 +17,5 @@ public interface IPerformerDao extends IGenericDao<Performer> {
     Performer retrieveByUsername(String username);
 
     List<Performer> findByDepartmentId(Long departmentId);
-
-    //Performer retrieveByName(String name) throws NoSuchObjectException;
 
 }

@@ -1,9 +1,9 @@
 package app.service.impl;
 
-import app.dao.IBriefDocumentJsonDao;
+import app.dao.interfaces.IBriefDocumentJsonDao;
 import app.dao.persistance.IGenericDao;
 import app.models.mysqlviews.BriefJsonDocument;
-import app.service.IBriefJsonDocumentService;
+import app.service.interfaces.IBriefJsonDocumentService;
 import app.service.abstraction.AbstractService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package app.dao;
+package app.dao.interfaces;
 
 import app.dao.persistance.IGenericDao;
 import app.models.mysqlviews.BriefJsonDocument;

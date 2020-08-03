@@ -1,6 +1,6 @@
 package app.dao.impl;
 
-import app.dao.IPerformerDao;
+import app.dao.interfaces.IPerformerDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.basic.CustomUser;
 import app.models.basic.Performer;
