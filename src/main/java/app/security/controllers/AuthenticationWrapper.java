@@ -5,6 +5,8 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import com.google.common.base.Preconditions;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,12 +17,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import java.security.Principal;
+
 @Component
 public class AuthenticationWrapper {
 
     private AuthenticationManager authManager;
 
-    public Authentication getAuthentication(HttpServletRequest req) {
+    public SecurityContext getSecurityContext(HttpServletRequest req) {
         SecurityContext sc = null;
         HttpSession session = req.getSession();
         if (session != null) {
@@ -32,13 +36,26 @@ public class AuthenticationWrapper {
         if (sc == null) {
             sc = SecurityContextHolder.getContext();
         }
+        return sc;
+    }
+
+    public Authentication getAuthentication(HttpServletRequest req) {
+        SecurityContext sc = getSecurityContext(req);
+        Preconditions.checkNotNull(sc);
         return getAuthentication(sc, req);
+    }
+
+    public Object getPrincipal(HttpServletRequest request) {
+        Authentication authentication = getAuthentication(request);
+        Preconditions.checkNotNull(authentication);
+        return authentication.getPrincipal();
     }
 
     private Authentication getAuthentication(SecurityContext sc,
                                              HttpServletRequest request) {
         Authentication auth = sc.getAuthentication();
         if (auth == null) {
+            // @TODO : remove this lines of code -> create view for 403, 404, 500, 400, and *
             HttpSession session = request.getSession(true);
             UsernamePasswordAuthenticationToken authReq
                     = new UsernamePasswordAuthenticationToken(

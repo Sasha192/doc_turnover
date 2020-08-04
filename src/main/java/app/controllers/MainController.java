@@ -26,4 +26,10 @@ public class MainController {
     public String authMap(ModelMap map) {
         return "auth";
     }
+
+    @RequestMapping("/teamboard")
+    public String teamboardMap(ModelMap map) {
+        return "tmboard";
+    }
+
 }

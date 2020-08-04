@@ -35,7 +35,7 @@ public abstract class Comment
     protected Performer author;
 
     @ManyToOne
-    @JoinColumn(name = "performer_id")
+    @JoinColumn(name = "performer_id", insertable=false, updatable=false)
     protected BriefPerformer performer;
 
     @Column(name = "date")

@@ -10,17 +10,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "tasks")
@@ -85,6 +75,10 @@ public class Task
 
     @Column(name = "modification_date")
     private Date modificationDate;
+
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
+    @JoinColumn(name = "report_id", referencedColumnName = "id")
+    private Report report;
 
     public Task() {
         Date now = Date.valueOf(LocalDate.now());
@@ -244,6 +238,14 @@ public class Task
 
     public void setModificationDate(final Date modificationDate) {
         this.modificationDate = modificationDate;
+    }
+
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
     }
 
     @Override

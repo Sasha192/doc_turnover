@@ -2,6 +2,8 @@ package app;
 
 import app.dao.persistance.IOperations;
 import app.models.basic.*;
+import app.models.mysqlviews.BriefTask;
+import app.service.impl.BriefTaskService;
 import app.service.interfaces.*;
 import app.spring.TestSpringDataConfiguration;
 import java.util.Arrays;
@@ -21,32 +23,47 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
         loader = AnnotationConfigContextLoader.class)
 public class JUnitSpringExample {
 
-    @Autowired
     private IDepartmentService departmentService;
 
-    @Autowired
     private IBriefDocumentService documentService;
 
-    @Autowired
     private IBriefJsonDocumentService jsonDocumentService;
 
-    @Autowired
     private ICorePropertyService corePropertyService;
 
-    @Autowired
     private IPerformerService performerService;
 
-    @Autowired
     private IStatusService statusService;
 
-    @Autowired
     private ITaskService taskService;
 
-    @Autowired
     private ITaskCommentService taskCommentService;
 
-    @Autowired
     private IReportCommentService reportCommentService;
+
+    private IBriefTaskService briefTaskService;
+
+    @Autowired
+    public JUnitSpringExample(IDepartmentService departmentService,
+                              IBriefDocumentService documentService,
+                              IBriefJsonDocumentService jsonDocumentService,
+                              ICorePropertyService corePropertyService,
+                              IPerformerService performerService,
+                              IStatusService statusService, ITaskService taskService,
+                              ITaskCommentService taskCommentService,
+                              IReportCommentService reportCommentService,
+                              IBriefTaskService briefTaskService) {
+        this.departmentService = departmentService;
+        this.documentService = documentService;
+        this.jsonDocumentService = jsonDocumentService;
+        this.corePropertyService = corePropertyService;
+        this.performerService = performerService;
+        this.statusService = statusService;
+        this.taskService = taskService;
+        this.taskCommentService = taskCommentService;
+        this.reportCommentService = reportCommentService;
+        this.briefTaskService = briefTaskService;
+    }
 
     private IOperations<?>[] operations;
 
@@ -87,9 +104,9 @@ public class JUnitSpringExample {
         TaskComment taskComment = taskCommentService.findOne(1L);
         ReportComment reportComment = reportCommentService.findOne(3L);
         Task task = taskComment.getTask();
-        reportComment.getBriefDocuments();
+        reportComment.getReport();
         Report report = reportComment.getReport();
-        Set<?> set = report.getDocuments();
+        List<?> set = report.getDocuments();
         System.out.println();
     }
 
@@ -113,6 +130,17 @@ public class JUnitSpringExample {
     @Test
     public void selectJsonFilterDoc() {
         System.out.println(this.jsonDocumentService.findBy(1, null, null, null, null));
+    }
+
+    @Test
+    public void testBriefTaskJson() {
+        BriefTask briefTask = briefTaskService.findOne(3L);
+        briefTask.getDocList();
+        briefTask.getManagerImgPath();
+        briefTask.getReports().getDocuments();
+        briefTask.getReports().getComments();
+        briefTask.getKeys();
+        briefTask.getPerformer();
     }
 
     private void selectAll() {

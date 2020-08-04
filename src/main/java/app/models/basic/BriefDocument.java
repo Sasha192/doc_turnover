@@ -1,7 +1,6 @@
 package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
-
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.HashSet;

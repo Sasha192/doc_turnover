@@ -7,8 +7,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import java.lang.annotation.Annotation;
-import java.util.Collection;
 
 public class ExcludeStrategies {
 
@@ -144,6 +142,18 @@ public class ExcludeStrategies {
         @Override
         public boolean shouldSkipField(FieldAttributes fieldAttributes) {
             return fieldAttributes.getAnnotation(ExcludeForJsonReport.class) != null;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return false;
+        }
+    };
+
+    public static final ExclusionStrategy EXCLUDE_FOR_BRIEF_TASK = new ExclusionStrategy() {
+        @Override
+        public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+            return fieldAttributes.getAnnotation(ExcludeForJsonBriefTask.class) != null;
         }
 
         @Override

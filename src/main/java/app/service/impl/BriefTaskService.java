@@ -18,8 +18,9 @@ public class BriefTaskService extends AbstractService<BriefTask>
 
     private IBriefTaskDao dao;
 
-    public BriefTaskService() {
-        ;
+    @Autowired
+    public BriefTaskService(IBriefTaskDao dao) {
+        this.dao = dao;
     }
 
     @Override
@@ -27,7 +28,6 @@ public class BriefTaskService extends AbstractService<BriefTask>
         return dao;
     }
 
-    @Autowired
     public void setDao(final IBriefTaskDao dao) {
         this.dao = dao;
     }

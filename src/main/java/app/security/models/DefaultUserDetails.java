@@ -37,7 +37,7 @@ public class DefaultUserDetails implements UserDetails {
         }
         for (final SimpleRole role : customUser.getRoles()) {
             switch (role) {
-                case USER: {
+                case PERFORMER: {
                     this.addAuthority(new SimpleGrantedAuthority("ROLE_USER"));
                     break;
                 }

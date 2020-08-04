@@ -3,20 +3,12 @@ package app.models.basic;
 import app.controllers.dto.PerformerDto;
 import app.models.abstr.IdentityBaseEntity;
 import app.models.serialization.ExcludeForJsonPerformer;
+import app.security.models.SimpleRole;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import java.util.Set;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "performers")
@@ -50,6 +42,14 @@ public class Performer
             fetch = FetchType.LAZY, optional = false)
     @ExcludeForJsonPerformer
     private CustomUser user;
+
+    @ElementCollection
+    @CollectionTable(name = "performer_user_roles",
+            joinColumns = @JoinColumn(name = "performer_id")
+    )
+    @Enumerated(value = EnumType.ORDINAL)
+    @Column(name = "role")
+    private Set<SimpleRole> roles;
 
     public Performer() {
     }
@@ -140,5 +140,13 @@ public class Performer
 
     public void setImgPath(String imgPath) {
         this.imgPath = imgPath;
+    }
+
+    public Set<SimpleRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<SimpleRole> roles) {
+        this.roles = roles;
     }
 }

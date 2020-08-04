@@ -21,7 +21,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.GsonBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -48,16 +47,12 @@ public class TaskNavigationController extends JsonSupportController {
                 );*/
         BUILDER = new GsonBuilder().setPrettyPrinting()
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
                 .setDateFormat(Constants.DATE_FORMAT.toPattern());
     }
 
-    @Autowired
-    @Qualifier("task_mapper")
     private IEntityDtoMapper<Task, TaskDto> taskMapper;
-
-    /*@Autowired
-    @Qualifier("comment_mapper")
-    private IEntityDtoMapper<Comment, CommentDto> commentMapper;*/
 
     private PerformerWrapper performerWrapper;
 
@@ -73,12 +68,14 @@ public class TaskNavigationController extends JsonSupportController {
                                     ITaskService taskService,
                                     IStatusService statusService,
                                     IBriefTaskService briefTaskService,
-                                    ITaskCommentService taskCommentService) {
+                                    ITaskCommentService taskCommentService,
+                                    @Qualifier("task_mapper") IEntityDtoMapper<Task, TaskDto> taskMapper) {
         this.performerWrapper = performerWrapper;
         this.taskService = taskService;
         this.statusService = statusService;
         this.briefTaskService = briefTaskService;
         this.taskCommentService = taskCommentService;
+        this.taskMapper = taskMapper;
     }
 
     @RequestMapping(value = "/my/list/{task_status}", method = RequestMethod.GET)
@@ -155,12 +152,12 @@ public class TaskNavigationController extends JsonSupportController {
 
     @RequestMapping(value = "/details")
     public void getTaskDetails(HttpServletResponse response,
-                               @RequestParam("todoId") Long taskId) {
-        Task task = taskService.findOne(taskId);
+                               @RequestParam("todoId") Long taskId) throws IOException {
+        BriefTask task = briefTaskService.findOne(taskId);
         if (task == null) {
             sendDefaultJson(response, false, "");
             return;
         }
-
+        writeToResponse(response, BUILDER, task);
     }
 }

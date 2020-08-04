@@ -2,22 +2,19 @@ package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
 import app.models.mysqlviews.BriefJsonDocument;
-import app.models.mysqlviews.BriefTask;
 import app.models.serialization.ExcludeForJsonReport;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "reports")
@@ -29,27 +26,27 @@ public class Report extends IdentityBaseEntity {
     @Column(name = "time")
     private Time time;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "task_id")
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "reports_docs",
+            joinColumns = @JoinColumn(name = "report_id"),
+            inverseJoinColumns = @JoinColumn(name = "doc_id")
+    )
     @ExcludeForJsonReport
-    private Task task;
+    private List<BriefDocument> documents;
 
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "reports_docs",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "doc_id")
     )
-    private Set<BriefDocument> documents;
+    private List<BriefJsonDocument> docList;
 
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "reports_docs",
+    @JoinTable(name = "comment_post",
             joinColumns = @JoinColumn(name = "report_id"),
-            inverseJoinColumns = @JoinColumn(name = "doc_id")
+            inverseJoinColumns = @JoinColumn(name = "id")
     )
-    private Set<BriefJsonDocument> docList;
-
-
-    private Set<ReportComment> comments;
+    private List<ReportComment> comments;
 
     public Date getDate() {
         return date;
@@ -67,28 +64,28 @@ public class Report extends IdentityBaseEntity {
         this.time = time;
     }
 
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
-    public Set<BriefDocument> getDocuments() {
+    public List<BriefDocument> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(Set<BriefDocument> documents) {
+    public void setDocuments(List<BriefDocument> documents) {
         this.documents = documents;
     }
 
-    public Set<BriefJsonDocument> getDocList() {
+    public List<BriefJsonDocument> getDocList() {
         return docList;
     }
 
-    public void setDocList(Set<BriefJsonDocument> docList) {
+    public void setDocList(List<BriefJsonDocument> docList) {
         this.docList = docList;
+    }
+
+    public List<ReportComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<ReportComment> comments) {
+        this.comments = comments;
     }
 
     @Override
@@ -107,7 +104,6 @@ public class Report extends IdentityBaseEntity {
                 .appendSuper(super.hashCode())
                 .append(getDate())
                 .append(getTime())
-                .append(getTask())
                 .toHashCode();
     }
 }

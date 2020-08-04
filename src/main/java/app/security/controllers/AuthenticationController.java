@@ -4,6 +4,7 @@ import app.configuration.spring.constants.Constants;
 import app.controllers.JsonSupportController;
 import app.models.basic.CustomUser;
 import app.models.VerificationCode;
+import app.models.basic.Performer;
 import app.security.models.UserDto;
 import app.security.service.IUserService;
 import app.security.utils.DefaultPasswordEncoder;
@@ -18,6 +19,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import app.service.interfaces.IPerformerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -60,24 +63,29 @@ public class AuthenticationController extends JsonSupportController {
 
     private final ExecutionService executionService;
 
-    @Autowired
-    private AuthenticationManager authManager;
+    private final IPerformerService performerService;
 
-    @Autowired
-    @Qualifier("app_constants")
-    private Constants constants;
+    private final AuthenticationManager authManager;
+
+    private final Constants constants;
 
     @Autowired
     public AuthenticationController(final IUserService userService,
                                     final DefaultPasswordEncoder encoder,
                                     final VerificationMailTemplater templater,
                                     final IMailService mailService,
-                                    final ExecutionService executionService) {
+                                    final ExecutionService executionService,
+                                    IPerformerService performerService,
+                                    AuthenticationManager authManager,
+                                    @Qualifier("app_constants") Constants constants) {
         this.userService = userService;
         this.encoder = encoder;
         this.verificationMailTemplater = templater;
         this.mailService = mailService;
         this.executionService = executionService;
+        this.performerService = performerService;
+        this.authManager = authManager;
+        this.constants = constants;
     }
 
     @RequestMapping("/logout")
@@ -132,6 +140,20 @@ public class AuthenticationController extends JsonSupportController {
                     CustomUser customUser = new CustomUser(dto, encoder);
                     customUser.setEnabled(true);
                     userService.create(customUser);
+                    Performer performer = new Performer();
+                    String performerName =
+                            (dto.getFirstName() == null ?
+                                    Constants.EMPTY_STRING :
+                                    dto.getFirstName())
+                            +
+                            (dto.getLastName() == null ?
+                                    Constants.EMPTY_STRING :
+                                    dto.getLastName());
+                    performer.setName(performerName);
+                    performer.setRoles(customUser.getRoles());
+                    performerService.create(performer);
+                    customUser.setPerformer(performer);
+                    userService.update(customUser);
                 }
                 removeVerificationCode(getVerificationKey(dto));
                 auth(res, request, dto);

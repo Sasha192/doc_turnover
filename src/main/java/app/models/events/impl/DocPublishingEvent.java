@@ -3,7 +3,6 @@ package app.models.events.impl;
 import app.models.basic.BriefDocument;
 import app.models.events.Event;
 import app.models.mysqlviews.BriefJsonDocument;
-
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -16,13 +15,13 @@ public class DocPublishingEvent extends Event {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "report_id")
-    private BriefJsonDocument document;
+    private BriefDocument document;
 
-    public BriefJsonDocument getDocument() {
+    public BriefDocument getDocument() {
         return document;
     }
 
-    public void setDocument(BriefJsonDocument document) {
+    public void setDocument(BriefDocument document) {
         this.document = document;
     }
 }

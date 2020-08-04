@@ -58,7 +58,7 @@ public class CustomUser
                 ? dto.getPassword()
                 : encoder.encode(dto.getPassword());
         setPassword(encodedPassword);
-        addRole(SimpleRole.USER);
+        addRole(SimpleRole.PERFORMER);
     }
 
     public Long getId() {

@@ -1,11 +1,15 @@
 package app.controllers;
 
+import app.dao.persistance.IGenericDao;
 import app.models.basic.CustomUser;
 import app.models.basic.Performer;
+import app.models.mysqlviews.BriefPerformer;
 import app.models.serialization.ExcludeStrategies;
 import app.security.controllers.AuthenticationWrapper;
+import app.security.controllers.PerformerWrapper;
 import app.security.service.IUserService;
 import app.security.utils.DefaultPasswordEncoder;
+import app.service.abstraction.AbstractService;
 import app.service.interfaces.IPerformerService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
@@ -28,35 +32,34 @@ public class PerformerController extends JsonSupportController {
 
     private IUserService userService;
     private AuthenticationWrapper authenticationWrapper;
+    private final PerformerWrapper performerWrapper;
     private IPerformerService performerService;
     private DefaultPasswordEncoder encoder;
+
 
     @Autowired
     public PerformerController(IUserService userService,
                                AuthenticationWrapper authenticationWrapper,
                                IPerformerService performerService,
-                               DefaultPasswordEncoder encoder) {
+                               DefaultPasswordEncoder encoder, PerformerWrapper performerWrapper) {
         this.userService = userService;
         this.authenticationWrapper = authenticationWrapper;
         this.performerService = performerService;
         this.encoder = encoder;
+        this.performerWrapper = performerWrapper;
     }
 
     @RequestMapping("/my/info")
     public void myInfo(HttpServletRequest request,
                        HttpServletResponse response)
             throws IOException {
-        Principal principal = retrievePrincipal(request);
-        if (principal != null) {
-            String username = principal.getName();
-            Performer performer = performerService.retrieveByUsername(username);
+            Performer performer = performerWrapper.retrievePerformer(request);
             GsonBuilder builder = new GsonBuilder()
                     .addSerializationExclusionStrategy(
-                            ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER
-                    );
+                            ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+                    .setPrettyPrinting();
             writeToResponse(response, builder, performer);
             return;
-        }
     }
 
     @RequestMapping("my/password")
@@ -81,7 +84,7 @@ public class PerformerController extends JsonSupportController {
     /**
      * Does some thing in old style.
      *
-     * @deprecated use AuthenticationDetailsWrapper {@link #retrievePrincipal(HttpServletRequest)} instead.
+     * @deprecated use AuthenticationWrapper {@link #retrievePrincipal(HttpServletRequest)} instead.
      */
     @Deprecated
     private Principal retrievePrincipal(HttpServletRequest request) {

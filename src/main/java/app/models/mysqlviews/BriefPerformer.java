@@ -1,7 +1,6 @@
 package app.models.mysqlviews;
 
 import app.models.abstr.IdentityBaseEntity;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;

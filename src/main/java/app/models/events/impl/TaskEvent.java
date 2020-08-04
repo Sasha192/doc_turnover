@@ -1,5 +1,6 @@
 package app.models.events.impl;
 
+import app.models.basic.Task;
 import app.models.events.Event;
 import app.models.mysqlviews.BriefTask;
 import javax.persistence.CascadeType;
@@ -14,13 +15,13 @@ public class TaskEvent extends Event {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "task_id")
-    private BriefTask task;
+    private Task task;
 
-    public BriefTask getTask() {
+    public Task getTask() {
         return task;
     }
 
-    public void setTask(BriefTask task) {
+    public void setTask(Task task) {
         this.task = task;
     }
 }

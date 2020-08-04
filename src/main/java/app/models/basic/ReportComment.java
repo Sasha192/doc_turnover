@@ -1,6 +1,7 @@
 package app.models.basic;
 
 import app.models.abstr.Comment;
+import app.models.serialization.ExcludeForJsonComment;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javax.persistence.CascadeType;
@@ -15,6 +16,7 @@ public class ReportComment extends Comment {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "report_id")
+    @ExcludeForJsonComment
     private Report report;
 
     public Report getReport() {

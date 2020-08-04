@@ -3,10 +3,12 @@ package app.dao.impl;
 import app.dao.interfaces.IEventDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.events.Event;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+@Repository
 public class EventDao
         extends GenericJpaRepository<Event>
         implements IEventDao {

@@ -19,6 +19,10 @@ public class UserDto {
 
     }
 
+    public interface JsonView {
+
+    }
+
     public interface UpdatePassword extends Exist {
     }
 
@@ -35,7 +39,12 @@ public class UserDto {
 
     @ValidPasswordPattern(groups = {New.class, UpdatePassword.class})
     @NotNull(groups = {New.class, UpdatePassword.class, Auth.class})
+    @Null(groups = {JsonView.class})
     private String password;
+
+    private String firstName;
+
+    private String lastName;
 
     private @NotNull Boolean remember;
 
@@ -105,5 +114,21 @@ public class UserDto {
 
     public void setRemember(final Boolean remember) {
         this.remember = remember;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

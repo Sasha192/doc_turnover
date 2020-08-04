@@ -2,12 +2,20 @@ package app.models.mysqlviews;
 
 import app.models.abstr.IdentityBaseEntity;
 import app.models.basic.Report;
-import org.checkerframework.checker.units.qual.C;
+import app.models.serialization.ExcludeForJsonBriefTask;
 
-import java.io.Serializable;
 import java.sql.Date;
-import java.util.Set;
-import javax.persistence.*;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "brief_task_json_view")
@@ -69,43 +77,48 @@ public class BriefTask
     @JoinTable(
             name = "tasks_documents",
             joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "doc_id"))
-    private Set<BriefJsonDocument> docList;
+            inverseJoinColumns = @JoinColumn(name = "doc_id")
+    )
+    @ExcludeForJsonBriefTask
+    private List<BriefJsonDocument> docList;
 
     @ElementCollection
-    @CollectionTable(name = "tasks_keys",
+    @CollectionTable(
+            name = "tasks_keys",
             joinColumns = @JoinColumn(name = "task_id")
     )
     @Column(name = "key")
-    private Set<String> keys;
+    private List<String> keys;
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinTable(name = "tasks_performers",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "performer_id"))
-    private Set<BriefPerformer> performer;
+    @ExcludeForJsonBriefTask
+    private List<BriefPerformer> performer;
 
     @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinColumn(name = "report_id", referencedColumnName = "id")
-    private Report reports;
+    @ExcludeForJsonBriefTask
+    private Report report;
 
     private BriefTask() {
         ;
     }
 
-    public Set<BriefPerformer> getPerformer() {
+    public List<BriefPerformer> getPerformer() {
         return performer;
     }
 
-    public void setPerformer(Set<BriefPerformer> performer) {
+    public void setPerformer(List<BriefPerformer> performer) {
         this.performer = performer;
     }
 
-    public Set<String> getKeys() {
+    public List<String> getKeys() {
         return keys;
     }
 
-    public void setKeys(Set<String> keys) {
+    public void setKeys(List<String> keys) {
         this.keys = keys;
     }
 
@@ -253,19 +266,19 @@ public class BriefTask
         this.perfImgPath = perfImgPath;
     }
 
-    public Set<BriefJsonDocument> getDocList() {
+    public List<BriefJsonDocument> getDocList() {
         return docList;
     }
 
-    public void setDocList(Set<BriefJsonDocument> docList) {
+    public void setDocList(List<BriefJsonDocument> docList) {
         this.docList = docList;
     }
 
     public Report getReports() {
-        return reports;
+        return report;
     }
 
     public void setReports(Report reports) {
-        this.reports = reports;
+        this.report = reports;
     }
 }
