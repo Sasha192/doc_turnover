@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         @ComponentScan("app.models"),
         @ComponentScan("app.service"),
         @ComponentScan("app.security.models"),
+        @ComponentScan("app.security.wrappers"),
         @ComponentScan("app.security.dao"),
         @ComponentScan("app.security.service"),
         @ComponentScan("app.configuration")

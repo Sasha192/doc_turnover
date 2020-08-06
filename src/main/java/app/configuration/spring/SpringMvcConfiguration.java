@@ -2,14 +2,11 @@ package app.configuration.spring;
 
 import app.configuration.spring.constants.Constants;
 import app.security.service.impl.DefaultUserDetailsService;
-import app.security.utils.DefaultAuthenticationFailureHandler;
-import app.security.utils.DefaultAuthenticationSuccessHandler;
 import app.security.utils.DefaultPasswordEncoder;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.io.FileTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver;
-import javax.servlet.Filter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,15 +14,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -50,11 +44,9 @@ public class SpringMvcConfiguration
 
     private static final Logger LOGGER = Logger.getLogger(SpringMvcConfiguration.class);
 
-    @Autowired
-    private DefaultUserDetailsService userDetailsService;
+    private final DefaultUserDetailsService userDetailsService;
 
-    @Autowired
-    private DefaultPasswordEncoder defaultPasswordEncoder;
+    private final DefaultPasswordEncoder defaultPasswordEncoder;
 
     /*@Autowired
     @Qualifier("default_access_denied_handler")
@@ -74,9 +66,15 @@ public class SpringMvcConfiguration
     @Autowired
     private Filter authenticationFilter;*/
 
-    @Autowired
-    @Qualifier("app_constants")
-    private Constants constants;
+    private final Constants constants;
+
+    public SpringMvcConfiguration(DefaultUserDetailsService userDetailsService,
+                                  DefaultPasswordEncoder defaultPasswordEncoder,
+                                  @Qualifier("app_constants") Constants constants) {
+        this.userDetailsService = userDetailsService;
+        this.defaultPasswordEncoder = defaultPasswordEncoder;
+        this.constants = constants;
+    }
 
     @Bean
     public ViewResolver viewResolver() {

@@ -11,7 +11,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
-public abstract class JsonSupportController {
+public class JsonSupportController {
 
     private static final Logger EXCEPTION_LOGGER = Logger.getLogger("intExceptionLogger");
     private static final String EXCEPTION_SENDING_JSON =

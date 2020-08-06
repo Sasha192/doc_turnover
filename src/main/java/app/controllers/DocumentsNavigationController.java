@@ -7,7 +7,7 @@ import app.controllers.utils.RunnableDatabaseStore;
 import app.models.basic.BriefDocument;
 import app.models.mysqlviews.BriefJsonDocument;
 import app.models.basic.Performer;
-import app.security.controllers.PerformerWrapper;
+import app.security.wrappers.PerformerWrapper;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
 import app.service.extapis.GMailService;
@@ -61,9 +61,7 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     private static final String MAX_FILES_DOWNLOAD = "max_files_download";
 
-    @Autowired
-    @Qualifier("app_constants")
-    private Constants constants;
+    private final Constants constants;
 
     private VirusTotalScan virusTotalScan;
 
@@ -83,13 +81,15 @@ public class DocumentsNavigationController extends JsonSupportController {
                                          IBriefDocumentService docService,
                                          IBriefJsonDocumentService jsonDocService,
                                          PerformerWrapper performerWrapper,
-                                         ExecutionService executionService) {
+                                         ExecutionService executionService,
+                                         @Qualifier("app_constants") Constants constants) {
         this.virusTotalScan = virusTotalScan;
         this.mailService = mailService;
         this.docService = docService;
         this.jsonDocService = jsonDocService;
         this.performerWrapper = performerWrapper;
         this.executionService = executionService;
+        this.constants = constants;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -102,7 +102,7 @@ public class DocumentsNavigationController extends JsonSupportController {
         if ((day != null && day.length() > 2)
                 || (month != null && month.length() > 2)
                 || (year != null && year.length() > 6)) {
-            this.sendDefaultJson(response, false, "DATE NOT FOUND OR TOO BIG VALUE");
+            sendDefaultJson(response, false, "DATE NOT FOUND OR TOO BIG VALUE");
             return;
         }
         Integer yearInt = null;
@@ -123,7 +123,7 @@ public class DocumentsNavigationController extends JsonSupportController {
                 dayInt);
         final GsonBuilder builder = new GsonBuilder()
                 .setPrettyPrinting();
-        this.writeToResponse(response, builder, list);
+        writeToResponse(response, builder, list);
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
@@ -150,8 +150,12 @@ public class DocumentsNavigationController extends JsonSupportController {
                 + (Constants.SLASH + month)
                 + (Constants.SLASH + day);
         final File fileFolder = new File(filePath);
+        boolean mkdirs = false;
         if (!fileFolder.exists()) {
-            fileFolder.mkdirs();
+            mkdirs = fileFolder.mkdirs();
+        }
+        if(!mkdirs) {
+            sendDefaultJson(response, false, "Internal Server Error");
         }
         final List<File> files = new LinkedList<>();
         boolean success = true;
@@ -184,7 +188,7 @@ public class DocumentsNavigationController extends JsonSupportController {
         }
         if (!success) {
             this.removeAllFiles(files);
-            this.sendDefaultJson(response, success, msg);
+            sendDefaultJson(response, success, msg);
             return;
         }
         Performer performer = this.performerWrapper.retrievePerformer(req);
@@ -193,7 +197,7 @@ public class DocumentsNavigationController extends JsonSupportController {
                 filePath, performer
         );
         this.executionService.pushTask(runnable);
-        this.sendDefaultJson(response, true, "");
+        sendDefaultJson(response, true, "");
     }
 
     private void removeAllFiles(final List<File> files) throws IOException {

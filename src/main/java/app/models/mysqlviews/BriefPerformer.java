@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "brief_performer_json_view")
+@Table(name = "brief_performer")
 public class BriefPerformer
         extends IdentityBaseEntity {
 

@@ -94,8 +94,7 @@ public class BriefTask
     @JoinTable(name = "tasks_performers",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "performer_id"))
-    @ExcludeForJsonBriefTask
-    private List<BriefPerformer> performer;
+    private List<BriefPerformer> performers;
 
     @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinColumn(name = "report_id", referencedColumnName = "id")
@@ -107,11 +106,11 @@ public class BriefTask
     }
 
     public List<BriefPerformer> getPerformer() {
-        return performer;
+        return performers;
     }
 
     public void setPerformer(List<BriefPerformer> performer) {
-        this.performer = performer;
+        this.performers = performer;
     }
 
     public List<String> getKeys() {

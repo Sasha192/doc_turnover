@@ -1,4 +1,4 @@
-package app.security.utils;
+package app.security.controllers.filters;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;

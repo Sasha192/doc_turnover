@@ -1,6 +1,7 @@
-package app.security.controllers;
+package app.security.wrappers;
 
 import app.models.basic.Performer;
+import app.security.wrappers.AuthenticationWrapper;
 import app.service.interfaces.IPerformerService;
 import com.google.common.base.Preconditions;
 

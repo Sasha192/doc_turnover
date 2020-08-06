@@ -1,4 +1,4 @@
-package app.security.utils;
+package app.security.controllers.filters;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -30,7 +30,7 @@ public class AccessGodAdminFilter extends GenericFilterBean {
                 if (authentication != null && authentication.isAuthenticated()) {
                     final Collection<? extends GrantedAuthority> authorities =
                             authentication.getAuthorities();
-                    if (requestUri.matches("\\/god\\/admin.*")) {
+                    if (requestUri.matches("/god/admin.*")) {
                         for (final GrantedAuthority authority : authorities) {
                             if (authority.getAuthority().equals("ROLE_ADMIN")) {
                                 filterChain.doFilter(servletRequest, servletResponse);

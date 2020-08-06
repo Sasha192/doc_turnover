@@ -1,4 +1,4 @@
-package app.security.controllers;
+package app.security.wrappers;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 

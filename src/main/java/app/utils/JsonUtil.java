@@ -70,9 +70,12 @@ public class JsonUtil {
      * @return JsonElement : value of the last nested JsonToken.NAME
      * @throws IOException :
      */
-    public static JsonElement findRecursively(String jsonString, String[] names)
+    public static JsonElement findRecursively(String jsonString, String... names)
             throws IOException {
-        return findRecursively(jsonString, names, 0);
+        if (jsonString != null) {
+            return findRecursively(jsonString, names, 0);
+        }
+        return null;
     }
 
     private static JsonElement findRecursively(String jsonString, String[] names, int iter)

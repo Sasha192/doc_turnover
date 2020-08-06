@@ -11,7 +11,7 @@ import app.models.basic.TaskComment;
 import app.models.basic.TaskStatus;
 import app.models.mysqlviews.BriefTask;
 import app.models.serialization.ExcludeStrategies;
-import app.security.controllers.PerformerWrapper;
+import app.security.wrappers.PerformerWrapper;
 import app.service.interfaces.IBriefTaskService;
 import app.service.interfaces.IStatusService;
 import app.service.interfaces.ITaskCommentService;
