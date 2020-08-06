@@ -2,7 +2,7 @@ package app.controllers;
 
 import app.configuration.spring.constants.Constants;
 import app.controllers.dto.CommentDto;
-import app.controllers.dto.IEntityDtoMapper;
+import app.controllers.dto.mappers.IEntityDtoMapper;
 import app.controllers.dto.TaskDto;
 import app.models.abstr.Comment;
 import app.models.basic.Performer;

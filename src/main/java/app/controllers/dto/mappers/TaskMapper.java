@@ -1,6 +1,7 @@
-package app.controllers.dto;
+package app.controllers.dto.mappers;
 
 import app.configuration.spring.constants.Constants;
+import app.controllers.dto.TaskDto;
 import app.models.basic.BriefDocument;
 import app.models.basic.Performer;
 import app.models.basic.Task;

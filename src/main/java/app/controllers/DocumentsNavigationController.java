@@ -3,16 +3,15 @@ package app.controllers;
 import static org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.UnicodeExtraFieldPolicy;
 
 import app.configuration.spring.constants.Constants;
-import app.controllers.utils.RunnableDatabaseStore;
 import app.models.basic.BriefDocument;
-import app.models.mysqlviews.BriefJsonDocument;
 import app.models.basic.Performer;
+import app.models.mysqlviews.BriefJsonDocument;
 import app.security.wrappers.PerformerWrapper;
+import app.service.extapis.GMailService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
-import app.service.extapis.GMailService;
-import app.service.extapis.VirusTotalScan;
-import app.service.impl.ExecutionService;
+import app.utils.DocumentsUploader;
+import app.utils.exceptions.MaliciousFoundException;
 import com.google.gson.GsonBuilder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -27,14 +26,12 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.MessageFormat;
 import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
-import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +44,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 // @TODO : Handle Exceptions!!!
+// @TODO : Create Service Class for zip creation
 @Controller
 @RequestMapping("archive/doc")
 public class DocumentsNavigationController extends JsonSupportController {
 
-    private static final String IOEXCEPTION_WHILE_SENDING_DATA_ = "IOEXCEPTION WHILE SENDING DATA ";
+    private static final String IOEXCEPTION_WHILE_SENDING_DATA_ =
+            "IOEXCEPTION WHILE SENDING DATA ";
 
     private static final String
             FILE_NOT_FOUND_EXC =
@@ -63,8 +62,6 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     private final Constants constants;
 
-    private VirusTotalScan virusTotalScan;
-
     private GMailService mailService;
 
     private IBriefDocumentService docService;
@@ -73,23 +70,21 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     private PerformerWrapper performerWrapper;
 
-    private ExecutionService executionService;
+    private final DocumentsUploader uploader;
 
     @Autowired
-    public DocumentsNavigationController(VirusTotalScan virusTotalScan,
-                                         GMailService mailService,
+    public DocumentsNavigationController(GMailService mailService,
                                          IBriefDocumentService docService,
                                          IBriefJsonDocumentService jsonDocService,
                                          PerformerWrapper performerWrapper,
-                                         ExecutionService executionService,
-                                         @Qualifier("app_constants") Constants constants) {
-        this.virusTotalScan = virusTotalScan;
+                                         @Qualifier("app_constants") Constants constants,
+                                         @Qualifier("doc_uploader") DocumentsUploader uploader) {
         this.mailService = mailService;
         this.docService = docService;
         this.jsonDocService = jsonDocService;
         this.performerWrapper = performerWrapper;
-        this.executionService = executionService;
         this.constants = constants;
+        this.uploader = uploader;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -129,7 +124,7 @@ public class DocumentsNavigationController extends JsonSupportController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(@RequestParam("file") final MultipartFile[] mfiles,
                        final HttpServletResponse response,
-                       final HttpServletRequest req) throws IOException {
+                       final HttpServletRequest req) {
         if (mfiles.length > constants.get(MAX_FILES_UPLOAD).getIntValue()) {
             sendDefaultJson(
                     response, false,
@@ -139,78 +134,20 @@ public class DocumentsNavigationController extends JsonSupportController {
             );
             return;
         }
-        final LocalDate now = LocalDate.now();
-        final int year = now.getYear();
-        final int month = now.getMonthValue();
-        final int day = now.getDayOfMonth();
-        final String filePath;
-        filePath = this.constants.get("path_to_archive")
-                .getStringValue()
-                + (Constants.SLASH + year)
-                + (Constants.SLASH + month)
-                + (Constants.SLASH + day);
-        final File fileFolder = new File(filePath);
-        boolean mkdirs = false;
-        if (!fileFolder.exists()) {
-            mkdirs = fileFolder.mkdirs();
+        try {
+            Performer performer = performerWrapper.retrievePerformer(req);
+            uploader.upload(performer, mfiles);
+        } catch (MaliciousFoundException ioex) {
+            sendDefaultJson(response, false, ioex.getMessage());
+        } catch (IOException e) {
+            sendDefaultJson(response, false, "Internal Server Error. Please try later.");
         }
-        if(!mkdirs) {
-            sendDefaultJson(response, false, "Internal Server Error");
-        }
-        final List<File> files = new LinkedList<>();
-        boolean success = true;
-        String msg = Constants.EMPTY_STRING;
-        for (int i = 0; i < mfiles.length; i++) {
-            final MultipartFile mfile = mfiles[i];
-            String fileName = new String(
-                    mfile.getOriginalFilename().getBytes(
-                            StandardCharsets.ISO_8859_1
-                    ),
-                    StandardCharsets.UTF_8
-            );
-            // @TODO : Change this for different Charsets.
-            //  e.g. There was problem with CharsetDetector(CD)
-            //  CD works incorrectly!!!
-            // @TODO :
-            final File fileToSave = new File(
-                    filePath.concat(
-                            Constants.SLASH.concat(fileName)
-                    )
-            );
-            mfile.transferTo(fileToSave);
-            files.add(fileToSave);
-            if (!this.virusTotalScan.scan(fileToSave)) {
-                success = false;
-                msg = "File : ".concat(mfile.getOriginalFilename())
-                        .concat(Constants.IS_MALICIOUS);
-                break;
-            }
-        }
-        if (!success) {
-            this.removeAllFiles(files);
-            sendDefaultJson(response, success, msg);
-            return;
-        }
-        Performer performer = this.performerWrapper.retrievePerformer(req);
-        Runnable runnable = new RunnableDatabaseStore(
-                files, this.docService,
-                filePath, performer
-        );
-        this.executionService.pushTask(runnable);
         sendDefaultJson(response, true, "");
-    }
-
-    private void removeAllFiles(final List<File> files) throws IOException {
-        for (final File file : files) {
-            if (!file.delete()) {
-                FileDeleteStrategy.FORCE.delete(file);
-            }
-        }
     }
 
     @RequestMapping(path = "/download",
             method = RequestMethod.GET)
-    public void download(@RequestParam("id") final String[] docIds,
+    public void download(@RequestParam(value = "id") final String[] docIds,
                          final HttpServletResponse response) {
         if (docIds.length > constants.get(MAX_FILES_DOWNLOAD).getIntValue()) {
             sendDefaultJson(
@@ -220,17 +157,21 @@ public class DocumentsNavigationController extends JsonSupportController {
             );
             return;
         }
-        final File[] files = this.retrieveFilesByDocIds(docIds);
-        if (files != null) {
+        try {
+            final File[] files = this.retrieveFilesByDocIds(docIds);
             if (files.length == 1) {
                 this.sendFile(response, files[0]);
             } else {
                 this.sendFile(response, files);
             }
+        } catch (NumberFormatException ex) {
+
+            sendDefaultJson(response, false, "Illegal operation");
         }
     }
 
-    private File[] retrieveFilesByDocIds(final String[] docIds) {
+    private File[] retrieveFilesByDocIds(final String[] docIds)
+            throws NumberFormatException {
         final File[] files = new File[docIds.length];
         int i = 0;
         for (final String docId : docIds) {
@@ -240,7 +181,10 @@ public class DocumentsNavigationController extends JsonSupportController {
                     .concat(Constants.SLASH)
                     .concat(briefDocument.getName())
                     .concat(briefDocument.getExtName());
-            files[i++] = new File(filePath);
+            File file = new File(filePath);
+            if (file.exists()) {
+                files[i++] = new File(filePath);
+            }
         }
         return files;
     }

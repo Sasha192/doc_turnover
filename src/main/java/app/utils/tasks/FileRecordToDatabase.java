@@ -1,4 +1,4 @@
-package app.controllers.utils;
+package app.utils.tasks;
 
 import app.configuration.spring.constants.Constants;
 import app.models.basic.BriefDocument;
@@ -10,19 +10,19 @@ import java.time.LocalDate;
 import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 
-public class RunnableDatabaseStore implements Runnable {
+public class FileRecordToDatabase implements Runnable {
 
     private List<File> files;
     private IBriefDocumentService service;
-    private String filePath;
+    private String folderPath;
     private Performer performer;
 
-    public RunnableDatabaseStore(final List<File> files,
-                                 final IBriefDocumentService service,
-                                 final String filePath, final Performer performer) {
+    public FileRecordToDatabase(final List<File> files,
+                                final IBriefDocumentService service,
+                                final String folderPath, final Performer performer) {
         this.files = files;
         this.service = service;
-        this.filePath = filePath;
+        this.folderPath = folderPath;
         this.performer = performer;
     }
 
@@ -31,7 +31,7 @@ public class RunnableDatabaseStore implements Runnable {
         LocalDate now = LocalDate.now();
         for (File file : files) {
             BriefDocument briefDocument = new BriefDocument();
-            briefDocument.setPath(filePath);
+            briefDocument.setPath(folderPath);
             String fileName = file.getName();
             String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
             briefDocument.setName(fileNameWithoutExtension);

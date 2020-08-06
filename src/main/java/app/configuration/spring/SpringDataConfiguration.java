@@ -30,7 +30,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         @ComponentScan("app.security.wrappers"),
         @ComponentScan("app.security.dao"),
         @ComponentScan("app.security.service"),
-        @ComponentScan("app.configuration")
+        @ComponentScan("app.configuration"),
+        @ComponentScan("app.utils")
 })
 public class SpringDataConfiguration {
 

@@ -1,5 +1,6 @@
-package app.controllers.dto;
+package app.controllers.dto.mappers;
 
+import app.controllers.dto.PerformerDto;
 import app.models.basic.Department;
 import app.models.basic.Performer;
 import app.service.interfaces.IDepartmentService;
