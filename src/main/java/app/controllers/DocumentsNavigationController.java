@@ -11,10 +11,9 @@ import app.service.extapis.GMailService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
 import app.utils.DocumentsUploader;
+import app.utils.ZipUtils;
 import app.utils.exceptions.MaliciousFoundException;
 import com.google.gson.GsonBuilder;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,7 +29,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -44,7 +42,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 // @TODO : Handle Exceptions!!!
-// @TODO : Create Service Class for zip creation
 @Controller
 @RequestMapping("archive/doc")
 public class DocumentsNavigationController extends JsonSupportController {
@@ -54,7 +51,7 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     private static final String
             FILE_NOT_FOUND_EXC =
-            "FILENOTFOUNDEXCEPTION WHILE TRYING TO FIND DOCUMENT IN FILESYSTEM. FILENAME = ";
+            "FILENOTFOUNDEXCEPTION WHILE TRYING TO FIND DOCUMENT IN FILESYSTEM";
 
     private static final String MAX_FILES_UPLOAD = "max_files_upload";
 
@@ -108,14 +105,13 @@ public class DocumentsNavigationController extends JsonSupportController {
             monthInt = month == null ? null : Integer.parseInt(month);
             dayInt = day == null ? null : Integer.parseInt(day);
         } catch (final NumberFormatException e) {
+            sendDefaultJson(response, false, "");
             this.getExceptionLogger().error("ERROR WHILE INTEGER PARSING ", e);
+            return;
         }
         final String search = request.getParameter("search");
-        final List<BriefJsonDocument> list = this.jsonDocService.findBy(pageId,
-                search,
-                yearInt,
-                monthInt,
-                dayInt);
+        final List<BriefJsonDocument> list = this.jsonDocService
+                .findBy(pageId, search, yearInt, monthInt, dayInt);
         final GsonBuilder builder = new GsonBuilder()
                 .setPrettyPrinting();
         writeToResponse(response, builder, list);
@@ -165,8 +161,15 @@ public class DocumentsNavigationController extends JsonSupportController {
                 this.sendFile(response, files);
             }
         } catch (NumberFormatException ex) {
-
             sendDefaultJson(response, false, "Illegal operation");
+        } catch (FileNotFoundException fnx) {
+            String message = FILE_NOT_FOUND_EXC;
+            getExceptionLogger().error(message, fnx);
+            sendDefaultJson(response, false, message);
+        } catch (final IOException e) {
+            String message = IOEXCEPTION_WHILE_SENDING_DATA_ + "\n" + e;
+            this.getExceptionLogger().error(message);
+            sendDefaultJson(response, false, "");
         }
     }
 
@@ -196,85 +199,58 @@ public class DocumentsNavigationController extends JsonSupportController {
                          @RequestParam("to") final String to,
                          @RequestParam("subject") final String subject,
                          final HttpServletResponse response) {
-        final File[] files = this.retrieveFilesByDocIds(docId);
-        boolean responseBool = false;
-        if (files != null && files.length > 0) {
-            responseBool = this.mailService
-                    .sendFile(to, subject, msg, files);
-        }
-        this.sendDefaultJson(response, responseBool, "");
-    }
-
-    private void sendFile(final HttpServletResponse response, final File file) {
-        try (final InputStream in = new FileInputStream(file)) {
-            final String extesion = FilenameUtils.getExtension(file.getAbsolutePath());
-            String contentType = Constants.CONTENT_TYPE_MAP
-                    .getContentTypeFor(Constants.DOT.concat(extesion));
-            if (contentType == null) {
-                contentType = "application/octet-stream";
+        try {
+            final File[] files = this.retrieveFilesByDocIds(docId);
+            boolean responseBool = false;
+            if (files.length > 0) {
+                responseBool = this.mailService
+                        .sendFile(to, subject, msg, files);
             }
-            contentType = contentType.concat("; charset=UTF-8");
-            response.setContentType(contentType);
-            response.setHeader("Content-disposition", String.format("attachment; filename=%s",
-                    URLEncoder.encode(file.getName(), StandardCharsets.UTF_8)));
-            final int dataSize = Math.toIntExact(file.length());
-            response.setContentLength(dataSize);
-            final OutputStream out = response.getOutputStream();
-            final BufferedOutputStream bufOut = new BufferedOutputStream(out);
-            int bytesRead = 0;
-            final BufferedInputStream bufIn = new BufferedInputStream(in);
-            final byte[] buf = new byte[2048];
-            while ((bytesRead = bufIn.read(buf)) != -1) {
-                bufOut.write(buf, 0, bytesRead);
-            }
-            bufOut.flush();
-            bufOut.close();
-            bufIn.close();
-        } catch (final FileNotFoundException e) {
-            this.getExceptionLogger()
-                    .error(FILE_NOT_FOUND_EXC + file.getAbsolutePath(), e);
-        } catch (final IOException e) {
-            this.getExceptionLogger()
-                    .error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
+            sendDefaultJson(response, responseBool, "");
+        } catch (NumberFormatException ex) {
+            getExceptionLogger().error(ex);
+            sendDefaultJson(response, false, "Illegal operation");
         }
     }
 
-    private void sendFile(final HttpServletResponse response, final File... files) {
+    private void sendFile(final HttpServletResponse response, final File file)
+            throws IOException {
+        final InputStream in = new FileInputStream(file);
+        final String extesion = FilenameUtils.getExtension(file.getAbsolutePath());
+        String contentType = Constants.CONTENT_TYPE_MAP
+                .getContentTypeFor(Constants.DOT.concat(extesion));
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+        contentType = contentType.concat("; charset=UTF-8");
+        response.setContentType(contentType);
+        response.setHeader("Content-disposition", String.format("attachment; filename=%s",
+                URLEncoder.encode(file.getName(), StandardCharsets.UTF_8)));
+        final int dataSize = Math.toIntExact(file.length());
+        response.setContentLength(dataSize);
+        final OutputStream out = response.getOutputStream();
+        IOUtils.copy(in, out);
+        out.flush();
+        out.close();
+        in.close();
+    }
+
+    private void sendFile(final HttpServletResponse response, final File... files)
+            throws IOException {
         if (files.length == 0) {
             return;
         }
-        try {
-            final ZipArchiveOutputStream zipOut = new ZipArchiveOutputStream(
-                    response.getOutputStream()
-            );
-            zipOut.setCreateUnicodeExtraFields(UnicodeExtraFieldPolicy.ALWAYS);
-            response.setContentType("application/zip;charset=UTF-8");
-            final String zipName = Constants.DATE_FORMAT.format(Date.valueOf(LocalDate.now()));
-            response.setHeader("Content-Disposition", MessageFormat
-                    .format("attachment; filename=\"{0}.zip\"",
-                            URLEncoder.encode(zipName, StandardCharsets.UTF_8)));
-            final byte[] buf = new byte[2048];
-            for (final File file : files) {
-                try {
-                    final InputStream in = new FileInputStream(file);
-                    final String entryname = file.getName();
-                    zipOut.putArchiveEntry(new ZipArchiveEntry(entryname));
-                    IOUtils.copy(in, zipOut);
-                    zipOut.flush();
-                    in.close();
-                    zipOut.closeArchiveEntry();
-                } catch (final FileNotFoundException e) {
-                    this.getExceptionLogger()
-                            .error(FILE_NOT_FOUND_EXC + file.getAbsolutePath(), e);
-                } catch (final IOException e) {
-                    this.getExceptionLogger()
-                            .error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
-                }
-            }
-            zipOut.finish();
-            zipOut.close();
-        } catch (final IOException e) {
-            this.getExceptionLogger().error(IOEXCEPTION_WHILE_SENDING_DATA_, e);
-        }
+        final ZipArchiveOutputStream zipOut = new ZipArchiveOutputStream(
+                response.getOutputStream()
+        );
+        zipOut.setCreateUnicodeExtraFields(UnicodeExtraFieldPolicy.ALWAYS);
+        response.setContentType("application/zip;charset=UTF-8");
+        final String zipName = Constants.DATE_FORMAT.format(Date.valueOf(LocalDate.now()));
+        response.setHeader("Content-Disposition", MessageFormat
+                .format("attachment; filename=\"{0}.zip\"",
+                        URLEncoder.encode(zipName, StandardCharsets.UTF_8)));
+        ZipUtils.write(zipOut, files);
+        zipOut.finish();
+        zipOut.close();
     }
 }
