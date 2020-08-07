@@ -2,10 +2,10 @@ package app.models.events.impl;
 
 import app.models.basic.Task;
 import app.models.events.Event;
-import app.models.mysqlviews.BriefTask;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -13,7 +13,8 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue(value = "task_event")
 public class TaskEvent extends Event {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     private Task task;
 

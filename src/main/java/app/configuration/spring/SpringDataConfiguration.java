@@ -82,6 +82,16 @@ public class SpringDataConfiguration {
                 this.env.getProperty("hibernate.enable_lazy_load_no_trans"));
         hibernateProperties.setProperty("hibernate.proc.param_null_passing",
                 String.valueOf(true));
+        hibernateProperties.setProperty("hibernate.show_sql",
+                env.getProperty("hibernate.show_sql"));
+        hibernateProperties.setProperty("hibernate.jdbc.batch_size",
+                env.getProperty("hibernate.jdbc.batch_size"));
+        hibernateProperties.setProperty("hibernate.order_inserts",
+                env.getProperty("hibernate.order_inserts"));
+        hibernateProperties.setProperty("hibernate.order_updates",
+                env.getProperty("hibernate.order_updates"));
+        hibernateProperties.setProperty("hibernate.batch_versioned_data",
+                env.getProperty("hibernate.batch_versioned_data"));
         return hibernateProperties;
     }
 }

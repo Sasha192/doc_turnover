@@ -3,7 +3,6 @@ package app.models.mysqlviews;
 import app.models.abstr.IdentityBaseEntity;
 import app.models.basic.Report;
 import app.models.serialization.ExcludeForJsonBriefTask;
-
 import java.sql.Date;
 import java.util.List;
 import javax.persistence.CascadeType;

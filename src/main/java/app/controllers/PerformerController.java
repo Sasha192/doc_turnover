@@ -3,10 +3,10 @@ package app.controllers;
 import app.models.basic.CustomUser;
 import app.models.basic.Performer;
 import app.models.serialization.ExcludeStrategies;
-import app.security.wrappers.AuthenticationWrapper;
-import app.security.wrappers.PerformerWrapper;
 import app.security.service.IUserService;
 import app.security.utils.DefaultPasswordEncoder;
+import app.security.wrappers.AuthenticationWrapper;
+import app.security.wrappers.PerformerWrapper;
 import app.service.interfaces.IPerformerService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
@@ -30,7 +30,6 @@ public class PerformerController extends JsonSupportController {
     private final PerformerWrapper performerWrapper;
     private IPerformerService performerService;
     private DefaultPasswordEncoder encoder;
-
 
     @Autowired
     public PerformerController(IUserService userService,

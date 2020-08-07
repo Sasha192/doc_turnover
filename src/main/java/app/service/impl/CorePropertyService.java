@@ -3,8 +3,8 @@ package app.service.impl;
 import app.dao.interfaces.ICorePropertyDao;
 import app.dao.persistance.IGenericDao;
 import app.models.basic.CoreProperty;
-import app.service.interfaces.ICorePropertyService;
 import app.service.abstraction.AbstractService;
+import app.service.interfaces.ICorePropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +31,7 @@ public class CorePropertyService extends AbstractService<CoreProperty>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CoreProperty retrieveByName(String name) {
         return dao.retrieveByName(name);
     }

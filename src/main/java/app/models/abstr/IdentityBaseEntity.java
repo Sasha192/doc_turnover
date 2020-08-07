@@ -1,22 +1,21 @@
 package app.models.abstr;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import java.io.Serializable;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @MappedSuperclass
 public abstract class IdentityBaseEntity
         implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Access(AccessType.FIELD)
     protected Long id;
 
@@ -30,9 +29,13 @@ public abstract class IdentityBaseEntity
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof IdentityBaseEntity)) return false;
+        if (!(o instanceof IdentityBaseEntity)) {
+            return false;
+        }
 
         IdentityBaseEntity that = (IdentityBaseEntity) o;
 

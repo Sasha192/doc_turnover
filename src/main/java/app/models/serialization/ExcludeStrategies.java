@@ -162,7 +162,6 @@ public class ExcludeStrategies {
         }
     };
 
-
     public static class ExcludeThisClass implements ExclusionStrategy {
 
         private Class<?> clazz;
@@ -209,7 +208,7 @@ public class ExcludeStrategies {
         }
     }
 
-   /* public static class ExcludeThisAnnotations implements ExclusionStrategy {
+    /*public static class ExcludeThisAnnotations implements ExclusionStrategy {
 
         private Class<?>[] annotations;
 

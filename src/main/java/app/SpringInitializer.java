@@ -2,11 +2,11 @@ package app;
 
 import app.configuration.spring.SpringDataConfiguration;
 import app.configuration.spring.SpringMvcConfiguration;
-import app.security.wrappers.AuthenticationWrapper;
 import app.security.controllers.filters.AccessDepartment;
 import app.security.controllers.filters.AccessGodAdminFilter;
 import app.security.controllers.filters.AccessPerformer;
 import app.security.controllers.filters.AuthenticationFilter;
+import app.security.wrappers.AuthenticationWrapper;
 import javax.servlet.Filter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 

@@ -3,8 +3,9 @@ package app.models.basic;
 import app.models.abstr.IdentityBaseEntity;
 import app.models.mysqlviews.BriefJsonDocument;
 import app.models.serialization.ExcludeForJsonReport;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.sql.Date;
-import java.sql.Time;
-import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Entity
 @Table(name = "reports")
@@ -90,9 +90,13 @@ public class Report extends IdentityBaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof Report)) return false;
+        if (!(o instanceof Report)) {
+            return false;
+        }
         return new EqualsBuilder()
                 .appendSuper(super.equals(o))
                 .isEquals();

@@ -2,20 +2,22 @@ package app.models.basic;
 
 import app.models.abstr.Comment;
 import app.models.serialization.ExcludeForJsonComment;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.io.Serializable;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Entity
 @DiscriminatorValue(value = "task_comment")
 public class TaskComment extends Comment implements Serializable {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     @ExcludeForJsonComment
     private Task task;
@@ -30,9 +32,13 @@ public class TaskComment extends Comment implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof TaskComment)) return false;
+        if (!(o instanceof TaskComment)) {
+            return false;
+        }
 
         TaskComment that = (TaskComment) o;
 

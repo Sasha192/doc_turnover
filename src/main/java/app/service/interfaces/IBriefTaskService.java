@@ -1,8 +1,8 @@
 package app.service.interfaces;
 
 import app.dao.persistance.IOperations;
-import app.models.mysqlviews.BriefTask;
 import app.models.basic.Performer;
+import app.models.mysqlviews.BriefTask;
 import java.util.List;
 
 public interface IBriefTaskService extends IOperations<BriefTask> {

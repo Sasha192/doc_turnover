@@ -5,7 +5,11 @@ import app.models.serialization.ExcludeForJsonPerformer;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "departments")

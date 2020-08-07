@@ -6,10 +6,9 @@ import app.models.basic.Report;
 import app.models.basic.ReportComment;
 import app.service.abstraction.AbstractService;
 import app.service.interfaces.IReportCommentService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ReportCommentService
@@ -31,7 +30,6 @@ public class ReportCommentService
     public void setDao(final IReportCommentDao dao) {
         this.dao = dao;
     }
-
 
     @Override
     public List<ReportComment> retrieveByReport(Report report) {

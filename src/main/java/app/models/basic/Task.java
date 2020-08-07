@@ -1,16 +1,24 @@
 package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
-import app.models.mysqlviews.BriefJsonDocument;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Entity
 @Table(name = "tasks")
@@ -30,7 +38,11 @@ public class Task
             inverseJoinColumns = @JoinColumn(name = "performer_id"))
     private Set<Performer> performer;
 
-    @Transient
+    @ElementCollection
+    @CollectionTable(name = "tasks_performers",
+            joinColumns = @JoinColumn(name = "task_id")
+    )
+    @Column(name = "performer_id")
     private Set<Long> performerIds;
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
@@ -40,7 +52,11 @@ public class Task
             inverseJoinColumns = @JoinColumn(name = "doc_id"))
     private Set<BriefDocument> document;
 
-    @Transient
+    @ElementCollection
+    @CollectionTable(name = "tasks_documents",
+            joinColumns = @JoinColumn(name = "task_id")
+    )
+    @Column(name = "doc_id")
     private Set<Long> documentsIds;
 
     @Column(name = "creation_date")
@@ -62,21 +78,23 @@ public class Task
     @CollectionTable(name = "tasks_keys",
             joinColumns = @JoinColumn(name = "task_id")
     )
-    @Column(name = "key")
+    @Column(name = "performer_id")
     private Set<String> keys;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id")
     private TaskStatus status;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "task_owner_id")
     private Performer taskOwner;
 
     @Column(name = "modification_date")
     private Date modificationDate;
 
-    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinColumn(name = "report_id", referencedColumnName = "id")
     private Report report;
 
@@ -208,30 +226,6 @@ public class Task
         this.description = description;
     }
 
-    public Set<Long> getPerformerIds() {
-        if (performerIds == null || performerIds.isEmpty()) {
-            performerIds = new HashSet<>();
-            getPerformer().stream().forEach(perf -> performerIds.add(perf.getId()));
-        }
-        return this.performerIds;
-    }
-
-    public void setPerformerIds(final Set<Long> performerIds) {
-        this.performerIds = performerIds;
-    }
-
-    public Set<Long> getDocumentsIds() {
-        if (documentsIds == null || documentsIds.isEmpty()) {
-            documentsIds = new HashSet<>();
-            getDocument().stream().forEach(doc -> performerIds.add(doc.getId()));
-        }
-        return this.documentsIds;
-    }
-
-    public void setDocumentsIds(final Set<Long> documentsIds) {
-        this.documentsIds = documentsIds;
-    }
-
     public Date getModificationDate() {
         return this.modificationDate;
     }
@@ -248,11 +242,31 @@ public class Task
         this.report = report;
     }
 
+    public Set<Long> getPerformerIds() {
+        return performerIds;
+    }
+
+    public void setPerformerIds(Set<Long> performerIds) {
+        this.performerIds = performerIds;
+    }
+
+    public Set<Long> getDocumentsIds() {
+        return documentsIds;
+    }
+
+    public void setDocumentsIds(Set<Long> documentsIds) {
+        this.documentsIds = documentsIds;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof Task)) return false;
+        if (!(o instanceof Task)) {
+            return false;
+        }
 
         Task task = (Task) o;
 

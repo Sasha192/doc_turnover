@@ -1,8 +1,8 @@
 package app.dao.interfaces;
 
 import app.dao.persistance.IGenericDao;
-import app.models.mysqlviews.BriefTask;
 import app.models.basic.Performer;
+import app.models.mysqlviews.BriefTask;
 import java.util.List;
 
 public interface IBriefTaskDao extends IGenericDao<BriefTask> {

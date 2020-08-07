@@ -6,12 +6,16 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -40,14 +44,26 @@ public abstract class Event
     @Enumerated(EnumType.ORDINAL)
     protected EventType eventTypeEnum;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "performer_id")
-    protected Performer performer;
+    protected Performer publisher;
 
-    @Transient
+    /**
+     * Long[] performersId stores performers Id, for whom to show this event
+     * as notification about origin of event
+     */
+    @ElementCollection
+    @CollectionTable(name = "performers_events",
+            joinColumns = @JoinColumn(name = "event_id")
+    )
+    @Column(name = "performer_id")
+    protected Set<Long> performersId;
+
     /**
      *  Field:String name is used to represent description about event on frontend
      */
+    @Transient
     protected String description;
 
     public Timestamp getTimeStamp() {
@@ -86,12 +102,20 @@ public abstract class Event
         this.eventTypeEnum = eventTypeEnum;
     }
 
-    public Performer getPerformer() {
-        return performer;
+    public void setTimeStamp(Timestamp timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
-    public void setPerformer(Performer performer) {
-        this.performer = performer;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Performer getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Performer publisher) {
+        this.publisher = publisher;
     }
 
     public String getName() {
@@ -101,7 +125,6 @@ public abstract class Event
     public void setName(String description) {
         this.description = description;
     }
-
 
     public enum EventType {
         COMMENT_PUB, REPORT_PUB, DOC_PUB, TASK_PUB
@@ -115,4 +138,11 @@ public abstract class Event
         this.id = id;
     }
 
+    public Set<Long> getPerformersId() {
+        return performersId;
+    }
+
+    public void setPerformersId(Set<Long> performersId) {
+        this.performersId = performersId;
+    }
 }

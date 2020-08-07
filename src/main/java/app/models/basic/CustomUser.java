@@ -42,7 +42,10 @@ public class CustomUser
     @Column(name = "role")
     private Set<SimpleRole> roles;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE,
+            CascadeType.REMOVE,
+            CascadeType.REFRESH,
+            CascadeType.PERSIST})
     @JoinColumn(name = "performer_id", referencedColumnName = "id")
     private Performer performer;
 

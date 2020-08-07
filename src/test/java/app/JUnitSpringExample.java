@@ -1,12 +1,27 @@
 package app;
 
 import app.dao.persistance.IOperations;
-import app.models.basic.*;
+import app.models.basic.BriefDocument;
+import app.models.basic.Department;
+import app.models.basic.Performer;
+import app.models.basic.Report;
+import app.models.basic.ReportComment;
+import app.models.basic.Task;
+import app.models.basic.TaskComment;
 import app.models.mysqlviews.BriefTask;
-import app.service.impl.BriefTaskService;
-import app.service.interfaces.*;
+import app.service.interfaces.IBriefDocumentService;
+import app.service.interfaces.IBriefJsonDocumentService;
+import app.service.interfaces.IBriefTaskService;
+import app.service.interfaces.ICorePropertyService;
+import app.service.interfaces.IDepartmentService;
+import app.service.interfaces.IPerformerService;
+import app.service.interfaces.IReportCommentService;
+import app.service.interfaces.IStatusService;
+import app.service.interfaces.ITaskCommentService;
+import app.service.interfaces.ITaskService;
 import app.spring.TestSpringDataConfiguration;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
@@ -43,6 +58,8 @@ public class JUnitSpringExample {
 
     private IBriefTaskService briefTaskService;
 
+    private IOperations<?>[] operations;
+
     @Autowired
     public JUnitSpringExample(IDepartmentService departmentService,
                               IBriefDocumentService documentService,
@@ -64,8 +81,6 @@ public class JUnitSpringExample {
         this.reportCommentService = reportCommentService;
         this.briefTaskService = briefTaskService;
     }
-
-    private IOperations<?>[] operations;
 
     @BeforeEach
     private void init() {
@@ -141,6 +156,18 @@ public class JUnitSpringExample {
         briefTask.getReports().getComments();
         briefTask.getKeys();
         briefTask.getPerformer();
+    }
+
+    @Test
+    public void testForMultipleRetrievePerformersId() {
+        TaskComment taskComment = taskCommentService.findOne(1L);
+        Long task = taskComment.getTask().getId();
+        System.out.println(task);
+    }
+
+    @Test
+    public void testBatchPersistence() {
+        documentService.create(new LinkedList<>());
     }
 
     private void selectAll() {

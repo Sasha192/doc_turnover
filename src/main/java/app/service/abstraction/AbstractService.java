@@ -36,6 +36,11 @@ public abstract class AbstractService<T extends Serializable> implements IOperat
     }
 
     @Override
+    public void create(List<T> entities) {
+        getDao().create(entities);
+    }
+
+    @Override
     @Transactional
     public T update(final T entity) {
         return getDao().update(entity);

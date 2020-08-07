@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class TaskCommentService
         extends AbstractService<TaskComment>
         implements ITaskCommentService {
@@ -34,16 +33,19 @@ public class TaskCommentService
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskComment> retrieveByTask(Task task) {
         return dao.retrieveByTask(task);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskComment> retrieveByTaskName(String taskName) {
         return dao.retrieveByTaskName(taskName);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskComment> retrieveByTaskId(Long id) {
         return dao.retrieveByTaskId(id);
     }

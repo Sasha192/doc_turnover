@@ -5,6 +5,7 @@ import app.models.events.Event;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -12,7 +13,8 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue(value = "comment_event")
 public class CommentPublishingEvent extends Event {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;
 

@@ -8,7 +8,21 @@ import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "performers")
@@ -19,7 +33,8 @@ public class Performer
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
 
@@ -39,7 +54,7 @@ public class Performer
     private String imgPath;
 
     @OneToOne(mappedBy = "performer", cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-            fetch = FetchType.LAZY, optional = false)
+            fetch = FetchType.EAGER, optional = false)
     @ExcludeForJsonPerformer
     private CustomUser user;
 

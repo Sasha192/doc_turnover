@@ -2,8 +2,8 @@ package app.controllers;
 
 import app.configuration.spring.constants.Constants;
 import app.controllers.dto.CommentDto;
-import app.controllers.dto.mappers.IEntityDtoMapper;
 import app.controllers.dto.TaskDto;
+import app.controllers.dto.mappers.IEntityDtoMapper;
 import app.models.abstr.Comment;
 import app.models.basic.Performer;
 import app.models.basic.Task;
@@ -16,11 +16,11 @@ import app.service.interfaces.IBriefTaskService;
 import app.service.interfaces.IStatusService;
 import app.service.interfaces.ITaskCommentService;
 import app.service.interfaces.ITaskService;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -69,7 +69,8 @@ public class TaskNavigationController extends JsonSupportController {
                                     IStatusService statusService,
                                     IBriefTaskService briefTaskService,
                                     ITaskCommentService taskCommentService,
-                                    @Qualifier("task_mapper") IEntityDtoMapper<Task, TaskDto> taskMapper) {
+                                    @Qualifier("task_mapper")
+                                            IEntityDtoMapper<Task, TaskDto> taskMapper) {
         this.performerWrapper = performerWrapper;
         this.taskService = taskService;
         this.statusService = statusService;
@@ -126,10 +127,10 @@ public class TaskNavigationController extends JsonSupportController {
     }
 
     @RequestMapping(value = "/comment/add", method = RequestMethod.POST,
-                consumes = MediaType.APPLICATION_JSON_VALUE)
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addTaskComment(@Validated @RequestBody CommentDto commentDto,
                                HttpServletRequest request,
-                               HttpServletResponse response){
+                               HttpServletResponse response) {
         TaskComment taskComment = new TaskComment();
         Task task = taskService.findOne(commentDto.getTodoId());
         if (task == null) {

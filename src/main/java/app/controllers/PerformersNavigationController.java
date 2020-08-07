@@ -1,7 +1,7 @@
 package app.controllers;
 
-import app.controllers.dto.mappers.IEntityDtoMapper;
 import app.controllers.dto.PerformerDto;
+import app.controllers.dto.mappers.IEntityDtoMapper;
 import app.models.basic.Department;
 import app.models.basic.Performer;
 import app.models.serialization.ExcludeStrategies;

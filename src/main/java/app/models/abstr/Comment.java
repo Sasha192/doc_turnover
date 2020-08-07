@@ -3,20 +3,21 @@ package app.models.abstr;
 import app.models.basic.Performer;
 import app.models.mysqlviews.BriefPerformer;
 import app.models.serialization.ExcludeForJsonComment;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -29,13 +30,15 @@ public abstract class Comment
     @Column(name = "comment")
     protected String comment;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "performer_id")
     @ExcludeForJsonComment
     protected Performer author;
 
-    @ManyToOne
-    @JoinColumn(name = "performer_id", insertable=false, updatable=false)
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "performer_id", insertable = false, updatable = false)
     protected BriefPerformer performer;
 
     @Column(name = "date")
@@ -73,9 +76,13 @@ public abstract class Comment
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (!(o instanceof Comment)) return false;
+        if (!(o instanceof Comment)) {
+            return false;
+        }
 
         Comment comment = (Comment) o;
 

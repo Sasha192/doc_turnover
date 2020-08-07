@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -41,7 +42,8 @@ public class BriefDocument
             inverseJoinColumns = @JoinColumn(name = "task_id"))
     private List<Task> task;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "performer_id")
     private Performer performer;
 

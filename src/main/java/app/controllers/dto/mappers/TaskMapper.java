@@ -63,7 +63,6 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
         } catch (ParseException e) {
             return null;
         }
-        List<Performer> performers = performerService.findSeveralById(dto.getPerformerId());
         Long[] docIds = dto.getDocsId();
         if (docIds != null && docIds.length > 0) {
             List<BriefDocument> documents = documentService.findSeveralById(docIds);
@@ -75,6 +74,7 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
         } else {
             throw new IllegalArgumentException("Not valid TaskStatus. Actual : " + dto.getStatus());
         }
+        List<Performer> performers = performerService.findSeveralById(dto.getPerformerId());
         task.setDeadline(false);
         task.setPerformer(Sets.newHashSet(performers));
         return task;

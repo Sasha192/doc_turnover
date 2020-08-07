@@ -1,21 +1,19 @@
 package app.service.impl;
 
 import app.dao.interfaces.IEventDao;
-import app.dao.interfaces.IPerformerDao;
 import app.dao.persistance.IGenericDao;
 import app.models.events.Event;
 import app.service.abstraction.AbstractService;
 import app.service.interfaces.IEventService;
+import java.sql.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
-@Transactional
 public class EventService extends AbstractService<Event>
-            implements IEventService {
+        implements IEventService {
 
     private IEventDao dao;
 
@@ -37,5 +35,29 @@ public class EventService extends AbstractService<Event>
     @Transactional(readOnly = true)
     public List<Event> retrieveLastEvents() {
         return dao.retrieveLastEvents();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Event> retrieveLastEventsForPerformerId(Long performerId) {
+        return dao.retrieveLastEventsForPerformerId(performerId);
+    }
+
+    @Override
+    @Deprecated
+    /**
+     * Not implemented yet
+     */
+    public List<Event> retrieveEventsForPerformerIdAfterDate(Long performerId, Date afterDate) {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    /**
+     * Not implemented yet
+     */
+    public List<Event> retrieveEventsForPerformerIdBeforeDate(Long performerId, Date beforeDate) {
+        return null;
     }
 }

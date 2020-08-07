@@ -1,8 +1,8 @@
 package app.security.service;
 
 import app.dao.persistance.IOperations;
-import app.models.basic.CustomUser;
 import app.models.VerificationCode;
+import app.models.basic.CustomUser;
 
 public interface IUserService extends IOperations<CustomUser> {
 

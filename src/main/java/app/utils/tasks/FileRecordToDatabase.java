@@ -7,6 +7,7 @@ import app.service.interfaces.IBriefDocumentService;
 import java.io.File;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 
@@ -29,6 +30,7 @@ public class FileRecordToDatabase implements Runnable {
     @Override
     public void run() {
         LocalDate now = LocalDate.now();
+        List<BriefDocument> documents = new LinkedList<>();
         for (File file : files) {
             BriefDocument briefDocument = new BriefDocument();
             briefDocument.setPath(folderPath);
@@ -39,7 +41,8 @@ public class FileRecordToDatabase implements Runnable {
             briefDocument.setExtName(Constants.DOT.concat(filExtName));
             briefDocument.setDate(Date.valueOf(now));
             briefDocument.setPerformer(performer);
-            service.create(briefDocument);
+            documents.add(briefDocument);
         }
+        service.create(documents);
     }
 }

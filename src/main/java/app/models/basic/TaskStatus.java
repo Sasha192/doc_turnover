@@ -1,11 +1,17 @@
 package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
-
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "custom_status")
@@ -16,7 +22,8 @@ public class TaskStatus
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "performer_id")
     private Performer performer;
 
@@ -24,7 +31,7 @@ public class TaskStatus
     private Boolean custom;
 
     @OneToMany(mappedBy = "status", fetch = FetchType.LAZY,
-    cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+            cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private List<Task> taskList;
 
     public Long getId() {

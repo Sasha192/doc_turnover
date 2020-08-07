@@ -1,10 +1,8 @@
 package app.security.wrappers;
 
 import app.models.basic.Performer;
-import app.security.wrappers.AuthenticationWrapper;
 import app.service.interfaces.IPerformerService;
 import com.google.common.base.Preconditions;
-
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

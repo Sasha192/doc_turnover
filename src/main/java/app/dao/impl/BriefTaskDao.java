@@ -2,8 +2,8 @@ package app.dao.impl;
 
 import app.dao.interfaces.IBriefTaskDao;
 import app.dao.persistance.GenericJpaRepository;
-import app.models.mysqlviews.BriefTask;
 import app.models.basic.Performer;
+import app.models.mysqlviews.BriefTask;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
