@@ -88,10 +88,10 @@ public class SpringDataConfiguration {
                 env.getProperty("hibernate.jdbc.batch_size"));
         hibernateProperties.setProperty("hibernate.order_inserts",
                 env.getProperty("hibernate.order_inserts"));
-        hibernateProperties.setProperty("hibernate.order_updates",
+        /*hibernateProperties.setProperty("hibernate.order_updates",
                 env.getProperty("hibernate.order_updates"));
         hibernateProperties.setProperty("hibernate.batch_versioned_data",
-                env.getProperty("hibernate.batch_versioned_data"));
+                env.getProperty("hibernate.batch_versioned_data"));*/
         return hibernateProperties;
     }
 }

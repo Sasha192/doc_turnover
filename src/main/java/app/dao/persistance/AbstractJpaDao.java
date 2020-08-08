@@ -14,10 +14,10 @@ import javax.persistence.criteria.Root;
 
 public abstract class AbstractJpaDao<T extends Serializable> {
 
-    public static final String FROM = "from ";
+    private static final String FROM = "from ";
+    private static final int BATCH_SIZE = 5;
     private Class<T> clazz;
     private CriteriaBuilder criteriaBuilder;
-    private Integer batchSize;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -47,18 +47,18 @@ public abstract class AbstractJpaDao<T extends Serializable> {
     }
 
     public void create(final List<T> entities) {
-        int batchSize = getBatchSize();
-        Iterator<T> iter = entities.iterator();
+        EntityManager em = getEntityManager();
         int c = 0;
-        while (iter.hasNext()) {
-            T entity = iter.next();
-            entityManager.persist(entity);
+        for (T entity : entities) {
+            em.persist(entity);
             c++;
-            if (c % batchSize == 0) {
-                entityManager.flush();
-                entityManager.clear();
+            if (c % BATCH_SIZE == 0) {
+                em.flush();
+                em.clear();
             }
         }
+        em.flush();
+        em.clear();;
     }
 
     public T update(final T entity) {
@@ -122,27 +122,5 @@ public abstract class AbstractJpaDao<T extends Serializable> {
         Root<T> c = q.from(getClazz());
         return getEntityManager()
                 .createQuery(q.select(c).where(c.get("id").in(ids))).getResultList();
-    }
-
-    public int getBatchSize() {
-        // @TODO : How to get batch size ? And how to check that
-        // batch inserts and updates works ?!!!??
-        /*if (batchSize != null) {
-            return batchSize;
-        }
-        EntityManager em = getEntityManager();
-        if (em != null) {
-            Integer prop = Integer
-                    .valueOf((
-                            em.getProperties()
-                                    .get("hibernate.jdbc.batch_size")
-                                    .toString())
-                    );
-            this.batchSize = prop;
-        } else {
-            this.batchSize = 0;
-        }
-        return batchSize;*/
-        return 1;
     }
 }
