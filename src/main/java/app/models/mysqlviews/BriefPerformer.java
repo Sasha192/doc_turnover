@@ -4,9 +4,11 @@ import app.models.abstr.IdentityBaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import org.hibernate.annotations.Immutable;
 
 @Entity
 @Table(name = "brief_performer")
+@Immutable
 public class BriefPerformer
         extends IdentityBaseEntity {
 

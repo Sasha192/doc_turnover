@@ -14,7 +14,7 @@ public class DefaultAuthenticationFailureHandler
         extends SimpleUrlAuthenticationFailureHandler {
 
     private static final String DEFAULT_FAILURE_URL = "/fail/auth";
-    private static final String DELIMETER = " | ".intern();
+    private static final String DELIMETER = " | ";
     private static final Logger LOGGER = Logger.getLogger("authLogger");
 
     @Override

@@ -2,6 +2,7 @@ package app.models.mysqlviews;
 
 import app.models.abstr.IdentityBaseEntity;
 import app.models.basic.Report;
+import app.models.basic.TaskComment;
 import app.models.serialization.ExcludeForJsonBriefTask;
 import java.sql.Date;
 import java.util.List;
@@ -13,11 +14,14 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.Immutable;
 
 @Entity
 @Table(name = "brief_task_json_view")
+@Immutable
 public class BriefTask
         extends IdentityBaseEntity {
 
@@ -99,6 +103,13 @@ public class BriefTask
     @JoinColumn(name = "report_id", referencedColumnName = "id")
     @ExcludeForJsonBriefTask
     private Report report;
+
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "comment_post",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "id")
+    )
+    private List<TaskComment> comments;
 
     private BriefTask() {
         ;
@@ -278,5 +289,29 @@ public class BriefTask
 
     public void setReports(Report reports) {
         this.report = reports;
+    }
+
+    public List<BriefPerformer> getPerformers() {
+        return performers;
+    }
+
+    public void setPerformers(List<BriefPerformer> performers) {
+        this.performers = performers;
+    }
+
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
+
+    public List<TaskComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<TaskComment> comments) {
+        this.comments = comments;
     }
 }

@@ -8,9 +8,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.Immutable;
 
 @Entity
 @Table(name = "json_view_brief_archive_doc")
+@Immutable
 public class BriefJsonDocument
         implements Serializable {
 

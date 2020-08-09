@@ -27,10 +27,10 @@ import org.springframework.stereotype.Component;
 @Component("app_constants")
 public class Constants {
 
-    public static final String DOT = ".".intern();
-    public static final String SLASH = "/".intern();
+    public static final String DOT = ".";
+    public static final String SLASH = "/";
     public static final FileNameMap CONTENT_TYPE_MAP = URLConnection.getFileNameMap();
-    public static final String EMPTY_STRING = "".intern();
+    public static final String EMPTY_STRING = "";
     public static final String IS_MALICIOUS = " is malicious or can not be uploaded";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 

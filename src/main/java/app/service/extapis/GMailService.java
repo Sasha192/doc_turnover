@@ -1,5 +1,6 @@
 package app.service.extapis;
 
+import app.configuration.spring.constants.Constants;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -25,8 +26,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GMailService implements IMailService {
-
-    private static final String EMPTY_STRING = "".intern();
 
     private InternetAddress emailInternetAddress;
 
@@ -104,8 +103,8 @@ public class GMailService implements IMailService {
                                                 String msg,
                                                 FileSystemResource...resources)
             throws MessagingException, IOException {
-        subject = subject == null ? EMPTY_STRING : subject;
-        msg = msg == null ? EMPTY_STRING : msg;
+        subject = subject == null ? Constants.EMPTY_STRING : subject;
+        msg = msg == null ? Constants.EMPTY_STRING : msg;
         Session session = getSession();
         MimeMessage mimeMessage = new MimeMessage(session);
         MimeMessageHelper message =
@@ -124,8 +123,8 @@ public class GMailService implements IMailService {
 
     private Message createMessage(String to, String subject, String plainText)
             throws MessagingException {
-        subject = subject == null ? EMPTY_STRING : subject;
-        plainText = plainText == null ? EMPTY_STRING : plainText;
+        subject = subject == null ? Constants.EMPTY_STRING : subject;
+        plainText = plainText == null ? Constants.EMPTY_STRING : plainText;
         Session session = getSession();
         Message message = new MimeMessage(session);
         message.setFrom(emailInternetAddress);

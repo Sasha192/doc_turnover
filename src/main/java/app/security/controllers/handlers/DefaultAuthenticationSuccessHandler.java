@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class DefaultAuthenticationSuccessHandler
         extends SimpleUrlAuthenticationSuccessHandler {
     private static final Logger LOGGER = Logger.getLogger("authLogger");
-    private static final String DELIMETER = " | ".intern();
+    private static final String DELIMETER = " | ";
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     private final Map<String, String> roleTargetUrlMap = new HashMap<>();

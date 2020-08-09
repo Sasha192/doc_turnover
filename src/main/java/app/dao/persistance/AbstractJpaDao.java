@@ -1,7 +1,6 @@
 package app.dao.persistance;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
