@@ -18,8 +18,7 @@
 //      Drop Down
 // -------------------
 
-(function () {
-
+function dropDown() {
     $(".drop-down_btn").each((index, element) => {
         element.onclick = (e) => {
             let button = e.target.closest(".drop-down_btn");
@@ -27,8 +26,20 @@
         }
     })
 
+    $(".drop-down").each((index, dropBlock) => {
+        dropBlock.querySelectorAll(".drop-down_item").forEach(dropItem => {
+            dropItem.onclick = (e) => {
+                if (dropBlock.querySelector(".drop-down_selected") !== null) {
+                    dropBlock.querySelector(".drop-down_selected").innerHTML = e.target.closest(".drop-down_item").textContent
+                } else {
+                    return
+                }
+            }
+        });
+    })
+
     function dropDown(button) {
-        window.closeAllDropDowns()
+        closeAllDropDowns()
         $(button.closest(".drop-down").querySelector(".drop-down_list")).fadeIn(150)
         button.closest(".drop-down").classList.add("droped")
 
@@ -39,12 +50,9 @@
         button.closest(".drop-down").classList.remove("droped")
     }
 
-    window.onclick = (e) => {
-        if (e.target.closest(".drop-down")) return
-        window.closeAllDropDowns()
-    }
+}
 
-})();
+export { dropDown }
 
 // ------------------------------------------
 //        Change State Access Module
@@ -61,16 +69,16 @@
                 stateBlock.animate({
                     "right": "+50%",
                 }, 200, () => {
-                    stateBlock.find("button").html("Sign In")
-                    stateBlock.find("h6").html("Log In!")
+                    stateBlock.find("button").html("Аутентифікація")
+                    stateBlock.find("h6").html("Вхід до системи!")
                 })
                 state = "signIn"
             } else if (state == "signIn") {
                 stateBlock.animate({
                     "right": '0%',
                 }, 200, () => {
-                    stateBlock.find("button").html("Sign Up")
-                    stateBlock.find("h6").html("Get started!")
+                    stateBlock.find("button").html("Реєстрація")
+                    stateBlock.find("h6").html("Почати!")
                 })
                 state = "signUp"
             }
@@ -79,9 +87,32 @@
 
 })();
 
+
+function closeAllDropDowns() {
+
+    $(".calendar").each((index, calendar) => {
+        calendar.classList.remove("droped")
+        $(calendar).find(".body").fadeOut(150)
+    })
+
+    $(".drop-down_list").each((index, dropList) => {
+        dropList.closest(".drop-down").classList.remove("droped")
+        $(dropList).fadeOut(150)
+    })
+}
+
+export { closeAllDropDowns }
+
+
 // -------------------
 //    Calendar anim
 // -------------------
+
+window.onclick = (e) => {
+    if (e.target.closest(".calendar")) return
+    if (e.target.closest(".drop-down")) return
+    closeAllDropDowns()
+}
 
 (function () {
 
@@ -89,36 +120,13 @@
         calendar.querySelector(".head-block").onclick = (e) => {
             let calendar = e.target.closest(".calendar")
             if (!calendar.classList.contains("droped")) {
-                window.closeAllDropDowns()
                 closeAllDropDowns()
                 $(calendar).find(".body").fadeIn(150)
                 calendar.classList.add("droped")
             } else {
-                window.closeAllDropDowns()
                 closeAllDropDowns()
             }
         }
     })
-
-    function closeAllDropDowns() {
-
-        $(".calendar").each((index, calendar) => {
-            calendar.classList.remove("droped")
-            $(calendar).find(".body").fadeOut(150)
-        })
-        
-        $(".drop-down_list").each((index, dropList) => {
-            dropList.closest(".drop-down").classList.remove("droped")
-            $(dropList).fadeOut(150)
-        })
-    }
-
-    window.closeAllDropDowns = closeAllDropDowns
-
-    window.onclick = (e) => {
-        if (e.target.closest(".calendar")) return
-        if (e.target.closest(".drop-down")) return
-        window.closeAllDropDowns()
-    }
 
 })();

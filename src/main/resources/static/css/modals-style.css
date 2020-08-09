@@ -15,15 +15,28 @@
 
 .custom-button.info {
     box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important;
-}
-
-.custom-button.info {
     background-color: #34ace0;
     color: #fff
 }
 
+
 .custom-button:hover.info {
     background-color: #56bae5;
+}
+
+.custom-button.success {
+    background-color: #26de81;
+    color:#ffffff
+}
+.custom-button.success:hover {
+    background-color: #26de81;
+}
+.custom-button.danger {
+    background-color: #ff4959;
+    color:#ffffff
+}
+.custom-button.danger:hover {
+    background-color: #ff4959;
 }
 
 .spinner-status {
@@ -79,7 +92,7 @@
     align-items: center;
 }
 
-.files-container .file img ,
+.files-container .file img,
 .report-upload-files .file img {
     width: 35px;
     height: 35px;
@@ -88,7 +101,7 @@
     margin-right: 15px;
 }
 
-.files-container .file .file-name ,
+.files-container .file .file-name,
 .report-upload-files .file .file-name {
     color: #777777;
     font-size: 14px;
@@ -387,14 +400,16 @@
 /* comment */
 
 .comments-container {
-    height: 360px;
+    height: 265px;
     overflow-y: auto;
     white-space: normal;
+    overflow-x: hidden;
 }
 
 .comment {
     display: flex;
     align-items: flex-start;
+    overflow-x: hidden;
 }
 
 .comment:not(:last-child) {
@@ -423,6 +438,7 @@
     margin: 5px 0px;
     color: #757575;
     font-size: 12px;
+    white-space: normal;
 }
 
 .comment-date {

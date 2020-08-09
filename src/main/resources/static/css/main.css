@@ -511,13 +511,13 @@ a:hover {
     position: absolute;
     overflow-y: auto;
     display: none;
-    z-index: 999;
+    z-index: 10000000;
     min-width: 280px;
     width: 100%;
     max-height: 320px;
     padding: 0px 0px;
     top: 40px;
-    box-shadow: 0 3px 11px 2px rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.14), 0 2px 2px 0 rgba(0, 0, 0, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.20);
     background-color: #ffffff;
 }
 
@@ -599,12 +599,76 @@ a:hover {
 [data-user-status]:after {
     display: block;
     content: "";
-    width:12px;
-    height:12px;
+    width: 12px;
+    height: 12px;
     position: absolute;
-    top:-4px;
+    top: -4px;
     left: -4px;
     background-color: #26de81;
     border-radius: 100%;
-    border:1px solid #ffffff;
+    border: 1px solid #ffffff;
+}
+
+/* Roles */
+
+[data-role = "Gmanager"] {
+    color: #a55eea;
+    font-family: "Roboto regular" !important;
+}
+
+[data-role = "admin"] {
+    color: #ff4959;
+    font-family: "Roboto regular" !important;
+}
+
+[data-role = "performer"] {
+    color: #34ace0;
+}
+
+[data-role = "secretary"] {
+    color: #ffb142;
+    font-family: "Roboto regular" !important;
+}
+
+[data-role = "manager"] {
+    color: #1f99cd;
+    font-family: "Roboto regular" !important;
+}
+
+/* buttons */
+
+.custom-button {
+    padding: 5px 20px;
+    color: #454545;
+    font-size: 13px;
+    font-family: "Roboto light";
+    border-radius: 5px;
+    transition: .2s;
+    box-shadow: 0px 0px 2px #777777;
+    margin-left: 5px;
+}
+
+.custom-button.info {
+    box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important;
+    background-color: #34ace0;
+    color: #fff
+}
+
+.custom-button:hover.info {
+    background-color: #56bae5;
+}
+
+.custom-button.success {
+    background-color: #26de81;
+    color:#ffffff
+}
+.custom-button.success:hover {
+    background-color: #26de81;
+}
+.custom-button.danger {
+    background-color: #ff4959;
+    color:#ffffff
+}
+.custom-button.danger:hover {
+    background-color: #ff4959;
 }

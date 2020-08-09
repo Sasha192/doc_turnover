@@ -7,4 +7,4 @@ target/*
 .project
 /src/main/webapp/archive/
 *.log*
-/src/main/webapp/WEB-INF/spring/
+*app.properties*

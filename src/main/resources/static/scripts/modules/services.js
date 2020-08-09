@@ -1,3 +1,4 @@
+import { dropDown } from "./animation.js"
 
 // -------------------
 //        Date
@@ -16,15 +17,51 @@
         month = months[date.getMonth()],
         year = date.getFullYear()
 
-    {
-        window.months = months
-        window.month_id = month_id
-        window.month = month
-        window.year = year
-        window.current_MDY = `${month} ${date.getDate()}, ${year}`
+    function formatDate(date) {
+
+        let dd = date.getDate();
+        if (dd < 10) dd = '0' + dd;
+
+        let mm = date.getMonth() + 1;
+        if (mm < 10) mm = '0' + mm;
+
+        return dd + '.' + mm + '.' + date.getFullYear();
     }
 
+    window.months = months
+    window.month_id = month_id
+    window.month = month
+    window.year = year
+    window.current_MDY = `${month} ${date.getDate()}, ${year}`
+    window.current_DMY = formatDate(date)
+
 })();
+
+// -------------------
+//      User props
+// -------------------
+
+class User {
+
+    static firstName() {
+        return "Abrahm"
+    }
+
+    static lastName() {
+        return "ButterKing"
+    }
+
+    static imgPath() {
+        return "/img/avatars/person.png"
+    }
+
+    static role() {
+        return "manager"
+    }
+
+};
+
+export { User }
 
 // -------------------s
 //     Validation
@@ -40,55 +77,76 @@
 //     Insert Data
 // -------------------
 
-$.ajaxSetup({
-    contentType: "application/json"
-});
+// defaultAjax
 
-// -------------------
-//     Insert Data
-// -------------------
+class Http {
 
-// import { insert_toTeamBoard} from "./form-handler.js"
-// import { insert_toTMyBoard} from "./form-handler.js"
-// import { insert_toTaskTable} from "./form-handler.js"
-
-import { insert_toArchive } from "./form-handler.js"
-
-(function () {
-
-    if(window.location.pathname == "/archive") {
-
-        $.get("/archive/doc/list?page_id=1", (data) => {
-
-        let waitForData = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                $(".load-box").find(".sk-chase").addClass("d-none")
-                $(".load-box").css({
-                    height: "0",
-                    width: "0"
-                })
-
-                resolve("result")
-
-            }, 100)
+    static post(url, data, callback) {
+        $.ajax({
+            type: "post",
+            url,
+            dataType: "json",
+            data: JSON.stringify(data),
+            success: callback,
+            contentType: "application/json; charset=UTF-8"
         })
-
-        waitForData.then(
-            result => {
-                $(".archive-table").css("display", "table")
-            }
-        )
-
-        insert_toArchive($(".archive-table"), data)
-    })
     }
 
-})();
+    static get(url, callback) {
+        $.ajax({
+            type: "get",
+            url,
+            dataType: "json",
+            success: callback,
+            contentType: "application/json; charset=UTF-8"
+        })
+    }
 
+    static files(url, data, success, complete, error) {
+        $.ajax({
+            type: "post",
+            url,
+            cache: false,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            data,
+            success,
+            complete,
+            error
+        })
+    }
 
-// -------------------
-//   Download files
-// -------------------
+};
+
+export { Http }
+
+class Lang {
+    static role(role) {
+        switch (role) {
+            case "performer":
+                return "Виконавець"
+                break;
+            case "manager":
+                return "Менеджер"
+                break;
+            case "secretary":
+                return "Секретар"
+                break;
+            case "gmanager":
+                return "Головний Менеджер"
+                break;
+            case "admin":
+                return "Адміністратор"
+                break;
+            default:
+                return "None"
+                break;
+        }
+    }
+}
+
+export { Lang }
 
 window.downloadFile = function(sUrl) {
     window.open(sUrl, '_self');

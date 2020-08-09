@@ -193,11 +193,11 @@ public class DocumentsNavigationController extends JsonSupportController {
     }
 
     @RequestMapping(path = "/send",
-            method = RequestMethod.GET)
-    public void sendFile(@RequestParam("id") final String[] docId,
-                         @RequestParam("msg") final String msg,
-                         @RequestParam("to") final String to,
-                         @RequestParam("subject") final String subject,
+            method = RequestMethod.POST)
+    public void sendFile(@RequestParam("docList") final String[] docId,
+                         @RequestParam("message") final String msg,
+                         @RequestParam("email") final String to,
+                         @RequestParam(value = "subject", required = false) final String subject,
                          final HttpServletResponse response) {
         try {
             final File[] files = this.retrieveFilesByDocIds(docId);

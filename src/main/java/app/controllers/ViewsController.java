@@ -27,4 +27,8 @@ public class ViewsController {
         return "tmboard";
     }
 
+    @RequestMapping("/CLpanel")
+    public String clPanel(ModelMap map) {
+        return "cl_panel";
+    }
 }

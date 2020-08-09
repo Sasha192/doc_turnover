@@ -98,6 +98,7 @@ body {
     color: rgba(0, 0, 0, 0.56);
     font-size: 14px;
     transition: .2s;
+    background-color: transparent;
 }
 
 .nav-bar_item.active button {
@@ -412,6 +413,10 @@ body {
     display: none;
 }
 
+.content .archive-body::-webkit-scrollbar {
+    width: 5px;
+}
+
 /* 
     -------------------
           Spinner 
@@ -466,4 +471,76 @@ body {
     .board:not(:last-child) {
         margin: 0px 15px;
     }
+}
+
+/* 
+    -------------------
+       notifications  
+    -------------------
+*/
+
+#notifications .drop-down_list {
+    top: 15px;
+    left: 40px;
+    min-width: 0px;
+    width: auto;
+    min-height: auto;
+    max-height: 380px;
+    padding: 20px 0px;
+}
+
+#notifications-list {
+    overflow-y: auto;
+    height: 340px;
+    padding: 0px 15px;
+}
+
+#notifications-list::-webkit-scrollbar {
+    width: 3px;
+    height: 100%;
+}
+
+.notification {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    cursor: pointer;
+}
+
+.notification:not(:last-child) {
+    margin-bottom: 25px;
+}
+
+.notification img {
+    height: 35px;
+    width: 35px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 100%;
+}
+
+.notification-content {
+    font-size: 12px;
+    margin-left: 15px;
+    line-height: 1rem;
+    min-width: 180px;
+}
+
+.notification .desc {
+    color: #777777;
+}
+
+.notification .meta {
+    font-size: 11px;
+    color: #34ace0;
+}
+
+.notification .title {
+    font-size: 13px;
+    color: #555555
+}
+
+.notification .body {
+    display: flex;
+    align-items: flex-start;
 }

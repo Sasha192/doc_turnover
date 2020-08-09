@@ -110,7 +110,7 @@
 								Nov 13, 2020
 							</div>
 							<div class="title">
-								CONTROL
+								Контроль
 							</div>
 						</div>
 						<div class="body">
@@ -131,25 +131,25 @@
 								<thead>
 									<tr>
 										<td class="week-day">
-											<div>Mn</div>
+											<div>Пн</div>
 										</td>
 										<td class="week-day">
-											<div>Tu</div>
+											<div>Вт</div>
 										</td>
 										<td class="week-day">
-											<div>We</div>
+											<div>Ср</div>
 										</td>
 										<td class="week-day">
-											<div>Th</div>
+											<div>Чт</div>
 										</td>
 										<td class="week-day">
-											<div>Fr</div>
+											<div>Пт</div>
 										</td>
 										<td class="week-day">
-											<div>Sa</div>
+											<div>Сб</div>
 										</td>
 										<td class="week-day">
-											<div>Su</div>
+											<div>Нд</div>
 										</td>
 									</tr>
 								</thead>
@@ -169,7 +169,7 @@
 								Nov 13, 2020
 							</div>
 							<div class="title">
-								DEADLINE
+								Дедлайн
 							</div>
 						</div>
 						<div class="body">
@@ -190,25 +190,25 @@
 								<thead>
 									<tr>
 										<td class="week-day">
-											<div>Mn</div>
+											<div>ПН</div>
 										</td>
 										<td class="week-day">
-											<div>Tu</div>
+											<div>ВТ</div>
 										</td>
 										<td class="week-day">
-											<div>We</div>
+											<div>СР</div>
 										</td>
 										<td class="week-day">
-											<div>Th</div>
+											<div>ЧТ</div>
 										</td>
 										<td class="week-day">
-											<div>Fr</div>
+											<div>ПТ</div>
 										</td>
 										<td class="week-day">
-											<div>Sa</div>
+											<div>СБ</div>
 										</td>
 										<td class="week-day">
-											<div>Su</div>
+											<div>Нд</div>
 										</td>
 									</tr>
 								</thead>
@@ -223,7 +223,7 @@
 							<div class="drop-down w-100">
 								<div class="drop-down_btn" style="height: 35px; margin-bottom:30px; padding:5px">
 									<div>+</div>
-									Add new Performer
+									Додати виконавця
 								</div>
 								<div class="drop-down_list w-100" id="user-list">
 
@@ -285,7 +285,7 @@
 				</div>
 				<div class="col-6">
 
-					<input type="text" class="custom-input w-100" placeholder="Comment">
+					<input id="comment" type="text" class="custom-input w-100" placeholder="Comment">
 
 					<div class="drop-down w-100">
 						<button class="drop-down_btn add-btn">
@@ -348,7 +348,7 @@
 								<div class="col-3 files details-files">
 									<button class="title" id="download-details-files">
 										<i class="far fa-cloud-download-alt"></i>
-										Скачать <span id="count">(0)</span>
+										Завантажити <span id="count">(0)</span>
 									</button>
 									<div id="details-files" class="files-container" style="height: 360px;">
 
@@ -357,14 +357,22 @@
 
 								<div class="col-3 w-100 performers-container">
 									<div class="title">
-										Исполнители <span id="count">(0)</span>
+										Виконавці <span id="count">(0)</span>
 									</div>
 									<div class="performers" style="height: 360px;"></div>
 								</div>
 
 								<div class="col-3 comments">
 									<div class="title">
-										Комментарии <span id="count">(0)</span>
+										Коментарі <span id="count">(0)</span>
+									</div>
+									<div class="add-comment" style="margin-bottom: 20px;">
+										<input type="text" class="custom-input w-100" placeholder="Коментар..."
+											maxlength="64">
+										<button style="color:#34ace0; font-size:14px" type="button"
+											class="mt-2 w-100 d-flex justify-content-end">
+											Відправити
+										</button>
 									</div>
 									<div class="comments-container">
 										<div class="comment">
@@ -384,15 +392,11 @@
 
 								<div class="col-3 description">
 									<div class="title">
-										Описание
+										Опис
 									</div>
 									<div class="description-container">
 										<div class="description-text" maxlength="64" contenteditable>
 
-										</div>
-
-										<div class="description-lm_date">
-											Последние изменения: <span class="description-lm_val">13.06.2020</span>
 										</div>
 									</div>
 								</div>
@@ -404,19 +408,20 @@
 								<div class="col-3 files files-report">
 									<button class="title" id="download-report-files">
 										<i class="far fa-cloud-download-alt"></i>
-										Скачать <span id="count">(0)</span>
+										Завантажити <span id="count">(0)</span>
 									</button>
-									<div class="files-container-report files-container" style="height: 360px; overflow-y:auto">
+									<div class="files-container-report files-container"
+										style="height: 360px; overflow-y:auto">
 
 									</div>
 									<div class="no-files d-none justify-content-center align-items-center"
 										style="color:#999999; height:360px; font-size:14px; border:1px dashed #bbbaba">
-										Нет файлов
+										Немає файлів
 									</div>
 								</div>
-								<div class="col-3 report">
+								<div class="col-3 report" id="send-report-files">
 									<div class="title">
-										Загрузить файлы
+										Завантажити файли
 									</div>
 									<div class="custom-file" style="margin-bottom: 10px;">
 										<input id="report-upload-file" type="file" class="custom-file-input"
@@ -431,17 +436,17 @@
 								</div>
 								<div class="col-3 report-msg">
 									<div class="title">
-										Комментарий
+										Коментарі
 									</div>
 									<textarea maxlength="512" class="custom-textarea w-100"
 										style="height: 353px; padding:0px" placeholder="Текст..."></textarea>
 								</div>
 								<div class="col-3 report">
 									<div class="title">
-										Отчёт
+										Звіт
 									</div>
 									<div class="report-list" style="height:360px; overflow-y:auto">
-										
+
 									</div>
 								</div>
 							</div>
@@ -456,8 +461,8 @@
 
 				<div class="slider-indicators d-flex">
 					<button id="details" data-target="#todo-slider" data-slide-to="0"
-						class="active mr-2 custom-button info">Детали</button>
-					<button data-target="#todo-slider" data-slide-to="1" class="custom-button">Отчёт</button>
+						class="active mr-2 custom-button info">Деталі</button>
+					<button data-target="#todo-slider" data-slide-to="1" class="custom-button info">Звіт</button>
 				</div>
 
 				<div class="d-flex">
@@ -466,13 +471,19 @@
 							<div class="spinner-border mr-4" role="status"
 								style="color:#34ace0; font-size:10px; width:20px; height:20px;">
 							</div>
-							<a href="#">Sending data...</a>
+							<a href="#">Обробка данних...</a>
 						</div>
 						<span class="status-text"></span>
 					</div>
 
-					<button id="add-modify" class="custom-button info" style="display:none">Modify</button>
-					<button id="add-report" class="custom-button info" style="display:none">Send report</button>
+					<div class="d-flex" id="todo-send-report-control">
+						<button id="add-modify" class="custom-button info" style="display: none;">Модифікувати</button>
+						<button id="add-report" class="custom-button info" style="display:none">Відправити звіт</button>
+					</div>
+					<div style="display:none" id="todo-complete-control">
+						<button id="task-complete" class="danger custom-button " style="">Переробити</button>
+						<button id="task-overdue" class="success custom-button " style="">Завершити</button>
+					</div>
 				</div>
 
 			</div>
