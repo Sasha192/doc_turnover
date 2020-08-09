@@ -8,3 +8,7 @@ create table performers_events
 		foreign key (perf_id) references performers (id)
 );
 
+
+alter table brief_performer
+	add email varchar(512) not null;
+

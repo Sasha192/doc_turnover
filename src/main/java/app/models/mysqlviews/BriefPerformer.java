@@ -4,6 +4,7 @@ import app.models.abstr.IdentityBaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.hibernate.annotations.Immutable;
 
 @Entity
@@ -20,6 +21,10 @@ public class BriefPerformer
 
     @Column(name = "img_path")
     private String imgPath;
+
+    //@Column(name = "email")
+    @Transient
+    private String email;
 
     public String getName() {
         return name;
