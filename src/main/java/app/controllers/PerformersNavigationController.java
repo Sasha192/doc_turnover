@@ -4,7 +4,9 @@ import app.controllers.dto.PerformerDto;
 import app.controllers.dto.mappers.IEntityDtoMapper;
 import app.models.basic.Department;
 import app.models.basic.Performer;
+import app.models.mysqlviews.BriefPerformer;
 import app.models.serialization.ExcludeStrategies;
+import app.service.interfaces.IBriefPerformerService;
 import app.service.interfaces.IDepartmentService;
 import app.service.interfaces.IPerformerService;
 import com.google.gson.GsonBuilder;
@@ -37,14 +39,19 @@ public class PerformersNavigationController extends JsonSupportController {
     @Autowired
     private IDepartmentService departmentService;
 
+    @Autowired
+    private IBriefPerformerService briefPerformerService;
+
     @GetMapping(value = {"/list", "/list/{depo_id}"})
     public void list(HttpServletResponse response,
                      @PathVariable(required = false) Long departmentId) throws IOException {
-        List<Performer> performers = null;
+        List<BriefPerformer> performers = null;
         if (departmentId != null) {
-            performers = performerService.findByDepartmentId(departmentId);
+            performers = briefPerformerService
+                    .findByDepartmentId(departmentId);
         } else {
-            performers = performerService.findAll();
+            performers = briefPerformerService
+                    .findAll();
         }
         GsonBuilder builder = new GsonBuilder()
                 .addSerializationExclusionStrategy(

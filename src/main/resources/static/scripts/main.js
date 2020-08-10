@@ -237,7 +237,7 @@ import { validation } from "./modules/form-handler.js"
                 $("#call-add-NewTodo").on("click", () => {
                     filesHandle.append(window.archive_Selected_Files)
 
-                    $.get("/user-list", (data) => {
+                    $.get("/performers/list", (data) => {
                         usersHandle.append(data)
                     })
 

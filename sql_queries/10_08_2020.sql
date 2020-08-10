@@ -25,6 +25,8 @@ alter table users modify email varchar(255) default '' not null;
 
 alter table users modify password varchar(1024) default '' not null;
 
+
+
 create unique index users_email_uindex
 	on users (email);
 

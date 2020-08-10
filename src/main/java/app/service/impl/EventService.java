@@ -54,7 +54,6 @@ public class EventService extends AbstractService<Event>
         return dao.retrieveForPerformer(performerId);
     }
 
-
     @Override
     public Long countNewEvents(Long performerId) {
         return dao.countNewEvents(performerId);
