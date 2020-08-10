@@ -72,15 +72,6 @@ public class DocumentsUploader {
         if (!fileFolder.exists()) {
             mkdirs = fileFolder.mkdirs();
         }
-        if (!mkdirs) {
-            String message = DocumentsUploader.class.getName()
-                    + "\n"
-                    + LocalDateTime.now()
-                    + "Could not create folders : "
-                    + fileFolder.getAbsolutePath();
-            EXCEPTION_LOGGER.error(message);
-            throw new IOException(message);
-        }
         return filePath;
     }
 

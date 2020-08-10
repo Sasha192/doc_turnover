@@ -73,7 +73,7 @@ class Insert_Users {
         data.forEach(element => {
             this.userList.append(`
                 <div class="drop-down_item">
-                    <div class="user" user-id="${element.userId}">
+                    <div class="user" user-id="${element.id}">
                         <div class="d-flex align-items-center">
                             <img src="img/services/man.png" alt="">
                             <div class="user-meta">
@@ -607,7 +607,7 @@ function insert_toArchive(table, data) {
         <label class="custom-control-label" for="checkbox"></label>
         </div>
             <div id="archive-file_name">
-        ${element.name}
+        ${element.name.substring(0, 24)}...${element.extName}
             </div>
         </div>
         </td>

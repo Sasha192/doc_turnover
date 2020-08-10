@@ -251,7 +251,11 @@ import { validation } from "./modules/form-handler.js"
                     let name = $("#add-NewTodo #name").val().trim(),
                         description = $("#add-NewTodo #description").val().trim(),
                         performerList = usersHandle.getData(),
-                        docList = filesHandle.getData()
+                        docList = []
+
+                    filesHandle.getData().forEach(doc => {
+                        docList.push(doc.id)
+                    })
 
                     if (name.trim().length == 0 || name.length > 256 || name.length < 8) {
 
@@ -271,8 +275,10 @@ import { validation } from "./modules/form-handler.js"
                         let dateDeadline_words = document.querySelector("#add-NewTodo .calendar#dateDeadline .date").textContent.replace(",", "").split(" "),
                             deadline = `${dateDeadline_words[1]}.${window.months.findIndex(element => element == dateDeadline_words[0]) + 1}.${dateDeadline_words[2]}`
 
-                        let data = { name, dateControl, deadline, description, performerList, docList, keyWords: [], status: "New" }
+                        let data = { name, dateControl, deadline, description, performerList, docList, keyWords: [], status: "new" }
 
+
+                        console.log(data)
                         status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
                         Http.post("/task/create", data, () => {
@@ -397,8 +403,9 @@ import { validation } from "./modules/form-handler.js"
                             if (data.success == true) {
                                 $("#upload-docs").find(".status").css("opacity", "0")
                                 $("#upload-docs").find(".status-spinner").removeClass("d-flex").addClass("d-none")
+                                location.reload()
                             } else {
-                                // some code...
+                                alert(data.msg)
                             }
                         },
                         complete: () => {
@@ -406,6 +413,7 @@ import { validation } from "./modules/form-handler.js"
                             $("#upload-docs").find(".status-spinner").removeClass("d-flex").addClass("d-none")
                             formData = null;
                             formData = new FormData()
+                            location.reload()
                         }
                     })
 
@@ -444,11 +452,13 @@ import { validation } from "./modules/form-handler.js"
                 } else {
 
                     status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
-                    handle.getData().forEach(obj => {
-                        docs.push(obj.id)
+                    handle.getData().forEach(doc => {
+                        docs.push(doc.id)
                     })
 
+
                     let data = { email: $("#share-docs").find("#recipient").val(), message: $("#share-docs").find("#message").val(), docList: docs}
+                    console.log(data)
                     Http.post("/archive/doc/send", data, data => {
                         status.find(".status-text").html(""); status.css("opacity", "0"); status.find(".status-spinner").removeClass("d-flex").addClass("d-none")
                         location.reload()

@@ -3,6 +3,7 @@ package app.controllers;
 import static org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.UnicodeExtraFieldPolicy;
 
 import app.configuration.spring.constants.Constants;
+import app.controllers.dto.EmailDto;
 import app.models.basic.BriefDocument;
 import app.models.basic.Performer;
 import app.models.mysqlviews.BriefJsonDocument;
@@ -34,7 +35,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +56,10 @@ public class DocumentsNavigationController extends JsonSupportController {
     private static final String
             FILE_NOT_FOUND_EXC =
             "FILENOTFOUNDEXCEPTION WHILE TRYING TO FIND DOCUMENT IN FILESYSTEM";
+
+    private static GsonBuilder builder = new GsonBuilder()
+            .setPrettyPrinting()
+            .setDateFormat(Constants.DATE_FORMAT.toPattern());
 
     private static final String MAX_FILES_UPLOAD = "max_files_upload";
 
@@ -112,8 +120,6 @@ public class DocumentsNavigationController extends JsonSupportController {
         final String search = request.getParameter("search");
         final List<BriefJsonDocument> list = this.jsonDocService
                 .findBy(pageId, search, yearInt, monthInt, dayInt);
-        final GsonBuilder builder = new GsonBuilder()
-                .setPrettyPrinting();
         writeToResponse(response, builder, list);
     }
 
@@ -193,18 +199,16 @@ public class DocumentsNavigationController extends JsonSupportController {
     }
 
     @RequestMapping(path = "/send",
-            method = RequestMethod.POST)
-    public void sendFile(@RequestParam("docList") final String[] docId,
-                         @RequestParam("message") final String msg,
-                         @RequestParam("email") final String to,
-                         @RequestParam(value = "subject", required = false) final String subject,
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void sendFile(@Validated @RequestBody EmailDto emailDto,
                          final HttpServletResponse response) {
         try {
-            final File[] files = this.retrieveFilesByDocIds(docId);
+            final File[] files = this.retrieveFilesByDocIds(emailDto.getDocList());
             boolean responseBool = false;
             if (files.length > 0) {
                 responseBool = this.mailService
-                        .sendFile(to, subject, msg, files);
+                        .sendFile(emailDto.getEmail(), "", emailDto.getMessage(), files);
             }
             sendDefaultJson(response, responseBool, "");
         } catch (NumberFormatException ex) {
