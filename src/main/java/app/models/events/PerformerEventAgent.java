@@ -17,7 +17,6 @@ import javax.persistence.Table;
 public class PerformerEventAgent {
 
     @EmbeddedId
-    @ExcludeForJsonEvent
     private PerformerEventId id;
 
     @ManyToOne(fetch = FetchType.LAZY)

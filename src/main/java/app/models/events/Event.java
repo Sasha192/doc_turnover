@@ -2,9 +2,7 @@ package app.models.events;
 
 import app.models.abstr.IdentityBaseEntity;
 import app.models.basic.Performer;
-import app.models.mysqlviews.BriefPerformer;
 import app.models.serialization.ExcludeForJsonEvent;
-
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;

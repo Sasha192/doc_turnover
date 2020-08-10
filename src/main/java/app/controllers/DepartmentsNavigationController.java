@@ -2,7 +2,6 @@ package app.controllers;
 
 import app.models.basic.Department;
 import app.service.interfaces.IDepartmentService;
-import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.PostConstruct;

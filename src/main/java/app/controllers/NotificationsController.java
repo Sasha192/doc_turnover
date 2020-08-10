@@ -1,10 +1,12 @@
 package app.controllers;
 
+import app.configuration.spring.constants.Constants;
 import app.models.basic.Performer;
-import app.models.events.Event;
 import app.models.events.PerformerEventAgent;
+import app.models.serialization.ExcludeStrategies;
 import app.security.wrappers.PerformerWrapper;
 import app.service.interfaces.IEventService;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/notifications")
 public class NotificationsController extends JsonSupportController {
+
+    private static final GsonBuilder BUILDER;
+
+    static {
+        BUILDER = new GsonBuilder()
+                .setExclusionStrategies(ExcludeStrategies.EXCLUDE_FOR_JSON_EVENT)
+                .setDateFormat(Constants.DATE_FORMAT.toPattern())
+                .setPrettyPrinting();
+    }
 
     @Autowired
     private IEventService eventService;
@@ -30,12 +42,24 @@ public class NotificationsController extends JsonSupportController {
             throws IOException {
         Performer performer = performerWrapper.retrievePerformer(request);
         List<PerformerEventAgent> events = eventService
-                .retrieveLastEventsForPerformerId(
-                        performer
-                                .getId()
-                );
-        sendDefaultJson(response, events);
+                .retrieveLastEventsForPerformerId(performer.getId());
+        writeToResponse(response, BUILDER, events);
     }
 
+    @RequestMapping(value = "/see", method = RequestMethod.POST)
+    public void seeEvent(HttpServletRequest request,
+                         HttpServletResponse response,
+                         @RequestParam("event_id") Long eventId) {
+        Performer performer = performerWrapper.retrievePerformer(request);
+        eventService.seeEvent(eventId, performer.getId());
+        sendDefaultJson(response, true, "");
+    }
 
+    @RequestMapping(value = "/new/count", method = RequestMethod.GET)
+    public void countNewEvents(HttpServletRequest request,
+                               HttpServletResponse response) {
+        Performer performer = performerWrapper.retrievePerformer(request);
+        Integer count = eventService.countNewEvents(performer.getId());
+        sendDefaultJson(response, true, count.toString());
+    }
 }

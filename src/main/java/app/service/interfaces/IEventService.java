@@ -12,15 +12,21 @@ public interface IEventService extends IOperations<Event> {
 
     List<PerformerEventAgent> retrieveLastEventsForPerformerId(Long performerId);
 
-    @Deprecated
-    /**
-     * Not implemented yet
-     */
-    List<PerformerEventAgent> retrieveEventsForPerformerIdAfterDate(Long performerId, Date afterDate);
+    void seeEvent(Long eventId, Long performerId);
 
     @Deprecated
     /**
      * Not implemented yet
      */
-    List<PerformerEventAgent> retrieveEventsForPerformerIdBeforeDate(Long performerId, Date beforeDate);
+    List<PerformerEventAgent> retrieveEventsForPerformerIdAfterDate(Long performerId,
+                                                                    Date afterDate);
+
+    @Deprecated
+    /**
+     * Not implemented yet
+     */
+    List<PerformerEventAgent> retrieveEventsForPerformerIdBeforeDate(Long performerId,
+                                                                     Date beforeDate);
+
+    int countNewEvents(Long performerId);
 }

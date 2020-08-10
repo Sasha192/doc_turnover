@@ -2,8 +2,8 @@ package app.dao.impl;
 
 import app.dao.interfaces.IEventDao;
 import app.dao.persistance.GenericJpaRepository;
-import app.models.events.PerformerEventAgent;
 import app.models.events.Event;
+import app.models.events.PerformerEventAgent;
 import java.sql.Date;
 import java.util.List;
 import javax.persistence.TypedQuery;
@@ -14,11 +14,20 @@ public class EventDao
         extends GenericJpaRepository<Event>
         implements IEventDao {
 
+    private static final String NEW_COUNT =
+            " SELECT COUNT(*) from PerformerEventAgent pev "
+            + " WHERE pev.id.performerId = :perf_id_ "
+            + " AND seen = false";
+
     private static final String FROM =
             " select evnt from Event evnt ";
 
     private static final String RETRIEVE_LAST_EVENTS =
             FROM + " ORDER BY evnt.timeStamp DESC ";
+
+    private static final String SEE_EVENT_FOR_PERFORMER =
+            " UPDATE Event evnt SET evnt.seen=true WHERE evnt.id.performerId=:performer_id_ "
+            + " AND evnt.id.eventId = :event_id_ ";
 
     private static final String RETRIEVE_LAST_EVENTS_FOR_PERF_ID =
             " SELECT pev FROM PerformerEventAgent pev "
@@ -48,6 +57,21 @@ public class EventDao
                 .setParameter("perf_id_", performerId)
                 .setMaxResults(10)
                 .getResultList();
+    }
+
+    @Override
+    public void seeEvent(Long eventId, Long performerId) {
+        getEntityManager().createQuery(SEE_EVENT_FOR_PERFORMER)
+                .setParameter("performer_id_", performerId)
+                .setParameter("event_id_", eventId)
+                .executeUpdate();
+    }
+
+    @Override
+    public int countNewEvents(Long performerId) {
+        return (Integer) getEntityManager().createQuery(NEW_COUNT)
+                .setParameter("perf_id_", performerId)
+                .getSingleResult();
     }
 
     @Override

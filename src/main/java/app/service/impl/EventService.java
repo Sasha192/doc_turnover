@@ -45,6 +45,16 @@ public class EventService extends AbstractService<Event>
     }
 
     @Override
+    public void seeEvent(Long eventId, Long performerId) {
+        dao.seeEvent(eventId, performerId);
+    }
+
+    @Override
+    public int countNewEvents(Long performerId) {
+        return dao.countNewEvents(performerId);
+    }
+
+    @Override
     @Deprecated
     /**
      * Not implemented yet

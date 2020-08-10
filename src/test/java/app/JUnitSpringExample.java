@@ -191,7 +191,8 @@ public class JUnitSpringExample {
     @Test
     public void testGsonEvents() {
         Performer performer = performerService.findAll().get(0);
-        List<PerformerEventAgent> events = eventService.retrieveLastEventsForPerformerId(performer.getId());
+        List<PerformerEventAgent> events = eventService
+                .retrieveLastEventsForPerformerId(performer.getId());
         System.out.println();
     }
 
@@ -214,7 +215,8 @@ public class JUnitSpringExample {
         eventService.retrieveLastEvents();
         if (performers != null && (!performers.isEmpty())) {
             Performer performer = performers.get(0);
-            List<PerformerEventAgent> events = eventService.retrieveLastEventsForPerformerId(performer.getId());
+            List<PerformerEventAgent> events = eventService
+                    .retrieveLastEventsForPerformerId(performer.getId());
             events.stream().forEach(eventS -> {
                 eventS.getEvent();
                 eventS.getPerformer().getDepartment();
