@@ -2,6 +2,7 @@ package app.dao.interfaces;
 
 import app.dao.persistance.IGenericDao;
 import app.models.events.Event;
+import app.models.events.PerformerEventAgent;
 import java.sql.Date;
 import java.util.List;
 
@@ -9,9 +10,11 @@ public interface IEventDao extends IGenericDao<Event> {
 
     List<Event> retrieveLastEvents();
 
-    List<Event> retrieveLastEventsForPerformerId(Long performerId);
+    List<PerformerEventAgent> retrieveLastEventsForPerformerId(Long performerId);
 
-    List<Event> retrieveEventsForPerformerIdBeforeDate(Long performerId, Date beforeDate);
+    List<PerformerEventAgent> retrieveEventsForPerformerIdBeforeDate(Long performerId,
+                                                                     Date beforeDate);
 
-    List<Event> retrieveEventsForPerformerIdAfterDate(Long performerId, Date afterDate);
+    List<PerformerEventAgent> retrieveEventsForPerformerIdAfterDate(Long performerId,
+                                                                    Date afterDate);
 }

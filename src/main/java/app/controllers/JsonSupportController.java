@@ -17,6 +17,8 @@ public class JsonSupportController {
     private static final String EXCEPTION_SENDING_JSON =
             "ERROR WHILE SENDING STANDART JSON RESPONSE : ";
 
+    private static final GsonBuilder BUILDER = new GsonBuilder();
+
     protected static void sendDefaultJson(HttpServletResponse response, boolean b, String s) {
         try {
             GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
@@ -28,8 +30,7 @@ public class JsonSupportController {
 
     protected static void sendDefaultJson(HttpServletResponse response, Object o)
             throws IOException {
-        GsonBuilder gb = new GsonBuilder().setPrettyPrinting();
-        writeToResponse(response, gb, o);
+        writeToResponse(response, BUILDER, o);
     }
 
     protected static void writeToResponseComplexMapKeySerialization(HttpServletResponse response,

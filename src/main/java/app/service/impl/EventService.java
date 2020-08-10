@@ -3,6 +3,7 @@ package app.service.impl;
 import app.dao.interfaces.IEventDao;
 import app.dao.persistance.IGenericDao;
 import app.models.events.Event;
+import app.models.events.PerformerEventAgent;
 import app.service.abstraction.AbstractService;
 import app.service.interfaces.IEventService;
 import java.sql.Date;
@@ -39,7 +40,7 @@ public class EventService extends AbstractService<Event>
 
     @Override
     @Transactional(readOnly = true)
-    public List<Event> retrieveLastEventsForPerformerId(Long performerId) {
+    public List<PerformerEventAgent> retrieveLastEventsForPerformerId(Long performerId) {
         return dao.retrieveLastEventsForPerformerId(performerId);
     }
 
@@ -48,7 +49,8 @@ public class EventService extends AbstractService<Event>
     /**
      * Not implemented yet
      */
-    public List<Event> retrieveEventsForPerformerIdAfterDate(Long performerId, Date afterDate) {
+    public List<PerformerEventAgent> retrieveEventsForPerformerIdAfterDate(Long performerId,
+                                                                           Date afterDate) {
         return null;
     }
 
@@ -57,7 +59,8 @@ public class EventService extends AbstractService<Event>
     /**
      * Not implemented yet
      */
-    public List<Event> retrieveEventsForPerformerIdBeforeDate(Long performerId, Date beforeDate) {
+    public List<PerformerEventAgent> retrieveEventsForPerformerIdBeforeDate(Long performerId,
+                                                                            Date beforeDate) {
         return null;
     }
 }

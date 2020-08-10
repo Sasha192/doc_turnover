@@ -8,22 +8,30 @@ import app.models.basic.Report;
 import app.models.basic.ReportComment;
 import app.models.basic.Task;
 import app.models.basic.TaskComment;
+import app.models.events.Event;
+import app.models.events.PerformerEventAgent;
+import app.models.events.impl.DocPublishingEvent;
+import app.models.mysqlviews.BriefPerformer;
 import app.models.mysqlviews.BriefTask;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
 import app.service.interfaces.IBriefTaskService;
 import app.service.interfaces.ICorePropertyService;
 import app.service.interfaces.IDepartmentService;
+import app.service.interfaces.IEventService;
 import app.service.interfaces.IPerformerService;
 import app.service.interfaces.IReportCommentService;
 import app.service.interfaces.IStatusService;
 import app.service.interfaces.ITaskCommentService;
 import app.service.interfaces.ITaskService;
 import app.spring.TestSpringDataConfiguration;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,6 +65,9 @@ public class JUnitSpringExample {
     private IReportCommentService reportCommentService;
 
     private IBriefTaskService briefTaskService;
+
+    @Autowired
+    private IEventService eventService;
 
     private IOperations<?>[] operations;
 
@@ -95,6 +106,10 @@ public class JUnitSpringExample {
     public void testDepartmentService() {
         final List<Department> departs = this.departmentService.findAll();
         for (final Department department : departs) {
+            Department parent = department.getParentDepartment();
+            if (parent != null) {
+                parent.getPerformers();
+            }
             final Set<Performer> performers = department.getPerformers();
             for (final Performer performer : performers) {
                 final List<Task> tasks = performer.getTasks();
@@ -163,6 +178,49 @@ public class JUnitSpringExample {
         TaskComment taskComment = taskCommentService.findOne(1L);
         Long task = taskComment.getTask().getId();
         System.out.println(task);
+    }
+
+    @Test
+    public void testBriefPerformers() {
+        BriefTask task = briefTaskService.findAll().get(0);
+        BriefPerformer briefPerformer = task.getPerformer().get(0);
+        briefPerformer.getEmail();
+        System.out.println(briefPerformer.getEmail());
+    }
+
+    @Test
+    public void testGsonEvents() {
+        Performer performer = performerService.findAll().get(0);
+        List<PerformerEventAgent> events = eventService.retrieveLastEventsForPerformerId(performer.getId());
+        System.out.println();
+    }
+
+    @Test
+    public void testEventsCrudOp() throws InterruptedException {
+        List<Performer> performers = performerService.findAll();
+        List<BriefDocument> documents = documentService.findAll();
+        DocPublishingEvent event = new DocPublishingEvent();
+        event.setDocument(documents.get(0));
+        event.setAuthorId(performers.get(0).getId());
+        event.setDescription("");
+        event.setDate(Date.valueOf(LocalDate.now()));
+        event.setEventTypeEnum(Event.EventType.DOC_PUB);
+        Set<Long> set = performers.stream().map(performer -> {
+            return performer.getId();
+        }).collect(Collectors.toSet());
+        event.setPerformersId(set);
+        eventService.create(event);
+        Thread.sleep(10_000);
+        eventService.retrieveLastEvents();
+        if (performers != null && (!performers.isEmpty())) {
+            Performer performer = performers.get(0);
+            List<PerformerEventAgent> events = eventService.retrieveLastEventsForPerformerId(performer.getId());
+            events.stream().forEach(eventS -> {
+                eventS.getEvent();
+                eventS.getPerformer().getDepartment();
+                eventS.getAuthor().getEmail();
+            });
+        }
     }
 
     @Test

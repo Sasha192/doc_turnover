@@ -2,6 +2,7 @@ package app.dao.impl;
 
 import app.dao.interfaces.IEventDao;
 import app.dao.persistance.GenericJpaRepository;
+import app.models.events.PerformerEventAgent;
 import app.models.events.Event;
 import java.sql.Date;
 import java.util.List;
@@ -14,15 +15,19 @@ public class EventDao
         implements IEventDao {
 
     private static final String FROM =
-            " select evnt from Event ";
+            " select evnt from Event evnt ";
 
-    private static final String RETRIEVE_LAST_10_EVENTS =
-            FROM + " ORDER BY time_stamp DESC LIMIT 10 ";
+    private static final String RETRIEVE_LAST_EVENTS =
+            FROM + " ORDER BY evnt.timeStamp DESC ";
 
-    private static final String RETRIEVE_LAST_10_EVENTS_FOR_PERF_ID =
-            FROM + " INNER JOIN performer_events pev ON pev.event_id = evnt.id "
-                    + " WHERE pev.perf_id = :perf_id_ "
-                    + " ORDER BY time_stamp DESC LIMIT 10 ";
+    private static final String RETRIEVE_LAST_EVENTS_FOR_PERF_ID =
+            " SELECT pev FROM PerformerEventAgent pev "
+            + " INNER JOIN Event evnt ON evnt.id=pev.id.eventId "
+            + " WHERE pev.id.performerId = :perf_id_ "
+            + " ORDER BY pev.id.eventId DESC ";
+    /*FROM + " INNER JOIN PerformerEventAgent pev ON pev.id.eventId = evnt.id "
+                    + " WHERE pev.id.performerId = :perf_id_ "
+                    + " ORDER BY evnt.timeStamp DESC";*/
 
     public EventDao() {
         setClazz(Event.class);
@@ -31,14 +36,17 @@ public class EventDao
     @Override
     public List<Event> retrieveLastEvents() {
         TypedQuery<Event> query = getEntityManager()
-                .createQuery(RETRIEVE_LAST_10_EVENTS, Event.class);
+                .createQuery(RETRIEVE_LAST_EVENTS, Event.class);
+        query.setMaxResults(10);
         return query.getResultList();
     }
 
     @Override
-    public List<Event> retrieveLastEventsForPerformerId(Long performerId) {
-        return getEntityManager().createQuery(RETRIEVE_LAST_10_EVENTS_FOR_PERF_ID)
+    public List<PerformerEventAgent> retrieveLastEventsForPerformerId(Long performerId) {
+        return getEntityManager()
+                .createQuery(RETRIEVE_LAST_EVENTS_FOR_PERF_ID, PerformerEventAgent.class)
                 .setParameter("perf_id_", performerId)
+                .setMaxResults(10)
                 .getResultList();
     }
 
@@ -47,7 +55,8 @@ public class EventDao
     /**
      * Not implemented yet
      */
-    public List<Event> retrieveEventsForPerformerIdAfterDate(Long performerId, Date afterDate) {
+    public List<PerformerEventAgent> retrieveEventsForPerformerIdAfterDate(Long performerId,
+                                                                           Date afterDate) {
         return null;
     }
 
@@ -56,7 +65,8 @@ public class EventDao
     /**
      * Not implemented yet
      */
-    public List<Event> retrieveEventsForPerformerIdBeforeDate(Long performerId, Date beforeDate) {
+    public List<PerformerEventAgent> retrieveEventsForPerformerIdBeforeDate(Long performerId,
+                                                                            Date beforeDate) {
         return null;
     }
 }

@@ -75,7 +75,7 @@ import { dropDown } from "./animation.js"
                         deps.forEach(dep => $("#set-dep .drop-down-list_inner").append(`<div class="drop-down_item" data-dep-id="${dep}">${dep}</div>`));
                         resolve()
                     })
-                }).then( 
+                }).then(
                     () => {
                         $("#set-dep .drop-down_item").each((i, dep) => {
                             dep.addEventListener("click", (e) => {
@@ -140,7 +140,7 @@ function deleteUser() {
         e.preventDefault()
 
         if (e.target.querySelector("input").value.trim().length == 0) return
-        Http.get(`/departments/create="${e.target.querySelector("input").value.trim()}"`, () => { location.reload() })
+        Http.post(`/departments/create?name="${e.target.querySelector("input").value.trim()}"`, () => { location.reload() })
 
     }
 })()

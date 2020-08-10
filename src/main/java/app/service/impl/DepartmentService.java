@@ -8,6 +8,8 @@ import app.service.interfaces.IDepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DepartmentService extends AbstractService<Department>
         implements IDepartmentService {
@@ -26,5 +28,20 @@ public class DepartmentService extends AbstractService<Department>
     @Override
     protected IGenericDao<Department> getDao() {
         return departmentDao;
+    }
+
+    @Override
+    public Department retrieveOneByName(String name) {
+        return departmentDao.retrieveOneByName(name);
+    }
+
+    @Override
+    public List<Department> retrieveByParent(Long parentId) {
+        return departmentDao.retrieveByParent(parentId);
+    }
+
+    @Override
+    public void changeDeparmentName(String newName, Long depId) {
+        departmentDao.changeDeparmentName(newName, depId);
     }
 }

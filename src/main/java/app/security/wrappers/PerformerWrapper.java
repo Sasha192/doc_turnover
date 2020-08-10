@@ -36,5 +36,4 @@ public class PerformerWrapper {
         Preconditions.checkNotNull(performer);
         return performer;
     }
-
 }

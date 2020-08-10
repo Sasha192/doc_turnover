@@ -2,7 +2,9 @@ package app.models.events.impl;
 
 import app.models.basic.Report;
 import app.models.events.Event;
+import app.models.serialization.ExcludeForJsonEvent;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,8 +17,12 @@ public class ReportPublishingEvent extends Event {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "report_id")
+    @JoinColumn(name = "report_id", insertable = false, updatable = false)
+    @ExcludeForJsonEvent
     private Report report;
+
+    @Column(name = "report_id")
+    private Long reportId;
 
     public Report getReport() {
         return report;
@@ -24,5 +30,13 @@ public class ReportPublishingEvent extends Event {
 
     public void setReport(Report report) {
         this.report = report;
+    }
+
+    public Long getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Long reportId) {
+        this.reportId = reportId;
     }
 }

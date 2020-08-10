@@ -64,6 +64,18 @@ public class ExcludeStrategies {
         }
     };
 
+    public static final ExclusionStrategy EXCLUDE_FOR_JSON_EVENT = new ExclusionStrategy() {
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return false;
+        }
+
+        @Override
+        public boolean shouldSkipField(FieldAttributes field) {
+            return (field.getAnnotation(ExcludeForJsonEvent.class) != null);
+        }
+    };
+
     public static final ExclusionStrategy ONE_TO_ONE = new ExclusionStrategy() {
         @Override
         public boolean shouldSkipClass(Class<?> clazz) {

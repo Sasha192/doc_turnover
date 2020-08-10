@@ -3,8 +3,9 @@ package app.models.mysqlviews;
 import app.models.abstr.IdentityBaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import org.hibernate.annotations.Immutable;
 
 @Entity
@@ -22,8 +23,10 @@ public class BriefPerformer
     @Column(name = "img_path")
     private String imgPath;
 
-    //@Column(name = "email")
-    @Transient
+    @JoinTable(name = "users", joinColumns = {
+            @JoinColumn(name = "performer_id", insertable = false, updatable = false)
+    })
+    @Column(name = "email")
     private String email;
 
     public String getName() {
@@ -48,5 +51,13 @@ public class BriefPerformer
 
     public void setImgPath(String imgPath) {
         this.imgPath = imgPath;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

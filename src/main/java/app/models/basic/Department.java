@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -20,8 +22,15 @@ public class Department
     @Column(name = "department_name")
     private String name;
 
-    @Column(name = "parent_department")
-    private String parentDepartment;
+    @ManyToOne(cascade = {CascadeType.MERGE,
+            CascadeType.REFRESH})
+    @JoinColumn(name = "parent_department_id",
+            insertable = false,
+            updatable = false)
+    private Department parentDepartment;
+
+    @Column(name = "parent_department_id")
+    private Long parentDepartmentId;
 
     @OneToMany(mappedBy = "department",
             cascade = {CascadeType.MERGE, CascadeType.REFRESH})
@@ -47,11 +56,11 @@ public class Department
         this.id = id;
     }
 
-    public String getParentDepartment() {
-        return this.parentDepartment;
+    public Department getParentDepartment() {
+        return parentDepartment;
     }
 
-    public void setParentDepartment(final String parentDepartment) {
+    public void setParentDepartment(Department parentDepartment) {
         this.parentDepartment = parentDepartment;
     }
 
@@ -61,6 +70,14 @@ public class Department
 
     public void setPerformers(final Set<Performer> performers) {
         this.performers = performers;
+    }
+
+    public Long getParentDepartmentId() {
+        return parentDepartmentId;
+    }
+
+    public void setParentDepartmentId(Long parentDepartmentId) {
+        this.parentDepartmentId = parentDepartmentId;
     }
 
     @Override

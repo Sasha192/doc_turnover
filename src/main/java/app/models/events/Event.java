@@ -2,6 +2,9 @@ package app.models.events;
 
 import app.models.abstr.IdentityBaseEntity;
 import app.models.basic.Performer;
+import app.models.mysqlviews.BriefPerformer;
+import app.models.serialization.ExcludeForJsonEvent;
+
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
@@ -26,7 +29,7 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "event_type")
-@Table(name = "app_events")
+@Table(name = "app_event")
 public abstract class Event
         extends IdentityBaseEntity
         implements Serializable {
@@ -46,25 +49,46 @@ public abstract class Event
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "performer_id")
-    protected Performer publisher;
+    @JoinColumn(name = "performer_id", insertable = false, updatable = false)
+    @ExcludeForJsonEvent
+    protected Performer authorPerformer;
+
+    @Column(name = "performer_id")
+    @ExcludeForJsonEvent
+    protected Long authorId;
 
     /**
      * Long[] performersId stores performers Id, for whom to show this event
      * as notification about origin of event
      */
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "performers_events",
             joinColumns = @JoinColumn(name = "event_id")
     )
-    @Column(name = "performer_id")
+    @Column(name = "perf_id")
+    @ExcludeForJsonEvent
     protected Set<Long> performersId;
+
+    /*@OneToMany(mappedBy = "event", fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH,
+                    CascadeType.MERGE,
+                    CascadeType.PERSIST})
+    @ExcludeForJsonEvent
+    protected List<PerformerEventAgent> performerEventAgent*/;
 
     /**
      *  Field:String name is used to represent description about event on frontend
      */
     @Transient
     protected String description;
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
 
     public Timestamp getTimeStamp() {
         return timeStamp;
@@ -110,20 +134,16 @@ public abstract class Event
         this.description = description;
     }
 
-    public Performer getPublisher() {
-        return publisher;
+    public Performer getAuthorPerformer() {
+        return authorPerformer;
     }
 
-    public void setPublisher(Performer publisher) {
-        this.publisher = publisher;
+    public void setAuthorPerformer(Performer authorPerformer) {
+        this.authorPerformer = authorPerformer;
     }
 
     public String getName() {
         return description;
-    }
-
-    public void setName(String description) {
-        this.description = description;
     }
 
     public enum EventType {
