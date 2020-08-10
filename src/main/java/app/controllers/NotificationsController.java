@@ -36,8 +36,18 @@ public class NotificationsController extends JsonSupportController {
     @Autowired
     private PerformerWrapper performerWrapper;
 
-    @RequestMapping(value = "recent", method = RequestMethod.GET)
+    @RequestMapping(value = "/recent", method = RequestMethod.GET)
     public void recentList(HttpServletResponse response,
+                           HttpServletRequest request)
+            throws IOException {
+        Performer performer = performerWrapper.retrievePerformer(request);
+        List<PerformerEventAgent> events = eventService
+                .retrieveLastEventsForPerformerId(performer.getId());
+        writeToResponse(response, BUILDER, events);
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public void list(HttpServletResponse response,
                            HttpServletRequest request)
             throws IOException {
         Performer performer = performerWrapper.retrievePerformer(request);
@@ -59,7 +69,7 @@ public class NotificationsController extends JsonSupportController {
     public void countNewEvents(HttpServletRequest request,
                                HttpServletResponse response) {
         Performer performer = performerWrapper.retrievePerformer(request);
-        Integer count = eventService.countNewEvents(performer.getId());
+        Long count = eventService.countNewEvents(performer.getId());
         sendDefaultJson(response, true, count.toString());
     }
 }

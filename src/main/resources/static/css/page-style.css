@@ -493,6 +493,7 @@ body {
     overflow-y: auto;
     height: 340px;
     padding: 0px 15px;
+    min-width:200px;
 }
 
 #notifications-list::-webkit-scrollbar {

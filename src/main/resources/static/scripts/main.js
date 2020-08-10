@@ -750,17 +750,17 @@ function changeTaskState() {
 
             let notiLength
 
-            Http.get("/notifications/new_count", data => {
-                notiLength = data
+            Http.get("/notifications/new/count", data => {
+                notiLength = data.msg
+                if (notiLength > 9) {
+                    notiLength = "9+"
+                } else {
+                    notiLength = notiLength
+                }
+
+                document.querySelector("#notifications").dataset.count = notiLength
             })
 
-            if (data > 9) {
-                notiLength = "9+"
-            } else {
-                notiLength = toString(data)
-            }
-
-            document.querySelector("#notifications").dataset.count = notiLength
             resolve()
         })
     })

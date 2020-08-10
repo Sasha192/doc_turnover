@@ -14,6 +14,8 @@ public interface IEventService extends IOperations<Event> {
 
     void seeEvent(Long eventId, Long performerId);
 
+    List<PerformerEventAgent> retrieveForPerformer(Long performerId);
+
     @Deprecated
     /**
      * Not implemented yet
@@ -28,5 +30,5 @@ public interface IEventService extends IOperations<Event> {
     List<PerformerEventAgent> retrieveEventsForPerformerIdBeforeDate(Long performerId,
                                                                      Date beforeDate);
 
-    int countNewEvents(Long performerId);
+    Long countNewEvents(Long performerId);
 }

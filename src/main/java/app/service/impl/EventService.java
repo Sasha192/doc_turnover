@@ -50,7 +50,13 @@ public class EventService extends AbstractService<Event>
     }
 
     @Override
-    public int countNewEvents(Long performerId) {
+    public List<PerformerEventAgent> retrieveForPerformer(Long performerId) {
+        return dao.retrieveForPerformer(performerId);
+    }
+
+
+    @Override
+    public Long countNewEvents(Long performerId) {
         return dao.countNewEvents(performerId);
     }
 

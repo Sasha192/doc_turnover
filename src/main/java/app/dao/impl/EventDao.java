@@ -68,8 +68,8 @@ public class EventDao
     }
 
     @Override
-    public int countNewEvents(Long performerId) {
-        return (Integer) getEntityManager().createQuery(NEW_COUNT)
+    public Long countNewEvents(Long performerId) {
+        return (Long)getEntityManager().createQuery(NEW_COUNT)
                 .setParameter("perf_id_", performerId)
                 .getSingleResult();
     }
@@ -92,5 +92,13 @@ public class EventDao
     public List<PerformerEventAgent> retrieveEventsForPerformerIdBeforeDate(Long performerId,
                                                                             Date beforeDate) {
         return null;
+    }
+
+    @Override
+    public List<PerformerEventAgent> retrieveForPerformer(Long performerId) {
+        return getEntityManager()
+                .createQuery(RETRIEVE_LAST_EVENTS_FOR_PERF_ID, PerformerEventAgent.class)
+                .setParameter("perf_id_", performerId)
+                .getResultList();
     }
 }
