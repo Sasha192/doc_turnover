@@ -22,7 +22,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         @ComponentScan("app.dao"),
         @ComponentScan("app.models"),
         @ComponentScan("app.service"),
-        @ComponentScan("app.configuration.spring.constants")
+        @ComponentScan("app.configuration.spring.constants"),
+        @ComponentScan("app.security.models"),
+        @ComponentScan("app.security.wrappers"),
+        @ComponentScan("app.security.dao"),
+        @ComponentScan("app.security.service"),
+        @ComponentScan("app.utils")
 })
 public class TestSpringDataConfiguration {
 
@@ -30,7 +35,8 @@ public class TestSpringDataConfiguration {
     public DataSource getDataSource() {
         String dbDriver = "com.mysql.jdbc.Driver";
         String dbPassword = "1324domik";
-        String dbUrl = "jdbc:mysql://192.168.31.76/bcrew?useSSL=false&serverTimezone=UTC";
+        String dbUrl = "jdbc:mysql://192.168.31.76/bcrew?"
+                + "serverTimezone=UTC&useUnicode=yes&characterEncoding=UTF-8";
         String dbUsername = "bcrew_user";
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(dbDriver);
@@ -45,7 +51,7 @@ public class TestSpringDataConfiguration {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(getDataSource());
-        em.setPackagesToScan(new String[]{"app.models"});
+        em.setPackagesToScan(new String[]{"app.models", "app.security.models"});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(hibernateProperties());
@@ -75,6 +81,14 @@ public class TestSpringDataConfiguration {
         hibernateProperties.setProperty("hibernate.dialect", hiberDialect);
         hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans",
                 hiberNoTrans);
+        hibernateProperties.setProperty("hibernate.proc.param_null_passing",
+                String.valueOf(true));
+        hibernateProperties.setProperty("hibernate.show_sql",
+                "true");
+        hibernateProperties.setProperty("hibernate.order_inserts",
+                String.valueOf(true));
+        hibernateProperties.setProperty("hibernate.order_updates",
+                String.valueOf(true));
         return hibernateProperties;
     }
 }

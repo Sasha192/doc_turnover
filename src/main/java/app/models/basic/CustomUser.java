@@ -8,13 +8,13 @@ import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -42,11 +42,8 @@ public class CustomUser
     @Column(name = "role")
     private Set<SimpleRole> roles;
 
-    @OneToOne(cascade = {CascadeType.MERGE,
-            CascadeType.REMOVE,
-            CascadeType.REFRESH,
-            CascadeType.PERSIST})
-    @JoinColumn(name = "performer_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "performer_id")
     private Performer performer;
 
     public CustomUser() {

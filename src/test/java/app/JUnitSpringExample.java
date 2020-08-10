@@ -1,18 +1,14 @@
 package app;
 
 import app.dao.persistance.IOperations;
-import app.models.basic.BriefDocument;
-import app.models.basic.Department;
-import app.models.basic.Performer;
-import app.models.basic.Report;
-import app.models.basic.ReportComment;
-import app.models.basic.Task;
-import app.models.basic.TaskComment;
+import app.models.basic.*;
 import app.models.events.Event;
 import app.models.events.PerformerEventAgent;
 import app.models.events.impl.DocPublishingEvent;
 import app.models.mysqlviews.BriefPerformer;
 import app.models.mysqlviews.BriefTask;
+import app.security.service.IUserService;
+import app.security.service.impl.UserService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
 import app.service.interfaces.IBriefTaskService;
@@ -65,6 +61,9 @@ public class JUnitSpringExample {
     private IReportCommentService reportCommentService;
 
     private IBriefTaskService briefTaskService;
+
+    @Autowired
+    private IUserService userService;
 
     @Autowired
     private IEventService eventService;
@@ -223,6 +222,17 @@ public class JUnitSpringExample {
                 eventS.getAuthor().getEmail();
             });
         }
+    }
+
+    @Test
+    public void testPerformerInsert() {
+        Performer performer = new Performer();
+        performer.setName("name");
+        CustomUser user = userService.findAll().get(0);
+        //performer.setUser(user);
+        performerService.create(performer);
+        user.setPerformer(performer);
+        userService.update(user);
     }
 
     @Test

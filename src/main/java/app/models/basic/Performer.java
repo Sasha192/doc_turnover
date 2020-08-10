@@ -35,8 +35,11 @@ public class Performer
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
+    @JoinColumn(name = "department_id", insertable = false, updatable = false)
     private Department department;
+
+    @Column(name = "department_id")
+    private Long departmentId;
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(
@@ -53,8 +56,7 @@ public class Performer
     @Column(name = "img_path")
     private String imgPath;
 
-    @OneToOne(mappedBy = "performer", cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-            fetch = FetchType.EAGER, optional = false)
+    @OneToOne(mappedBy = "performer")
     @ExcludeForJsonPerformer
     private CustomUser user;
 
@@ -67,10 +69,12 @@ public class Performer
     private Set<SimpleRole> roles;
 
     public Performer() {
+        imgPath = "/img/avatars/6.jpg";
     }
 
     public Performer(PerformerDto dto) {
 
+        imgPath = "/img/avatars/6.jpg";
     }
 
     public String getName() {
@@ -141,13 +145,13 @@ public class Performer
                 + '}';
     }
 
-    public CustomUser getUser() {
+    /*public CustomUser getUser() {
         return this.user;
     }
 
     public void setUser(final CustomUser user) {
         this.user = user;
-    }
+    }*/
 
     public String getImgPath() {
         return imgPath;

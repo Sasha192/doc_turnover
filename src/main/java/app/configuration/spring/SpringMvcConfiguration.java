@@ -87,7 +87,7 @@ public class SpringMvcConfiguration
     @Override
     public void addViewControllers(final ViewControllerRegistry viewControllerRegistry) {
         viewControllerRegistry.addViewController("/")
-                .setViewName("index");
+                .setViewName("auth");
     }
 
     @Bean(name = "multipartResolver")

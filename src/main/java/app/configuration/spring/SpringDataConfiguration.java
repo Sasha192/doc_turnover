@@ -84,10 +84,10 @@ public class SpringDataConfiguration {
                 String.valueOf(true));
         hibernateProperties.setProperty("hibernate.show_sql",
                 env.getProperty("hibernate.show_sql"));
-        hibernateProperties.setProperty("hibernate.jdbc.batch_size",
+        /*hibernateProperties.setProperty("hibernate.jdbc.batch_size",
                 env.getProperty("hibernate.jdbc.batch_size"));
         hibernateProperties.setProperty("hibernate.order_inserts",
-                env.getProperty("hibernate.order_inserts"));
+                env.getProperty("hibernate.order_inserts"));*/
         /*hibernateProperties.setProperty("hibernate.order_updates",
                 env.getProperty("hibernate.order_updates"));
         hibernateProperties.setProperty("hibernate.batch_versioned_data",
