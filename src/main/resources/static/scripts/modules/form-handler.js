@@ -139,18 +139,17 @@ class Insert_Todos {
 
     append(data) {
         this.todo_list.html("")
-
         data.forEach(todo => {
             this.todo_list.append(`
             <div class="drop-down_item">
-                <div class="board-item ${todo.status}" todo-id="${todo.todoId}">
+                <div class="board-item ${todo.status}" todo-id="${todo.id}">
                     <div class="board-item_content">
-                        <img src="img/avatars/4.jpg" alt="">
+                        <img src="" alt="">
                         <div>
                             <div class="board-item_title">
                                 ${todo.name}
                                 <span>
-                                    ${todo.dateDedaline}
+                                    ${todo.deadlineDate}
                                 </span>
                             </div>
                             <div class="board-item_status">
@@ -224,17 +223,35 @@ class Insert_Tasks {
 
         this.insertList.find(".todo-count").html(`(${data.length})`)
 
-        data.forEach(todo => {
-            this.insertList.find(".board-body").append(
-                `<div class="board-item" todo-id="${todo.id}">
-                <img src=${todo.performerImgPath} alt="">
+        if(window.location.pathname == "/myboard") {
+            data.forEach(todo => {
+                this.insertList.find(".board-body").append(
+                    `<div class="board-item" todo-id="${todo.id}">
+                <img src=${todo.managerImgPath} alt="">
                 <div class="w-100">
-                    <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.dateDeadline}</span></div>
+                    <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.deadlineDate}</span></div>
                     <div class="board-item_status">${todo.status}</div>
                 </div>
                 </div>`
-            )
-        })
+                )
+            })
+        }
+
+
+        if(window.location.pathname == "/teamboard") {
+            data.forEach(todo => {
+                this.insertList.find(".board-body").append(
+                    `<div class="board-item" todo-id="${todo.id}">
+                <img src=${todo.perfImgPath} alt="">
+                <div class="w-100">
+                    <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.deadlineDate}</span></div>
+                    <div class="board-item_status">${todo.status}</div>
+                </div>
+                </div>`
+                )
+            })
+        }
+
 
         this.insertList.find(".board-item_title").each((i, task) => {
             task.onclick = (e) => {
@@ -243,7 +260,7 @@ class Insert_Tasks {
                 $("#task-info").find("#add-report").fadeOut(200)
                 $("#todo-slider").carousel(0)
                 $("#todo-slider").carousel('pause')
-                $.get(`/task?todoId=${e.target.closest(".board-item").getAttribute("todo-id")}`, (data) => {
+                $.get(`/task/details?todoId=${e.target.closest(".board-item").getAttribute("todo-id")}`, (data) => {
                     Insert_Tasks.insert_TodoInfo(data, e.target.closest(".board-item").getAttribute("todo-id"))
                 })
             }
@@ -258,7 +275,6 @@ class Insert_Tasks {
 
         if (User.role() == "performer" || User.role() == "secretary") {} else {
 
-            console.log(User.role())
             // modify
             document.querySelector("#add-modify").onclick = () => {
                 let name = document.querySelector("#task-info .todo-title").value.trim(),
@@ -362,9 +378,9 @@ class Insert_Tasks {
         {
             let performers = $("#task-info").find(".performers")
             performers.html("")
-            $("#task-info .performers-container #count").html(`(${info.performerList.length})`)
+            $("#task-info .performers-container #count").html(`(${info.performers.length})`)
 
-            info.performerList.forEach(user => {
+            info.performers.forEach(user => {
                 performers.append(
                     `<div class="user">
                     <div class="d-flex align-items-center">
@@ -393,9 +409,9 @@ class Insert_Tasks {
             info.comments.forEach(comment => {
                 comments_container.append(
                     `<div class="comment">
-                        <img class="author-image" src="${comment.performer.imgPath}" alt="">
+                        <img class="author-image" src="${comment.author.imgPath}" alt="">
                         <div class="comment-body">
-                            <div class="author-name">${comment.performer.name}</div>
+                            <div class="author-name">${comment.author.name}</div>
                             <div class="comment-text">
                                 ${comment.comment.substring(0, 64)}..
                             </div>

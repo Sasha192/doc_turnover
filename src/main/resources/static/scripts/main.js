@@ -487,37 +487,38 @@ import { validation } from "./modules/form-handler.js"
 
         (async () => {
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("/task/my/list/new", (data) => {
                 handlerNew.append(data)
                 $(".board.new").find(".todo-count").html(`(${data.length})`)
             })
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("/task/my/list/inprogress", (data) => {
                 hendlerProgress.append(data)
                 $(".board.InProgress").find(".todo-count").html(`(${data.length})`)
             })
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("/task/my/list/completed", (data) => {
                 hendlerCompleted.append(data)
                 $(".board.completed").find(".todo-count").html(`(${data.length})`)
 
             })
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("/task/my/list/overdue", (data) => {
                 hendlerOverdue.append(data)
                 $(".board.overdue").find(".todo-count").html(`(${data.length})`)
 
             })
 
 
-            await $.get("/task/mb/list", (data) => {
+            await $.get("/task/my/list/onhold", (data) => {
                 hendlerOnHold.append(data)
                 $(".board.onhold").find(".todo-count").html(`(${data.length})`)
             })
 
-            if (User.role() !== "performer") {
+            if(User.role() !== "performer") {
                 changeTaskState()
             }
+
         })();
     }
 })();
@@ -535,41 +536,42 @@ import { validation } from "./modules/form-handler.js"
             hendlerOverdue = new Insert_Tasks($(".board.overdue")),
             hendlerOnHold = new Insert_Tasks($(".board.onhold"));
 
-        (async () => {
+            (async () => {
 
-            await $.get("/task/mb/list", (data) => {
-                handlerNew.append(data)
-                $(".board.new").find(".todo-count").html(`(${data.length})`)
-            })
+                await $.get("/task/my/list/new", (data) => {
+                    handlerNew.append(data)
+                    $(".board.new").find(".todo-count").html(`(${data.length})`)
+                })
 
-            await $.get("/task/mb/list", (data) => {
-                hendlerProgress.append(data)
-                $(".board.InProgress").find(".todo-count").html(`(${data.length})`)
-            })
+                await $.get("/task/my/list/inprogress", (data) => {
+                    hendlerProgress.append(data)
+                    $(".board.InProgress").find(".todo-count").html(`(${data.length})`)
+                })
 
-            await $.get("/task/mb/list", (data) => {
-                hendlerCompleted.append(data)
-                $(".board.completed").find(".todo-count").html(`(${data.length})`)
+                await $.get("/task/my/list/completed", (data) => {
+                    hendlerCompleted.append(data)
+                    $(".board.completed").find(".todo-count").html(`(${data.length})`)
 
-            })
+                })
 
-            await $.get("/task/mb/list", (data) => {
-                hendlerOverdue.append(data)
-                $(".board.overdue").find(".todo-count").html(`(${data.length})`)
+                await $.get("/task/my/list/overdue", (data) => {
+                    hendlerOverdue.append(data)
+                    $(".board.overdue").find(".todo-count").html(`(${data.length})`)
 
-            })
+                })
 
 
-            await $.get("/task/mb/list", (data) => {
-                hendlerOnHold.append(data)
-                $(".board.onhold").find(".todo-count").html(`(${data.length})`)
-            })
+                await $.get("/task/my/list/onhold", (data) => {
+                    hendlerOnHold.append(data)
+                    $(".board.onhold").find(".todo-count").html(`(${data.length})`)
+                })
 
-            changeTaskState()
+                changeTaskState()
 
-        })();
+            })();
 
     }
+
 })();
 
 function changeTaskState() {
