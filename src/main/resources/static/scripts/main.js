@@ -1,3 +1,4 @@
+import { User } from "./modules/services.js"
 import { dropDown } from "./modules/animation.js"
 import { closeAllDropDowns } from "./modules/animation.js"
 import { Insert_Files } from "./modules/form-handler.js"
@@ -11,35 +12,32 @@ import { Http } from "./modules/services.js"
 
 
 
-window.waitUserInfo.then( () => {$(document).ready(function () {
 
-    if (User.role() == "performer" || User.role() == "secretary") {
+   Http.get("/performer/my/info", User => {
+       if (User.roles[0] == "PERFORMER" || User.roles[0] == "SECRETARY") {
 
-        {  // Todo
-            document.querySelectorAll("[contenteditable]").forEach(editor => {
-                editor.removeAttribute("contenteditable")
-                editor.setAttribute("readonly", "true")
-            })
+           {  // Todo
+               document.querySelectorAll("[contenteditable]").forEach(editor => {
+                   editor.removeAttribute("contenteditable")
+                   editor.setAttribute("readonly", "true")
+               })
 
-            $("#task-info #todo-complete-control").css("display", "none").html("")
-        }
+               $("#task-info #todo-complete-control").css("display", "none");
+           }
 
-        {   // archive
-            $(".nav-bar_item#linkToFiles").css("display", "none")
-        }
+       } else {
 
-    } else {
+           {   // Todo
+               $("#task-info #todo-send-report-control").css("display", "none")
+               $("#task-info .report-msg").css("display", "none")
+               $("#task-info #send-report-files").css("display", "none")
+           }
 
-        {   // Todo
-            $("#task-info #todo-send-report-control").css("display", "none")
-            $("#task-info .report-msg").css("display", "none")
-            $("#task-info #send-report-files").css("display", "none")
-        }
+       }
 
-    }
+       dropDown()
+   })
 
-    dropDown()
-})})
 
 // -------------------
 //    Access Module
@@ -525,7 +523,7 @@ import { validation } from "./modules/form-handler.js"
                 $(".board.onhold").find(".todo-count").html(`(${data.length})`)
             })
 
-            if(User.role() !== "performer") {
+            if(User.role() !== "PERFORMER" || User.role() !== "SECRETARY") {
                 changeTaskState()
             }
 

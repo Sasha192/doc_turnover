@@ -7,13 +7,14 @@ import { dropDown } from "./animation.js"
 (async () => {
 
     await new Promise((resolve, reject) => {
-        Http.get("/userList", users => {
+        Http.get("/performers/list", users => {
+            console.log(users)
             users.forEach(user => {
                 let userRole,
                     userDep
 
                 // Validate Role
-                if (user.role == "none") {
+                if (user.roles[0] == "none") {
                     userRole = `
                     <div class="drop-down">
                         <button class="drop-down_btn">
@@ -24,7 +25,7 @@ import { dropDown } from "./animation.js"
                             </div>
                         </div>
                     </div> ` } else {
-                    userRole = Lang.role(user.role)
+                    userRole = Lang.role(user.roles[0])
                 }
 
                 // Validate Department
