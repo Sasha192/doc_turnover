@@ -74,11 +74,15 @@ public class GMailService implements IMailService {
             if (to == null) {
                 return false;
             }
-            Message message = createMessage(to, subject, plaintext);
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(plaintext);
             Multipart multipart = new MimeMultipart();
             for (File file : files) {
                 addAttachment(multipart, file);
             }
+            Message message =
+                    createMessage(to, subject, plaintext);
+            multipart.addBodyPart(textPart);
             message.setContent(multipart);
             Transport.send(message);
             return true;
@@ -131,9 +135,6 @@ public class GMailService implements IMailService {
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(to));
         message.setSubject(subject);
-        if (plainText == null) {
-            plainText = "";
-        }
         message.setText(plainText);
         return message;
     }

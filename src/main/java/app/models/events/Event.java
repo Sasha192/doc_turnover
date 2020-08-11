@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -80,6 +82,13 @@ public abstract class Event
     @Transient
     protected String description;
 
+    public Event() {
+        Date date = Date.valueOf(LocalDate.now());
+        this.date = date;
+        this.time = Time.valueOf(LocalTime.now());
+        timeStamp = new Timestamp(date.getTime());
+    }
+
     public Long getAuthorId() {
         return authorId;
     }
@@ -134,10 +143,6 @@ public abstract class Event
 
     public Performer getAuthorPerformer() {
         return authorPerformer;
-    }
-
-    public void setAuthorPerformer(Performer authorPerformer) {
-        this.authorPerformer = authorPerformer;
     }
 
     public String getName() {

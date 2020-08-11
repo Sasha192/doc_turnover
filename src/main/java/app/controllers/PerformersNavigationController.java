@@ -66,7 +66,7 @@ public class PerformersNavigationController extends JsonSupportController {
                                  @RequestParam("department_id") Integer departmentId) {
         Department newDepartment = departmentService.findOne(departmentId);
         Performer performer = performerService.findOne(performerId);
-        performer.setDepartment(newDepartment);
+        performer.setDepartmentId(newDepartment.getId());
         performerService.update(performer);
     }
 

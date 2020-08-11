@@ -14,8 +14,17 @@ public class BriefTaskDao extends GenericJpaRepository<BriefTask>
 
     private static final String FROM = "from BriefTask bt ";
 
+    private static final String FIND_BY_DEPO =
+            FROM
+                    + " WHERE bt.performerDepartmentId = :depo_id_ "
+                    + " OR bt.ownerDepartmentId = :depo_id_ ";
+
     private static final String FIND_BY_PERFORMER = FROM
             + " WHERE bt.performerId = :performer_id ";
+
+    private static final String FIND_BY_STATUS_N_DEPO =
+            FIND_BY_DEPO
+            + " AND bt.status = :status_name_ ";
 
     private static final String FIND_BY_PERF_N_STATUS = FIND_BY_PERFORMER
             + " AND bt.status = :status_name_ ";
@@ -53,6 +62,23 @@ public class BriefTaskDao extends GenericJpaRepository<BriefTask>
     public List<BriefTask> findByStatus(String status) {
         TypedQuery<BriefTask> query = getEntityManager()
                 .createQuery(FIND_BY_PERF_N_STATUS, BriefTask.class);
+        query.setParameter("status_name_", status);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<BriefTask> findByDepartment(Long depoId) {
+        TypedQuery<BriefTask> query = getEntityManager()
+                .createQuery(FIND_BY_DEPO, BriefTask.class);
+        query.setParameter("depo_id_", depoId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<BriefTask> findByDepartmentAndStatus(Long depoId, String status) {
+        TypedQuery<BriefTask> query = getEntityManager()
+                .createQuery(FIND_BY_PERF_N_STATUS, BriefTask.class);
+        query.setParameter("depo_id_", depoId);
         query.setParameter("status_name_", status);
         return query.getResultList();
     }

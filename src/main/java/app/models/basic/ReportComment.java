@@ -2,6 +2,7 @@ package app.models.basic;
 
 import app.models.abstr.Comment;
 import app.models.serialization.ExcludeForJsonComment;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -20,6 +21,15 @@ public class ReportComment extends Comment {
     @JoinColumn(name = "report_id")
     @ExcludeForJsonComment
     private Report report;
+
+    @Override
+    public Set<Long> getPerformerIds() {
+        Task task = report.getTask();
+        Set<Long> ids = task.getPerformerIds();
+        ids.add(task.getTaskOwner().getId());
+        this.setPerformerIds(ids);
+        return ids;
+    }
 
     public Report getReport() {
         return report;

@@ -24,12 +24,12 @@ public class ReportPublishingEvent extends Event {
     @Column(name = "report_id")
     private Long reportId;
 
-    public Report getReport() {
-        return report;
+    public ReportPublishingEvent() {
+        setEventTypeEnum(EventType.REPORT_PUB);
     }
 
-    public void setReport(Report report) {
-        this.report = report;
+    public Report getReport() {
+        return report;
     }
 
     public Long getReportId() {

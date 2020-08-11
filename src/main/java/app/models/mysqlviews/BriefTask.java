@@ -58,6 +58,9 @@ public class BriefTask
     @Column(name = "perf_department")
     private String performerDepartment;
 
+    @Column(name = "performer_department_id")
+    private String performerDepartmentId;
+
     @Column(name = "perf_id")
     private Long performerId;
 
@@ -66,6 +69,9 @@ public class BriefTask
 
     @Column(name = "owner_department")
     private String ownerDepartment;
+
+    @Column(name = "owner_department_id")
+    private String ownerDepartmentId;
 
     @Column(name = "owner_id")
     private Long ownerId;

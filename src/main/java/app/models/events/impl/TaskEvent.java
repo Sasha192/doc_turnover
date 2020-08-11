@@ -24,11 +24,19 @@ public class TaskEvent extends Event {
     @Column(name = "task_id")
     private Long taskId;
 
+    public TaskEvent() {
+        setEventTypeEnum(EventType.TASK_PUB);
+    }
+
     public Task getTask() {
         return task;
     }
 
-    public void setTask(Task task) {
-        this.task = task;
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 }

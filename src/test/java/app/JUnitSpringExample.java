@@ -1,14 +1,23 @@
 package app;
 
+import app.configuration.spring.constants.Constants;
+import app.controllers.JsonSupportController;
 import app.dao.persistance.IOperations;
-import app.models.basic.*;
+import app.models.basic.BriefDocument;
+import app.models.basic.CustomUser;
+import app.models.basic.Department;
+import app.models.basic.Performer;
+import app.models.basic.Report;
+import app.models.basic.ReportComment;
+import app.models.basic.Task;
+import app.models.basic.TaskComment;
 import app.models.events.Event;
 import app.models.events.PerformerEventAgent;
 import app.models.events.impl.DocPublishingEvent;
 import app.models.mysqlviews.BriefPerformer;
 import app.models.mysqlviews.BriefTask;
+import app.models.serialization.ExcludeStrategies;
 import app.security.service.IUserService;
-import app.security.service.impl.UserService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
 import app.service.interfaces.IBriefTaskService;
@@ -28,6 +37,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +53,18 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(classes = TestSpringDataConfiguration.class,
         loader = AnnotationConfigContextLoader.class)
 public class JUnitSpringExample {
+
+    private static final GsonBuilder BUILDER;
+
+    static {
+        BUILDER = new GsonBuilder().setPrettyPrinting()
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_EVENT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_BRIEF_TASK)
+                .setDateFormat(Constants.DATE_FORMAT.toPattern());
+    }
 
     private IDepartmentService departmentService;
 
@@ -98,7 +122,8 @@ public class JUnitSpringExample {
                 this.jsonDocumentService,
                 this.corePropertyService,
                 this.performerService,
-                this.statusService, this.taskService};
+                this.statusService, this.taskService, briefTaskService,
+                reportCommentService, taskCommentService};
     }
 
     @Test
@@ -142,6 +167,13 @@ public class JUnitSpringExample {
     @Test
     public void testServiceMethods() {
         this.selectAll();
+    }
+
+    @Test
+    public void testBriefTask() {
+        List<BriefTask> tasks = briefTaskService.findAll();
+        Gson gson = BUILDER.create();
+        gson.toJson(tasks);
     }
 
     @Test
@@ -200,7 +232,7 @@ public class JUnitSpringExample {
         List<Performer> performers = performerService.findAll();
         List<BriefDocument> documents = documentService.findAll();
         DocPublishingEvent event = new DocPublishingEvent();
-        event.setDocument(documents.get(0));
+        event.setDocumentId(documents.get(0).getId());
         event.setAuthorId(performers.get(0).getId());
         event.setDescription("");
         event.setDate(Date.valueOf(LocalDate.now()));

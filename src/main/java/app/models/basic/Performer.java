@@ -89,10 +89,6 @@ public class Performer
         return this.department;
     }
 
-    public void setDepartment(final Department department) {
-        this.department = department;
-    }
-
     public Long getId() {
         return id;
     }
@@ -167,5 +163,13 @@ public class Performer
 
     public void setRoles(Set<SimpleRole> roles) {
         this.roles = roles;
+    }
+
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 }

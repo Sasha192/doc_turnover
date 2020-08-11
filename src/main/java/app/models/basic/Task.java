@@ -36,7 +36,7 @@ public class Task
     @JoinTable(name = "tasks_performers",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "performer_id"))
-    private Set<Performer> performer;
+    private Set<Performer> performers;
 
     @ElementCollection
     @CollectionTable(name = "tasks_performers",
@@ -78,7 +78,7 @@ public class Task
     @CollectionTable(name = "tasks_keys",
             joinColumns = @JoinColumn(name = "task_id")
     )
-    @Column(name = "performer_id")
+    @Column(name = "key")
     private Set<String> keys;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
@@ -88,8 +88,13 @@ public class Task
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_owner_id")
+    @JoinColumn(name = "task_owner_id",
+            insertable = false,
+            updatable = false)
     private Performer taskOwner;
+
+    @Column(name = "task_owner_id")
+    private Long taskOwnerId;
 
     @Column(name = "modification_date")
     private Date modificationDate;
@@ -106,6 +111,14 @@ public class Task
         setModificationDate(now);
     }
 
+    public Long getTaskOwnerId() {
+        return taskOwnerId;
+    }
+
+    public void setTaskOwnerId(Long taskOwnerId) {
+        this.taskOwnerId = taskOwnerId;
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -114,12 +127,12 @@ public class Task
         this.id = id;
     }
 
-    public Set<Performer> getPerformer() {
-        return this.performer;
+    public Set<Performer> getPerformers() {
+        return performers;
     }
 
-    public void setPerformer(final Set<Performer> performer) {
-        this.performer = performer;
+    public void setPerformers(Set<Performer> performers) {
+        this.performers = performers;
     }
 
     public Set<BriefDocument> getDocument() {

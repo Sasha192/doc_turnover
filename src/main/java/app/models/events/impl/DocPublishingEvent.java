@@ -3,6 +3,8 @@ package app.models.events.impl;
 import app.models.basic.BriefDocument;
 import app.models.events.Event;
 import app.models.serialization.ExcludeForJsonEvent;
+import com.sun.javadoc.Doc;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -24,12 +26,12 @@ public class DocPublishingEvent extends Event {
     @Column(name = "doc_id")
     private Long documentId;
 
-    public BriefDocument getDocument() {
-        return document;
+    public DocPublishingEvent() {
+        setEventTypeEnum(EventType.DOC_PUB);
     }
 
-    public void setDocument(BriefDocument document) {
-        this.document = document;
+    public BriefDocument getDocument() {
+        return document;
     }
 
     public Long getDocumentId() {

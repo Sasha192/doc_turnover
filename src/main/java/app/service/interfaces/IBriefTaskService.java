@@ -14,4 +14,8 @@ public interface IBriefTaskService extends IOperations<BriefTask> {
     List<BriefTask> findByPerformerAndStatus(Long performerId, String status);
 
     List<BriefTask> findByStatus(String status);
+
+    List<BriefTask> findByDepartment(Long depoId);
+
+    List<BriefTask> findByDepartmentAndStatus(Long depoId, String status);
 }

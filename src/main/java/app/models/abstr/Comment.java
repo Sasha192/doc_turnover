@@ -6,6 +6,9 @@ import app.models.serialization.ExcludeForJsonComment;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -16,6 +19,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -27,17 +31,23 @@ public abstract class Comment
         extends IdentityBaseEntity {
     // @TODO : inheritance from IdentityBaseEntity
 
+    @Transient
+    protected Set<Long> performerIds;
+
     @Column(name = "comment")
     protected String comment;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "performer_id")
+    @JoinColumn(name = "performer_id", insertable = false, updatable = false)
     @ExcludeForJsonComment
     protected Performer author;
 
+    @Column(name = "performer_id")
+    protected Long authorId;
+
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-            fetch = FetchType.LAZY)
+            fetch = FetchType.EAGER)
     @JoinColumn(name = "performer_id", insertable = false, updatable = false)
     protected BriefPerformer performer;
 
@@ -49,6 +59,11 @@ public abstract class Comment
 
     @Column(name = "date_time")
     protected transient Timestamp dateTime;
+
+    public Comment() {
+        this.date = Date.valueOf(LocalDate.now());
+        this.time = Time.valueOf(LocalTime.now());
+    }
 
     public String getComment() {
         return comment;
@@ -72,6 +87,17 @@ public abstract class Comment
 
     public void setTime(Time time) {
         this.time = time;
+    }
+
+    /**
+     *
+     * @return Set of Performer Ids, that will see this comment on frontend part Notifications
+     * @see app.models.events.pub.CommentEventPublisher#publish(Comment, Performer)
+     */
+    public abstract Set<Long> getPerformerIds();
+
+    public void setPerformerIds(Set<Long> performerIds) {
+        this.performerIds = performerIds;
     }
 
     @Override
@@ -110,7 +136,11 @@ public abstract class Comment
         return author;
     }
 
-    public void setAuthor(Performer author) {
-        this.author = author;
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 }
