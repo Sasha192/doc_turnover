@@ -12,15 +12,18 @@ import org.springframework.stereotype.Repository;
 public class BriefTaskDao extends GenericJpaRepository<BriefTask>
         implements IBriefTaskDao {
 
-    private static final String FROM = "from BriefTask bt ";
+    private static final String FROM = "select bt from BriefTask bt ";
 
     private static final String FIND_BY_DEPO =
             FROM
-                    + " WHERE bt.performerDepartmentId = :depo_id_ "
+                    + " INNER JOIN tasks tsk ON tsk.id = bt.id   "
+                    + " INNER JOIN tasks_performers tp ON tp.task_id = tsk.id "
+                    + " INNER JOIN performers perf ON perf.id = tp.performer_id "
+                    + " WHERE perf.department_id = :depo_id_ "
                     + " OR bt.ownerDepartmentId = :depo_id_ ";
 
     private static final String FIND_BY_PERFORMER = FROM
-            + " WHERE bt.performerId = :performer_id ";
+            + " INNER JOIN bt.performers perf ON perf.id = :performer_id ";
 
     private static final String FIND_BY_STATUS_N_DEPO =
             FIND_BY_DEPO
@@ -51,11 +54,11 @@ public class BriefTaskDao extends GenericJpaRepository<BriefTask>
 
     @Override
     public List<BriefTask> findByPerformerAndStatus(Long performerId, String status) {
-        TypedQuery<BriefTask> query = getEntityManager()
-                .createQuery(FIND_BY_PERF_N_STATUS, BriefTask.class);
-        query.setParameter("performer_id", performerId);
-        query.setParameter("status_name_", status);
-        return query.getResultList();
+        return getEntityManager()
+                .createQuery(FIND_BY_PERF_N_STATUS, BriefTask.class)
+                .setParameter("performer_id", performerId)
+                .setParameter("status_name_", status)
+                .getResultList();
     }
 
     @Override

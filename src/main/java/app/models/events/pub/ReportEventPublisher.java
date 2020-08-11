@@ -4,6 +4,8 @@ import app.models.basic.Performer;
 import app.models.basic.Report;
 import app.models.events.impl.ReportPublishingEvent;
 import app.service.interfaces.IEventService;
+
+import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +24,7 @@ public class ReportEventPublisher
         ReportPublishingEvent event = new ReportPublishingEvent();
         event.setReportId(entity.getId());
         event.setAuthorId(author.getId());
-        Set<Long> performersIds = entity.getTask().getPerformerIds();
+        Set<Long> performersIds = new HashSet<>(entity.getTask().getPerformerIds());
         performersIds.add(entity.getTask().getTaskOwnerId());
         performersIds.add(author.getId());
         event.setPerformersId(performersIds);

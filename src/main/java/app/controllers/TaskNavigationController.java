@@ -128,6 +128,7 @@ public class TaskNavigationController extends JsonSupportController {
         Task task = taskMapper.getEntity(dto);
         Performer ownerPerformer = performerWrapper.retrievePerformer(request);
         task.setTaskOwner(ownerPerformer);
+        task.setTaskOwnerId(ownerPerformer.getId());
         taskService.create(task);
         taskPublisher.publish(task, ownerPerformer);
         sendDefaultJson(response, true, "");
@@ -164,11 +165,15 @@ public class TaskNavigationController extends JsonSupportController {
             return;
         }
         Performer performer = performerWrapper.retrievePerformer(request);
-        taskComment.setAuthorId(performer.getId());
+        taskComment.setAuthor(performer);
         taskComment.setComment(commentDto.getComment());
-        taskComment.setTaskId(task.getId());
+        taskComment.setTask(task);
+        taskCommentService.create(taskComment);
         commentPublisher.publish(taskComment, performer);
         sendDefaultJson(response, true, "");
+        /*INSERT INTO `bcrew`.`tasks_performers` (`task_id`, `performer_id`) VALUES (3, 2);
+        INSERT INTO `bcrew`.`tasks_performers` (`task_id`, `performer_id`) VALUES (3, 3);
+        INSERT INTO `bcrew`.`tasks_performers` (`task_id`, `performer_id`) VALUES (3, 4);*/
     }
 
     @RequestMapping(value = "/comment/list", method = RequestMethod.GET)

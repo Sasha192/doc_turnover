@@ -36,11 +36,12 @@ public class Task
     @JoinTable(name = "tasks_performers",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "performer_id"))
+    @Column(insertable = false, updatable = false)
     private Set<Performer> performers;
 
     @ElementCollection
     @CollectionTable(name = "tasks_performers",
-            joinColumns = @JoinColumn(name = "task_id")
+            joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id")
     )
     @Column(name = "performer_id")
     private Set<Long> performerIds;

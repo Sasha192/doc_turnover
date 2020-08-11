@@ -4,6 +4,8 @@ import app.models.abstr.Comment;
 import app.models.basic.Performer;
 import app.models.events.impl.CommentPublishingEvent;
 import app.service.interfaces.IEventService;
+
+import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +24,7 @@ public class CommentEventPublisher
         CommentPublishingEvent event = new CommentPublishingEvent();
         event.setCommentId(entity.getId());
         event.setAuthorId(author.getId());
-        Set<Long> ids = entity.getPerformerIds();
+        Set<Long> ids = new HashSet<>(entity.getPerformerIds());
         ids.add(author.getId());
         event.setPerformersId(ids);
         getEventService().create(event);

@@ -20,31 +20,26 @@ public class TaskComment extends Comment implements Serializable {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id", insertable = false, updatable = false)
+    @JoinColumn(name = "task_id")
     @ExcludeForJsonComment
     private Task task;
 
-    @Column(name = "task_id")
-    private Long taskId;
-
     @Override
     public Set<Long> getPerformerIds() {
-        Set<Long> ids = task.getPerformerIds();
-        ids.add(task.getTaskOwner().getId());
-        this.setPerformerIds(ids);
-        return ids;
+        if (performerIds == null) {
+            Set<Long> ids = task.getPerformerIds();
+            ids.add(task.getTaskOwner().getId());
+            this.setPerformerIds(ids);
+        }
+        return performerIds;
     }
 
     public Task getTask() {
         return task;
     }
 
-    public Long getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     @Override

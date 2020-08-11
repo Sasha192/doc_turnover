@@ -24,11 +24,13 @@ public class ReportComment extends Comment {
 
     @Override
     public Set<Long> getPerformerIds() {
-        Task task = report.getTask();
-        Set<Long> ids = task.getPerformerIds();
-        ids.add(task.getTaskOwner().getId());
-        this.setPerformerIds(ids);
-        return ids;
+        if (performerIds == null) {
+            Task task = report.getTask();
+            Set<Long> ids = task.getPerformerIds();
+            ids.add(task.getTaskOwner().getId());
+            this.setPerformerIds(ids);
+        }
+        return performerIds;
     }
 
     public Report getReport() {

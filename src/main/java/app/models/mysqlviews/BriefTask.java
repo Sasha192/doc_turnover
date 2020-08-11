@@ -6,17 +6,8 @@ import app.models.basic.TaskComment;
 import app.models.serialization.ExcludeForJsonBriefTask;
 import java.sql.Date;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import org.hibernate.annotations.Immutable;
 
 @Entity
@@ -52,17 +43,25 @@ public class BriefTask
     @Column(name = "priority")
     private String priority;
 
-    @Column(name = "perf_name")
+    /*@OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    @ExcludeForJsonBriefTask
+    private Task task;*/
+
+    /*@Column(name = "perf_name")
     private String performerName;
 
     @Column(name = "perf_department")
-    private String performerDepartment;
+    private String performerDepartment;*/
 
-    @Column(name = "performer_department_id")
-    private String performerDepartmentId;
+    /*@Column(name = "performer_department_id")
+    private String performerDepartmentId;*/
 
-    @Column(name = "perf_id")
-    private Long performerId;
+    /*@Column(name = "perf_id")
+    private Long performerId;*/
+
+    @Column(name = "owner_id")
+    private Long ownerId;
 
     @Column(name = "owner_name")
     private String ownerName;
@@ -73,14 +72,11 @@ public class BriefTask
     @Column(name = "owner_department_id")
     private String ownerDepartmentId;
 
-    @Column(name = "owner_id")
-    private Long ownerId;
-
     @Column(name = "owner_img_path")
     private String managerImgPath;
 
-    @Column(name = "perf_img_path")
-    private String perfImgPath;
+    /*@Column(name = "perf_img_path")
+    private String perfImgPath;*/
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinTable(
@@ -217,30 +213,6 @@ public class BriefTask
         this.priority = priority;
     }
 
-    public String getPerformerName() {
-        return this.performerName;
-    }
-
-    public void setPerformerName(final String performerName) {
-        this.performerName = performerName;
-    }
-
-    public String getPerformerDepartment() {
-        return this.performerDepartment;
-    }
-
-    public void setPerformerDepartment(final String performerDepartment) {
-        this.performerDepartment = performerDepartment;
-    }
-
-    public Long getPerformerId() {
-        return this.performerId;
-    }
-
-    public void setPerformerId(final Long performerId) {
-        this.performerId = performerId;
-    }
-
     public String getOwnerName() {
         return this.ownerName;
     }
@@ -265,20 +237,20 @@ public class BriefTask
         this.ownerId = ownerId;
     }
 
+    public String getOwnerDepartmentId() {
+        return ownerDepartmentId;
+    }
+
+    public void setOwnerDepartmentId(String ownerDepartmentId) {
+        this.ownerDepartmentId = ownerDepartmentId;
+    }
+
     public String getManagerImgPath() {
         return managerImgPath;
     }
 
     public void setManagerImgPath(String managerImgPath) {
         this.managerImgPath = managerImgPath;
-    }
-
-    public String getPerfImgPath() {
-        return perfImgPath;
-    }
-
-    public void setPerfImgPath(String perfImgPath) {
-        this.perfImgPath = perfImgPath;
     }
 
     public List<BriefJsonDocument> getDocList() {

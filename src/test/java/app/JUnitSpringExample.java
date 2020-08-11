@@ -195,7 +195,7 @@ public class JUnitSpringExample {
 
     @Test
     public void testBriefTaskJson() {
-        BriefTask briefTask = briefTaskService.findOne(3L);
+        BriefTask briefTask = briefTaskService.findAll().get(0);
         briefTask.getDocList();
         briefTask.getManagerImgPath();
         briefTask.getReports().getDocuments();
@@ -256,16 +256,16 @@ public class JUnitSpringExample {
         }
     }
 
-    @Test
-    public void testPerformerInsert() {
-        Performer performer = new Performer();
-        performer.setName("name");
-        CustomUser user = userService.findAll().get(0);
-        //performer.setUser(user);
-        performerService.create(performer);
-        user.setPerformer(performer);
-        userService.update(user);
-    }
+//    @Test
+//    public void testPerformerInsert() {
+//        Performer performer = new Performer();
+//        performer.setName("name");
+//        CustomUser user = userService.findAll().get(0);
+//        //performer.setUser(user);
+//        performerService.create(performer);
+//        user.setPerformer(performer);
+//        userService.update(user);
+//    }
 
     @Test
     public void testBatchPersistence() {

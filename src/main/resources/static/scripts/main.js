@@ -1,4 +1,3 @@
-import { User } from "./modules/services.js"
 import { dropDown } from "./modules/animation.js"
 import { closeAllDropDowns } from "./modules/animation.js"
 import { Insert_Files } from "./modules/form-handler.js"
@@ -11,7 +10,9 @@ import * as service from "./modules/services.js"
 import { Http } from "./modules/services.js"
 
 
-$(document).ready(function () {
+
+window.waitUserInfo.then( () => {$(document).ready(function () {
+
     if (User.role() == "performer" || User.role() == "secretary") {
 
         {  // Todo
@@ -38,7 +39,7 @@ $(document).ready(function () {
     }
 
     dropDown()
-})
+})})
 
 // -------------------
 //    Access Module
@@ -303,7 +304,16 @@ import { validation } from "./modules/form-handler.js"
                 $("#add-ExistingTodo").modal("show")
 
                 filesHandle.append(window.archive_Selected_Files)
-                $.get("/archive/todo/list?status=New", (data) => {
+                $.get("/task/list/new", (data) => {
+                    todosHandle.append(data)
+                })
+                $.get("/task/list/inprogress", (data) => {
+                    todosHandle.append(data)
+                })
+                $.get("/task/list/overdue", (data) => {
+                    todosHandle.append(data)
+                })
+                $.get("/task/list/onhold", (data) => {
                     todosHandle.append(data)
                 })
             })
@@ -487,30 +497,30 @@ import { validation } from "./modules/form-handler.js"
 
         (async () => {
 
-            await $.get("/task/my/list/new", (data) => {
+            await $.get("/task/list/new", (data) => {
                 handlerNew.append(data)
                 $(".board.new").find(".todo-count").html(`(${data.length})`)
             })
 
-            await $.get("/task/my/list/inprogress", (data) => {
+            await $.get("/task/list/inprogress", (data) => {
                 hendlerProgress.append(data)
                 $(".board.InProgress").find(".todo-count").html(`(${data.length})`)
             })
 
-            await $.get("/task/my/list/completed", (data) => {
+            await $.get("/task/list/completed", (data) => {
                 hendlerCompleted.append(data)
                 $(".board.completed").find(".todo-count").html(`(${data.length})`)
 
             })
 
-            await $.get("/task/my/list/overdue", (data) => {
+            await $.get("/task/list/overdue", (data) => {
                 hendlerOverdue.append(data)
                 $(".board.overdue").find(".todo-count").html(`(${data.length})`)
 
             })
 
 
-            await $.get("/task/my/list/onhold", (data) => {
+            await $.get("/task/list/onhold", (data) => {
                 hendlerOnHold.append(data)
                 $(".board.onhold").find(".todo-count").html(`(${data.length})`)
             })
@@ -747,14 +757,26 @@ function changeTaskState() {
 
     await new Promise((resolve, reject) => {
         Http.get('/notifications/list', data => {
+
+            let desc;
             data.forEach(notification => {
+                if(notification.event.eventTypeEnum == "COMMENT_PUB") {
+                    desc = "Додав новий коментар"
+                }   else if (notification.event.eventTypeEnum == "DOC_PUB") {
+                    desc = "Додав новий документ до задачі"
+                }   else if (notification.event.eventTypeEnum == "REPORT_PUB") {
+                    desc = "Додав звіт до задачі"
+                }   else if (notification.event.eventTypeEnum == "TASK_PUB") {
+                    desc = "Додав нову задачу"
+                }
+
                 $("#notifications-list").append(
                     `<div class="notification" data-todo-id="${notification.id}">
-                        <img src="${notification.authorImgPath}" alt="">
+                        <img src="${notification.author.imgPath}" alt="">
                         <div class="notification-content">
-                            <div class="title">${notification.authorName}</div>
-                            <div class="desc">${notification.description}</div>
-                            <div class="meta">${notification.date}</div>
+                            <div class="title">${notification.author.name}</div>
+                            <div class="desc">${desc}</div>
+                            <div class="meta">${notification.event.date}</div>
                         </div>
                     </div>`
                 )

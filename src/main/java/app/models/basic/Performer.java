@@ -34,7 +34,7 @@ public class Performer
     private String name;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-            fetch = FetchType.LAZY)
+            fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id", insertable = false, updatable = false)
     private Department department;
 
@@ -171,5 +171,17 @@ public class Performer
 
     public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public CustomUser getUser() {
+        return user;
+    }
+
+    public void setUser(CustomUser user) {
+        this.user = user;
     }
 }

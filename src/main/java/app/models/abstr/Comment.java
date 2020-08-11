@@ -31,20 +31,16 @@ public abstract class Comment
         extends IdentityBaseEntity {
     // @TODO : inheritance from IdentityBaseEntity
 
-    @Transient
-    protected Set<Long> performerIds;
+    protected transient Set<Long> performerIds;
 
     @Column(name = "comment")
     protected String comment;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "performer_id", insertable = false, updatable = false)
+    @JoinColumn(name = "performer_id")
     @ExcludeForJsonComment
     protected Performer author;
-
-    @Column(name = "performer_id")
-    protected Long authorId;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.EAGER)
@@ -63,6 +59,18 @@ public abstract class Comment
     public Comment() {
         this.date = Date.valueOf(LocalDate.now());
         this.time = Time.valueOf(LocalTime.now());
+    }
+
+    public void setAuthor(Performer author) {
+        this.author = author;
+    }
+
+    public BriefPerformer getPerformer() {
+        return performer;
+    }
+
+    public void setPerformer(BriefPerformer performer) {
+        this.performer = performer;
     }
 
     public String getComment() {
@@ -134,13 +142,5 @@ public abstract class Comment
 
     public Performer getAuthor() {
         return author;
-    }
-
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
     }
 }

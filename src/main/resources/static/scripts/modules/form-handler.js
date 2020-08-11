@@ -138,7 +138,6 @@ class Insert_Todos {
     }
 
     append(data) {
-        this.todo_list.html("")
         data.forEach(todo => {
             this.todo_list.append(`
             <div class="drop-down_item">
@@ -149,7 +148,7 @@ class Insert_Todos {
                             <div class="board-item_title">
                                 ${todo.name}
                                 <span>
-                                    ${todo.deadlineDate}
+                                    ${todo.dateDeadline}
                                 </span>
                             </div>
                             <div class="board-item_status">
@@ -409,9 +408,9 @@ class Insert_Tasks {
             info.comments.forEach(comment => {
                 comments_container.append(
                     `<div class="comment">
-                        <img class="author-image" src="${comment.author.imgPath}" alt="">
+                        <img class="author-image" src="${comment.performer.imgPath}" alt="">
                         <div class="comment-body">
-                            <div class="author-name">${comment.author.name}</div>
+                            <div class="author-name">${comment.performer.name}</div>
                             <div class="comment-text">
                                 ${comment.comment.substring(0, 64)}..
                             </div>
