@@ -1,12 +1,13 @@
 package app.models.mysqlviews;
 
 import app.models.abstr.IdentityBaseEntity;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Table;
+
+import javax.persistence.*;
+
+import app.security.models.SimpleRole;
 import org.hibernate.annotations.Immutable;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "brief_performer")
@@ -28,6 +29,14 @@ public class BriefPerformer
     })
     @Column(name = "email")
     private String email;
+
+    @ElementCollection
+    @CollectionTable(name = "performer_user_roles",
+            joinColumns = @JoinColumn(name = "performer_id")
+    )
+    @Enumerated(value = EnumType.ORDINAL)
+    @Column(name = "role")
+    private Set<SimpleRole> roles;
 
     public String getName() {
         return name;
