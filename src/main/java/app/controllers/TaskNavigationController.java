@@ -9,6 +9,7 @@ import app.models.basic.Performer;
 import app.models.basic.Task;
 import app.models.basic.TaskComment;
 import app.models.basic.TaskStatus;
+import app.models.events.pub.GenericEventPublisher;
 import app.models.mysqlviews.BriefTask;
 import app.models.serialization.ExcludeStrategies;
 import app.security.wrappers.PerformerWrapper;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -37,15 +39,18 @@ public class TaskNavigationController extends JsonSupportController {
 
     /*private static final ExclusionStrategy FOR_COMMENT_STRATEGY;*/
 
-    private static final GsonBuilder BUILDER;
+    private static final GsonBuilder BUILDER_BRIEF;
+
+    private static final GsonBuilder BUILDER_DETAILS;
 
     static {
-        /*FOR_COMMENT_STRATEGY =
-                new ExcludeStrategies.ExcludeThisAnnotations(
-                        ExcludeForJsonComment.class,
-                        ExcludeForJsonPerformer.class
-                );*/
-        BUILDER = new GsonBuilder().setPrettyPrinting()
+        BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_BRIEF_TASK)
+                .setDateFormat(Constants.DATE_FORMAT.toPattern());
+        BUILDER_DETAILS = new GsonBuilder().setPrettyPrinting()
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
@@ -64,6 +69,12 @@ public class TaskNavigationController extends JsonSupportController {
 
     private ITaskCommentService taskCommentService;
 
+    @Autowired
+    private GenericEventPublisher<Task> taskPublisher;
+
+    @Autowired
+    private GenericEventPublisher<Comment> commentPublisher;
+
     public TaskNavigationController(PerformerWrapper performerWrapper,
                                     ITaskService taskService,
                                     IStatusService statusService,
@@ -79,6 +90,21 @@ public class TaskNavigationController extends JsonSupportController {
         this.taskMapper = taskMapper;
     }
 
+    @RequestMapping(value = "/list/{task_status}", method = RequestMethod.GET)
+    public void listByDepo(HttpServletResponse response, HttpServletRequest request,
+                     @PathVariable(value = "task_status", required = false) String status)
+            throws IOException {
+        Performer performer = performerWrapper.retrievePerformer(request);
+        Long depoId = performer.getDepartmentId();
+        List<BriefTask> tasks = null;
+        if (status == null) {
+            tasks = briefTaskService.findByDepartment(depoId);
+        } else {
+            tasks = briefTaskService.findByDepartmentAndStatus(depoId, status);
+        }
+        writeToResponse(response, BUILDER_BRIEF, tasks);
+    }
+
     @RequestMapping(value = "/my/list/{task_status}", method = RequestMethod.GET)
     public void list(HttpServletResponse response, HttpServletRequest request,
                      @PathVariable(value = "task_status", required = false) String status)
@@ -90,7 +116,7 @@ public class TaskNavigationController extends JsonSupportController {
         } else {
             tasks = briefTaskService.findByPerformerAndStatus(performer.getId(), status);
         }
-        sendDefaultJson(response, tasks);
+        writeToResponse(response, BUILDER_BRIEF, tasks);
     }
 
     @RequestMapping(value = "/create",
@@ -103,6 +129,7 @@ public class TaskNavigationController extends JsonSupportController {
         Performer ownerPerformer = performerWrapper.retrievePerformer(request);
         task.setTaskOwner(ownerPerformer);
         taskService.create(task);
+        taskPublisher.publish(task, ownerPerformer);
         sendDefaultJson(response, true, "");
     }
 
@@ -136,11 +163,11 @@ public class TaskNavigationController extends JsonSupportController {
         if (task == null) {
             return;
         }
-        taskComment.setTask(task);
-        taskComment.setComment(commentDto.getComment());
         Performer performer = performerWrapper.retrievePerformer(request);
-        taskComment.setAuthor(performer);
-        taskCommentService.create(taskComment);
+        taskComment.setAuthorId(performer.getId());
+        taskComment.setComment(commentDto.getComment());
+        taskComment.setTaskId(task.getId());
+        commentPublisher.publish(taskComment, performer);
         sendDefaultJson(response, true, "");
     }
 
@@ -148,7 +175,7 @@ public class TaskNavigationController extends JsonSupportController {
     public void showTaskComments(HttpServletResponse response,
                                  @RequestParam("todoId") Long taskId) throws IOException {
         List<? extends Comment> taskComments = taskCommentService.retrieveByTaskId(taskId);
-        writeToResponse(response, BUILDER, taskComments);
+        writeToResponse(response, BUILDER_BRIEF, taskComments);
     }
 
     @RequestMapping(value = "/details")
@@ -159,6 +186,6 @@ public class TaskNavigationController extends JsonSupportController {
             sendDefaultJson(response, false, "");
             return;
         }
-        writeToResponse(response, BUILDER, task);
+        writeToResponse(response, BUILDER_DETAILS, task);
     }
 }

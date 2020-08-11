@@ -24,12 +24,12 @@ public class CommentPublishingEvent extends Event {
     @Column(name = "comment_id")
     private Long commentId;
 
-    public Comment getCommentEntity() {
-        return commentEntity;
+    public CommentPublishingEvent() {
+        setEventTypeEnum(EventType.COMMENT_PUB);
     }
 
-    public void setCommentEntity(Comment commentEntity) {
-        this.commentEntity = commentEntity;
+    public Comment getCommentEntity() {
+        return commentEntity;
     }
 
     public Long getCommentId() {

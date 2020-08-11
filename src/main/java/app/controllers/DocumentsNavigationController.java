@@ -202,13 +202,19 @@ public class DocumentsNavigationController extends JsonSupportController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public void sendFile(@Validated @RequestBody EmailDto emailDto,
-                         final HttpServletResponse response) {
+                         final HttpServletResponse response,
+                         HttpServletRequest req) {
+        Performer performer = performerWrapper.retrievePerformer(req);
         try {
             final File[] files = this.retrieveFilesByDocIds(emailDto.getDocList());
             boolean responseBool = false;
             if (files.length > 0) {
                 responseBool = this.mailService
-                        .sendFile(emailDto.getEmail(), "", emailDto.getMessage(), files);
+                        .sendFile(emailDto.getEmail(),
+                                "Новий лист від " + performer.getName(),
+                                emailDto.getMessage(),
+                                files
+                        );
             }
             sendDefaultJson(response, responseBool, "");
         } catch (NumberFormatException ex) {

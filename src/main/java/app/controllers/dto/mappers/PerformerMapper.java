@@ -26,7 +26,7 @@ public class PerformerMapper implements IEntityDtoMapper<Performer, PerformerDto
         Performer newPerformer = new Performer();
         newPerformer.setName(dto.getName());
         Department department = departmentService.findOne(dto.getDepartmentId());
-        newPerformer.setDepartment(department);
+        newPerformer.setDepartmentId(department.getId());
         return newPerformer;
     }
 }

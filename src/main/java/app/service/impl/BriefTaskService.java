@@ -51,4 +51,14 @@ public class BriefTaskService extends AbstractService<BriefTask>
     public List<BriefTask> findByStatus(String status) {
         return dao.findByStatus(status);
     }
+
+    @Override
+    public List<BriefTask> findByDepartmentAndStatus(Long depoId, String status) {
+        return dao.findByDepartmentAndStatus(depoId, status);
+    }
+
+    @Override
+    public List<BriefTask> findByDepartment(Long depoId) {
+        return dao.findByDepartment(depoId);
+    }
 }

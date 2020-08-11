@@ -6,13 +6,8 @@ import app.models.serialization.ExcludeForJsonReport;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -47,6 +42,19 @@ public class Report extends IdentityBaseEntity {
             inverseJoinColumns = @JoinColumn(name = "id")
     )
     private List<ReportComment> comments;
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH, CascadeType.PERSIST},
+            mappedBy = "report")
+    private Task task;
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
 
     public Date getDate() {
         return date;
