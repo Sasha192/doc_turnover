@@ -1,5 +1,6 @@
 import { Http } from "./services.js"
 import { User } from "./services.js"
+import * as services from "./services.js"
 
 class Insert_Files {
 
@@ -272,7 +273,7 @@ class Insert_Tasks {
 
         // main settings
 
-        if (User.role() == "performer" || User.role() == "secretary") {} else {
+        if (User.role() == "PERFORMER" || User.role() == "SECRETARY") {} else {
 
             // modify
             document.querySelector("#add-modify").onclick = () => {
@@ -438,7 +439,7 @@ class Insert_Tasks {
                         `<div class="comment">
                         <img class="author-image" src="${User.imgPath()}" alt="">
                             <div class="comment-body">
-                            <div class="author-name">${User.firstName()}</div>
+                            <div class="author-name">${User.name()}</div>
                             <div class="comment-text">
                                 ${comment.trim().substring(0, 64)}..
                             </div>
@@ -534,8 +535,9 @@ class Insert_Tasks {
                 $("#task-info").find(".status").css("opacity", "1")
                 $("#task-info").find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
-                Http.files("/archive/doc/upload",
-                    data => {
+                Http.files(`/report/upload?todoId=${todoId}`,
+                    formData,
+                        data => {
                         if (data.success == true) {
                             $("#task-info").find(".status").css("opacity", "0")
                             $("#task-info").find(".status-spinner").removeClass("d-flex").addClass("d-none")
@@ -549,7 +551,9 @@ class Insert_Tasks {
                         formData = null;
                         formData = new FormData()
                         location.reload()
-                    })
+                    },
+                    error => {alert(error)}
+                    )
             }
 
 

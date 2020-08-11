@@ -84,14 +84,23 @@ export { Http }
 //      User props
 // -------------------
 
-window.waitUserInfo = new Promise(resolve => {
-    const User = {}
-    Http.get("/my/info", user => {
-        User.role = () => {return user.roles[0] }
-        User.name = () => {return user.name}
-        User.imgPath = () => {return user.imgPath}
-    })
+class User {
+    static role () {}
+    static name () {}
+    static id () {}
+    static imgPath () {}
+
+}
+
+Http.get("/performer/my/info", user => {
+    console.log(user)
+    User.role = () => {return user.roles[0]}
+    User.name = () => {return user.name}
+    User.imgPath = () => {return user.imgPath}
+    User.id = () => {return user.id}
 })
+
+export { User }
 
 
 // -------------------s
@@ -113,23 +122,23 @@ window.waitUserInfo = new Promise(resolve => {
 class Lang {
     static role(role) {
         switch (role) {
-            case "performer":
+            case "PERFORMER":
                 return "Виконавець"
                 break;
-            case "manager":
+            case "MANAGER":
                 return "Менеджер"
                 break;
-            case "secretary":
+            case "SECRETARY":
                 return "Секретар"
                 break;
-            case "gmanager":
+            case "G_MANAGER":
                 return "Головний Менеджер"
                 break;
-            case "admin":
+            case "ADMIN":
                 return "Адміністратор"
                 break;
             default:
-                return "None"
+                return "NONE"
                 break;
         }
     }
