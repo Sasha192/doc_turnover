@@ -3,31 +3,38 @@ package app.dao.impl;
 import app.dao.interfaces.IBriefTaskDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.basic.Performer;
+import app.models.basic.Task;
+import app.models.mysqlviews.BriefPerformer;
 import app.models.mysqlviews.BriefTask;
 import java.util.List;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.persister.spi.PersisterFactory;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class BriefTaskDao extends GenericJpaRepository<BriefTask>
         implements IBriefTaskDao {
 
-    private static final String FROM = "select bt from BriefTask bt ";
+    private static final String FROM = " select bt from BriefTask bt ";
 
-    private static final String FIND_BY_DEPO =
-            FROM
-                    + " INNER JOIN tasks tsk ON tsk.id = bt.id   "
-                    + " INNER JOIN tasks_performers tp ON tp.task_id = tsk.id "
-                    + " INNER JOIN performers perf ON perf.id = tp.performer_id "
-                    + " WHERE perf.department_id = :depo_id_ "
-                    + " OR bt.ownerDepartmentId = :depo_id_ ";
+    /*private static final String FIND_BY_DEPO =
+            " select  FROM BriefTask bt "
+                    + " INNER JOIN Task tsk ON tsk.id = bt.id "
+                    + " INNER JOIN Performer perf ON tsk.performerIds"
+                    + " WHERE perf.departmentId = :depo_id_ "
+                    + " OR bt.ownerDepartmentId = :depo_id_ ";*/
 
     private static final String FIND_BY_PERFORMER = FROM
             + " INNER JOIN bt.performers perf ON perf.id = :performer_id ";
 
-    private static final String FIND_BY_STATUS_N_DEPO =
+    /*private static final String FIND_BY_STATUS_N_DEPO =
             FIND_BY_DEPO
-            + " AND bt.status = :status_name_ ";
+            + " AND bt.status = :status_name_ ";*/
 
     private static final String FIND_BY_PERF_N_STATUS = FIND_BY_PERFORMER
             + " AND bt.status = :status_name_ ";
@@ -71,19 +78,29 @@ public class BriefTaskDao extends GenericJpaRepository<BriefTask>
 
     @Override
     public List<BriefTask> findByDepartment(Long depoId) {
-        TypedQuery<BriefTask> query = getEntityManager()
-                .createQuery(FIND_BY_DEPO, BriefTask.class);
-        query.setParameter("depo_id_", depoId);
-        return query.getResultList();
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<BriefTask> cq = cb.createQuery(BriefTask.class);
+        Root<Performer> performerRoot = cq.from(Performer.class);
+        Root<BriefTask> briefTaskRoot = cq.from(BriefTask.class);
+        Predicate predicate1 = cb.equal(performerRoot.get("departmentId"), depoId);
+        Predicate predicate2 = cb.equal(briefTaskRoot.get("ownerDepartmentId"), depoId);
+        cq.where(cb.or(predicate1, predicate2));
+        cq.select(briefTaskRoot);
+        return getEntityManager().createQuery(cq).getResultList();
     }
 
     @Override
     public List<BriefTask> findByDepartmentAndStatus(Long depoId, String status) {
-        TypedQuery<BriefTask> query = getEntityManager()
-                .createQuery(FIND_BY_PERF_N_STATUS, BriefTask.class);
-        query.setParameter("depo_id_", depoId);
-        query.setParameter("status_name_", status);
-        return query.getResultList();
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<BriefTask> cq = cb.createQuery(BriefTask.class);
+        Root<Performer> performerRoot = cq.from(Performer.class);
+        Root<BriefTask> briefTaskRoot = cq.from(BriefTask.class);
+        Predicate predicate1 = cb.equal(performerRoot.get("departmentId"), depoId);
+        Predicate predicate2 = cb.equal(briefTaskRoot.get("ownerDepartmentId"), depoId);
+        Predicate predicate3 = cb.equal(briefTaskRoot.get("status"), status);
+        cq.where(cb.and(cb.or(predicate1, predicate2), predicate3));
+        cq.select(briefTaskRoot);
+        return getEntityManager().createQuery(cq).getResultList();
     }
 
     @Override

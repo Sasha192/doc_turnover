@@ -1,13 +1,25 @@
 package app.models.mysqlviews;
 
 import app.models.abstr.IdentityBaseEntity;
+import app.models.basic.Performer;
 import app.models.basic.Report;
+import app.models.basic.Task;
 import app.models.basic.TaskComment;
 import app.models.serialization.ExcludeForJsonBriefTask;
 import java.sql.Date;
 import java.util.List;
-import javax.persistence.*;
-
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import org.hibernate.annotations.Immutable;
 
 @Entity
@@ -43,23 +55,6 @@ public class BriefTask
     @Column(name = "priority")
     private String priority;
 
-    /*@OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    @ExcludeForJsonBriefTask
-    private Task task;*/
-
-    /*@Column(name = "perf_name")
-    private String performerName;
-
-    @Column(name = "perf_department")
-    private String performerDepartment;*/
-
-    /*@Column(name = "performer_department_id")
-    private String performerDepartmentId;*/
-
-    /*@Column(name = "perf_id")
-    private Long performerId;*/
-
     @Column(name = "owner_id")
     private Long ownerId;
 
@@ -75,9 +70,6 @@ public class BriefTask
     @Column(name = "owner_img_path")
     private String managerImgPath;
 
-    /*@Column(name = "perf_img_path")
-    private String perfImgPath;*/
-
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinTable(
             name = "tasks_documents",
@@ -87,6 +79,11 @@ public class BriefTask
     @ExcludeForJsonBriefTask
     private List<BriefJsonDocument> docList;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    @ExcludeForJsonBriefTask
+    private Task task;
+
     @ElementCollection
     @CollectionTable(
             name = "tasks_keys",
@@ -95,11 +92,22 @@ public class BriefTask
     @Column(name = "key")
     private List<String> keys;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
+    @ManyToMany
     @JoinTable(name = "tasks_performers",
-            joinColumns = @JoinColumn(name = "task_id"),
+            joinColumns = @JoinColumn(name = "task_id",
+                    insertable = false,
+                    updatable = false),
             inverseJoinColumns = @JoinColumn(name = "performer_id"))
-    private List<BriefPerformer> performers;
+    private List<BriefPerformer> briefPerformers;
+
+    @ManyToMany
+    @JoinTable(name = "tasks_performers",
+            joinColumns = @JoinColumn(name = "task_id",
+                    insertable = false,
+                    updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "performer_id"))
+    @ExcludeForJsonBriefTask
+    private List<Performer> performers;
 
     @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinColumn(name = "report_id", referencedColumnName = "id")
@@ -115,14 +123,6 @@ public class BriefTask
 
     private BriefTask() {
         ;
-    }
-
-    public List<BriefPerformer> getPerformer() {
-        return performers;
-    }
-
-    public void setPerformer(List<BriefPerformer> performer) {
-        this.performers = performer;
     }
 
     public List<String> getKeys() {
@@ -269,11 +269,27 @@ public class BriefTask
         this.report = reports;
     }
 
-    public List<BriefPerformer> getPerformers() {
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public List<BriefPerformer> getBriefPerformers() {
+        return briefPerformers;
+    }
+
+    public void setBriefPerformers(List<BriefPerformer> briefPerformers) {
+        this.briefPerformers = briefPerformers;
+    }
+
+    public List<Performer> getPerformers() {
         return performers;
     }
 
-    public void setPerformers(List<BriefPerformer> performers) {
+    public void setPerformers(List<Performer> performers) {
         this.performers = performers;
     }
 
