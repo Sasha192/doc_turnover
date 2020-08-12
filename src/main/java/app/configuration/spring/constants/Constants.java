@@ -3,14 +3,13 @@ package app.configuration.spring.constants;
 import app.models.basic.CoreProperty;
 import app.models.serialization.ExcludeStrategies;
 import app.service.interfaces.ICorePropertyService;
+import com.google.gson.GsonBuilder;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
-
-import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

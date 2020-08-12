@@ -4,13 +4,11 @@ import app.configuration.spring.constants.Constants;
 import app.models.basic.Department;
 import app.models.serialization.ExcludeStrategies;
 import app.service.interfaces.IDepartmentService;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

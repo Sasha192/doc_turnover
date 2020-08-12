@@ -4,7 +4,6 @@ import app.models.basic.Performer;
 import app.models.basic.Report;
 import app.models.events.impl.ReportPublishingEvent;
 import app.service.interfaces.IEventService;
-
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;

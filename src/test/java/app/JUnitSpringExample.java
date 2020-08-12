@@ -1,10 +1,8 @@
 package app;
 
 import app.configuration.spring.constants.Constants;
-import app.controllers.JsonSupportController;
 import app.dao.persistance.IOperations;
 import app.models.basic.BriefDocument;
-import app.models.basic.CustomUser;
 import app.models.basic.Department;
 import app.models.basic.Performer;
 import app.models.basic.Report;
@@ -30,6 +28,8 @@ import app.service.interfaces.IStatusService;
 import app.service.interfaces.ITaskCommentService;
 import app.service.interfaces.ITaskService;
 import app.spring.TestSpringDataConfiguration;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -37,9 +37,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -201,7 +198,7 @@ public class JUnitSpringExample {
         briefTask.getReports().getDocuments();
         briefTask.getReports().getComments();
         briefTask.getKeys();
-        briefTask.getPerformer();
+        briefTask.getBriefPerformers();
     }
 
     @Test
@@ -214,7 +211,7 @@ public class JUnitSpringExample {
     @Test
     public void testBriefPerformers() {
         BriefTask task = briefTaskService.findAll().get(0);
-        BriefPerformer briefPerformer = task.getPerformer().get(0);
+        BriefPerformer briefPerformer = task.getBriefPerformers().get(0);
         briefPerformer.getEmail();
         System.out.println(briefPerformer.getEmail());
     }
@@ -255,17 +252,6 @@ public class JUnitSpringExample {
             });
         }
     }
-
-//    @Test
-//    public void testPerformerInsert() {
-//        Performer performer = new Performer();
-//        performer.setName("name");
-//        CustomUser user = userService.findAll().get(0);
-//        //performer.setUser(user);
-//        performerService.create(performer);
-//        user.setPerformer(performer);
-//        userService.update(user);
-//    }
 
     @Test
     public void testBatchPersistence() {

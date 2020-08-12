@@ -4,7 +4,6 @@ import app.models.abstr.Comment;
 import app.models.basic.Performer;
 import app.models.events.impl.CommentPublishingEvent;
 import app.service.interfaces.IEventService;
-
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,7 +6,6 @@ import app.models.basic.Performer;
 import app.models.mysqlviews.BriefTask;
 import java.util.List;
 import javax.persistence.TypedQuery;
-
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,14 +17,13 @@ public class BriefTaskDao extends GenericJpaRepository<BriefTask>
     private static final String FIND_BY_DEPO =
             " select distinct bt FROM BriefTask bt "
                     + " INNER JOIN bt.performers perfs ON perfs.departmentId = :depo_id_ ";
-                    //+ " WHERE perfs.departmentId = :depo_id_ ";
 
     private static final String FIND_BY_PERFORMER = FROM
             + " INNER JOIN bt.performers perf ON perf.id = :performer_id ";
 
     private static final String FIND_BY_STATUS_N_DEPO =
             FIND_BY_DEPO
-            + " WHERE bt.status = :status_name_ ";
+                    + " WHERE bt.status = :status_name_ ";
 
     private static final String FIND_BY_PERF_N_STATUS = FIND_BY_PERFORMER
             + " AND bt.status = :status_name_ ";

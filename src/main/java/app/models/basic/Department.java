@@ -3,8 +3,6 @@ package app.models.basic;
 import app.models.abstr.IdentityBaseEntity;
 import app.models.serialization.ExcludeForJsonPerformer;
 import com.google.common.base.Objects;
-import net.bytebuddy.build.ToStringPlugin;
-
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.CascadeType;
