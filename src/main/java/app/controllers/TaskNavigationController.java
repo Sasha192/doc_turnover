@@ -37,26 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(value = "/task")
 public class TaskNavigationController extends JsonSupportController {
 
-    /*private static final ExclusionStrategy FOR_COMMENT_STRATEGY;*/
-
-    private static final GsonBuilder BUILDER_BRIEF;
-
-    private static final GsonBuilder BUILDER_DETAILS;
-
-    static {
-        BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_BRIEF_TASK)
-                .setDateFormat(Constants.DATE_FORMAT.toPattern());
-        BUILDER_DETAILS = new GsonBuilder().setPrettyPrinting()
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
-                .setDateFormat(Constants.DATE_FORMAT.toPattern());
-    }
-
     private IEntityDtoMapper<Task, TaskDto> taskMapper;
 
     private PerformerWrapper performerWrapper;
@@ -102,7 +82,7 @@ public class TaskNavigationController extends JsonSupportController {
         } else {
             tasks = briefTaskService.findByDepartmentAndStatus(depoId, status);
         }
-        writeToResponse(response, BUILDER_BRIEF, tasks);
+        writeToResponse(response, Constants.BUILDER_BRIEF, tasks);
     }
 
     @RequestMapping(value = "/my/list/{task_status}", method = RequestMethod.GET)
@@ -116,7 +96,7 @@ public class TaskNavigationController extends JsonSupportController {
         } else {
             tasks = briefTaskService.findByPerformerAndStatus(performer.getId(), status);
         }
-        writeToResponse(response, BUILDER_BRIEF, tasks);
+        writeToResponse(response, Constants.BUILDER_BRIEF, tasks);
     }
 
     @RequestMapping(value = "/create",
@@ -180,7 +160,7 @@ public class TaskNavigationController extends JsonSupportController {
     public void showTaskComments(HttpServletResponse response,
                                  @RequestParam("todoId") Long taskId) throws IOException {
         List<? extends Comment> taskComments = taskCommentService.retrieveByTaskId(taskId);
-        writeToResponse(response, BUILDER_BRIEF, taskComments);
+        writeToResponse(response, Constants.BUILDER_BRIEF, taskComments);
     }
 
     @RequestMapping(value = "/details")
@@ -191,6 +171,6 @@ public class TaskNavigationController extends JsonSupportController {
             sendDefaultJson(response, false, "");
             return;
         }
-        writeToResponse(response, BUILDER_DETAILS, task);
+        writeToResponse(response, Constants.BUILDER_DETAILS, task);
     }
 }

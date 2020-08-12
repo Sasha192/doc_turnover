@@ -1,9 +1,8 @@
-package app.utils.tasks;
+package app.utils;
 
 import app.configuration.spring.constants.Constants;
 import app.models.basic.BriefDocument;
 import app.models.basic.Performer;
-import app.service.interfaces.IBriefDocumentService;
 import java.io.File;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -11,24 +10,11 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 
-public class FileRecordToDatabase implements Runnable {
+public class FileDocumentsMapperUtil {
 
-    private List<File> files;
-    private IBriefDocumentService service;
-    private String folderPath;
-    private Performer performer;
-
-    public FileRecordToDatabase(final List<File> files,
-                                final IBriefDocumentService service,
-                                final String folderPath, final Performer performer) {
-        this.files = files;
-        this.service = service;
-        this.folderPath = folderPath;
-        this.performer = performer;
-    }
-
-    @Override
-    public void run() {
+    public static List<BriefDocument> map(final List<File> files,
+                                   final String folderPath,
+                                   final Performer performer) {
         LocalDate now = LocalDate.now();
         List<BriefDocument> documents = new LinkedList<>();
         for (File file : files) {
@@ -43,6 +29,6 @@ public class FileRecordToDatabase implements Runnable {
             briefDocument.setPerformer(performer);
             documents.add(briefDocument);
         }
-        service.create(documents);
+        return documents;
     }
 }

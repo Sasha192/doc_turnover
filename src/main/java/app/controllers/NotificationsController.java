@@ -72,4 +72,12 @@ public class NotificationsController extends JsonSupportController {
         Long count = eventService.countNewEvents(performer.getId());
         sendDefaultJson(response, true, count.toString());
     }
+
+    @RequestMapping(value = "/see/all", method = RequestMethod.GET)
+    public void seeAll(HttpServletRequest request,
+                       HttpServletResponse response) {
+        Performer performer = performerWrapper.retrievePerformer(request);
+        eventService.seeAllEvents(performer.getId());
+        this.sendDefaultJson(response, true, "");
+    }
 }

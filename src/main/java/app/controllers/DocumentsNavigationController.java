@@ -61,10 +61,6 @@ public class DocumentsNavigationController extends JsonSupportController {
             .setPrettyPrinting()
             .setDateFormat(Constants.DATE_FORMAT.toPattern());
 
-    private static final String MAX_FILES_UPLOAD = "max_files_upload";
-
-    private static final String MAX_FILES_DOWNLOAD = "max_files_download";
-
     private final Constants constants;
 
     private GMailService mailService;
@@ -127,11 +123,11 @@ public class DocumentsNavigationController extends JsonSupportController {
     public void upload(@RequestParam("file") final MultipartFile[] mfiles,
                        final HttpServletResponse response,
                        final HttpServletRequest req) {
-        if (mfiles.length > constants.get(MAX_FILES_UPLOAD).getIntValue()) {
+        if (mfiles.length > constants.get(Constants.MAX_FILES_UPLOAD).getIntValue()) {
             sendDefaultJson(
                     response, false,
                     "Too many files. You can upload no more " + constants
-                            .get(MAX_FILES_UPLOAD)
+                            .get(Constants.MAX_FILES_UPLOAD)
                             .getIntValue()
             );
             return;
@@ -151,11 +147,11 @@ public class DocumentsNavigationController extends JsonSupportController {
             method = RequestMethod.GET)
     public void download(@RequestParam(value = "id") final String[] docIds,
                          final HttpServletResponse response) {
-        if (docIds.length > constants.get(MAX_FILES_DOWNLOAD).getIntValue()) {
+        if (docIds.length > constants.get(Constants.MAX_FILES_DOWNLOAD).getIntValue()) {
             sendDefaultJson(
                     response, false,
                     "You could not download more than "
-                            + constants.get(MAX_FILES_DOWNLOAD).getIntValue()
+                            + constants.get(Constants.MAX_FILES_DOWNLOAD).getIntValue()
             );
             return;
         }

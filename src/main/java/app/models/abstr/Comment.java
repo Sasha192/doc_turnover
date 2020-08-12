@@ -29,7 +29,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Table(name = "comment_post")
 public abstract class Comment
         extends IdentityBaseEntity {
-    // @TODO : inheritance from IdentityBaseEntity
 
     protected transient Set<Long> performerIds;
 

@@ -31,4 +31,6 @@ public interface IEventService extends IOperations<Event> {
                                                                      Date beforeDate);
 
     Long countNewEvents(Long performerId);
+
+    void seeAllEvents(Long performerId);
 }
