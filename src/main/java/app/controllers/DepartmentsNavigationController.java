@@ -1,11 +1,16 @@
 package app.controllers;
 
+import app.configuration.spring.constants.Constants;
 import app.models.basic.Department;
+import app.models.serialization.ExcludeStrategies;
 import app.service.interfaces.IDepartmentService;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/departments")
 public class DepartmentsNavigationController extends JsonSupportController {
+
+    private static final GsonBuilder BUILDER =
+            new GsonBuilder()
+                    .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+            .setDateFormat(Constants.DATE_FORMAT.toPattern())
+            .setPrettyPrinting();
 
     @Autowired
     private IDepartmentService departmentService;
@@ -56,7 +67,7 @@ public class DepartmentsNavigationController extends JsonSupportController {
         } else {
             depos = departmentService.retrieveByParent(parent);
         }
-        sendDefaultJson(response, depos);
+        writeToResponse(response,BUILDER, depos);
     }
 
     @RequestMapping(value = "/modify", method = RequestMethod.POST)

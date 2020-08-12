@@ -14,7 +14,7 @@ import { dropDown } from "./animation.js"
                     userDep
 
                 // Validate Role
-                if (user.roles[0] == "none") {
+                if (user.roles.length == 0) {
                     userRole = `
                     <div class="drop-down">
                         <button class="drop-down_btn">
@@ -29,7 +29,7 @@ import { dropDown } from "./animation.js"
                 }
 
                 // Validate Department
-                if (user.department == "none") {
+                if (user.department == "/") {
                     userDep = `
                     <div class="drop-down">
                         <button class="drop-down_btn">
@@ -40,13 +40,13 @@ import { dropDown } from "./animation.js"
                             </div>
                         </div>
                     </div> ` } else {
-                    userDep = user.department
+                    userDep = user.department.name
                 }
 
                 $("#CL-Panel").append(
                     `<tr class="user" data-user-id="${user.id}">
                         <td><img src="${user.imgPath}" alt=""></td>
-                        <td>${user.firstName} ${user.lastName}</td>
+                        <td>${user.name}</td>
                         <td>${user.email}</td>
                         <td>${userDep}</td>
                         <td data-role="${user.role}">${userRole}</td>

@@ -79,11 +79,6 @@ public class BriefTask
     @ExcludeForJsonBriefTask
     private List<BriefJsonDocument> docList;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    @ExcludeForJsonBriefTask
-    private Task task;
-
     @ElementCollection
     @CollectionTable(
             name = "tasks_keys",
@@ -267,14 +262,6 @@ public class BriefTask
 
     public void setReports(Report reports) {
         this.report = reports;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
     }
 
     public List<BriefPerformer> getBriefPerformers() {
