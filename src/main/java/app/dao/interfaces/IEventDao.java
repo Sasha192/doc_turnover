@@ -23,4 +23,6 @@ public interface IEventDao extends IGenericDao<Event> {
     Long countNewEvents(Long performerId);
 
     List<PerformerEventAgent> retrieveForPerformer(Long performerId);
+
+    void seeAllEvents(Long performerId);
 }

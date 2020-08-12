@@ -25,9 +25,11 @@ public class EventDao
     private static final String RETRIEVE_LAST_EVENTS =
             FROM + " ORDER BY evnt.timeStamp DESC ";
 
+    private static final String SEE_ALL_EVENTS_FOR_PERFORMER =
+            " UPDATE Event evnt SET evnt.seen=true WHERE evnt.id.performerId=:performer_id_ ";
+
     private static final String SEE_EVENT_FOR_PERFORMER =
-            " UPDATE Event evnt SET evnt.seen=true WHERE evnt.id.performerId=:performer_id_ "
-            + " AND evnt.id.eventId = :event_id_ ";
+            SEE_ALL_EVENTS_FOR_PERFORMER + " AND evnt.id.eventId = :event_id_ ";
 
     private static final String RETRIEVE_LAST_EVENTS_FOR_PERF_ID =
             " SELECT pev FROM PerformerEventAgent pev "
@@ -100,5 +102,13 @@ public class EventDao
                 .createQuery(RETRIEVE_LAST_EVENTS_FOR_PERF_ID, PerformerEventAgent.class)
                 .setParameter("perf_id_", performerId)
                 .getResultList();
+    }
+
+    @Override
+    public void seeAllEvents(Long performerId) {
+        getEntityManager()
+                .createQuery(SEE_ALL_EVENTS_FOR_PERFORMER)
+                .setParameter("performer_id_", performerId)
+                .executeUpdate();
     }
 }

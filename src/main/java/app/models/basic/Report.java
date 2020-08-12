@@ -6,9 +6,19 @@ import app.models.serialization.ExcludeForJsonBriefTask;
 import app.models.serialization.ExcludeForJsonReport;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
-
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -35,6 +45,7 @@ public class Report extends IdentityBaseEntity {
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "doc_id")
     )
+    @Column(insertable = false, updatable = false)
     private List<BriefJsonDocument> docList;
 
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
@@ -49,6 +60,11 @@ public class Report extends IdentityBaseEntity {
             mappedBy = "report")
     @ExcludeForJsonReport
     private Task task;
+
+    public Report() {
+        date = Date.valueOf(LocalDate.now());
+        time = Time.valueOf(LocalTime.now());
+    }
 
     public Task getTask() {
         return task;
@@ -96,6 +112,13 @@ public class Report extends IdentityBaseEntity {
 
     public void setComments(List<ReportComment> comments) {
         this.comments = comments;
+    }
+
+    public void addComment(ReportComment comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        comments.add(comment);
     }
 
     @Override

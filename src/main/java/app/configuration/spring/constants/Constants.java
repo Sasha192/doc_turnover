@@ -1,6 +1,7 @@
 package app.configuration.spring.constants;
 
 import app.models.basic.CoreProperty;
+import app.models.serialization.ExcludeStrategies;
 import app.service.interfaces.ICorePropertyService;
 import java.net.FileNameMap;
 import java.net.URLConnection;
@@ -8,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
+
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -33,6 +36,28 @@ public class Constants {
     public static final String EMPTY_STRING = "";
     public static final String IS_MALICIOUS = " is malicious or can not be uploaded";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+
+    public static final GsonBuilder BUILDER_BRIEF;
+
+    public static final GsonBuilder BUILDER_DETAILS;
+
+    public static final String MAX_FILES_UPLOAD = "max_files_upload";
+
+    public static final String MAX_FILES_DOWNLOAD = "max_files_download";
+
+    static {
+        BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_BRIEF_TASK)
+                .setDateFormat(Constants.DATE_FORMAT.toPattern());
+        BUILDER_DETAILS = new GsonBuilder().setPrettyPrinting()
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+                .setDateFormat(Constants.DATE_FORMAT.toPattern());
+    }
 
     private ICorePropertyService corePropertyService;
     private ConcurrentHashMap<String, CoreProperty> properties;
