@@ -39,6 +39,7 @@ public class PerformersNavigationController extends JsonSupportController {
 
     private final IBriefPerformerService briefPerformerService;
 
+    @Autowired
     public PerformersNavigationController(@Qualifier("performer_mapper") IEntityDtoMapper mapper,
                                           IPerformerService performerService,
                                           IDepartmentService departmentService,

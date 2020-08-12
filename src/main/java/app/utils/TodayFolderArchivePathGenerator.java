@@ -25,6 +25,7 @@ public class TodayFolderArchivePathGenerator {
         this.constants = constants;
         this.pathToArchive = this.constants.get("path_to_archive")
                 .getStringValue();
+        this.folderPath = generate();
     }
 
     /**

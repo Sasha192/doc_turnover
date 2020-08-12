@@ -8,6 +8,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -93,8 +94,29 @@ public class Report extends IdentityBaseEntity {
         return documents;
     }
 
+    @Deprecated
+    /**
+     * @see Report#addDocument(List)
+     * @see Report#addDocument(BriefDocument)
+     */
     public void setDocuments(List<BriefDocument> documents) {
         this.documents = documents;
+    }
+
+    public void addDocument(List<BriefDocument> docs) {
+        if (documents == null) {
+            documents = new LinkedList<>();
+        }
+        for (BriefDocument doc : docs) {
+            documents.add(doc);
+        }
+    }
+
+    public void addDocument(BriefDocument doc) {
+        if (documents == null) {
+            documents = new LinkedList<>();
+        }
+        documents.add(doc);
     }
 
     public List<BriefJsonDocument> getDocList() {

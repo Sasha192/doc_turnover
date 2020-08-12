@@ -3,18 +3,13 @@ package app.security.wrappers;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 import com.google.common.base.Preconditions;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 @Component
 public class AuthenticationWrapper {
@@ -50,11 +45,11 @@ public class AuthenticationWrapper {
                                              HttpServletRequest request) {
         Authentication auth = sc.getAuthentication();
         if (auth == null) {
-                HttpSession session = request.getSession(true);
-                sc.setAuthentication(auth);
-                session.setAttribute(
-                        HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                        sc);
+            HttpSession session = request.getSession(true);
+            sc.setAuthentication(auth);
+            session.setAttribute(
+                    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                    sc);
             return auth;
         } else {
             return auth;

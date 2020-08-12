@@ -26,7 +26,8 @@ public class EventDao
             FROM + " ORDER BY evnt.timeStamp DESC ";
 
     private static final String SEE_ALL_EVENTS_FOR_PERFORMER =
-            " UPDATE PerformerEventAgent evnt SET evnt.seen=true WHERE evnt.id.performerId=:performer_id_ ";
+            " UPDATE PerformerEventAgent evnt SET evnt.seen=true "
+                    + "WHERE evnt.id.performerId=:performer_id_ ";
 
     private static final String SEE_EVENT_FOR_PERFORMER =
             SEE_ALL_EVENTS_FOR_PERFORMER + " AND evnt.id.eventId = :event_id_ ";

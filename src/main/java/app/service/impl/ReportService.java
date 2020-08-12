@@ -24,6 +24,6 @@ public class ReportService
 
     @Override
     protected IGenericDao<Report> getDao() {
-        return null;
+        return dao;
     }
 }

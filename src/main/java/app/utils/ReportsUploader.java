@@ -9,6 +9,7 @@ import app.service.impl.ExecutionService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IReportCommentService;
 import app.service.interfaces.IReportService;
+import app.service.interfaces.ITaskService;
 import app.utils.exceptions.MaliciousFoundException;
 import java.io.File;
 import java.io.IOException;
@@ -26,11 +27,11 @@ public class ReportsUploader {
             Logger.getLogger("intExceptionLogger");
 
     private final IBriefDocumentService documentService;
-    private final ExecutionService executionService;
     private final IReportService reportService;
     private final FilesUploader filesUploader;
     private final TodayFolderArchivePathGenerator folderPathGenerator;
     private final IReportCommentService commentService;
+    private final ITaskService taskService;
 
     @Autowired
     public ReportsUploader(IBriefDocumentService documentService,
@@ -38,14 +39,14 @@ public class ReportsUploader {
                            IReportService reportService,
                            @Qualifier("files_uploader") FilesUploader filesUploader,
                            @Qualifier("date_file_path_generator")
-                                       TodayFolderArchivePathGenerator folderPathGenerator,
-                           IReportCommentService commentService) {
+                                   TodayFolderArchivePathGenerator folderPathGenerator,
+                           IReportCommentService commentService, ITaskService taskService) {
         this.documentService = documentService;
-        this.executionService = executionService;
         this.reportService = reportService;
         this.filesUploader = filesUploader;
         this.folderPathGenerator = folderPathGenerator;
         this.commentService = commentService;
+        this.taskService = taskService;
     }
 
     public Report upload(Performer performer, Task task, String comment, MultipartFile... mfiles)
@@ -56,21 +57,22 @@ public class ReportsUploader {
         Report report = task.getReport();
         if (report == null) {
             report = new Report();
+            reportService.create(report);
+            task.setReport(report);
+            taskService.update(task);
         }
-        report.setTask(task);
         String folderPath = folderPathGenerator.getFolderArchivePath();
         List<File> files = filesUploader.upload(folderPath, mfiles);
         List<BriefDocument> documents =
                 FileDocumentsMapperUtil.map(files, folderPath, performer);
         documentService.create(documents);
-        report.setDocuments(documents);
-        reportService.create(report);
+        report.addDocument(documents);
+        reportService.update(report);
         ReportComment reportComment = new ReportComment();
         reportComment.setReport(report);
-        reportComment.setAuthor(performer);
+        reportComment.setAuthorId(performer.getId());
         reportComment.setComment(comment);
         commentService.create(reportComment);
-        report.addComment(reportComment);
         return report;
     }
 }
