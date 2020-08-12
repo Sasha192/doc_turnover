@@ -16,16 +16,16 @@ public class BriefTaskDao extends GenericJpaRepository<BriefTask>
     private static final String FROM = " select bt from BriefTask bt ";
 
     private static final String FIND_BY_DEPO =
-            " select bt FROM BriefTask bt "
-                    + " JOIN bt.performers perfs "
-                    + " WHERE perfs.departmentId = :depo_id_ ";
+            " select distinct bt FROM BriefTask bt "
+                    + " INNER JOIN bt.performers perfs ON perfs.departmentId = :depo_id_ ";
+                    //+ " WHERE perfs.departmentId = :depo_id_ ";
 
     private static final String FIND_BY_PERFORMER = FROM
             + " INNER JOIN bt.performers perf ON perf.id = :performer_id ";
 
     private static final String FIND_BY_STATUS_N_DEPO =
             FIND_BY_DEPO
-            + " AND bt.status = :status_name_ ";
+            + " WHERE bt.status = :status_name_ ";
 
     private static final String FIND_BY_PERF_N_STATUS = FIND_BY_PERFORMER
             + " AND bt.status = :status_name_ ";

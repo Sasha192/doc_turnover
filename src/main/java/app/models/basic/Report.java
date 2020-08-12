@@ -2,6 +2,7 @@ package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
 import app.models.mysqlviews.BriefJsonDocument;
+import app.models.serialization.ExcludeForJsonBriefTask;
 import app.models.serialization.ExcludeForJsonReport;
 import java.sql.Date;
 import java.sql.Time;
@@ -46,6 +47,7 @@ public class Report extends IdentityBaseEntity {
     @OneToOne(fetch = FetchType.LAZY,
             cascade = {CascadeType.REFRESH, CascadeType.PERSIST},
             mappedBy = "report")
+    @ExcludeForJsonReport
     private Task task;
 
     public Task getTask() {

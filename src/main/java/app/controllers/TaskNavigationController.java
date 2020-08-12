@@ -54,6 +54,7 @@ public class TaskNavigationController extends JsonSupportController {
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
                 .setDateFormat(Constants.DATE_FORMAT.toPattern());
     }
 
@@ -171,9 +172,6 @@ public class TaskNavigationController extends JsonSupportController {
         taskCommentService.create(taskComment);
         commentPublisher.publish(taskComment, performer);
         sendDefaultJson(response, true, "");
-        /*INSERT INTO `bcrew`.`tasks_performers` (`task_id`, `performer_id`) VALUES (3, 2);
-        INSERT INTO `bcrew`.`tasks_performers` (`task_id`, `performer_id`) VALUES (3, 3);
-        INSERT INTO `bcrew`.`tasks_performers` (`task_id`, `performer_id`) VALUES (3, 4);*/
     }
 
     @RequestMapping(value = "/comment/list", method = RequestMethod.GET)
