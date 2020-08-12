@@ -47,7 +47,8 @@ public abstract class Event
     @Enumerated(EnumType.ORDINAL)
     protected EventType eventTypeEnum;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH,
+            CascadeType.MERGE,},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "performer_id", insertable = false, updatable = false)
     @ExcludeForJsonEvent

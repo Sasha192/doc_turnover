@@ -28,14 +28,26 @@ import { Http } from "./modules/services.js"
        } else {
 
            {   // Todo
-               $("#task-info #todo-send-report-control").css("display", "none")
-               $("#task-info .report-msg").css("display", "none")
-               $("#task-info #send-report-files").css("display", "none")
+               // $("#task-info #todo-send-report-control").css("display", "none")
+               // $("#task-info .report-msg").css("display", "none")
+               // $("#task-info #send-report-files").css("display", "none")
            }
 
        }
 
        dropDown()
+       $("#exit").on("click", () => {
+           Http.get("/auth/logout", () => {
+               location.reload()
+           })
+       })
+
+       if(window.location.pathname !== "/archive" || window.location.pathname !== "/CLpanel") {}
+       $(".user-img").html(`
+             <img data-user-status="online" src="${User.imgPath}">
+             <div data-type="status" class="online"></div>
+       `)
+       $(".user-name").html(User.name)
    })
 
 
@@ -65,9 +77,9 @@ import { validation } from "./modules/form-handler.js"
                 confirmBlock.find("#confirm-button").on("click", () => {
                     let confirmCode = confirmBlock.find(".confirm").val()
 
-                    $.post(`/auth/verify?confirmCode=${confirmCode}`, (data) => {
+                    $.post(`/auth/verify?verificationCode=${confirmCode}`, (data) => {
                         if (data.success) {
-                            window.location = "/"
+                            window.location = "/myboard"
                         } else {
                             alert(data.msg)
                         }
@@ -111,9 +123,9 @@ import { validation } from "./modules/form-handler.js"
                 confirmBlock.find("#confirm-button").on("click", () => {
                     let confirmCode = confirmBlock.find(".confirm").val()
 
-                    $.post(`/auth/verify?confirmCode=${confirmCode}`, (data) => {
+                    $.post(`/auth/verify?verificationCode=${confirmCode}`, (data) => {
                         if (data.success) {
-                            window.location = "/"
+                            window.location = "/myboard"
                         } else {
                             alert(data.msg)
                         }
@@ -769,7 +781,7 @@ function changeTaskState() {
                 }
 
                 $("#notifications-list").append(
-                    `<div class="notification" data-todo-id="${notification.id}">
+                    `<div class="notification" data-todo-id="${notification.event.taskId}">
                         <img src="${notification.author.imgPath}" alt="">
                         <div class="notification-content">
                             <div class="title">${notification.author.name}</div>
@@ -778,6 +790,8 @@ function changeTaskState() {
                         </div>
                     </div>`
                 )
+
+                console.log(notification)
             })
 
             let notiLength
@@ -786,11 +800,12 @@ function changeTaskState() {
                 notiLength = data.msg
                 if (notiLength > 9) {
                     notiLength = "9+"
+                    document.querySelector("#notifications").dataset.count = notiLength
+                } else if(notiLength == 0){
                 } else {
-                    notiLength = notiLength
+                    document.querySelector("#notifications").dataset.count = notiLength
                 }
 
-                document.querySelector("#notifications").dataset.count = notiLength
             })
 
             resolve()
@@ -800,7 +815,7 @@ function changeTaskState() {
     document.querySelectorAll("#notifications-list .notification").forEach(notification => {
         notification.onclick = (e) => {
             $("#task-info").modal("show")
-            $.get(`/task?todoId=${e.target.closest(".notification").dataset.todoId}`, todos => {
+            $.get(`/task/details?todoId=${e.target.closest(".notification").dataset.todoId}`, todos => {
                 $("#task-info").modal("show")
                 closeAllDropDowns()
                 $("#task-info").find("#add-modify").fadeOut(200)
@@ -813,7 +828,7 @@ function changeTaskState() {
     })
 
     document.querySelector("#notifications .drop-down_btn").addEventListener("click", () => {
-        Http.post("/notifications/see/all", { success: true }, data => {
+        Http.get("/notifications/see/all", data => {
             $("#notifications").removeAttr("data-count")
         })
     })

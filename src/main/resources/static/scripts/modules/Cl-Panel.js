@@ -28,28 +28,33 @@ import { dropDown } from "./animation.js"
                     userRole = Lang.role(user.roles[0])
                 }
 
-                // Validate Department
-                if (!user.department) {
-                    userDep = `
-                    <div class="drop-down">
-                        <button class="drop-down_btn">
-                            <span class="drop-down_selected">Призначити</span> <i class="fas fa-sort-down"></i>
-                        </button>
-                        <div class="drop-down_list" id="set-dep">
-                            <div class="drop-down-list_inner">
-                            </div>
-                        </div>
-                    </div> ` } else {
-                    userDep = user.department
-                }
-
                 $("#CL-Panel").append(
                     `<tr class="user" data-user-id="${user.id}">
                         <td><img src="${user.imgPath}" alt=""></td>
                         <td>${user.name}</td>
                         <td>${user.email}</td>
-                        <td>${userDep}</td>
-                        <td data-role="${user.role}">${userRole}</td>
+                        <td>
+                         <div class="drop-down">
+                            <button class="drop-down_btn">
+                                <span class="drop-down_selected">${user.department}</span> <i class="fas fa-sort-down"></i>
+                            </button>
+                            <div class="drop-down_list" id="set-dep">
+                                <div class="drop-down-list_inner">
+                                </div>
+                            </div>
+                        </div>
+                        </td>
+                        <td>
+                        <div class="drop-down">
+                            <button class="drop-down_btn">
+                                <span data-role="${user.roles[0]}" class="drop-down_selected">${Lang.role(user.roles[0])}</span> <i class="fas fa-sort-down"></i>
+                            </button>
+                            <div class="drop-down_list" id="set-role">
+                                <div class="drop-down-list_inner">
+                                </div>
+                            </div>
+                        </div>
+                        </td>
                         <td>
                             <div class="drop-down" id="user-config">
                                 <button class="drop-down_btn"><i class="user-config-btn fas fa-ellipsis-v"></i></button>
@@ -76,7 +81,10 @@ import { dropDown } from "./animation.js"
                         deps.forEach(dep => $("#set-dep .drop-down-list_inner").append(`<div class="drop-down_item" data-dep-id="${dep.id}">${dep.name}</div>`));
                         document.querySelectorAll(".remove-user").forEach(btn => {
                             btn.addEventListener("click", (e) => {
-                                Http.get("/performers/remove")
+                                Http.post(`/performers/remove?performer_id=${e.target.closest("[data-user-id]").dataset.userId}`, null, data => {
+                                    if(data.success) location.reload();
+                                    alert(data.msg)
+                                })
                             })
                         })
                         resolve()

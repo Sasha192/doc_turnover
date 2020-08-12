@@ -16,6 +16,7 @@ public class AccessDepartment extends GenericFilterBean {
             throws IOException, ServletException {
         // @TODO : check if smbd pass to another depo, except G_MANAGER
         // @TODO : secretary only download docs
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

@@ -35,9 +35,10 @@
 .user-options .user-name {
     margin:0px 30px;
     font-size: 14px;
-    color:#999999;
+    color:#454545;
     transition: .2s;
     cursor: pointer;
+    font-family: "Roboto light";
 }
 
 .user-options .drop-down i {

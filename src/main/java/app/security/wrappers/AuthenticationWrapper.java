@@ -19,8 +19,6 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 @Component
 public class AuthenticationWrapper {
 
-    private AuthenticationManager authManager;
-
     public SecurityContext getSecurityContext(HttpServletRequest req) {
         SecurityContext sc = null;
         HttpSession session = req.getSession();
@@ -52,24 +50,11 @@ public class AuthenticationWrapper {
                                              HttpServletRequest request) {
         Authentication auth = sc.getAuthentication();
         if (auth == null) {
-            // @TODO : remove this lines of code -> create view for 403, 404, 500, 400, and *
-            UsernamePasswordAuthenticationToken authReq
-                    = new UsernamePasswordAuthenticationToken(
-                    "sasha192.bunin@gmail.com", "sasha192.bunin@gmail.com");
-            if (authManager == null) {
-                ServletContext servletContext = request.getServletContext();
-                WebApplicationContext webApplicationContext = WebApplicationContextUtils
-                        .getWebApplicationContext(servletContext);
-                authManager = webApplicationContext.getBean(AuthenticationManager.class);
-            }
-            auth = authManager.authenticate(authReq);
-            if (auth != null) {
                 HttpSession session = request.getSession(true);
                 sc.setAuthentication(auth);
                 session.setAttribute(
                         HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                         sc);
-            }
             return auth;
         } else {
             return auth;

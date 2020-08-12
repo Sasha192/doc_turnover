@@ -7,8 +7,13 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 public class AuthenticationFilter extends GenericFilterBean {
@@ -25,7 +30,7 @@ public class AuthenticationFilter extends GenericFilterBean {
                          ServletResponse servletResponse,
                          FilterChain filterChain)
             throws IOException, ServletException {
-        /*if (servletRequest instanceof HttpServletRequest) {
+        if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
             String requestUri = req.getRequestURI();
             HttpSession session = req.getSession();
@@ -58,7 +63,7 @@ public class AuthenticationFilter extends GenericFilterBean {
                     // @TODO : what if context == null ???
                 }
             }
-        }*/
+        }
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

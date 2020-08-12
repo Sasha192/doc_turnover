@@ -6,6 +6,7 @@ import app.models.serialization.ExcludeForJsonPerformer;
 import app.security.models.SimpleRole;
 import com.google.common.base.Objects;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -183,5 +184,17 @@ public class Performer
 
     public void setUser(CustomUser user) {
         this.user = user;
+    }
+
+    @Deprecated
+    /**
+     * @deprecated CHANGE THIS IMPLEMENTATION
+     */
+    public void addRole(SimpleRole newRole) {
+        if (roles == null) {
+            roles = new HashSet<>();
+        }
+        roles.clear();
+        roles.add(newRole);
     }
 }

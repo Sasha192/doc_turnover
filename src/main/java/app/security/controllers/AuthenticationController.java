@@ -91,7 +91,7 @@ public class AuthenticationController extends JsonSupportController {
     public void logout(HttpServletRequest req, HttpServletResponse res)
             throws IOException {
         this.cleanData(req, res);
-        res.sendRedirect("/auth");
+        this.sendDefaultJson(res, true, "");
     }
 
     private void cleanData(final HttpServletRequest req, final HttpServletResponse res) {
@@ -144,8 +144,8 @@ public class AuthenticationController extends JsonSupportController {
                             (dto.getFirstName() == null
                                     ? Constants.EMPTY_STRING :
                                     dto.getFirstName())
-                                    +
-                                    (dto.getLastName() == null
+                                    + " "
+                                    + (dto.getLastName() == null
                                             ? Constants.EMPTY_STRING :
                                             dto.getLastName());
                     performer.setName(performerName);

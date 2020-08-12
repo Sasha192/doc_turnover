@@ -611,28 +611,23 @@ a:hover {
 
 /* Roles */
 
-[data-role = "Gmanager"] {
-    color: #a55eea;
-    font-family: "Roboto regular" !important;
+[data-role = "G_MANAGER"] {
+    color: #a55eea !important;
+    font-family: "Roboto light" !important;
 }
 
-[data-role = "admin"] {
-    color: #ff4959;
-    font-family: "Roboto regular" !important;
+
+
+[data-role = "PERFORMER"] {
+    color: #34ace0 !important;
+    font-family: "Roboto light" !important;
 }
 
-[data-role = "performer"] {
-    color: #34ace0;
-}
 
-[data-role = "secretary"] {
-    color: #ffb142;
-    font-family: "Roboto regular" !important;
-}
 
-[data-role = "manager"] {
-    color: #1f99cd;
-    font-family: "Roboto regular" !important;
+[data-role = "MANAGER"] {
+    color: #1f99cd !important;
+    font-family: "Roboto light" !important;
 }
 
 /* buttons */
