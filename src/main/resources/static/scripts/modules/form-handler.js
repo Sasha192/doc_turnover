@@ -242,7 +242,7 @@ class Insert_Tasks {
             data.forEach(todo => {
                 this.insertList.find(".board-body").append(
                     `<div class="board-item" todo-id="${todo.id}">
-                <img src=${todo.perfImgPath} alt="">
+                <img src=${todo.managerImgPath} alt="">
                 <div class="w-100">
                     <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.deadlineDate}</span></div>
                     <div class="board-item_status">${todo.status}</div>
@@ -388,7 +388,7 @@ class Insert_Tasks {
                         <div class="user-meta">
                             <a href="#" class="user-name">${user.name.substring(0, 28)}...</a>
                             <div class="user-department">
-                                ${user.department}
+                                ${user.department.name}
                             </div>
                         </div>
                     </div>

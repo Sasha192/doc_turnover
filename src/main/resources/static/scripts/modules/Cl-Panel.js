@@ -29,7 +29,7 @@ import { dropDown } from "./animation.js"
                 }
 
                 // Validate Department
-                if (user.department == "/") {
+                if (!user.department) {
                     userDep = `
                     <div class="drop-down">
                         <button class="drop-down_btn">
@@ -40,7 +40,7 @@ import { dropDown } from "./animation.js"
                             </div>
                         </div>
                     </div> ` } else {
-                    userDep = user.department.name
+                    userDep = user.department
                 }
 
                 $("#CL-Panel").append(
@@ -54,10 +54,10 @@ import { dropDown } from "./animation.js"
                             <div class="drop-down" id="user-config">
                                 <button class="drop-down_btn"><i class="user-config-btn fas fa-ellipsis-v"></i></button>
                                 <div class="drop-down_list">
-                                    <div class="drop-down_item remove-user">
+                                    <button class="drop-down_item remove-user">
                                         Видалити
                                         <i class="fas fa-trash"></i>
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
                         </td>
@@ -73,7 +73,12 @@ import { dropDown } from "./animation.js"
                 // Set Department
                 await new Promise((resolve, reject) => {
                     Http.get("/departments/list", deps => {
-                        deps.forEach(dep => $("#set-dep .drop-down-list_inner").append(`<div class="drop-down_item" data-dep-id="${dep}">${dep}</div>`));
+                        deps.forEach(dep => $("#set-dep .drop-down-list_inner").append(`<div class="drop-down_item" data-dep-id="${dep.id}">${dep.name}</div>`));
+                        document.querySelectorAll(".remove-user").forEach(btn => {
+                            btn.addEventListener("click", (e) => {
+                                Http.get("/performers/remove")
+                            })
+                        })
                         resolve()
                     })
                 }).then(
@@ -84,7 +89,7 @@ import { dropDown } from "./animation.js"
                                     depId = e.target.closest(".drop-down_item").dataset.depId
 
                                 if (e.target.closest(".drop-down_item").textContent.trim() == e.target.closest(".drop-down").querySelector(".drop-down_selected").textContent.trim()) return
-                                Http.post("/performer/modify/department", { userId, depId }, data => {
+                                Http.post(`/performers/modify/department?performer_id=${userId}&department_id=${depId}`, null, data => {
                                     location.reload()
                                 })
                             })
@@ -96,8 +101,9 @@ import { dropDown } from "./animation.js"
 
                 // Set Roles
                 await new Promise((resolve, reject) => {
-                    Http.get("/performer/role", data => {
-                        data.forEach(role => $("#set-role .drop-down-list_inner").append(`<div class="drop-down_item" data-role-id="${role}">${role}</div>`));
+                    Http.get("/roles/list", data => {
+                        data.forEach(
+                            role => $("#set-role .drop-down-list_inner").append(`<div class="drop-down_item" data-role-id="${role}">${Lang.role(role)}</div>`));
                         resolve()
                     })
                 }).then(
@@ -108,7 +114,7 @@ import { dropDown } from "./animation.js"
                                     roleId = e.target.closest(".drop-down_item").dataset.roleId
 
                                 if (e.target.closest(".drop-down_item").textContent.trim() == e.target.closest(".drop-down").querySelector(".drop-down_selected").textContent.trim()) return
-                                Http.post("/performer/modify/role", { userId, roleId }, data => {
+                                Http.post(`/performers/modify/role?role=${roleId}&performer_id=${userId}`, null, data => {
                                    location.reload()
                                 })
                             })
@@ -117,23 +123,11 @@ import { dropDown } from "./animation.js"
                         dropDown()
                     }
                 )
-
-                deleteUser()
             })()
         }
     )
 
 })();
-
-
-// Delete User
-function deleteUser() {
-    document.querySelectorAll(".remove-user").forEach(btn => {
-        btn.onclick = (e) => {
-            $.get(`/performers/id=${e.target.closest("[data-user-id]").dataset.userId}`, () => { window.location = window.location })
-        }
-    })
-}
 
 // Create new department
 (function () {
@@ -141,7 +135,7 @@ function deleteUser() {
         e.preventDefault()
 
         if (e.target.querySelector("input").value.trim().length == 0) return
-        Http.post(`/departments/create?name="${e.target.querySelector("input").value.trim()}"`, () => { location.reload() })
+        Http.get(`/departments/create?name="${e.target.querySelector("input").value.trim()}"`, () => { location.reload() })
 
     }
 })()

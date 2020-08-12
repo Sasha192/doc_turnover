@@ -18,12 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/performers")
@@ -60,7 +55,8 @@ public class PerformersNavigationController extends JsonSupportController {
         writeToResponse(response, builder, performers);
     }
 
-    @PostMapping("/modify/department")
+    @RequestMapping(value = "/modify/department", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public void changeDepartment(HttpServletResponse response,
                                  @RequestParam("performer_id") Integer performerId,
                                  @RequestParam("department_id") Integer departmentId) {
@@ -68,6 +64,13 @@ public class PerformersNavigationController extends JsonSupportController {
         Performer performer = performerService.findOne(performerId);
         performer.setDepartmentId(newDepartment.getId());
         performerService.update(performer);
+    }
+
+    @RequestMapping(value = "/modify/role", method = RequestMethod.POST)
+    public void changeDepartment(HttpServletResponse response,
+                                 @RequestParam("performer_id") Integer performerId,
+                                 @RequestParam("role") String role) {
+        return;
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
