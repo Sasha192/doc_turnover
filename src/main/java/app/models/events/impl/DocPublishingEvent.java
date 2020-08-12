@@ -3,8 +3,6 @@ package app.models.events.impl;
 import app.models.basic.BriefDocument;
 import app.models.events.Event;
 import app.models.serialization.ExcludeForJsonEvent;
-import com.sun.javadoc.Doc;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;

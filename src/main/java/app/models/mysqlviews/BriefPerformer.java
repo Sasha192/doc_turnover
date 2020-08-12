@@ -1,13 +1,18 @@
 package app.models.mysqlviews;
 
 import app.models.abstr.IdentityBaseEntity;
-
-import javax.persistence.*;
-
 import app.security.models.SimpleRole;
-import org.hibernate.annotations.Immutable;
-
 import java.util.Set;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Table;
+import org.hibernate.annotations.Immutable;
 
 @Entity
 @Table(name = "brief_performer")

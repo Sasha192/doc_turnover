@@ -11,13 +11,11 @@ import app.models.basic.TaskComment;
 import app.models.basic.TaskStatus;
 import app.models.events.pub.GenericEventPublisher;
 import app.models.mysqlviews.BriefTask;
-import app.models.serialization.ExcludeStrategies;
 import app.security.wrappers.PerformerWrapper;
 import app.service.interfaces.IBriefTaskService;
 import app.service.interfaces.IStatusService;
 import app.service.interfaces.ITaskCommentService;
 import app.service.interfaces.ITaskService;
-import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -151,9 +149,6 @@ public class TaskNavigationController extends JsonSupportController {
         taskCommentService.create(taskComment);
         commentPublisher.publish(taskComment, performer);
         sendDefaultJson(response, true, "");
-        /*INSERT INTO `bcrew`.`tasks_performers` (`task_id`, `performer_id`) VALUES (3, 2);
-        INSERT INTO `bcrew`.`tasks_performers` (`task_id`, `performer_id`) VALUES (3, 3);
-        INSERT INTO `bcrew`.`tasks_performers` (`task_id`, `performer_id`) VALUES (3, 4);*/
     }
 
     @RequestMapping(value = "/comment/list", method = RequestMethod.GET)
