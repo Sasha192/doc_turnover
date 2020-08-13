@@ -6,6 +6,7 @@ import app.models.basic.Task;
 import app.models.basic.TaskComment;
 import java.util.List;
 import javax.persistence.TypedQuery;
+
 import org.springframework.stereotype.Repository;
 
 @Repository

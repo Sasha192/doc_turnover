@@ -1,6 +1,6 @@
 package app.models.basic;
 
-import app.models.abstr.Comment;
+import app.models.abstr.TaskHolderComment;
 import app.models.serialization.ExcludeForJsonComment;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -14,7 +14,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Entity
 @DiscriminatorValue(value = "report_comment")
-public class ReportComment extends Comment {
+public class ReportComment
+        extends TaskHolderComment {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
@@ -31,6 +32,14 @@ public class ReportComment extends Comment {
             this.setPerformerIds(ids);
         }
         return performerIds;
+    }
+
+    @Override
+    public Long getTaskId() {
+        if (this.taskId == null) {
+            setTaskId(report.getTask().getId());
+        }
+        return this.taskId;
     }
 
     public Report getReport() {

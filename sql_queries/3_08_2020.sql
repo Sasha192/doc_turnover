@@ -20,7 +20,7 @@ create table comment_post
 (
 	id bigint auto_increment,
 	performer_id bigint not null,
-	comment varchar(4096) not null,
+	taskHolderComment varchar(4096) not null,
 	date date not null,
 	time TIME not null,
 	constraint comment_post_pk
@@ -141,7 +141,7 @@ create table app_event
 );
 
 alter table app_event
-	add performer_id bigint null comment 'origin of event could be not a performer';
+	add performer_id bigint null taskHolderComment 'origin of event could be not a performer';
 
 alter table app_event
 	add comment_id bigint null;

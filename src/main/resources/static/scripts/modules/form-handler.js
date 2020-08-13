@@ -80,7 +80,7 @@ class Insert_Users {
                             <div class="user-meta">
                                 <a href="#" class="user-name">${element.name}</a>
                                 <div class="user-department">
-                                ${element.department}
+                                ${element.department.substring(0, 24)}
                                 </div>
                             </div>
                         </div>
@@ -288,14 +288,14 @@ class Insert_Tasks {
 
             // success
             document.querySelector("#task-complete").onclick = () => {
-                Http.get(`/task/modify/status?status=complete&task_id=${todoId}`, data => {
+                Http.get(`/task/modify/status?status=completed&task_id=${todoId}`, data => {
                     location.reload()
                 })
             }
 
             // overdue
             document.querySelector("#task-overdue").onclick = () => {
-                Http.get(`/task/modify/status?status=overdue&task_id${todoId}`, data => {
+                Http.get(`/task/modify/status?status=overdue&task_id=${todoId}`, data => {
                     location.reload()
                 })
             }
@@ -321,8 +321,10 @@ class Insert_Tasks {
         }
 
         {
-            if (info.reports) {
+            if (info.report) {
                 $("#task-info #todo-complete-control").css("display", "flex")
+            } else {
+                $("#task-info #todo-complete-control").css("display", "none")
             }
         }
 
@@ -388,7 +390,7 @@ class Insert_Tasks {
                         <div class="user-meta">
                             <a href="#" class="user-name">${user.name.substring(0, 28)}...</a>
                             <div class="user-department">
-                                ${user.department.name}
+                                ${user.department.name.substring(0, 28)}
                             </div>
                         </div>
                     </div>
@@ -526,7 +528,7 @@ class Insert_Tasks {
             document.querySelector("#task-info #add-report").onclick = () => {
 
                 let formData = new FormData()
-                formData.append("comment", $("#task-info .add-comment input").val())
+                formData.append("comment", $("#task-info .report-msg textarea").val())
 
                 reportUpload.getData().forEach(obj => {
                     formData.append("file", obj.file)
@@ -562,9 +564,9 @@ class Insert_Tasks {
         // Append report comments
 
         {
-            if (info.reports) {
-                $("#task-info .report-list").html("")
-                info.reports.comments.forEach(comment => {
+            $("#task-info .report-list").html("")
+            if (info.report) {
+                info.report.comments.forEach(comment => {
                     $("#task-info .report-list").append(
                         `<div class="comment">
                         <img class="author-image" src="${comment.performer.imgPath}" alt="">
@@ -585,15 +587,15 @@ class Insert_Tasks {
         // Append report files
 
         {
-            if (info.reports) {
-                $("#task-info .files-report #count").html(`(${info.reports.docList.length})`)
-                $("#task-info .files-container-report").html("")
+            $("#task-info .files-container-report").html("")
+            if (info.report) {
+                $("#task-info .files-report #count").html(`(${info.report.docList.length})`)
 
-                info.reports.docList.forEach(doc => {
+                info.report.docList.forEach(doc => {
                     $("#task-info .files-container-report").append(
                         `<div class="file" file-id="${doc.id}">
                     <div class="file-content">
-                        <img src="img/docs-img/${doc.extName}.png" alt="">
+                        <img src="img/docs-img/${doc.extName.replace(".", "")}.png" alt="">
                         <div class="file-name">
                             ${doc.name.substring(0, 26)}...
                         </div>
@@ -642,7 +644,7 @@ function insert_toArchive(table, data) {
         </td>
         <td>
         <div class="archive-row_item" id="archive-file_department" department-id="${element.departmentId}">
-        ${element.departmentName}
+        ${element.departmentName.substring(0,28)}
         </div>
         </td>
         <td>

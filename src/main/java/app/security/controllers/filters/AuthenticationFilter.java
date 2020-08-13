@@ -10,12 +10,17 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import app.configuration.spring.constants.Constants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 public class AuthenticationFilter extends GenericFilterBean {
+
+    private static final String REG_EX = "\\/[a-zA-Z]+(\\?([a-zA-Z]=.*)+)*";
+    private static final String NEG_REG_EX = "(?!" + REG_EX + "$).*";
 
     private static final String RESOURCES_PATH_REGEX = "(\\/css.*)"
             + "|(\\/scripts.*)"
@@ -24,12 +29,20 @@ public class AuthenticationFilter extends GenericFilterBean {
             + "|(\\/libs.*)"
             + "|(\\/partials.*)";
 
+    /*{
+        if (requestUri.equals(Constants.EMPTY_STRING)
+                || requestUri.matches(NEG_REG_EX)) {
+            ((HttpServletResponse) servletResponse).sendRedirect("/myboard");
+            return;
+        }
+    }*/
+
     @Override
     public void doFilter(ServletRequest servletRequest,
                          ServletResponse servletResponse,
                          FilterChain filterChain)
             throws IOException, ServletException {
-        if (servletRequest instanceof HttpServletRequest) {
+       if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
             String requestUri = req.getRequestURI();
             HttpSession session = req.getSession();
@@ -47,8 +60,12 @@ public class AuthenticationFilter extends GenericFilterBean {
                     if (requestUri.matches("\\/auth.*")) {
                         filterChain.doFilter(servletRequest, servletResponse);
                         return;
-                    } else if (requestUri.matches("\\/.*")) {
+                    } else if (requestUri.equals(Constants.EMPTY_STRING)
+                            || requestUri.matches("\\/.*")) {
                         if (authentication != null && authentication.isAuthenticated()) {
+                            if (requestUri.equals(Constants.EMPTY_STRING)) {
+                                ((HttpServletResponse) servletResponse).sendRedirect("/myboard");
+                            }
                             filterChain.doFilter(servletRequest, servletResponse);
                             return;
                         } else {

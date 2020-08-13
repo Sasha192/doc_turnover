@@ -109,7 +109,7 @@ public abstract class SuperComment
 
     /**
      * @return Set of Performer Ids, that will see this comment on frontend part Notifications
-     * @see app.models.events.pub.CommentEventPublisher#publish(Comment, Performer)
+     * @see app.models.events.pub.CommentEventPublisher#publish(TaskHolderComment, Performer)
      */
     public abstract Set<Long> getPerformerIds();
 
@@ -123,14 +123,14 @@ public abstract class SuperComment
             return true;
         }
 
-        if (!(o instanceof Comment)) {
+        if (!(o instanceof TaskHolderComment)) {
             return false;
         }
 
-        Comment comment = (Comment) o;
+        TaskHolderComment taskHolderComment = (TaskHolderComment) o;
 
         return new EqualsBuilder()
-                .append(getId(), comment.getId())
+                .append(getId(), taskHolderComment.getId())
                 .isEquals();
     }
 

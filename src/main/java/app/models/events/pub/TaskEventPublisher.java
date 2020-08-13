@@ -26,6 +26,7 @@ public class TaskEventPublisher extends GenericEventPublisher<Task> {
         ids.add(entity.getTaskOwnerId());
         ids.add(author.getId());
         event.setPerformersId(ids);
+        event.setTaskId(entity.getId());
         getEventService().create(event);
     }
 }

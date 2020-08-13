@@ -3,8 +3,15 @@ package app.security.wrappers;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 import com.google.common.base.Preconditions;
+
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +20,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthenticationWrapper {
+
+    @Autowired
+    AuthenticationManager authManager;
 
     public SecurityContext getSecurityContext(HttpServletRequest req) {
         SecurityContext sc = null;
@@ -45,6 +55,11 @@ public class AuthenticationWrapper {
                                              HttpServletRequest request) {
         Authentication auth = sc.getAuthentication();
         if (auth == null) {
+            try {
+                auth = auth(request);
+            } catch (Exception e) {
+                System.out.println();
+            }
             HttpSession session = request.getSession(true);
             sc.setAuthentication(auth);
             session.setAttribute(
@@ -54,5 +69,23 @@ public class AuthenticationWrapper {
         } else {
             return auth;
         }
+    }
+
+    @Deprecated
+    private Authentication auth(HttpServletRequest request) {
+        // :TODO REMOVE THIS!!!
+        HttpSession session = request.getSession();
+        session.invalidate();
+        session = request.getSession(true);
+        UsernamePasswordAuthenticationToken authReq
+                = new UsernamePasswordAuthenticationToken(
+                "sasha192.bunin@gmail.com", "sasha192.bunin@gmail.com");
+        Authentication auth = authManager.authenticate(authReq);
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                sc);
+        return auth;
     }
 }

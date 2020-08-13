@@ -27,6 +27,7 @@ public class ReportEventPublisher
         performersIds.add(entity.getTask().getTaskOwnerId());
         performersIds.add(author.getId());
         event.setPerformersId(performersIds);
+        event.setTaskId(entity.getTask().getId());
         getEventService().create(event);
     }
 }

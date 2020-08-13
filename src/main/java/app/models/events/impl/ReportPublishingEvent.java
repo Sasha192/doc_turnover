@@ -1,6 +1,7 @@
 package app.models.events.impl;
 
 import app.models.basic.Report;
+import app.models.basic.Task;
 import app.models.events.Event;
 import app.models.serialization.ExcludeForJsonEvent;
 import javax.persistence.CascadeType;
@@ -21,6 +22,9 @@ public class ReportPublishingEvent extends Event {
     @ExcludeForJsonEvent
     private Report report;
 
+    @Column(name = "task_id")
+    private Long taskId;
+
     @Column(name = "report_id")
     private Long reportId;
 
@@ -38,5 +42,13 @@ public class ReportPublishingEvent extends Event {
 
     public void setReportId(Long reportId) {
         this.reportId = reportId;
+    }
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 }

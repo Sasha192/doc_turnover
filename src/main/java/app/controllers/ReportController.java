@@ -41,7 +41,7 @@ public class ReportController extends JsonSupportController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public void upload(@RequestParam("file") final MultipartFile[] mfiles,
+    public void upload(@RequestParam(value = "file", required = false) final MultipartFile[] mfiles,
                        @RequestParam("comment") final String comment,
                        @RequestParam("todoId") final Integer taskId,
                        HttpServletResponse response,

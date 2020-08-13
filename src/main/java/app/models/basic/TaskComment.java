@@ -1,6 +1,6 @@
 package app.models.basic;
 
-import app.models.abstr.Comment;
+import app.models.abstr.TaskHolderComment;
 import app.models.serialization.ExcludeForJsonComment;
 import java.io.Serializable;
 import java.util.Set;
@@ -15,13 +15,23 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Entity
 @DiscriminatorValue(value = "task_comment")
-public class TaskComment extends Comment implements Serializable {
+public class TaskComment
+        extends TaskHolderComment
+        implements Serializable {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id")
+    @JoinColumn(name = "task_id", insertable = false, updatable = false)
     @ExcludeForJsonComment
     private Task task;
+
+    @Override
+    public Long getTaskId() {
+        if (this.taskId == null) {
+            setTaskId(task.getId());
+        }
+        return taskId;
+    }
 
     @Override
     public Set<Long> getPerformerIds() {

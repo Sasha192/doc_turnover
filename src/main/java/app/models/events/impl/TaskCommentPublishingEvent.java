@@ -1,6 +1,6 @@
 package app.models.events.impl;
 
-import app.models.abstr.Comment;
+import app.models.abstr.TaskHolderComment;
 import app.models.events.Event;
 import app.models.serialization.ExcludeForJsonEvent;
 import javax.persistence.CascadeType;
@@ -13,30 +13,50 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @DiscriminatorValue(value = "comment_event")
-public class CommentPublishingEvent extends Event {
+public class TaskCommentPublishingEvent extends Event {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", insertable = false, updatable = false)
     @ExcludeForJsonEvent
-    private Comment commentEntity;
+    private TaskHolderComment comment;
 
     @Column(name = "comment_id")
     private Long commentId;
 
-    public CommentPublishingEvent() {
-        setEventTypeEnum(EventType.COMMENT_PUB);
-    }
+    @Column(name = "task_id")
+    private Long taskId;
 
-    public Comment getCommentEntity() {
-        return commentEntity;
+    public TaskCommentPublishingEvent() {
+        setEventTypeEnum(EventType.COMMENT_PUB);
     }
 
     public Long getCommentId() {
         return commentId;
     }
 
+    public TaskHolderComment getComment() {
+        return comment;
+    }
+
+    @Deprecated
+    /**
+     * @see TaskCommentPublishingEvent#setCommentId(Long)
+     *
+     */
+    public void setComment(TaskHolderComment comment) {
+        this.comment = comment;
+    }
+
     public void setCommentId(Long commentId) {
         this.commentId = commentId;
+    }
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 }

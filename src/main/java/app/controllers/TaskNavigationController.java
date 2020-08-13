@@ -4,7 +4,7 @@ import app.configuration.spring.constants.Constants;
 import app.controllers.dto.CommentDto;
 import app.controllers.dto.TaskDto;
 import app.controllers.dto.mappers.IEntityDtoMapper;
-import app.models.abstr.Comment;
+import app.models.abstr.TaskHolderComment;
 import app.models.basic.Performer;
 import app.models.basic.Task;
 import app.models.basic.TaskComment;
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -47,11 +46,9 @@ public class TaskNavigationController extends JsonSupportController {
 
     private ITaskCommentService taskCommentService;
 
-    @Autowired
-    private GenericEventPublisher<Task> taskPublisher;
+    private final GenericEventPublisher<Task> taskPublisher;
 
-    @Autowired
-    private GenericEventPublisher<Comment> commentPublisher;
+    private final GenericEventPublisher<TaskHolderComment> commentPublisher;
 
     public TaskNavigationController(PerformerWrapper performerWrapper,
                                     ITaskService taskService,
@@ -59,13 +56,17 @@ public class TaskNavigationController extends JsonSupportController {
                                     IBriefTaskService briefTaskService,
                                     ITaskCommentService taskCommentService,
                                     @Qualifier("task_mapper")
-                                            IEntityDtoMapper<Task, TaskDto> taskMapper) {
+                                            IEntityDtoMapper<Task, TaskDto> taskMapper,
+                                    GenericEventPublisher<Task> taskPublisher,
+                                    GenericEventPublisher<TaskHolderComment> commentPublisher) {
         this.performerWrapper = performerWrapper;
         this.taskService = taskService;
         this.statusService = statusService;
         this.briefTaskService = briefTaskService;
         this.taskCommentService = taskCommentService;
         this.taskMapper = taskMapper;
+        this.taskPublisher = taskPublisher;
+        this.commentPublisher = commentPublisher;
     }
 
     @RequestMapping(value = "/list/{task_status}", method = RequestMethod.GET)
@@ -143,7 +144,7 @@ public class TaskNavigationController extends JsonSupportController {
             return;
         }
         Performer performer = performerWrapper.retrievePerformer(request);
-        taskComment.setAuthor(performer);
+        taskComment.setAuthorId(performer.getId());
         taskComment.setComment(commentDto.getComment());
         taskComment.setTask(task);
         taskCommentService.create(taskComment);
@@ -154,7 +155,7 @@ public class TaskNavigationController extends JsonSupportController {
     @RequestMapping(value = "/comment/list", method = RequestMethod.GET)
     public void showTaskComments(HttpServletResponse response,
                                  @RequestParam("todoId") Long taskId) throws IOException {
-        List<? extends Comment> taskComments = taskCommentService.retrieveByTaskId(taskId);
+        List<? extends TaskComment> taskComments = taskCommentService.retrieveByTaskId(taskId);
         writeToResponse(response, Constants.BUILDER_BRIEF, taskComments);
     }
 

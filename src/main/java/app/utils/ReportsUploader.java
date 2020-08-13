@@ -1,10 +1,12 @@
 package app.utils;
 
+import app.models.abstr.TaskHolderComment;
 import app.models.basic.BriefDocument;
 import app.models.basic.Performer;
 import app.models.basic.Report;
 import app.models.basic.ReportComment;
 import app.models.basic.Task;
+import app.models.events.pub.GenericEventPublisher;
 import app.service.impl.ExecutionService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IReportCommentService;
@@ -32,6 +34,8 @@ public class ReportsUploader {
     private final TodayFolderArchivePathGenerator folderPathGenerator;
     private final IReportCommentService commentService;
     private final ITaskService taskService;
+    private final GenericEventPublisher<Report> reportPublisher;
+    private final GenericEventPublisher<TaskHolderComment> commentPublisher;
 
     @Autowired
     public ReportsUploader(IBriefDocumentService documentService,
@@ -40,13 +44,18 @@ public class ReportsUploader {
                            @Qualifier("files_uploader") FilesUploader filesUploader,
                            @Qualifier("date_file_path_generator")
                                    TodayFolderArchivePathGenerator folderPathGenerator,
-                           IReportCommentService commentService, ITaskService taskService) {
+                           IReportCommentService commentService,
+                           ITaskService taskService,
+                           GenericEventPublisher<Report> reportPublisher,
+                           GenericEventPublisher<TaskHolderComment> commentPublisher) {
         this.documentService = documentService;
         this.reportService = reportService;
         this.filesUploader = filesUploader;
         this.folderPathGenerator = folderPathGenerator;
         this.commentService = commentService;
         this.taskService = taskService;
+        this.reportPublisher = reportPublisher;
+        this.commentPublisher = commentPublisher;
     }
 
     public Report upload(Performer performer, Task task, String comment, MultipartFile... mfiles)
@@ -67,12 +76,14 @@ public class ReportsUploader {
                 FileDocumentsMapperUtil.map(files, folderPath, performer);
         documentService.create(documents);
         report.addDocument(documents);
-        reportService.update(report);
+        report = reportService.update(report);
         ReportComment reportComment = new ReportComment();
         reportComment.setReport(report);
         reportComment.setAuthorId(performer.getId());
         reportComment.setComment(comment);
         commentService.create(reportComment);
+        commentPublisher.publish(reportComment, performer);
+        reportPublisher.publish(report, performer);
         return report;
     }
 }

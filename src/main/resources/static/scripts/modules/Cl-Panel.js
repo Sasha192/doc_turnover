@@ -78,7 +78,7 @@ import { dropDown } from "./animation.js"
                 // Set Department
                 await new Promise((resolve, reject) => {
                     Http.get("/departments/list", deps => {
-                        deps.forEach(dep => $("#set-dep .drop-down-list_inner").append(`<div class="drop-down_item" data-dep-id="${dep.id}">${dep.name}</div>`));
+                        deps.forEach(dep => $("#set-dep .drop-down-list_inner").append(`<div class="drop-down_item" data-dep-id="${dep.id}">${dep.name.substr(0, 24)}</div>`));
                         document.querySelectorAll(".remove-user").forEach(btn => {
                             btn.addEventListener("click", (e) => {
                                 Http.post(`/performers/remove?performer_id=${e.target.closest("[data-user-id]").dataset.userId}`, null, data => {
@@ -95,6 +95,8 @@ import { dropDown } from "./animation.js"
                             dep.addEventListener("click", (e) => {
                                 let userId = e.target.closest("[data-user-id]").dataset.userId,
                                     depId = e.target.closest(".drop-down_item").dataset.depId
+
+                                console.log(depId)
 
                                 if (e.target.closest(".drop-down_item").textContent.trim() == e.target.closest(".drop-down").querySelector(".drop-down_selected").textContent.trim()) return
                                 Http.post(`/performers/modify/department?performer_id=${userId}&department_id=${depId}`, null, data => {
@@ -143,7 +145,8 @@ import { dropDown } from "./animation.js"
         e.preventDefault()
 
         if (e.target.querySelector("input").value.trim().length == 0) return
-        Http.get(`/departments/create?name="${e.target.querySelector("input").value.trim()}"`, () => { location.reload() })
+        console.log(e.target.querySelector("input").value)
+        Http.get(`/departments/create?name=${e.target.querySelector("input").value.trim()}`, () => { location.reload() })
 
     }
 })()
