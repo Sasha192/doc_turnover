@@ -2,12 +2,11 @@ package app;
 
 import app.configuration.spring.SpringDataConfiguration;
 import app.configuration.spring.SpringMvcConfiguration;
-import app.security.controllers.filters.AccessDepartment;
-import app.security.controllers.filters.AccessGodAdminFilter;
-import app.security.controllers.filters.AccessPerformer;
-import app.security.controllers.filters.AuthenticationFilter;
+import app.security.controllers.filters.*;
 import app.security.wrappers.AuthenticationWrapper;
 import javax.servlet.Filter;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class SpringInitializer
@@ -34,7 +33,19 @@ public class SpringInitializer
 
     @Override
     protected Filter[] getServletFilters() {
-        return new Filter[]{new AuthenticationFilter(), new AccessGodAdminFilter(),
-                new AccessDepartment(), new AccessPerformer(new AuthenticationWrapper())};
+        return new Filter[] {
+                new BlockRequestFilter(),
+                new AuthenticationFilter(new AuthenticationWrapper()),
+                new AccessGodAdminFilter(),
+                new AccessDepartment(),
+                new AccessPerformer(new AuthenticationWrapper())};
+    }
+
+    @Override
+    protected DispatcherServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
+        final DispatcherServlet dispatcherServlet =
+                (DispatcherServlet) super.createDispatcherServlet(servletAppContext);
+        dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
+        return dispatcherServlet;
     }
 }

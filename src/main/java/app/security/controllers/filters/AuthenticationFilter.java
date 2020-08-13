@@ -1,7 +1,7 @@
 package app.security.controllers.filters;
 
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
-
+import app.configuration.spring.constants.Constants;
+import app.security.wrappers.AuthenticationWrapper;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,8 +10,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import app.configuration.spring.constants.Constants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,38 +20,27 @@ public class AuthenticationFilter extends GenericFilterBean {
     private static final String REG_EX = "\\/[a-zA-Z]+(\\?([a-zA-Z]=.*)+)*";
     private static final String NEG_REG_EX = "(?!" + REG_EX + "$).*";
 
-    private static final String RESOURCES_PATH_REGEX = "(\\/css.*)"
-            + "|(\\/scripts.*)"
-            + "|(\\/fonts.*)"
-            + "|(\\/img.*)"
-            + "|(\\/libs.*)"
-            + "|(\\/partials.*)";
+    private AuthenticationWrapper authWrapper;
 
-    /*{
-        if (requestUri.equals(Constants.EMPTY_STRING)
-                || requestUri.matches(NEG_REG_EX)) {
-            ((HttpServletResponse) servletResponse).sendRedirect("/myboard");
-            return;
-        }
-    }*/
+    public AuthenticationFilter(AuthenticationWrapper authWrapper) {
+        this.authWrapper = authWrapper;
+    }
 
     @Override
     public void doFilter(ServletRequest servletRequest,
                          ServletResponse servletResponse,
                          FilterChain filterChain)
             throws IOException, ServletException {
-       if (servletRequest instanceof HttpServletRequest) {
+        // @TODO : if servlerRequest is not HttpServletRequest ? session is NULL
+        if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
             String requestUri = req.getRequestURI();
             HttpSession session = req.getSession();
             if (session != null) {
                 SecurityContext context = retrieveSecurityContext(session);
-                if (context == null) {
-                    context = SecurityContextHolder.getContext();
-                }
                 if (context != null) {
                     Authentication authentication = context.getAuthentication();
-                    if (requestUri.matches(RESOURCES_PATH_REGEX)) {
+                    if (requestUri.matches(Constants.RESOURCES_PATH_REGEX)) {
                         filterChain.doFilter(servletRequest, servletResponse);
                         return;
                     }
@@ -84,10 +71,10 @@ public class AuthenticationFilter extends GenericFilterBean {
     }
 
     private SecurityContext retrieveSecurityContext(HttpSession session) {
-        Object o = session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+        Object o = session.getAttribute(Constants.SPRING_SECURITY_CONTEXT_KEY);
         if (o != null && o instanceof SecurityContext) {
             return (SecurityContext) o;
         }
-        return null;
+        return SecurityContextHolder.getContext();
     }
 }

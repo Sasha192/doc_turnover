@@ -7,13 +7,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.filter.GenericFilterBean;
 
 public class AccessPerformer extends GenericFilterBean {
 
-    @Autowired
     private AuthenticationWrapper authenticationWrapper;
 
     public AccessPerformer(AuthenticationWrapper authenticationWrapper) {

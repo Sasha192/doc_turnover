@@ -1,7 +1,6 @@
 package app.models.events.impl;
 
 import app.models.basic.Report;
-import app.models.basic.Task;
 import app.models.events.Event;
 import app.models.serialization.ExcludeForJsonEvent;
 import javax.persistence.CascadeType;

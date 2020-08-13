@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-
 /**
  *
  *
@@ -43,6 +42,36 @@ public class Constants {
     public static final String MAX_FILES_UPLOAD = "max_files_upload";
 
     public static final String MAX_FILES_DOWNLOAD = "max_files_download";
+
+    public static final String SPRING_SECURITY_CONTEXT_KEY =
+            org
+            .springframework
+            .security
+            .web.context
+            .HttpSessionSecurityContextRepository
+            .SPRING_SECURITY_CONTEXT_KEY;
+
+    public static final String PERFORMER_SESSION_KEY = "PERFORMER_SESSION_KEY";
+
+    public static final String BAD_REQUEST_REGEX =
+            "(?!"
+                    + "(\\/[a-zA-Z]+)+"
+                    + "(\\?"
+                    + "(\\&{0,1}"
+                    + "[a-zA-Z]+"
+                    + "\\={1}"
+                    + "[a-zA-Zа-яА-ЯЁІіЙйЪъЇї0-9" + "\\s" + "]+"
+                    + ")+"
+                    + "){0,1}"
+                    + "\\/{0,1}"
+                    + "$).*";
+
+    public static final String RESOURCES_PATH_REGEX = "(\\/css.*)"
+            + "|(\\/scripts.*)"
+            + "|(\\/fonts.*)"
+            + "|(\\/img.*)"
+            + "|(\\/libs.*)"
+            + "|(\\/partials.*)";
 
     static {
         BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()

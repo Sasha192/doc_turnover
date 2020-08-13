@@ -300,10 +300,7 @@ public class AuthenticationController extends JsonSupportController {
     public void auth(HttpServletResponse res,
                      HttpServletRequest request,
                      UserDto dto) throws IOException {
-        HttpSession session = request.getSession();
-        if (session != null) {
-            this.cleanData(request, res);
-        }
+        HttpSession session = null;
         session = request.getSession(true);
         UsernamePasswordAuthenticationToken authReq
                 = new UsernamePasswordAuthenticationToken(

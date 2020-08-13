@@ -1,34 +1,21 @@
 package app.security.wrappers;
 
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
-
-import com.google.common.base.Preconditions;
-
-import javax.servlet.http.HttpServlet;
+import app.configuration.spring.constants.Constants;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuthenticationWrapper {
 
-    @Autowired
-    AuthenticationManager authManager;
-
     public SecurityContext getSecurityContext(HttpServletRequest req) {
         SecurityContext sc = null;
         HttpSession session = req.getSession();
         if (session != null) {
-            Object o = session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+            Object o = session.getAttribute(Constants.SPRING_SECURITY_CONTEXT_KEY);
             if (null != o && o instanceof SecurityContext) {
                 sc = (SecurityContext) o;
             }
@@ -41,17 +28,21 @@ public class AuthenticationWrapper {
 
     public Object getPrincipal(HttpServletRequest request) {
         Authentication authentication = getAuthentication(request);
-        Preconditions.checkNotNull(authentication);
-        return authentication.getPrincipal();
+        if (!(authentication == null)) {
+            return authentication.getPrincipal();
+        }
+        return null;
     }
 
     public Authentication getAuthentication(HttpServletRequest req) {
         SecurityContext sc = getSecurityContext(req);
-        Preconditions.checkNotNull(sc);
-        return getAuthentication(sc, req);
+        if (!(sc == null)) {
+            return sc.getAuthentication();
+        }
+        return null;
     }
 
-    private Authentication getAuthentication(SecurityContext sc,
+    /*private Authentication getAuthentication(SecurityContext sc,
                                              HttpServletRequest request) {
         Authentication auth = sc.getAuthentication();
         if (auth == null) {
@@ -87,5 +78,5 @@ public class AuthenticationWrapper {
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 sc);
         return auth;
-    }
+    }*/
 }

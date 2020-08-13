@@ -1,6 +1,5 @@
 package app.models.abstr;
 
-import app.models.serialization.ExcludeForJsonComment;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;

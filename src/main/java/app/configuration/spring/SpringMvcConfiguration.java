@@ -88,6 +88,8 @@ public class SpringMvcConfiguration
     public void addViewControllers(final ViewControllerRegistry viewControllerRegistry) {
         viewControllerRegistry.addViewController("/")
                 .setViewName("auth");
+        //@TODO : myboard
+        //@TODO : SessionWrapper
     }
 
     @Bean(name = "multipartResolver")

@@ -3,7 +3,6 @@ package app.service.interfaces;
 import app.dao.persistance.IOperations;
 import app.models.basic.Task;
 import app.models.basic.TaskComment;
-
 import java.util.List;
 
 public interface ITaskCommentService extends IOperations<TaskComment> {

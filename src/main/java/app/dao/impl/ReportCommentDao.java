@@ -6,7 +6,6 @@ import app.models.basic.Report;
 import app.models.basic.ReportComment;
 import java.util.List;
 import javax.persistence.TypedQuery;
-
 import org.springframework.stereotype.Repository;
 
 @Repository
