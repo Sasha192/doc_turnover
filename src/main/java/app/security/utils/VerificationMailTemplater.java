@@ -21,4 +21,9 @@ public class VerificationMailTemplater {
         modelMap.addAttribute("verification_code", verificationCode);
         return template.apply(modelMap);
     }
+
+    public String render(ModelMap modelMap) throws IOException {
+        Template template = handlebars.compile("bad_request");
+        return template.apply(modelMap);
+    }
 }

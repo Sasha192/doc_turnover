@@ -7,6 +7,7 @@ import app.controllers.dto.EmailDto;
 import app.models.basic.BriefDocument;
 import app.models.basic.Performer;
 import app.models.mysqlviews.BriefJsonDocument;
+import app.security.models.SimpleRole;
 import app.security.wrappers.PerformerWrapper;
 import app.service.extapis.GMailService;
 import app.service.interfaces.IBriefDocumentService;
@@ -27,6 +28,7 @@ import java.sql.Date;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -132,15 +134,22 @@ public class DocumentsNavigationController extends JsonSupportController {
             );
             return;
         }
-        try {
-            Performer performer = performerWrapper.retrievePerformer(req);
-            uploader.upload(performer, mfiles);
-        } catch (MaliciousFoundException ioex) {
-            sendDefaultJson(response, false, ioex.getMessage());
-        } catch (IOException e) {
-            sendDefaultJson(response, false, "Internal Server Error. Please try later.");
+        Performer performer = performerWrapper.retrievePerformer(req);
+        Set<SimpleRole> roles = performer.getRoles();
+        if (roles.contains(SimpleRole.G_MANAGER)
+                || roles.contains(SimpleRole.ADMIN)
+                || roles.contains(SimpleRole.MANAGER)) {
+            try {
+                uploader.upload(performer, mfiles);
+            } catch (MaliciousFoundException ioex) {
+                sendDefaultJson(response, false, ioex.getMessage());
+            } catch (IOException e) {
+                sendDefaultJson(response, false, "Internal Server Error. Please try later.");
+            }
+            sendDefaultJson(response, true, "");
+        } else {
+            sendDefaultJson(response, false, "Access Denied");
         }
-        sendDefaultJson(response, true, "");
     }
 
     @RequestMapping(path = "/download",

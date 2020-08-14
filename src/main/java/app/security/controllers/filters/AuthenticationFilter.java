@@ -17,8 +17,8 @@ import org.springframework.web.filter.GenericFilterBean;
 
 public class AuthenticationFilter extends GenericFilterBean {
 
-    private static final String REG_EX = "\\/[a-zA-Z]+(\\?([a-zA-Z]=.*)+)*";
-    private static final String NEG_REG_EX = "(?!" + REG_EX + "$).*";
+    /*private static final String REG_EX = "\\/[a-zA-Z]+(\\?([a-zA-Z]=.*)+)*";
+    private static final String NEG_REG_EX = "(?!" + REG_EX + "$).*";*/
 
     private AuthenticationWrapper authWrapper;
 
@@ -35,20 +35,20 @@ public class AuthenticationFilter extends GenericFilterBean {
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
             String requestUri = req.getRequestURI();
+            if (isResourceRequest(requestUri)) {
+                filterChain.doFilter(servletRequest, servletResponse);
+                return;
+            }
             HttpSession session = req.getSession();
             if (session != null) {
                 SecurityContext context = retrieveSecurityContext(session);
                 if (context != null) {
                     Authentication authentication = context.getAuthentication();
-                    if (requestUri.matches(Constants.RESOURCES_PATH_REGEX)) {
-                        filterChain.doFilter(servletRequest, servletResponse);
-                        return;
-                    }
-                    if (requestUri.matches("\\/auth.*")) {
+                    if (requestUri.startsWith("/auth")) {
                         filterChain.doFilter(servletRequest, servletResponse);
                         return;
                     } else if (requestUri.equals(Constants.EMPTY_STRING)
-                            || requestUri.matches("\\/.*")) {
+                            || requestUri.startsWith("/")) {
                         if (authentication != null && authentication.isAuthenticated()) {
                             if (requestUri.equals(Constants.EMPTY_STRING)) {
                                 ((HttpServletResponse) servletResponse).sendRedirect("/myboard");
@@ -68,6 +68,17 @@ public class AuthenticationFilter extends GenericFilterBean {
             }
         }
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    private boolean isResourceRequest(String uri) {
+        String[] res = Constants.RESOURCES_PATH;
+        int len = res.length;
+        for (int i = 0; i < len; i++) {
+            if (uri.startsWith(res[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private SecurityContext retrieveSecurityContext(HttpSession session) {

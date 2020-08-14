@@ -31,7 +31,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -156,6 +155,9 @@ public class AuthenticationController extends JsonSupportController {
                 }
                 removeVerificationCode(getVerificationKey(dto));
                 auth(res, request, dto);
+                Performer performer = performerService.retrieveByUsername(dto.getEmail());
+                session.setAttribute(Constants.PERFORMER_SESSION_KEY, performer);
+                session.setMaxInactiveInterval(Constants.MAX_INACTIVE_SESSION_INTERVAL_SECONDS);
                 this.sendDefaultJson(res, true, "");
                 return;
             } else {
@@ -308,9 +310,7 @@ public class AuthenticationController extends JsonSupportController {
         Authentication auth = authManager.authenticate(authReq);
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
-        session.setAttribute(
-                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                sc);
+        session.setAttribute(Constants.SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 
     private String getVerificationKey(VerificationCode code, UserDto userDto) {

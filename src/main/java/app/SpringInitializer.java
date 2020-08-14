@@ -2,7 +2,10 @@ package app;
 
 import app.configuration.spring.SpringDataConfiguration;
 import app.configuration.spring.SpringMvcConfiguration;
-import app.security.controllers.filters.*;
+import app.security.controllers.filters.AccessFilter;
+import app.security.controllers.filters.AuthenticationFilter;
+import app.security.controllers.filters.BlockRequestFilter;
+import app.security.models.SimpleRole;
 import app.security.wrappers.AuthenticationWrapper;
 import javax.servlet.Filter;
 import org.springframework.web.context.WebApplicationContext;
@@ -36,9 +39,16 @@ public class SpringInitializer
         return new Filter[] {
                 new BlockRequestFilter(),
                 new AuthenticationFilter(new AuthenticationWrapper()),
-                new AccessGodAdminFilter(),
-                new AccessDepartment(),
-                new AccessPerformer(new AuthenticationWrapper())};
+                new AccessFilter("/performers",
+                        SimpleRole.ADMIN,
+                        SimpleRole.G_MANAGER,
+                        SimpleRole.MANAGER),
+                new AccessFilter("/departments",
+                        SimpleRole.ADMIN,
+                        SimpleRole.G_MANAGER),
+                new AccessFilter("/roles",
+                        SimpleRole.ADMIN,
+                        SimpleRole.G_MANAGER)};
     }
 
     @Override

@@ -52,12 +52,46 @@ public class FilesUploader {
         return files;
     }
 
-    private List<File> checkMalicious(MultipartFile[] mfiles,
-                                      String folderPath)
+    public File upload(String filePath, MultipartFile mfile)
             throws IOException, MaliciousFoundException {
+        return checkMalicious(filePath, mfile);
+    }
+
+    private File checkMalicious(String filePath,
+                                MultipartFile mfile)
+            throws IOException, MaliciousFoundException {
+        boolean success = true;
+        String msg = Constants.EMPTY_STRING;
+        if (mfile == null) {
+            return null;
+        }
+        String fileName = new String(mfile
+                .getOriginalFilename()
+                .getBytes(StandardCharsets.ISO_8859_1),
+                StandardCharsets.UTF_8
+        );
+        final File fileToSave = new File(filePath);
+        mfile.transferTo(fileToSave);
+        if (!this.virusTotalScan.scan(fileToSave)) {
+            success = false;
+            msg = "File : ".concat(
+                    mfile.getOriginalFilename())
+                    .concat(Constants.IS_MALICIOUS);
+        }
+        if (!success) {
+            storage.remove(fileToSave);
+            throw new MaliciousFoundException(msg);
+        }
+        return fileToSave;
+    }
+
+    private List<File> checkMalicious(MultipartFile[] mfiles, String folderPath)
+            throws IOException, MaliciousFoundException {
+        if (mfiles == null || mfiles.length == 0) {
+            return null;
+        }
         final List<File> files = new LinkedList<>();
         boolean success = true;
-        // @TODO : initial val success = false vs = true. What impact will be ?
         String msg = Constants.EMPTY_STRING;
         for (final MultipartFile mfile : mfiles) {
             String fileName = new String(

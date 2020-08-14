@@ -11,6 +11,7 @@ import app.models.basic.TaskComment;
 import app.models.basic.TaskStatus;
 import app.models.events.pub.GenericEventPublisher;
 import app.models.mysqlviews.BriefTask;
+import app.security.models.SimpleRole;
 import app.security.wrappers.PerformerWrapper;
 import app.service.interfaces.IBriefTaskService;
 import app.service.interfaces.IStatusService;
@@ -18,6 +19,7 @@ import app.service.interfaces.ITaskCommentService;
 import app.service.interfaces.ITaskService;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -104,13 +106,17 @@ public class TaskNavigationController extends JsonSupportController {
     public void create(@Validated @RequestBody TaskDto dto,
                        HttpServletResponse response,
                        HttpServletRequest request) {
-        Task task = taskMapper.getEntity(dto);
         Performer ownerPerformer = performerWrapper.retrievePerformer(request);
-        task.setTaskOwner(ownerPerformer);
-        task.setTaskOwnerId(ownerPerformer.getId());
-        taskService.create(task);
-        taskPublisher.publish(task, ownerPerformer);
-        sendDefaultJson(response, true, "");
+        if (allowOp(ownerPerformer.getRoles())) {
+            Task task = taskMapper.getEntity(dto);
+            task.setTaskOwner(ownerPerformer);
+            task.setTaskOwnerId(ownerPerformer.getId());
+            taskService.create(task);
+            taskPublisher.publish(task, ownerPerformer);
+            sendDefaultJson(response, true, "");
+        } else {
+            sendDefaultJson(response, false, "Access Denied");
+        }
     }
 
     @RequestMapping(value = "/modify/priority")
@@ -168,5 +174,28 @@ public class TaskNavigationController extends JsonSupportController {
             return;
         }
         writeToResponse(response, Constants.BUILDER_DETAILS, task);
+    }
+
+    @RequestMapping(value = "/modify/docs")
+    public void modifyTask(HttpServletResponse response,
+                           @RequestParam("todoId") Long taskId,
+                           @RequestParam("docIds") String[] docIds,
+                           @RequestParam(value = "comment", required = false)
+                                       String comment)
+            throws IOException {
+        return;
+    }
+
+    @RequestMapping(value = "/modify/name")
+    public void modifyTaskName(HttpServletResponse response,
+                           @RequestParam("todoId") Long taskId,
+                           @RequestParam("name") String newName) throws IOException {
+        return;
+    }
+
+    private boolean allowOp(Set<SimpleRole> roles) {
+        return roles.contains(SimpleRole.G_MANAGER)
+                || roles.contains(SimpleRole.ADMIN)
+                || roles.contains(SimpleRole.MANAGER);
     }
 }

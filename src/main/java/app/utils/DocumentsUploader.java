@@ -40,7 +40,7 @@ public class DocumentsUploader {
     public boolean upload(Performer performer, MultipartFile... mfiles)
             throws IOException, MaliciousFoundException {
         String folderPath = folderPathGenerator.getFolderArchivePath();
-        List<File> files = filesUploader.upload(mfiles);
+        List<File> files = filesUploader.upload(folderPath, mfiles);
         List<BriefDocument> documents =
                 FileDocumentsMapperUtil.map(files, folderPath, performer);
         documentService.create(documents);

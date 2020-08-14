@@ -15,15 +15,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- *
- *
- *     Constants class - store all vital constants for app.
- *     Using ConcurrentHashMap is required for sync with DB and decreasing
- *     number of requests to DB.
- *     ConcurrentHashMap uses row-locking mechanism for updates, inserts
- *     and no-locking for reading
- *
- *
+ * Constants class - store all vital constants for app.
+ * Using ConcurrentHashMap is required for sync with DB and decreasing
+ * number of requests to DB.
+ * ConcurrentHashMap uses row-locking mechanism for updates, inserts
+ * and no-locking for reading
  */
 @Component("app_constants")
 public class Constants {
@@ -45,13 +41,15 @@ public class Constants {
 
     public static final String SPRING_SECURITY_CONTEXT_KEY =
             org
-            .springframework
-            .security
-            .web.context
-            .HttpSessionSecurityContextRepository
-            .SPRING_SECURITY_CONTEXT_KEY;
+                    .springframework
+                    .security
+                    .web.context
+                    .HttpSessionSecurityContextRepository
+                    .SPRING_SECURITY_CONTEXT_KEY;
 
     public static final String PERFORMER_SESSION_KEY = "PERFORMER_SESSION_KEY";
+
+    public static final int MAX_INACTIVE_SESSION_INTERVAL_SECONDS = 60 * 60;
 
     public static final String BAD_REQUEST_REGEX =
             "(?!"
@@ -72,6 +70,12 @@ public class Constants {
             + "|(\\/img.*)"
             + "|(\\/libs.*)"
             + "|(\\/partials.*)";
+
+    public static final String[] RESOURCES_PATH = new String[]{
+            "/css", "/scripts",
+            "/fonts", "/img",
+            "/libs", "/partials"
+    };
 
     static {
         BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()

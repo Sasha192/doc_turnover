@@ -124,6 +124,15 @@ public class SpringMvcConfiguration
         return new Handlebars(loader);
     }
 
+    /*@Bean
+    public ServletListenerRegistrationBean<DefaultSessionListener> sessionListenerWithMetrics() {
+        ServletListenerRegistrationBean<DefaultSessionListener> listenerRegBean =
+                new DefaultSessionListener<>();
+
+        listenerRegBean.setListener(new SessionListenerWithMetrics());
+        return listenerRegBean;
+    }
+*/
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

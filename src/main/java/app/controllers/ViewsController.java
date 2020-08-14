@@ -1,11 +1,21 @@
 package app.controllers;
 
+import app.models.basic.Performer;
+import app.security.models.SimpleRole;
+import app.security.wrappers.PerformerWrapper;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class ViewsController {
+
+    @Autowired
+    private PerformerWrapper performerWrapper;
 
     @RequestMapping("/archive")
     public String archiveMap(ModelMap map) {
@@ -28,7 +38,18 @@ public class ViewsController {
     }
 
     @RequestMapping("/CLpanel")
-    public String clPanel(ModelMap map) {
-        return "cl_panel";
+    public ModelAndView clPanel(ModelAndView modelAndView,
+                          HttpServletRequest request) {
+        Performer performer = performerWrapper.retrievePerformer(request);
+        Set<SimpleRole> roles = performer.getRoles();
+        if (roles.contains(SimpleRole.ADMIN)
+                || roles.contains(SimpleRole.G_MANAGER)) {
+            modelAndView.setViewName("cl_panel");
+            return modelAndView;
+        }
+        modelAndView.setViewName("status");
+        modelAndView.addObject("msg", "Доступ заблоковано");
+        modelAndView.addObject("status", "403");
+        return modelAndView;
     }
 }

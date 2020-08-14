@@ -4,15 +4,12 @@ import app.configuration.spring.constants.Constants;
 import app.models.basic.Performer;
 import app.service.interfaces.IPerformerService;
 import com.google.common.base.Preconditions;
+import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import java.security.Principal;
 
 @Component
 public class PerformerWrapper {

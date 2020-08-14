@@ -1,13 +1,10 @@
 package app.security.controllers.filters;
 
-import app.configuration.spring.constants.Constants;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.GenericFilterBean;
 
 public class BlockRequestFilter extends GenericFilterBean {
@@ -18,7 +15,7 @@ public class BlockRequestFilter extends GenericFilterBean {
                          FilterChain filterChain)
             throws IOException,
             ServletException {
-        if (servletRequest instanceof HttpServletRequest) {
+        /*if (servletRequest instanceof HttpServletRequest) {
             String requestUri = ((HttpServletRequest) servletRequest).getRequestURI();
             if (requestUri.matches("\\/.*")) {
                 filterChain.doFilter(servletRequest, servletResponse);
@@ -32,7 +29,7 @@ public class BlockRequestFilter extends GenericFilterBean {
                 ((HttpServletResponse) servletResponse).sendRedirect("/block/entry");
                 return;
             }
-        }
+        }*/
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }
