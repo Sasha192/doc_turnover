@@ -16,6 +16,12 @@
     position: relative;
 }
 
+.user-options .user-img img {
+    width:30px;
+    height: 30px;
+
+}
+
 [data-type="status"] {
     width: 12px;
     height: 12px;

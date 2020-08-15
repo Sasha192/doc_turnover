@@ -109,10 +109,15 @@ public class CustomUser
         this.performer = performer;
     }
 
-    public void addRole(final SimpleRole role) {
+    @Deprecated
+    /**
+     * @deprecated CHANGE THIS IMPLEMENTATION
+     */
+    public void addRole(SimpleRole newRole) {
         if (roles == null) {
             roles = new HashSet<>();
         }
-        roles.add(role);
+        roles.clear();
+        roles.add(newRole);
     }
 }

@@ -6,7 +6,7 @@
 	<div class="modal-dialog  modal-dialog-centered modal-md" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="uploadDocsLable">Upload Files</h5>
+				<h5 class="modal-title" id="uploadDocsLable">Завантажити файли</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -16,7 +16,7 @@
 					<input type="file" class="custom-file-input uploadFiles" id="inputGroupFile01"
 						aria-describedby="inputGroupFileAddon01"
 						accept=".jpg, .png, .pdf, .doc, .docx, .xls, .xlsx, odf, .odt, .ods, .ppt, .pptx, .html, .txt, .csv, .dbf, .htm, .html, .info, .nfo, .rtf, .vcf, .xml, .zip">
-					<label class="custom-file-label" id="uploadFilesLable" for="">Choose file</label>
+					<label class="custom-file-label" id="uploadFilesLable" for="">Обрати файл</label>
 				</div>
 				<div class="w-100 files-container mt-4 mb-4 responsive">
 
@@ -36,8 +36,8 @@
 				</div>
 
 				<div class="d-flex">
-					<button class="ml-auto custom-button" data-dismiss="modal">Close</button>
-					<button id="upload-docs_btn" class="custom-button info">Add Todo</button>
+					<button class="ml-auto custom-button" data-dismiss="modal">Закрити</button>
+					<button id="upload-docs_btn" class="custom-button info">Завантажити</button>
 				</div>
 
 			</div>
@@ -77,8 +77,8 @@
 				</div>
 
 				<div class="d-flex">
-					<button class="ml-auto custom-button" data-dismiss="modal">Close</button>
-					<button id="share-docs_btn" class="custom-button info">Add Todo</button>
+					<button class="ml-auto custom-button" data-dismiss="modal">Закрити</button>
+					<button id="share-docs_btn" class="custom-button info">Поділитися</button>
 				</div>
 
 			</div>
@@ -107,7 +107,7 @@
 					<div class="calendar" id="dateControl">
 						<div class="head-block mb-2" style="padding-top:12px; padding-bottom:12px">
 							<div class="date">
-								Nov 13, 2020
+
 							</div>
 							<div class="title">
 								Контроль
@@ -166,7 +166,7 @@
 					<div class="calendar" id="dateDeadline">
 						<div class="head-block mb-2" style="padding-top:12px; padding-bottom:12px">
 							<div class="date">
-								Nov 13, 2020
+
 							</div>
 							<div class="title">
 								Дедлайн
@@ -240,8 +240,8 @@
 				</div>
 				<div class="col-4">
 
-					<input type="text" id="name" class="custom-input w-100 mb-2" placeholder="Todo name">
-					<textarea name="" id="description" rows="" class="custom-textarea w-100" placeholder="Description"
+					<input type="text" id="name" class="custom-input w-100 mb-2" placeholder="Назва задачі">
+					<textarea name="" id="description" rows="" class="custom-textarea w-100" placeholder="Опис"
 						style="min-height: 367px;"></textarea>
 
 				</div>
@@ -259,8 +259,8 @@
 				</div>
 
 				<div class="d-flex">
-					<button class="ml-auto custom-button" data-dismiss="modal">Close</button>
-					<button id="add-NewTodo_btn" class="custom-button info">Add Todo</button>
+					<button class="ml-auto custom-button" data-dismiss="modal">Закрити</button>
+					<button id="add-NewTodo_btn" class="custom-button info">Створити</button>
 				</div>
 
 			</div>
@@ -285,12 +285,12 @@
 				</div>
 				<div class="col-6">
 
-					<input id="taskHolderComment" type="text" class="custom-input w-100" placeholder="Comment">
+					<input id="taskHolderComment" type="text" class="custom-input w-100" placeholder="Коментар">
 
 					<div class="drop-down w-100">
 						<button class="drop-down_btn add-btn">
 							<span>+</span>
-							Select Task
+							Обрати задачу
 						</button>
 						<div class="drop-down_list w-100" id="todo-list">
 
@@ -316,8 +316,8 @@
 				</div>
 
 				<div class="d-flex">
-					<button class="ml-auto custom-button" data-dismiss="modal">Close</button>
-					<button id="add-ExistingTodo_btn" class="custom-button info">Modify</button>
+					<button class="ml-auto custom-button" data-dismiss="modal">Закрити</button>
+					<button id="add-ExistingTodo_btn" class="custom-button info">Модифікувати</button>
 				</div>
 
 			</div>
@@ -479,4 +479,44 @@
 		</div>
 	</div>
 
+</div>
+
+<div class="modal fade" id="upload-image" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+
+    <div class="modal-dialog modal modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadDocsLable">Завантажити моє фото</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input uploadFiles" id="uploadImage"
+                           aria-describedby="inputGroupFileAddon01"
+                           accept=".jpg, .png">
+                    <label class="custom-file-label" id="uploadImage" for="">Choose file</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <div class="status mr-2">
+                    <div class="status-spinner d-none">
+                        <div class="spinner-border mr-4" role="status"
+                             style="color:#34ace0; font-size:10px; width:20px; height:20px;">
+                        </div>
+                        <a href="#">Sending data...</a>
+                    </div>
+                    <span class="status-text"></span>
+                </div>
+
+                <div class="d-flex">
+                    <button class="ml-auto custom-button" data-dismiss="modal">Закрити</button>
+                    <button id="upload-image_button" class="custom-button info">Завантажити</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>

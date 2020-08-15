@@ -93,7 +93,6 @@ class User {
 }
 
 Http.get("/performer/my/info", user => {
-    console.log(user)
     User.role = () => {return user.roles[0]}
     User.name = () => {return user.name}
     User.imgPath = () => {return user.imgPath}
