@@ -22,7 +22,8 @@ import { Http } from "./modules/services.js"
                    editor.setAttribute("readonly", "true")
                })
 
-               $("#task-info #todo-complete-control").css("display", "none");
+               $("#task-info #todo-complete-control").remove()
+               $(".archive-addation-rights").remove()
            }
 
        } else {
@@ -32,6 +33,8 @@ import { Http } from "./modules/services.js"
                // $("#task-info .report-msg").css("display", "none")
                // $("#task-info #send-report-files").css("display", "none")
            }
+
+           $("#notifications").css("display", "block")
 
        }
 
@@ -231,7 +234,6 @@ import { validation } from "./modules/form-handler.js"
                     }
 
                     page_id += 1
-                    console.log(page_id)
 
                 })
             }
@@ -289,7 +291,6 @@ import { validation } from "./modules/form-handler.js"
                         let data = { name, dateControl, deadline, description, performerList, docList, keyWords: [], status: "new" }
 
 
-                        console.log(data)
                         status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
                         Http.post("/task/create", data, () => {
@@ -478,7 +479,6 @@ import { validation } from "./modules/form-handler.js"
 
 
                     let data = { email: $("#share-docs").find("#recipient").val(), message: $("#share-docs").find("#message").val(), docList: docs}
-                    console.log(data)
                     Http.post("/archive/doc/send", data, data => {
                         status.find(".status-text").html(""); status.css("opacity", "0"); status.find(".status-spinner").removeClass("d-flex").addClass("d-none")
                         location.reload()
@@ -791,7 +791,6 @@ function changeTaskState() {
                     </div>`
                 )
 
-                console.log(notification)
             })
 
             let notiLength
@@ -847,4 +846,63 @@ document.querySelectorAll("[contenteditable]").forEach(editor => {
         window.document.execCommand('insertText', false, text);
     })
 });
+
+// -------------------
+//   UPLOAD USER IMG
+// -------------------
+
+(function() {
+    let file,
+        data = new FormData
+    $(".user-img").on("click", () => {
+        $("#upload-image").modal("show")
+    })
+
+    $("#upload-image input").on("change", function () {
+        file = this.files[0];
+    })
+
+    $("#upload-image_button").on("click", () => {
+        $("#upload-docs").find(".status").css("opacity", "1")
+        $("#upload-docs").find(".status-spinner").removeClass("d-none").addClass("d-flex")
+        data.append("file", file)
+        Http.files("/my/img", data, () => {
+            if (data.success == true) {
+                $("#upload-docs").find(".status").css("opacity", "0")
+                $("#upload-docs").find(".status-spinner").removeClass("d-flex").addClass("d-none")
+                location.reload()
+            } else {
+                alert(data.msg)
+            }
+        })
+    })
+})()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

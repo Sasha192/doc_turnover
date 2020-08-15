@@ -98,3 +98,7 @@ table#CL-Panel .drop-down_selected {
     font-family: "Roboto light";
     color: #454545
 }
+
+.remove-user {
+    padding: 0px 20px;
+}

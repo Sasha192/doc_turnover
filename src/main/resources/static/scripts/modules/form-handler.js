@@ -144,7 +144,7 @@ class Insert_Todos {
             <div class="drop-down_item">
                 <div class="board-item ${todo.status}" todo-id="${todo.id}">
                     <div class="board-item_content">
-                        <img src="" alt="">
+                        <img src="$" alt="">
                         <div>
                             <div class="board-item_title">
                                 ${todo.name}
@@ -320,6 +320,16 @@ class Insert_Tasks {
             }
         }
 
+
+        {
+            if (info.status == "completed") {
+                $("#task-info #todo-complete-control").css("display", "none")
+            } else {
+                $("#task-info #todo-complete-control").css("display", "flex")
+            }
+        }
+
+
         {
             if (info.report) {
                 $("#task-info #todo-complete-control").css("display", "flex")
@@ -434,8 +444,6 @@ class Insert_Tasks {
                     comment
                 }
 
-
-                console.log(data)
                 Http.post("/task/comment/add", data, (data) => {
                     $("#task-info .comments .comments-container").append(
                         `<div class="comment">

@@ -8,7 +8,6 @@ import { dropDown } from "./animation.js"
 
     await new Promise((resolve, reject) => {
         Http.get("/performers/list", users => {
-            console.log(users)
             users.forEach(user => {
                 let userRole,
                     userDep
@@ -96,8 +95,6 @@ import { dropDown } from "./animation.js"
                                 let userId = e.target.closest("[data-user-id]").dataset.userId,
                                     depId = e.target.closest(".drop-down_item").dataset.depId
 
-                                console.log(depId)
-
                                 if (e.target.closest(".drop-down_item").textContent.trim() == e.target.closest(".drop-down").querySelector(".drop-down_selected").textContent.trim()) return
                                 Http.post(`/performers/modify/department?performer_id=${userId}&department_id=${depId}`, null, data => {
                                     location.reload()
@@ -125,7 +122,7 @@ import { dropDown } from "./animation.js"
 
                                 if (e.target.closest(".drop-down_item").textContent.trim() == e.target.closest(".drop-down").querySelector(".drop-down_selected").textContent.trim()) return
                                 Http.post(`/performers/modify/role?role=${roleId}&performer_id=${userId}`, null, data => {
-                                   location.reload()
+
                                 })
                             })
                         })
@@ -145,7 +142,6 @@ import { dropDown } from "./animation.js"
         e.preventDefault()
 
         if (e.target.querySelector("input").value.trim().length == 0) return
-        console.log(e.target.querySelector("input").value)
         Http.get(`/departments/create?name=${e.target.querySelector("input").value.trim()}`, () => { location.reload() })
 
     }

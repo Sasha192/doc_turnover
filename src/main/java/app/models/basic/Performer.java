@@ -70,7 +70,7 @@ public class Performer
     private Set<SimpleRole> roles;
 
     public Performer() {
-        imgPath = "/img/avatars/6.jpg";
+        imgPath = "/img/default.jpg";
     }
 
     public Performer(PerformerDto dto) {

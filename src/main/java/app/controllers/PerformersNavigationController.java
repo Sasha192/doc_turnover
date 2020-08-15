@@ -7,6 +7,7 @@ import app.models.basic.Performer;
 import app.models.mysqlviews.BriefPerformer;
 import app.models.serialization.ExcludeStrategies;
 import app.security.models.SimpleRole;
+import app.security.service.IUserService;
 import app.service.interfaces.IBriefPerformerService;
 import app.service.interfaces.IDepartmentService;
 import app.service.interfaces.IPerformerService;
@@ -39,15 +40,19 @@ public class PerformersNavigationController extends JsonSupportController {
 
     private final IBriefPerformerService briefPerformerService;
 
+    private final IUserService userService;
+
     @Autowired
     public PerformersNavigationController(@Qualifier("performer_mapper") IEntityDtoMapper mapper,
                                           IPerformerService performerService,
                                           IDepartmentService departmentService,
-                                          IBriefPerformerService briefPerformerService) {
+                                          IBriefPerformerService briefPerformerService,
+                                          IUserService userService) {
         this.mapper = mapper;
         this.performerService = performerService;
         this.departmentService = departmentService;
         this.briefPerformerService = briefPerformerService;
+        this.userService = userService;
     }
 
     @GetMapping(value = {"/list", "/list/{depo_id}"})
@@ -87,6 +92,7 @@ public class PerformersNavigationController extends JsonSupportController {
         SimpleRole newRole = SimpleRole.valueOf(role);
         Performer performer = performerService.findOne(performerId);
         performer.addRole(newRole);
+        performer.getUser().addRole(newRole);
         performerService.update(performer);
         sendDefaultJson(response, true, "");
     }
@@ -102,7 +108,11 @@ public class PerformersNavigationController extends JsonSupportController {
     @PostMapping(value = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void removePerformer(HttpServletResponse response,
                                 @RequestParam("performer_id") Long performerId) {
-        performerService.deleteById(performerId);
+        Performer performer = performerService.findOne(performerId);
+        if (performer != null) {
+            performerService.deleteById(performerId);
+            userService.deleteById(performer.getUser().getId());
+        }
         sendDefaultJson(response, true, "");
     }
 }
