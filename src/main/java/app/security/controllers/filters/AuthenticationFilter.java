@@ -4,6 +4,7 @@ import app.configuration.spring.constants.Constants;
 import app.security.wrappers.AuthenticationWrapper;
 import java.io.IOException;
 import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 public class AuthenticationFilter extends GenericFilterBean {
@@ -22,10 +25,6 @@ public class AuthenticationFilter extends GenericFilterBean {
 
     private AuthenticationWrapper authWrapper;
 
-    public AuthenticationFilter(AuthenticationWrapper authWrapper) {
-        this.authWrapper = authWrapper;
-    }
-
     @Override
     public void doFilter(ServletRequest servletRequest,
                          ServletResponse servletResponse,
@@ -34,6 +33,9 @@ public class AuthenticationFilter extends GenericFilterBean {
         // @TODO : if servlerRequest is not HttpServletRequest ? session is NULL
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
+            if (authWrapper == null) {
+                authWrapperInitialization(req);
+            }
             String requestUri = req.getRequestURI();
             if (isResourceRequest(requestUri)) {
                 filterChain.doFilter(servletRequest, servletResponse);
@@ -68,6 +70,13 @@ public class AuthenticationFilter extends GenericFilterBean {
             }
         }
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    private void authWrapperInitialization(HttpServletRequest req) {
+        ServletContext context = req.getServletContext();
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils
+                .getWebApplicationContext(context);
+        authWrapper = webApplicationContext.getBean(AuthenticationWrapper.class);
     }
 
     private boolean isResourceRequest(String uri) {

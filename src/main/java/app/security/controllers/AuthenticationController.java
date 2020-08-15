@@ -145,8 +145,8 @@ public class AuthenticationController extends JsonSupportController {
                                     dto.getFirstName())
                                     + " "
                                     + (dto.getLastName() == null
-                                            ? Constants.EMPTY_STRING :
-                                            dto.getLastName());
+                                    ? Constants.EMPTY_STRING :
+                                    dto.getLastName());
                     performer.setName(performerName);
                     performer.setRoles(customUser.getRoles());
                     performerService.create(performer);

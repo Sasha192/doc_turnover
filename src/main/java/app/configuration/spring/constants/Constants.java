@@ -47,7 +47,8 @@ public class Constants {
                     .HttpSessionSecurityContextRepository
                     .SPRING_SECURITY_CONTEXT_KEY;
 
-    public static final String PERFORMER_SESSION_KEY = "PERFORMER_SESSION_KEY";
+    public static final String PERFORMER_SESSION_KEY =
+            "PERFORMER_SESSION_KEY";
 
     public static final int MAX_INACTIVE_SESSION_INTERVAL_SECONDS = 60 * 60;
 
@@ -71,7 +72,7 @@ public class Constants {
             + "|(\\/libs.*)"
             + "|(\\/partials.*)";
 
-    public static final String[] RESOURCES_PATH = new String[]{
+    public static final String[] RESOURCES_PATH = new String[] {
             "/css", "/scripts",
             "/fonts", "/img",
             "/libs", "/partials"
