@@ -2,17 +2,13 @@ package app;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import com.nimbusds.jose.util.JSONObjectUtils;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MainTest {
 
-    private static String WHITESPACE = "\\s" /*""       *//* dummy empty string for homogeneity *//*
+    private static String WHITESPACE = "\\s"; /*
             + "\\u0009" // CHARACTER TABULATION
             + "\\u000A" // LINE FEED (LF)
             + "\\u000B" // LINE TABULATION
@@ -39,66 +35,71 @@ class MainTest {
             + "\\u202F" // NARROW NO-BREAK SPACE
             + "\\u205F" // MEDIUM MATHEMATICAL SPACE
             + "\\u3000" // IDEOGRAPHIC SPACE*/
-            ;
 
     private static final String REG_EX =
             "(\\/[a-zA-Z]+)+"
-            + "(\\?"
-                + "(\\&{0,1}"
+                    + "(\\?"
+                    + "(\\&{0,1}"
                     + "[a-zA-Z]+"
                     + "\\={1}"
-                    + "[a-zA-Zа-яА-ЯЁІіЙйЪъЇї0-9"+ "\\s" +"]+"
-                + ")+"
-            + "){0,1}"
-            + "\\/{0,1}";
+                    + "[a-zA-Zа-яА-ЯЁІіЙйЪъЇї0-9" + "\\s" + "]+"
+                    + ")+"
+                    + "){0,1}"
+                    + "\\/{0,1}";
     private static final String NEG_REG_EX =
             "(?!"
                     + "(\\/[a-zA-Z]+)+"
                     + "(\\?"
-                        + "(\\&{0,1}"
-                            + "[a-zA-Z]+"
-                            + "\\={1}"
-                            + "[a-zA-Zа-яА-ЯЁІіЙйЪъЇї0-9"+ "\\s" +"]+"
-                        + ")+"
+                    + "(\\&{0,1}"
+                    + "[a-zA-Z]+"
+                    + "\\={1}"
+                    + "[a-zA-Zа-яА-ЯЁІіЙйЪъЇї0-9" + "\\s" + "]+"
+                    + ")+"
                     + "){0,1}"
                     + "\\/{0,1}"
-            + "$).*";
+                    + "$).*";
 
     private static List<TestHolder> tests = new LinkedList<>();
 
-    private static TestHolder c(String str, boolean b) {
+    private static TestHolder get(String str, boolean b) {
         return new TestHolder(str, b);
     }
 
     @BeforeEach
     void setUp() {
-        tests.add(c("/auth/", false));
-        tests.add(c("/auth?a=b", false));
-        tests.add(c("/auth?a=b/", false));
-        tests.add(c("/фівфівфівфів/asdasjehbfbwfuewfuwe/eshweugf", true));
-        tests.add(c("/authasdasd/фівфівфівфів/eshweugf?asdasd=ergrh54rh", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/фвфівфів?asdasd=ergrh54rh", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?фівфівфів=ergrh54rh&sjfbha=ashfbash=hsfhrf", true));
-        tests.add(c("/authasdasd/asdasjehbfbwfuewfuwe/eshweugf", false));
-        tests.add(c("/authasdasd/asdasjehbfbwfuewfuwe/eshweugf?asdasd=фіівфівфів", false));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasfффііі=ergrh54rh", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasfффііі==ergrh54rh", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasfффііі=%20ERGRH54RH", true));
+        tests.add(get("/auth/", false));
+        tests.add(get("/auth?a=b", false));
+        tests.add(get("/auth?a=b/", false));
+        tests.add(get("/фівфівфівфів/asdasjehbfbwfuewfuwe/eshweugf", true));
+        tests.add(get("/authasdasd/фівфівфівфів/eshweugf?asdasd=ergrh54rh", true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/фвфівфів?asdasd=ergrh54rh", true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?фівфівфів"
+                + "=ergrh54rh&sjfbha=ashfbash=hsfhrf", true));
+        tests.add(get("/authasdasd/asdasjehbfbwfuewfuwe/eshweugf", false));
+        tests.add(get("/authasdasd/asdasjehbfbwfuewfuwe/eshweugf?asdasd=фіівфівфів", false));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasfффііі=ergrh54rh", true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasfффііі==ergrh54rh", true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasfффііі=%20ERGRH54RH", true));
 
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf==івівE54hRGRH54RH", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=%20ERGRH54RH", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=%20ERGRH54RH=", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=ERGRH54RHsssssіііі&54gh45=5 g57g75 57gh57", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=ERGRH54RHsssssіііі&fgfg=5 g57g75 57gh57&dfdfsf=іііі і і і і і і і і і і і і і", false));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=ERGRH54RHsssssіііі&fgfg=5 g57g75 57gh57&dfdfsf=іііі і і і і і і [[[і і і і і і і", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=ERGRH54RHsssssіііі&fgfg=5 g57g75 57gh57&dfdfsf=іііі і і і і і іъъъъъ і і і і і і і", false));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=ERGRH54RHsssssіііі&fgfg=5 g57g75 57gh57&dfdfsf=іііі і іъЪъъЇїїї і і і і і", false));
-        /*tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?asdasd=ergrh54rh&фівфівфів=фівфів=hsфівфівіфвъхъхвцчч34fhrf", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?asdasd=ergrh54rh&фівфівфів=фівфів=hsфівфівіфвъхъхвцчч34fhrf", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?asdasd=ergrh54rh&фівфівфів=фівфів=hsфівфівіфвъхъхвцчч34fhrf", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?asdasd=ergrh54rh&фівфівфів=фівфів=hsфівфівіфвъхъхвцчч34fhrf", true));
-        tests.add(c("/authasdasd/asdaswfuewfuwe/eshweugf?asdasd=ergrh54rh&фівфівфів=фівфів=hsфівфівіфвъхъхвцчч34fhrf", true));*/
-        tests.add(c("/??", true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf==івівE54hRGRH54RH", true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=%20ERGRH54RH", true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=%20ERGRH54RH=", true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf"
+                + "=ERGRH54RHsssssіііі&54gh45=5 g57g75 57gh57", true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf=ERGRH54RHsssssіііі&fgfg"
+                + "=5 g57g75 57gh57&dfdfsf=іііі і і і і і і і і і і і і і", false));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf"
+                        + "=ERGRH54RHsssssіііі&fgfg=5 g57g75 57gh57&dfdfsf="
+                        + "іііі і і і і і і [[[і і і і і і і",
+                true));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf"
+                        + "=ERGRH54RHsssssіііі&fgfg=5 g57g75 57gh57&dfdfsf"
+                        + "=іііі і і і і і іъъъъъ і і і і і і і",
+                false));
+        tests.add(get("/authasdasd/asdaswfuewfuwe/eshweugf?sasfasf"
+                + "=ERGRH54RHsssssіііі&fgfg=5 g57g75 57gh57&dfdfsf="
+                + "іііі і іъЪъъЇїїї і і і і і", false));
+        tests.add(get("/??", true));
     }
 
     @Test

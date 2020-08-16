@@ -14,4 +14,17 @@ public interface IBriefDocumentJsonDao extends IGenericDao<BriefJsonDocument> {
                                    Integer year, Integer month,
                                    Integer date);
 
+    List<BriefJsonDocument> findByAndPerformerInTaskId(int pageId,
+                                                       String search,
+                                                       Integer yearInt,
+                                                       Integer monthInt,
+                                                       Integer dayInt,
+                                                       Long performerId);
+
+    List<BriefJsonDocument> findByAndDepartment(int pageId,
+                                                String search,
+                                                Integer yearInt,
+                                                Integer monthInt,
+                                                Integer dayInt,
+                                                Long departmentId);
 }

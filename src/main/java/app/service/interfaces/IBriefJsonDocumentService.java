@@ -14,4 +14,17 @@ public interface IBriefJsonDocumentService extends IOperations<BriefJsonDocument
                                    Integer year, Integer month,
                                    Integer date);
 
+    List<BriefJsonDocument> findByAndDepartment(int pageId,
+                             String search,
+                             Integer yearInt,
+                             Integer monthInt,
+                             Integer dayInt,
+                             Long departmentId);
+
+    List<BriefJsonDocument> findByAndPerformerInTaskId(int pageId,
+                                    String search,
+                                    Integer yearInt,
+                                    Integer monthInt,
+                                    Integer dayInt,
+                                    Long performerId);
 }

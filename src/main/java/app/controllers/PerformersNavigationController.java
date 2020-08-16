@@ -57,7 +57,8 @@ public class PerformersNavigationController extends JsonSupportController {
 
     @GetMapping(value = {"/list", "/list/{depo_id}"})
     public void list(HttpServletResponse response,
-                     @PathVariable(required = false) Long departmentId) throws IOException {
+                     @PathVariable(required = false) Long departmentId)
+            throws IOException {
         List<BriefPerformer> performers = null;
         if (departmentId != null) {
             performers = briefPerformerService

@@ -10,4 +10,5 @@ public interface ITaskDao extends IGenericDao<Task> {
 
     List<Task> findByPerformerIdStaticStatus(long id);
 
+    void updateNameDescription(String newName, String description, Long taskId);
 }

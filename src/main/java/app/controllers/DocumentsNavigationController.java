@@ -4,7 +4,6 @@ import static org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.U
 
 import app.configuration.spring.constants.Constants;
 import app.controllers.dto.EmailDto;
-import app.models.basic.BriefDocument;
 import app.models.basic.Performer;
 import app.models.mysqlviews.BriefJsonDocument;
 import app.security.models.SimpleRole;
@@ -75,19 +74,23 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     private final DocumentsUploader uploader;
 
+    private final DocRetrieveUtils docRetrieveUtils;
+
     @Autowired
     public DocumentsNavigationController(GMailService mailService,
                                          IBriefDocumentService docService,
                                          IBriefJsonDocumentService jsonDocService,
                                          PerformerWrapper performerWrapper,
                                          @Qualifier("app_constants") Constants constants,
-                                         @Qualifier("doc_uploader") DocumentsUploader uploader) {
+                                         @Qualifier("doc_uploader") DocumentsUploader uploader,
+                                         DocRetrieveUtils docRetrieveUtils) {
         this.mailService = mailService;
         this.docService = docService;
         this.jsonDocService = jsonDocService;
         this.performerWrapper = performerWrapper;
         this.constants = constants;
         this.uploader = uploader;
+        this.docRetrieveUtils = docRetrieveUtils;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -116,9 +119,33 @@ public class DocumentsNavigationController extends JsonSupportController {
             return;
         }
         final String search = request.getParameter("search");
-        final List<BriefJsonDocument> list = this.jsonDocService
-                .findBy(pageId, search, yearInt, monthInt, dayInt);
-        writeToResponse(response, builder, list);
+        Performer performer = performerWrapper.retrievePerformer(request);
+        Set<SimpleRole> roles = performer.getRoles();
+        if (allowListArchive(roles)) {
+            final List<BriefJsonDocument> list = this.jsonDocService
+                    .findBy(pageId, search, yearInt, monthInt, dayInt);
+            writeToResponse(response, builder, list);
+        } else {
+            if (roles.contains(SimpleRole.MANAGER)) {
+                jsonDocService.findByAndDepartment(pageId, search, yearInt, monthInt,
+                        dayInt, performer.getDepartmentId());
+            } else {
+                jsonDocService.findByAndPerformerInTaskId(pageId, search,
+                        yearInt, monthInt, dayInt, performer.getId());
+            }
+        }
+    }
+
+    private boolean allowListArchive(Set<SimpleRole> roles) {
+        return roles.contains(SimpleRole.ADMIN)
+                || roles.contains(SimpleRole.G_MANAGER)
+                || roles.contains(SimpleRole.SECRETARY);
+    }
+
+    private boolean allowUploadArchive(Set<SimpleRole> roles) {
+        return roles.contains(SimpleRole.G_MANAGER)
+                || roles.contains(SimpleRole.ADMIN)
+                || roles.contains(SimpleRole.MANAGER);
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
@@ -136,9 +163,7 @@ public class DocumentsNavigationController extends JsonSupportController {
         }
         Performer performer = performerWrapper.retrievePerformer(req);
         Set<SimpleRole> roles = performer.getRoles();
-        if (roles.contains(SimpleRole.G_MANAGER)
-                || roles.contains(SimpleRole.ADMIN)
-                || roles.contains(SimpleRole.MANAGER)) {
+        if (allowUploadArchive(roles)) {
             try {
                 uploader.upload(performer, mfiles);
             } catch (MaliciousFoundException ioex) {
@@ -154,6 +179,9 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     @RequestMapping(path = "/download",
             method = RequestMethod.GET)
+    /**
+     * @TODO : Anyboudy could download any file -> FIX IT!
+     */
     public void download(@RequestParam(value = "id") final String[] docIds,
                          final HttpServletResponse response) {
         if (docIds.length > constants.get(Constants.MAX_FILES_DOWNLOAD).getIntValue()) {
@@ -165,7 +193,7 @@ public class DocumentsNavigationController extends JsonSupportController {
             return;
         }
         try {
-            final File[] files = this.retrieveFilesByDocIds(docIds);
+            final File[] files = docRetrieveUtils.retrieveFilesByDocIds(docIds);
             if (files.length == 1) {
                 this.sendFile(response, files[0]);
             } else {
@@ -184,34 +212,18 @@ public class DocumentsNavigationController extends JsonSupportController {
         }
     }
 
-    private File[] retrieveFilesByDocIds(final String[] docIds)
-            throws NumberFormatException {
-        final File[] files = new File[docIds.length];
-        int i = 0;
-        for (final String docId : docIds) {
-            final Long id = Long.valueOf(docId);
-            final BriefDocument briefDocument = this.docService.findOne(id);
-            final String filePath = briefDocument.getPath()
-                    .concat(Constants.SLASH)
-                    .concat(briefDocument.getName())
-                    .concat(briefDocument.getExtName());
-            File file = new File(filePath);
-            if (file.exists()) {
-                files[i++] = new File(filePath);
-            }
-        }
-        return files;
-    }
-
     @RequestMapping(path = "/send",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
+    /**
+     * @TODO : Anyboudy could send any file -> FIX IT!
+     */
     public void sendFile(@Validated @RequestBody EmailDto emailDto,
                          final HttpServletResponse response,
                          HttpServletRequest req) {
         Performer performer = performerWrapper.retrievePerformer(req);
         try {
-            final File[] files = this.retrieveFilesByDocIds(emailDto.getDocList());
+            final File[] files = docRetrieveUtils.retrieveFilesByDocIds(emailDto.getDocList());
             boolean responseBool = false;
             if (files.length > 0) {
                 responseBool = this.mailService

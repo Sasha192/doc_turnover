@@ -75,14 +75,6 @@ public abstract class SuperComment
         return performer;
     }
 
-    @Deprecated
-    /**
-     * @see SuperComment#setAuthorId(Long)
-     */
-    public void setPerformer(BriefPerformer performer) {
-        this.performer = performer;
-    }
-
     public String getComment() {
         return comment;
     }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping(value = "/task")
+/**
+ * This request mappings could get access only
+ * @see TaskNavigationController#allowOp(Set)
+ */
 public class TaskNavigationController extends JsonSupportController {
+
+    private static final Logger LOGGER = Logger.getLogger("errorLogger");
 
     private IEntityDtoMapper<Task, TaskDto> taskMapper;
 
@@ -152,7 +159,7 @@ public class TaskNavigationController extends JsonSupportController {
         Performer performer = performerWrapper.retrievePerformer(request);
         taskComment.setAuthorId(performer.getId());
         taskComment.setComment(commentDto.getComment());
-        taskComment.setTask(task);
+        taskComment.setTaskId(task.getId());
         taskCommentService.create(taskComment);
         commentPublisher.publish(taskComment, performer);
         sendDefaultJson(response, true, "");
@@ -178,19 +185,58 @@ public class TaskNavigationController extends JsonSupportController {
 
     @RequestMapping(value = "/modify/docs")
     public void modifyTask(HttpServletResponse response,
+                           HttpServletRequest request,
                            @RequestParam("todoId") Long taskId,
                            @RequestParam("docIds") String[] docIds,
                            @RequestParam(value = "comment", required = false)
                                        String comment)
             throws IOException {
-        return;
+        Performer performer = performerWrapper.retrievePerformer(request);
+        Set<SimpleRole> roles = performer.getRoles();
+        if (allowOp(roles)) {
+            Task task = taskService.findOne(taskId);
+            try {
+                for (String docId : docIds) {
+                    final Long id = Long.valueOf(docId);
+                    task.addDocumentId(id);
+                }
+                taskService.update(task);
+                if (comment != null) {
+                    TaskComment taskComment = new TaskComment();
+                    taskComment.setTaskId(taskId);
+                    taskComment.setComment(comment);
+                    taskComment.setAuthorId(performer.getId());
+                    taskCommentService.create(taskComment);
+                    commentPublisher.publish(taskComment, performer);
+                }
+                sendDefaultJson(response, true, "");
+            } catch (NumberFormatException ex) {
+                LOGGER.error("NUMBER FORMAT EXCEPTION " + ex.getMessage());
+                LOGGER.error(ex.getStackTrace());
+                sendDefaultJson(response, false, "Wrong Format! Who r u ?");
+            }
+        } else {
+            sendDefaultJson(response, false, "Access Denied");
+        }
     }
 
     @RequestMapping(value = "/modify/name")
-    public void modifyTaskName(HttpServletResponse response,
-                           @RequestParam("todoId") Long taskId,
-                           @RequestParam("name") String newName) throws IOException {
-        return;
+    public void modifyTaskName(@RequestParam("todoId") Long taskId,
+                               @RequestParam(value = "name", required = false) String newName,
+                               @RequestParam(value = "description", required = false)
+                                           String description,
+                               HttpServletRequest request,
+                               HttpServletResponse response)
+            throws IOException {
+        Performer performer = performerWrapper
+                .retrievePerformer(request);
+        Set<SimpleRole> roles = performer.getRoles();
+        if (allowOp(roles)) {
+            taskService.updateNameDescription(newName, description, taskId);
+        } else {
+            sendDefaultJson(response, false, "Access Denied");
+            return;
+        }
     }
 
     private boolean allowOp(Set<SimpleRole> roles) {

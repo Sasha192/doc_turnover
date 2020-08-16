@@ -24,6 +24,9 @@ public class TaskDao extends GenericJpaRepository<Task>
                     + "ON cs.is_custom=false AND t.performer_id=cs.performer_id ")
                     .concat(FIND_BY_PERFORMER_ID);
 
+    private static final String UPDATE_NAME_DESCRIPTION =
+            "UPDATE Task t SET t.toDo = :name, t.description = :descript ";
+
     public TaskDao() {
         setClazz(Task.class);
     }
@@ -48,5 +51,15 @@ public class TaskDao extends GenericJpaRepository<Task>
     public Task update(Task entity) {
         entity.setModificationDate(Date.valueOf(LocalDate.now()));
         return super.update(entity);
+    }
+
+    @Override
+    public void updateNameDescription(String newName,
+                                      String description,
+                                      Long taskId) {
+        getEntityManager().createQuery(UPDATE_NAME_DESCRIPTION)
+                .setParameter("name", newName)
+                .setParameter("descript", description)
+                .executeUpdate();
     }
 }

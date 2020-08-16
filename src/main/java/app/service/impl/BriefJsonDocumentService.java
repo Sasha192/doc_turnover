@@ -44,4 +44,34 @@ public class BriefJsonDocumentService
                                           final Integer date) {
         return this.dao.findBy(pageId, search, year, month, date);
     }
+
+    @Override
+    public List<BriefJsonDocument> findByAndDepartment(int pageId,
+                                                       String search,
+                                                       Integer yearInt,
+                                                       Integer monthInt,
+                                                       Integer dayInt,
+                                                       Long departmentId) {
+        return dao.findByAndDepartment(pageId,
+                search,
+                yearInt,
+                monthInt,
+                dayInt,
+                departmentId);
+    }
+
+    @Override
+    public List<BriefJsonDocument> findByAndPerformerInTaskId(int pageId,
+                                                              String search,
+                                                              Integer yearInt,
+                                                              Integer monthInt,
+                                                              Integer dayInt,
+                                                              Long performerId) {
+        return dao.findByAndPerformerInTaskId(pageId,
+                search,
+                yearInt,
+                monthInt,
+                dayInt,
+                performerId);
+    }
 }

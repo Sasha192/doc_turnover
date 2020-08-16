@@ -5,8 +5,6 @@ import app.security.models.SimpleRole;
 import app.security.wrappers.PerformerWrapper;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
-
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -49,6 +47,9 @@ public class ViewsController {
             modelAndView.setViewName("cl_panel");
             return modelAndView;
         }
+        // @TODO : send redirect to another controller,
+        //  that will handle all
+        // such cases!
         modelAndView.setViewName("status");
         modelAndView.addObject("msg", "Доступ заблоковано");
         modelAndView.addObject("status", "403");

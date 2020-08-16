@@ -4,6 +4,7 @@ import app.models.abstr.IdentityBaseEntity;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -266,6 +267,13 @@ public class Task
 
     public Set<Long> getDocumentsIds() {
         return documentsIds;
+    }
+
+    public void addDocumentId(Long docId) {
+        if (documentsIds == null) {
+            documentsIds = new HashSet<>();
+        }
+        documentsIds.add(docId);
     }
 
     public void setDocumentsIds(Set<Long> documentsIds) {

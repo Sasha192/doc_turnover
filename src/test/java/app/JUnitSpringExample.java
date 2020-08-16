@@ -30,6 +30,8 @@ import app.service.interfaces.ITaskService;
 import app.spring.TestSpringDataConfiguration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -45,6 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.util.ResourceUtils;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestSpringDataConfiguration.class,
@@ -171,6 +174,16 @@ public class JUnitSpringExample {
         List<BriefTask> tasks = briefTaskService.findAll();
         Gson gson = BUILDER.create();
         gson.toJson(tasks);
+    }
+
+    @Test
+    public void testImgResourceHandler() {
+        try {
+            File file = ResourceUtils.getFile("classpath:static/img");
+            System.out.println(file.getAbsolutePath());
+        } catch (FileNotFoundException e) {
+            assert false;
+        }
     }
 
     @Test
