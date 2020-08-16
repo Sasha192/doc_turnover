@@ -52,7 +52,7 @@ import org.springframework.util.ResourceUtils;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestSpringDataConfiguration.class,
         loader = AnnotationConfigContextLoader.class)
-public class JUnitSpringExample {
+public class JunitSpringDaoServicesTests {
 
     private static final GsonBuilder BUILDER;
 
@@ -95,15 +95,15 @@ public class JUnitSpringExample {
     private IOperations<?>[] operations;
 
     @Autowired
-    public JUnitSpringExample(IDepartmentService departmentService,
-                              IBriefDocumentService documentService,
-                              IBriefJsonDocumentService jsonDocumentService,
-                              ICorePropertyService corePropertyService,
-                              IPerformerService performerService,
-                              IStatusService statusService, ITaskService taskService,
-                              ITaskCommentService taskCommentService,
-                              IReportCommentService reportCommentService,
-                              IBriefTaskService briefTaskService) {
+    public JunitSpringDaoServicesTests(IDepartmentService departmentService,
+                                       IBriefDocumentService documentService,
+                                       IBriefJsonDocumentService jsonDocumentService,
+                                       ICorePropertyService corePropertyService,
+                                       IPerformerService performerService,
+                                       IStatusService statusService, ITaskService taskService,
+                                       ITaskCommentService taskCommentService,
+                                       IReportCommentService reportCommentService,
+                                       IBriefTaskService briefTaskService) {
         this.departmentService = departmentService;
         this.documentService = documentService;
         this.jsonDocumentService = jsonDocumentService;
@@ -196,6 +196,22 @@ public class JUnitSpringExample {
     public void selectJsonBriefDoc() {
         System.out.println(this.jsonDocumentService.findAll());
         System.out.println(this.jsonDocumentService.findOne(1));
+        jsonDocumentService.findByAndDepartment(1, null,
+                null, null, null, 1L);
+        jsonDocumentService.findByAndDepartment(1, null,
+                null, null, null, 2L);
+        jsonDocumentService.findByAndDepartment(1, null,
+                null, null, null, 3L);
+        jsonDocumentService.findByAndDepartment(1, null,
+                null, null, null, 4L);
+        jsonDocumentService.findByAndPerformerInTaskId(1, null,
+                null, null, null, 1L);
+        jsonDocumentService.findByAndPerformerInTaskId(1, null,
+                null, null, null, 2L);
+        jsonDocumentService.findByAndPerformerInTaskId(1, null,
+                null, null, null, 38L);
+        jsonDocumentService.findByAndPerformerInTaskId(1, null,
+                null, null, null, 39L);
     }
 
     @Test
