@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Set;
 import javax.persistence.Parameter;
 import javax.persistence.Query;
-
-import com.google.gson.internal.$Gson$Preconditions;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -38,7 +36,7 @@ public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument
 
     static {
         QUERY_FIND_BY_FILTERS =
-                "FROM BriefJsonDocument bd WHERE\n"
+                "SELECT DISTINCT bd FROM BriefJsonDocument bd WHERE\n"
                 + "     bd.id > :offsetValue and\n"
                 + "    (:fileName is null or bd.name = :fileName)  and\n"
                 + "    (:extName is null or bd.extName = :extName)  and\n"
@@ -62,7 +60,7 @@ public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument
                 + "     ORDER BY bd.id DESC";
 
         QUERY_FIND_BY_FILTERS_FOR_PERFORMER =
-                "SELECT bd.id, bd.creation_date, bd.file_name,"
+                "SELECT DISTINCT bd.id, bd.creation_date, bd.file_name,"
                         + " bd.ext_name, bd.task_count,"
                         + " bd.performer_id, bd.department_id,"
                         + " bd.performer_name, bd.department_name "
@@ -73,7 +71,7 @@ public class BriefDocumentJsonDao extends GenericJpaRepository<BriefJsonDocument
                         + filterBy;
 
         QUERY_FIND_BY_FILTERS_FOR_DEPARTMENT =
-                "SELECT bd.id, bd.creation_date, bd.file_name,"
+                "SELECT DISTINCT bd.id, bd.creation_date, bd.file_name,"
                         + " bd.ext_name, bd.task_count,"
                         + " bd.performer_id, bd.department_id,"
                         + " bd.performer_name, bd.department_name "

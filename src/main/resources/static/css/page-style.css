@@ -261,7 +261,7 @@ body {
     font-size: 13px;
 }
 
-.InProgress .board-item_status {
+.inprogress .board-item_status {
     color: #ffb142;
     font-family: "Roboto regular";
     font-size: 13px;

@@ -14,7 +14,7 @@ import { Http } from "./modules/services.js"
 
 
    Http.get("/performer/my/info", User => {
-       if (User.roles[0] == "PERFORMER" || User.roles[0] == "SECRETARY") {
+       if (User.roles[0] == "PERFORMER" || User.roles[0] == "SECRETARY" || User.roles[0] == "MANAGER") {
 
            {  // Todo
                document.querySelectorAll("[contenteditable]").forEach(editor => {
@@ -34,7 +34,7 @@ import { Http } from "./modules/services.js"
                // $("#task-info #send-report-files").css("display", "none")
            }
 
-           $("#notifications").css("display", "block")
+           $("#clpanel-link").css("display", "block")
 
        }
 
@@ -345,7 +345,7 @@ import { validation } from "./modules/form-handler.js"
 
 
 
-                    Http.post("/task/modify/doc_list", { docList: data, todoId: todosHandle.getData(), comment: $("#add-ExistingTodo").find("#comment").val().trim() }, data => {
+                    Http.post("/task/modify/doc_list", { docList: data, todoId: todosHandle.getData(), comment: $("#add-ExistingTodo").find("#taskHolderComment").val() }, data => {
                         status.find(".status-text").html(""); status.css("opacity", "0"); status.find(".status-spinner").removeClass("d-flex").addClass("d-none");
                         location.reload()
                     })
@@ -863,15 +863,15 @@ document.querySelectorAll("[contenteditable]").forEach(editor => {
     })
 
     $("#upload-image_button").on("click", () => {
-        $("#upload-docs").find(".status").css("opacity", "1")
-        $("#upload-docs").find(".status-spinner").removeClass("d-none").addClass("d-flex")
-        data.append("file", file)
-        Http.files("/my/img", data, () => {
+        $("#upload-image").find(".status").css("opacity", "1")
+        $("#upload-image").find(".status-spinner").removeClass("d-none").addClass("d-flex")
+        data.append("img", file)
+        Http.files("performer/my/img", data, (data) => {
             if (data.success == true) {
-                $("#upload-docs").find(".status").css("opacity", "0")
-                $("#upload-docs").find(".status-spinner").removeClass("d-flex").addClass("d-none")
+                $("#upload-image").find(".status").css("opacity", "0")
+                $("upload-image").find(".status-spinner").removeClass("d-flex").addClass("d-none")
                 location.reload()
-            } else {
+            } else if(data.success == false) {
                 alert(data.msg)
             }
         })

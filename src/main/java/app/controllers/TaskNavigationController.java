@@ -183,7 +183,8 @@ public class TaskNavigationController extends JsonSupportController {
         writeToResponse(response, Constants.BUILDER_DETAILS, task);
     }
 
-    @RequestMapping(value = "/modify/docs")
+    @RequestMapping(value = "/modify/docs",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public void modifyTask(HttpServletResponse response,
                            HttpServletRequest request,
                            @RequestParam("todoId") Long taskId,

@@ -121,18 +121,20 @@ public class DocumentsNavigationController extends JsonSupportController {
         final String search = request.getParameter("search");
         Performer performer = performerWrapper.retrievePerformer(request);
         Set<SimpleRole> roles = performer.getRoles();
+        List<BriefJsonDocument> list = null;
         if (allowListArchive(roles)) {
-            final List<BriefJsonDocument> list = this.jsonDocService
+            list = this.jsonDocService
                     .findBy(pageId, search, yearInt, monthInt, dayInt);
             writeToResponse(response, builder, list);
         } else {
             if (roles.contains(SimpleRole.MANAGER)) {
-                jsonDocService.findByAndDepartment(pageId, search, yearInt, monthInt,
+                list = jsonDocService.findByAndDepartment(pageId, search, yearInt, monthInt,
                         dayInt, performer.getDepartmentId());
             } else {
-                jsonDocService.findByAndPerformerInTaskId(pageId, search,
+                list = jsonDocService.findByAndPerformerInTaskId(pageId, search,
                         yearInt, monthInt, dayInt, performer.getId());
             }
+            writeToResponse(response, builder, list);
         }
     }
 

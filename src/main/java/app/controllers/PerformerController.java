@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -104,10 +106,14 @@ public class PerformerController extends JsonSupportController {
         String dbFilePath = "/img/performers_avatars/";
         if (folder.exists()) {
             String filePath = folder.getAbsolutePath();
+            int hash = performer.getName().hashCode();
+            hash = hash < 0 ? hash * -1 : hash;
+            String ext = FilenameUtils
+                    .getExtension(mpfile.getOriginalFilename());
+            // @TODO : check for executed file. i.e. .exe
             String fileName =
-                    performer.getName().hashCode()
-                            + "u"
-                            + performer.getId();
+                    hash + "u" + performer.getId()
+                    + Constants.DOT + ext;
             dbFilePath = dbFilePath + fileName;
             filePath = filePath + Constants.SLASH + fileName;
             File file = filesUploader.upload(filePath, mpfile);

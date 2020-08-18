@@ -72,6 +72,11 @@ class Insert_Users {
         this.userList.html("")
 
         data.forEach(element => {
+
+            if(!element.department) {
+                return
+            };
+
             this.userList.append(`
                 <div class="drop-down_item">
                     <div class="user" user-id="${element.id}">
@@ -144,12 +149,12 @@ class Insert_Todos {
             <div class="drop-down_item">
                 <div class="board-item ${todo.status}" todo-id="${todo.id}">
                     <div class="board-item_content">
-                        <img src="$" alt="">
+                        <img src="${todo.briefPerformers[todo.briefPerformers.length - 1].imgPath}" alt="">
                         <div>
                             <div class="board-item_title">
                                 ${todo.name}
                                 <span>
-                                    ${todo.dateDeadline}
+                                    ${todo.deadlineDate}
                                 </span>
                             </div>
                             <div class="board-item_status">
@@ -225,8 +230,7 @@ class Insert_Tasks {
 
         if(window.location.pathname == "/myboard") {
             data.forEach(todo => {
-                this.insertList.find(".board-body").append(
-                    `<div class="board-item" todo-id="${todo.id}">
+                this.insertList.find(".board-body").append(`<div class="board-item ${todo.status}" todo-id="${todo.id}">
                 <img src=${todo.managerImgPath} alt="">
                 <div class="w-100">
                     <div class="board-item_title">${todo.name.trim().substring(0, 18)}..<span>${todo.deadlineDate}</span></div>
@@ -260,6 +264,7 @@ class Insert_Tasks {
                 $("#task-info").find("#add-report").fadeOut(200)
                 $("#todo-slider").carousel(0)
                 $("#todo-slider").carousel('pause')
+                $("#task-info #todo-complete-control").css("display", "none")
                 $.get(`/task/details?todoId=${e.target.closest(".board-item").getAttribute("todo-id")}`, (data) => {
                     Insert_Tasks.insert_TodoInfo(data, e.target.closest(".board-item").getAttribute("todo-id"))
                 })
@@ -322,17 +327,10 @@ class Insert_Tasks {
 
 
         {
-            if (info.status == "completed") {
+            if (info.report && info.status !== "completed") {
+                $("#task-info #todo-complete-control").css("display", "flex")
+            } else if(info.report && info.status == "completed"){
                 $("#task-info #todo-complete-control").css("display", "none")
-            } else {
-                $("#task-info #todo-complete-control").css("display", "flex")
-            }
-        }
-
-
-        {
-            if (info.report) {
-                $("#task-info #todo-complete-control").css("display", "flex")
             } else {
                 $("#task-info #todo-complete-control").css("display", "none")
             }
@@ -547,7 +545,7 @@ class Insert_Tasks {
 
                 Http.files(`/report/upload?todoId=${todoId}`,
                     formData,
-                        data => {
+                        (data) => {
                         if (data.success == true) {
                             $("#task-info").find(".status").css("opacity", "0")
                             $("#task-info").find(".status-spinner").removeClass("d-flex").addClass("d-none")
@@ -555,7 +553,7 @@ class Insert_Tasks {
                             alert(data.msg)
                         }
                     },
-                    data => {
+                    (data) => {
                         $("#task-info").find(".status").css("opacity", "0")
                         $("#task-info").find(".status-spinner").removeClass("d-flex").addClass("d-none")
                         formData = null;
