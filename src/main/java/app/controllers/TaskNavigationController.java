@@ -17,11 +17,13 @@ import app.service.interfaces.IBriefTaskService;
 import app.service.interfaces.IStatusService;
 import app.service.interfaces.ITaskCommentService;
 import app.service.interfaces.ITaskService;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -80,17 +82,30 @@ public class TaskNavigationController extends JsonSupportController {
 
     @RequestMapping(value = "/list/{task_status}", method = RequestMethod.GET)
     public void listByDepo(HttpServletResponse response, HttpServletRequest request,
-                     @PathVariable(value = "task_status", required = false) String status)
+                           @PathVariable(value = "task_status", required = false) String status,
+                           @PathVariable(value = "pageId", required = false) Integer pageId)
             throws IOException {
+        // @TODO : PageId!!!
         Performer performer = performerWrapper.retrievePerformer(request);
         Long depoId = performer.getDepartmentId();
         List<BriefTask> tasks = null;
+        Set<SimpleRole> roles = performer.getRoles();
         if (status == null) {
             tasks = briefTaskService.findByDepartment(depoId);
         } else {
-            tasks = briefTaskService.findByDepartmentAndStatus(depoId, status);
+            if (allowAllOp(roles)) {
+                tasks = briefTaskService.findByStatus(status);
+            } else {
+                tasks = briefTaskService.findByDepartmentAndStatus(depoId, status);
+            }
         }
         writeToResponse(response, Constants.BUILDER_BRIEF, tasks);
+    }
+
+    private boolean allowAllOp(Set<SimpleRole> roles) {
+        return roles.contains(SimpleRole.ADMIN)
+                || roles.contains(SimpleRole.G_MANAGER)
+                || roles.contains(SimpleRole.SECRETARY);
     }
 
     @RequestMapping(value = "/my/list/{task_status}", method = RequestMethod.GET)
@@ -190,7 +205,7 @@ public class TaskNavigationController extends JsonSupportController {
                            @RequestParam("todoId") Long taskId,
                            @RequestParam("docIds") String[] docIds,
                            @RequestParam(value = "comment", required = false)
-                                       String comment)
+                                   String comment)
             throws IOException {
         Performer performer = performerWrapper.retrievePerformer(request);
         Set<SimpleRole> roles = performer.getRoles();
@@ -203,6 +218,9 @@ public class TaskNavigationController extends JsonSupportController {
                 }
                 taskService.update(task);
                 if (comment != null) {
+                    if (comment.isEmpty()) {
+                        comment = performer.getName() + " вніс(внесла) зміни до завдання.";
+                    }
                     TaskComment taskComment = new TaskComment();
                     taskComment.setTaskId(taskId);
                     taskComment.setComment(comment);
@@ -225,7 +243,7 @@ public class TaskNavigationController extends JsonSupportController {
     public void modifyTaskName(@RequestParam("todoId") Long taskId,
                                @RequestParam(value = "name", required = false) String newName,
                                @RequestParam(value = "description", required = false)
-                                           String description,
+                                       String description,
                                HttpServletRequest request,
                                HttpServletResponse response)
             throws IOException {

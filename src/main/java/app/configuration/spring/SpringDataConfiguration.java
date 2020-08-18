@@ -1,6 +1,8 @@
 package app.configuration.spring;
 
+import java.util.Locale;
 import java.util.Properties;
+import java.util.TimeZone;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -18,6 +20,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
 @PropertySource("/WEB-INF/spring/app.properties")
@@ -70,6 +73,14 @@ public class SpringDataConfiguration {
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean
+    public SessionLocaleResolver getLocaleResolver() {
+        SessionLocaleResolver slr = new SessionLocaleResolver();
+        slr.setDefaultLocale(new Locale("uk", "ua"));
+        slr.setDefaultTimeZone(TimeZone.getTimeZone("Europe/Kiev"));
+        return slr;
     }
 
     private final Properties hibernateProperties() {
