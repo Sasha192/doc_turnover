@@ -50,6 +50,10 @@ public class Constants {
     public static final String PERFORMER_SESSION_KEY =
             "PERFORMER_SESSION_KEY";
 
+    public static final String REMEMBER_ME_UUID;
+
+    public static final String REMEMBER_ME_ID = "REMEMBER_ME_ID";
+
     public static final int MAX_INACTIVE_SESSION_INTERVAL_SECONDS = 60 * 60;
 
     public static final String BAD_REQUEST_REGEX =
@@ -77,6 +81,8 @@ public class Constants {
             "/fonts", "/img",
             "/libs", "/partials"
     };
+    public static final int VALID_REMEMBER_ME_TOKEN_TIME_SEC =
+            60 * 60 * 24 * 7;
 
     static {
         BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()
@@ -90,6 +96,7 @@ public class Constants {
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
                 .setDateFormat(Constants.DATE_FORMAT.toPattern());
+        REMEMBER_ME_UUID = "REMEMBER_ME_UUID";
     }
 
     private ICorePropertyService corePropertyService;
@@ -142,7 +149,11 @@ public class Constants {
                 }
             }
         }
-        corePropertyService.update(property);
+        if (corePropertyService.retrieveByName(newProperty.getName()) == null ) {
+            corePropertyService.update(property);
+        } else {
+            corePropertyService.create(newProperty);
+        }
     }
 
     @Scheduled(fixedDelay = 1_000 * 60 * 10)

@@ -4,6 +4,7 @@ import app.dao.persistance.GenericJpaRepository;
 import app.models.VerificationCode;
 import app.models.basic.CustomUser;
 import app.security.dao.IUserDao;
+import app.security.models.RememberMeToken;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,13 @@ import org.springframework.stereotype.Repository;
 public class UserDao extends GenericJpaRepository<CustomUser> implements IUserDao {
 
     private static final String SELECT_BY_USERNAME =
-            "from CustomUser where email=:email";
+            "SELECT cu FROM CustomUser cu where email=:email";
+
+    private static final String REMOVE_CODE =
+            "DELETE FROM VerificationCode WHERE id=:id_";
+
+    private static final String REMOVE_TOKEN =
+            "DELETE FROM RememberMeToken WHERE id=:id_";
 
     public UserDao() {
         setClazz(CustomUser.class);
@@ -37,5 +44,29 @@ public class UserDao extends GenericJpaRepository<CustomUser> implements IUserDa
     @Override
     public void registerVerificationCode(VerificationCode code) {
         getEntityManager().persist(code);
+    }
+
+    @Override
+    public void removeVerificationCode(long id) {
+        getEntityManager().createQuery(REMOVE_CODE)
+                .setParameter("id_", id)
+                .executeUpdate();
+    }
+
+    @Override
+    public RememberMeToken retrieveRememberMeToken(long id) {
+        return getEntityManager().find(RememberMeToken.class, id);
+    }
+
+    @Override
+    public void registerRememberMeToken(RememberMeToken token) {
+        getEntityManager().persist(token);
+    }
+
+    @Override
+    public void removeRememberMeToken(long id) {
+        getEntityManager().createQuery(REMOVE_TOKEN)
+                .setParameter("id_", id)
+                .executeUpdate();
     }
 }

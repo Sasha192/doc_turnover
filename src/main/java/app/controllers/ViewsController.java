@@ -2,7 +2,7 @@ package app.controllers;
 
 import app.models.basic.Performer;
 import app.security.models.SimpleRole;
-import app.security.wrappers.PerformerWrapper;
+
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;

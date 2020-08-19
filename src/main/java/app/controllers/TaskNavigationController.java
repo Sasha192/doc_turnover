@@ -12,18 +12,15 @@ import app.models.basic.TaskStatus;
 import app.models.events.pub.GenericEventPublisher;
 import app.models.mysqlviews.BriefTask;
 import app.security.models.SimpleRole;
-import app.security.wrappers.PerformerWrapper;
 import app.service.interfaces.IBriefTaskService;
 import app.service.interfaces.IStatusService;
 import app.service.interfaces.ITaskCommentService;
 import app.service.interfaces.ITaskService;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;

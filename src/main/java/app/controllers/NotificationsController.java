@@ -4,7 +4,6 @@ import app.configuration.spring.constants.Constants;
 import app.models.basic.Performer;
 import app.models.events.PerformerEventAgent;
 import app.models.serialization.ExcludeStrategies;
-import app.security.wrappers.PerformerWrapper;
 import app.service.interfaces.IEventService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;

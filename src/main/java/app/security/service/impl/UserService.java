@@ -4,6 +4,7 @@ import app.dao.persistance.IGenericDao;
 import app.models.VerificationCode;
 import app.models.basic.CustomUser;
 import app.security.dao.IUserDao;
+import app.security.models.RememberMeToken;
 import app.security.service.IUserService;
 import app.service.abstraction.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,21 @@ public class UserService extends AbstractService<CustomUser>
 
     @Override
     public void removeVerificationCode(long id) {
+        dao.removeVerificationCode(id);
+    }
 
+    @Override
+    public RememberMeToken retrieveRememberMeToken(long id) {
+        return dao.retrieveRememberMeToken(id);
+    }
+
+    @Override
+    public void registerRememberMeToken(RememberMeToken token) {
+        dao.registerRememberMeToken(token);
+    }
+
+    @Override
+    public void removeRememberMeToken(long id) {
+        dao.removeRememberMeToken(id);
     }
 }

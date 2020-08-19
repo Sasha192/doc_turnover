@@ -3,7 +3,6 @@ package app.controllers;
 import app.configuration.spring.constants.Constants;
 import app.models.basic.Performer;
 import app.models.basic.Task;
-import app.security.wrappers.PerformerWrapper;
 import app.service.interfaces.ITaskService;
 import app.utils.ReportsUploader;
 import app.utils.exceptions.MaliciousFoundException;

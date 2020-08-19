@@ -7,7 +7,6 @@ import app.controllers.dto.EmailDto;
 import app.models.basic.Performer;
 import app.models.mysqlviews.BriefJsonDocument;
 import app.security.models.SimpleRole;
-import app.security.wrappers.PerformerWrapper;
 import app.service.extapis.GMailService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;

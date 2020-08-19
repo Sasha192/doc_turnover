@@ -4,19 +4,18 @@ import app.configuration.spring.constants.Constants;
 import app.controllers.JsonSupportController;
 import app.models.VerificationCode;
 import app.models.basic.CustomUser;
-import app.models.basic.Performer;
 import app.security.models.UserDto;
 import app.security.service.IUserService;
 import app.security.utils.DefaultPasswordEncoder;
 import app.security.utils.VerificationCodeUtil;
 import app.security.utils.VerificationMailTemplater;
+import app.security.wrappers.IAuthenticationManagement;
 import app.service.extapis.IMailService;
 import app.service.impl.ExecutionService;
 import app.service.interfaces.IPerformerService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,11 +25,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +45,7 @@ public class AuthenticationController extends JsonSupportController {
     private static final Map<Long, VerificationCode> verificationTable = new HashMap<>();
     private static final String TABLE_USER = "TABLE_USER";
     private static final Logger LOGGER = Logger.getLogger("intExceptionLogger");
-    private static final long EXPIRATION_TIME = 900000L;
+    private static final long CODE_EXPIRATION_TIME = 900000L;
 
     private final IUserService userService;
 
@@ -61,11 +57,9 @@ public class AuthenticationController extends JsonSupportController {
 
     private final ExecutionService executionService;
 
-    private final IPerformerService performerService;
-
-    private final AuthenticationManager authManager;
-
     private final Constants constants;
+
+    private final IAuthenticationManagement authenticationManagement;
 
     @Autowired
     public AuthenticationController(final IUserService userService,
@@ -75,43 +69,22 @@ public class AuthenticationController extends JsonSupportController {
                                     final ExecutionService executionService,
                                     IPerformerService performerService,
                                     AuthenticationManager authManager,
-                                    @Qualifier("app_constants") Constants constants) {
+                                    @Qualifier("app_constants") Constants constants,
+                                    IAuthenticationManagement authenticationManagement) {
         this.userService = userService;
         this.encoder = encoder;
         this.verificationMailTemplater = templater;
         this.mailService = mailService;
         this.executionService = executionService;
-        this.performerService = performerService;
-        this.authManager = authManager;
         this.constants = constants;
+        this.authenticationManagement = authenticationManagement;
     }
 
     @RequestMapping("/logout")
     public void logout(HttpServletRequest req, HttpServletResponse res)
             throws IOException {
-        this.cleanData(req, res);
+        authenticationManagement.invalidate(req, res);
         this.sendDefaultJson(res, true, "");
-    }
-
-    private void cleanData(final HttpServletRequest req, final HttpServletResponse res) {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context == null ? null :
-                context.getAuthentication();
-        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-        AuthenticationController.removeCookies(req, res);
-        logoutHandler.logout(req, res, authentication);
-    }
-
-    private static void removeCookies(HttpServletRequest req, HttpServletResponse res) {
-        Cookie[] cookies = req.getCookies();
-        for (Cookie cookie : cookies) {
-            cookie.setValue(null);
-            cookie.setMaxAge(0);
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            res.addCookie(cookie);
-        }
     }
 
     @PostMapping("/verify")
@@ -127,37 +100,15 @@ public class AuthenticationController extends JsonSupportController {
             }
             VerificationCode code = retrieveVerificationCode(this.getVerificationKey(dto));
             if (code != null) {
-                if (EXPIRATION_TIME
+                if (CODE_EXPIRATION_TIME
                         < System.currentTimeMillis() - code.getCreationtime()) {
-                    this.cleanData(request, res);
+                    authenticationManagement.invalidate(request, res);
                     verificationTable.remove(getVerificationKey(dto));
                     sendDefaultJson(res, false,
                             "Verification code expired. Please perform new verification code");
                 }
-                if (userService.retrieveByName(dto.getEmail()) == null) {
-                    CustomUser customUser = new CustomUser(dto, encoder);
-                    customUser.setEnabled(true);
-                    userService.create(customUser);
-                    Performer performer = new Performer();
-                    String performerName =
-                            (dto.getFirstName() == null
-                                    ? Constants.EMPTY_STRING :
-                                    dto.getFirstName())
-                                    + " "
-                                    + (dto.getLastName() == null
-                                    ? Constants.EMPTY_STRING :
-                                    dto.getLastName());
-                    performer.setName(performerName);
-                    performer.setRoles(customUser.getRoles());
-                    performerService.create(performer);
-                    customUser.setPerformer(performer);
-                    userService.update(customUser);
-                }
+                authenticationManagement.authenticate(request, res, dto);
                 removeVerificationCode(getVerificationKey(dto));
-                auth(res, request, dto);
-                Performer performer = performerService.retrieveByUsername(dto.getEmail());
-                session.setAttribute(Constants.PERFORMER_SESSION_KEY, performer);
-                session.setMaxInactiveInterval(Constants.MAX_INACTIVE_SESSION_INTERVAL_SECONDS);
                 this.sendDefaultJson(res, true, "");
                 return;
             } else {
@@ -200,7 +151,7 @@ public class AuthenticationController extends JsonSupportController {
                 .getContext()
                 .getAuthentication();
         if (authentication != null) {
-            this.cleanData(req, res);
+            authenticationManagement.invalidate(req, res);
         }
         if (userService.retrieveByName(userDto.getEmail()) != null) {
             sendDefaultJson(res, false, "User with such email is already exist");
@@ -273,7 +224,7 @@ public class AuthenticationController extends JsonSupportController {
         for (Map.Entry<Long, VerificationCode> entry : verificationTable.entrySet()) {
             VerificationCode code = null;
             if ((code = entry.getValue()) != null) {
-                if (EXPIRATION_TIME > System.currentTimeMillis() - code.getCreationtime()) {
+                if (CODE_EXPIRATION_TIME > System.currentTimeMillis() - code.getCreationtime()) {
                     verificationTable.remove(entry.getKey());
                 }
             }
@@ -297,20 +248,6 @@ public class AuthenticationController extends JsonSupportController {
         }
         this.createVerificationCode(userDto);
         this.sendVerificationCode(userDto, req, res);
-    }
-
-    public void auth(HttpServletResponse res,
-                     HttpServletRequest request,
-                     UserDto dto) throws IOException {
-        HttpSession session = null;
-        session = request.getSession(true);
-        UsernamePasswordAuthenticationToken authReq
-                = new UsernamePasswordAuthenticationToken(
-                dto.getEmail(), dto.getPassword());
-        Authentication auth = authManager.authenticate(authReq);
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(auth);
-        session.setAttribute(Constants.SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 
     private String getVerificationKey(VerificationCode code, UserDto userDto) {

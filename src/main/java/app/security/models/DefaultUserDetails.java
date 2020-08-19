@@ -35,32 +35,40 @@ public class DefaultUserDetails implements UserDetails {
                 this.setDepartment(department);
             }
         }
-        for (final SimpleRole role : customUser.getRoles()) {
+        setAuthorities(mapAuthorities(customUser.getRoles()));
+    }
+
+    public static Set<GrantedAuthority> mapAuthorities(
+            Set<SimpleRole> roles
+    ) {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        for (final SimpleRole role : roles) {
             switch (role) {
                 case PERFORMER: {
-                    this.addAuthority(new SimpleGrantedAuthority("ROLE_USER"));
+                    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
                     break;
                 }
                 case ADMIN: {
-                    this.addAuthority(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                    authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
                     break;
                 }
                 case MANAGER: {
-                    this.addAuthority(new SimpleGrantedAuthority("ROLE_MANAGER"));
+                    authorities.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
                     break;
                 }
                 case G_MANAGER: {
-                    this.addAuthority(new SimpleGrantedAuthority("ROLE_G_MANAGER"));
+                    authorities.add(new SimpleGrantedAuthority("ROLE_G_MANAGER"));
                     break;
                 }
                 case SECRETARY: {
-                    this.addAuthority(new SimpleGrantedAuthority("SECRETARY"));
+                    authorities.add(new SimpleGrantedAuthority("SECRETARY"));
                     break;
                 }
                 default:
                     break;
             }
         }
+        return authorities;
     }
 
     @Override

@@ -3,8 +3,12 @@ package app.configuration.spring;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+
+import app.configuration.spring.constants.AppConstants;
+import app.configuration.spring.constants.Constants;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +44,10 @@ public class SpringDataConfiguration {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    @AppConstants
+    private Constants constants;
 
     @Bean
     public DataSource getDataSource() {
@@ -78,8 +86,11 @@ public class SpringDataConfiguration {
     @Bean
     public SessionLocaleResolver getLocaleResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(new Locale("uk", "ua"));
-        slr.setDefaultTimeZone(TimeZone.getTimeZone("Europe/Kiev"));
+        String lang = env.getProperty("app.locale.lang");
+        String country = env.getProperty("app.locale.country");
+        slr.setDefaultLocale(new Locale(lang, country));
+        String timeZone = env.getProperty("app.timeZone");
+        slr.setDefaultTimeZone(TimeZone.getTimeZone(timeZone));
         return slr;
     }
 
