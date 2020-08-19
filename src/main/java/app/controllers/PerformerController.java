@@ -6,6 +6,8 @@ import app.models.basic.Performer;
 import app.models.serialization.ExcludeStrategies;
 import app.security.service.IUserService;
 import app.security.utils.DefaultPasswordEncoder;
+import app.security.wrappers.IAuthenticationWrapper;
+import app.security.wrappers.IPerformerWrapper;
 import app.service.interfaces.IPerformerService;
 import app.utils.FilesUploader;
 import com.google.gson.GsonBuilder;
@@ -34,8 +36,8 @@ public class PerformerController extends JsonSupportController {
     private static final Logger LOGGER = Logger.getLogger("intExceptionLogger");
 
     private IUserService userService;
-    private AuthenticationWrapper authenticationWrapper;
-    private final PerformerWrapper performerWrapper;
+    private IAuthenticationWrapper authenticationWrapper;
+    private final IPerformerWrapper performerWrapper;
     private IPerformerService performerService;
     private DefaultPasswordEncoder encoder;
     private final FilesUploader filesUploader;
@@ -43,10 +45,10 @@ public class PerformerController extends JsonSupportController {
 
     @Autowired
     public PerformerController(IUserService userService,
-                               AuthenticationWrapper authenticationWrapper,
+                               IAuthenticationWrapper authenticationWrapper,
                                IPerformerService performerService,
                                DefaultPasswordEncoder encoder,
-                               PerformerWrapper performerWrapper,
+                               IPerformerWrapper performerWrapper,
                                @Qualifier("files_uploader")
                                            FilesUploader filesUploader,
                                @Qualifier("app_constants")

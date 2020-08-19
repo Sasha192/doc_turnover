@@ -7,6 +7,7 @@ import app.controllers.dto.EmailDto;
 import app.models.basic.Performer;
 import app.models.mysqlviews.BriefJsonDocument;
 import app.security.models.SimpleRole;
+import app.security.wrappers.IPerformerWrapper;
 import app.service.extapis.GMailService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
@@ -69,7 +70,7 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     private IBriefJsonDocumentService jsonDocService;
 
-    private PerformerWrapper performerWrapper;
+    private IPerformerWrapper performerWrapper;
 
     private final DocumentsUploader uploader;
 
@@ -79,7 +80,7 @@ public class DocumentsNavigationController extends JsonSupportController {
     public DocumentsNavigationController(GMailService mailService,
                                          IBriefDocumentService docService,
                                          IBriefJsonDocumentService jsonDocService,
-                                         PerformerWrapper performerWrapper,
+                                         IPerformerWrapper performerWrapper,
                                          @Qualifier("app_constants") Constants constants,
                                          @Qualifier("doc_uploader") DocumentsUploader uploader,
                                          DocRetrieveUtils docRetrieveUtils) {

@@ -30,7 +30,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ComponentScans({
         @ComponentScan("app.controllers"),
         @ComponentScan("app.security.controllers"),
-        @ComponentScan("app.security.utils")
+        @ComponentScan("app.security.utils"),
+        @ComponentScan("app.security.wrappers"),
 })
 @EnableScheduling
 @EnableWebMvc

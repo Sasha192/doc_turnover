@@ -4,6 +4,7 @@ import app.configuration.spring.constants.Constants;
 import app.models.basic.Performer;
 import app.models.events.PerformerEventAgent;
 import app.models.serialization.ExcludeStrategies;
+import app.security.wrappers.IPerformerWrapper;
 import app.service.interfaces.IEventService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class NotificationsController extends JsonSupportController {
     private IEventService eventService;
 
     @Autowired
-    private PerformerWrapper performerWrapper;
+    private IPerformerWrapper performerWrapper;
 
     @RequestMapping(value = "/recent", method = RequestMethod.GET)
     public void recentList(HttpServletResponse response,

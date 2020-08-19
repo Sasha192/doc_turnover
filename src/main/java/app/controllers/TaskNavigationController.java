@@ -12,6 +12,7 @@ import app.models.basic.TaskStatus;
 import app.models.events.pub.GenericEventPublisher;
 import app.models.mysqlviews.BriefTask;
 import app.security.models.SimpleRole;
+import app.security.wrappers.IPerformerWrapper;
 import app.service.interfaces.IBriefTaskService;
 import app.service.interfaces.IStatusService;
 import app.service.interfaces.ITaskCommentService;
@@ -44,7 +45,7 @@ public class TaskNavigationController extends JsonSupportController {
 
     private IEntityDtoMapper<Task, TaskDto> taskMapper;
 
-    private PerformerWrapper performerWrapper;
+    private IPerformerWrapper performerWrapper;
 
     private ITaskService taskService;
 
@@ -58,7 +59,7 @@ public class TaskNavigationController extends JsonSupportController {
 
     private final GenericEventPublisher<TaskHolderComment> commentPublisher;
 
-    public TaskNavigationController(PerformerWrapper performerWrapper,
+    public TaskNavigationController(IPerformerWrapper performerWrapper,
                                     ITaskService taskService,
                                     IStatusService statusService,
                                     IBriefTaskService briefTaskService,

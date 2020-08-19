@@ -3,10 +3,8 @@ package app.configuration.spring;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-
 import app.configuration.spring.constants.AppConstants;
 import app.configuration.spring.constants.Constants;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -34,7 +32,6 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         @ComponentScan("app.models"),
         @ComponentScan("app.service"),
         @ComponentScan("app.security.models"),
-        @ComponentScan("app.security.wrappers"),
         @ComponentScan("app.security.dao"),
         @ComponentScan("app.security.service"),
         @ComponentScan("app.configuration"),

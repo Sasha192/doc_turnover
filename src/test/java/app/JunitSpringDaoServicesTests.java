@@ -3,6 +3,7 @@ package app;
 import app.configuration.spring.constants.Constants;
 import app.dao.persistance.IOperations;
 import app.models.basic.BriefDocument;
+import app.models.basic.CustomUser;
 import app.models.basic.Department;
 import app.models.basic.Performer;
 import app.models.basic.Report;
@@ -15,7 +16,9 @@ import app.models.events.impl.DocPublishingEvent;
 import app.models.mysqlviews.BriefPerformer;
 import app.models.mysqlviews.BriefTask;
 import app.models.serialization.ExcludeStrategies;
+import app.security.models.RememberMeToken;
 import app.security.service.IUserService;
+import app.security.utils.RememberMeUtil;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
 import app.service.interfaces.IBriefTaskService;
@@ -87,6 +90,9 @@ public class JunitSpringDaoServicesTests {
     private IBriefTaskService briefTaskService;
 
     @Autowired
+    private RememberMeUtil rememberMeUtil;
+
+    @Autowired
     private IUserService userService;
 
     @Autowired
@@ -149,6 +155,14 @@ public class JunitSpringDaoServicesTests {
                 }
             }
         }
+    }
+
+    @Test
+    public void testVerificationCodeTablePlusRemMeTokens() {
+        CustomUser user = userService.findAll().get(0);
+        RememberMeToken token = rememberMeUtil.getRememberMeToken(user);
+        userService.registerRememberMeToken(token);
+        userService.retrieveRememberMeToken(token.getId());
     }
 
     @Test

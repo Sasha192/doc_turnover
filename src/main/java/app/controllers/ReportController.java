@@ -3,6 +3,7 @@ package app.controllers;
 import app.configuration.spring.constants.Constants;
 import app.models.basic.Performer;
 import app.models.basic.Task;
+import app.security.wrappers.IPerformerWrapper;
 import app.service.interfaces.ITaskService;
 import app.utils.ReportsUploader;
 import app.utils.exceptions.MaliciousFoundException;
@@ -26,13 +27,13 @@ public class ReportController extends JsonSupportController {
 
     private final ITaskService taskService;
 
-    private PerformerWrapper performerWrapper;
+    private IPerformerWrapper performerWrapper;
 
     @Autowired
     public ReportController(ReportsUploader uploader,
                             Constants constants,
                             ITaskService taskService,
-                            PerformerWrapper performerWrapper) {
+                            IPerformerWrapper performerWrapper) {
         this.uploader = uploader;
         this.constants = constants;
         this.taskService = taskService;

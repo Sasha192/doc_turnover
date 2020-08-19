@@ -1,8 +1,15 @@
 package app.spring;
 
+import java.lang.reflect.Proxy;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.TimeZone;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.io.FileTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,6 +22,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
 @EnableTransactionManagement
@@ -24,10 +32,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         @ComponentScan("app.service"),
         @ComponentScan("app.configuration.spring.constants"),
         @ComponentScan("app.security.models"),
-        @ComponentScan("app.security.wrappers"),
         @ComponentScan("app.security.dao"),
         @ComponentScan("app.security.service"),
-        @ComponentScan("app.utils")
+        @ComponentScan("app.utils"),
+        @ComponentScan("app.security.utils")
 })
 public class TestSpringDataConfiguration {
 
@@ -44,6 +52,22 @@ public class TestSpringDataConfiguration {
         dataSource.setUsername(dbUsername);
         dataSource.setPassword(dbPassword);
         return dataSource;
+    }
+
+    @Bean
+    public SessionLocaleResolver getLocaleResolver() {
+        SessionLocaleResolver slr = new SessionLocaleResolver();
+        String lang = "uk";
+        String country = "ua";
+        slr.setDefaultLocale(new Locale(lang, country));
+        String timeZone = "Europe/Kiev";
+        slr.setDefaultTimeZone(TimeZone.getTimeZone(timeZone));
+        return slr;
+    }
+
+    @Bean("for.email.template")
+    public Handlebars forEmailTemplate() {
+        return new Handlebars();
     }
 
     @Bean

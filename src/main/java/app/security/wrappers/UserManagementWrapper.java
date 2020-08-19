@@ -33,10 +33,6 @@ public class UserManagementWrapper
         IAuthenticationWrapper,
         IAuthenticationManagement {
 
-    private final IAuthenticationWrapper authenticationWrapper;
-
-    private final IPerformerWrapper performerWrapper;
-
     private final IUserService userService;
 
     private final IPerformerService performerService;
@@ -50,16 +46,12 @@ public class UserManagementWrapper
     private final RememberMeUtil rememberMeUtil;
 
     @Autowired
-    public UserManagementWrapper(IAuthenticationWrapper authenticationWrapper,
-                                 IPerformerWrapper performerWrapper,
-                                 IUserService userService,
+    public UserManagementWrapper(IUserService userService,
                                  IPerformerService performerService,
                                  AuthenticationManager authManager,
                                  DefaultPasswordEncoder encoder,
                                  IPerformerUpdateEventListenerService listenerService,
                                  RememberMeUtil rememberMeUtil) {
-        this.authenticationWrapper = authenticationWrapper;
-        this.performerWrapper = performerWrapper;
         this.userService = userService;
         this.performerService = performerService;
         this.authManager = authManager;
@@ -221,7 +213,7 @@ public class UserManagementWrapper
             performer = retrievePerformer(session);
             return performer;
         }
-        Principal principal = (Principal) authenticationWrapper.getPrincipal(request);
+        Principal principal = (Principal) getPrincipal(request);
         if ((principal instanceof UserDetails)) {
             performer = performerService.retrieveByUsername(
                     ((UserDetails) principal).getUsername()
