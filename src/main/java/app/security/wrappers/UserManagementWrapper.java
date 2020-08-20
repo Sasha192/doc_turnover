@@ -110,7 +110,7 @@ public class UserManagementWrapper
             throws IOException {
         HttpSession session = request.getSession(true);
         if (session != null) {
-            token.setAuthenticated(true);
+            //token.setAuthenticated(true);
             setToSession(token, token.getName(), session);
         }
     }

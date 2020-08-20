@@ -774,7 +774,7 @@ function validation(form) {
         return false
     }
 
-    if (form.find(".remember").checked == true) {
+    if (form.find(".remember").prop("checked") == true) {
         data.remember = true;
     } else {
         data.remember = false

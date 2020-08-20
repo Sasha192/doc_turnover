@@ -72,6 +72,18 @@ public class AuthenticationFilter extends GenericFilterBean {
                 SecurityContext context = retrieveSecurityContext(session);
                 if (context != null) {
                     Authentication authentication = context.getAuthentication();
+                    if (authentication != null
+                            && authentication.isAuthenticated()) {
+                        if (requestUri.startsWith("/auth")) {
+                            if (requestUri.equals("/auth")) {
+                                ((HttpServletResponse) servletResponse).sendRedirect("/myboard");
+                                return;
+                            } else {
+                                filterChain.doFilter(servletRequest, servletResponse);
+                                return;
+                            }
+                        }
+                    }
                     if (requestUri.startsWith("/auth")) {
                         filterChain.doFilter(servletRequest, servletResponse);
                         return;
@@ -79,13 +91,20 @@ public class AuthenticationFilter extends GenericFilterBean {
                     if (requestUri.equals(Constants.EMPTY_STRING)
                             || requestUri.startsWith("/")) {
                         if (authentication != null && authentication.isAuthenticated()) {
-                            if (requestUri.equals(Constants.EMPTY_STRING)) {
+                            if (requestUri.equals(Constants.EMPTY_STRING)
+                                    || requestUri.equals("/")) {
                                 ((HttpServletResponse) servletResponse).sendRedirect("/myboard");
+                                return;
                             }
                             filterChain.doFilter(servletRequest, servletResponse);
                             return;
                         } else {
                             if (authenticatedViaCookies(req)) {
+                                if (requestUri.equals(Constants.EMPTY_STRING)
+                                        || requestUri.equals("/")) {
+                                    ((HttpServletResponse) servletResponse).sendRedirect("/myboard");
+                                    return;
+                                }
                                 filterChain.doFilter(servletRequest, servletResponse);
                                 return;
                             } else {
@@ -106,6 +125,9 @@ public class AuthenticationFilter extends GenericFilterBean {
 
     private boolean authenticatedViaCookies(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
+        if (cookies == null) {
+            return false;
+        }
         Cookie uuid = null;
         Cookie id = null;
         for (Cookie cookie : cookies) {
