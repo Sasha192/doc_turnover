@@ -109,11 +109,7 @@ public class PerformersNavigationController extends JsonSupportController {
     @PostMapping(value = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void removePerformer(HttpServletResponse response,
                                 @RequestParam("performer_id") Long performerId) {
-        Performer performer = performerService.findOne(performerId);
-        if (performer != null) {
-            performerService.deleteById(performerId);
-            userService.deleteById(performer.getUser().getId());
-        }
+        performerService.deleteById(performerId);
         sendDefaultJson(response, true, "");
     }
 }

@@ -15,6 +15,7 @@ public abstract class AbstractJpaDao<T extends Serializable> {
 
     private static final String FROM = "from ";
     private static final int BATCH_SIZE = 5;
+    private static String DELETE_BY_ID;
     private Class<T> clazz;
     private CriteriaBuilder criteriaBuilder;
 
@@ -23,6 +24,7 @@ public abstract class AbstractJpaDao<T extends Serializable> {
 
     public final void setClazz(final Class<T> clazzToSet) {
         this.clazz = clazzToSet;
+        DELETE_BY_ID = FROM + clazz.getName() + " WHERE id=:id_ ";
     }
 
     public T findOne(final long id) {
@@ -69,8 +71,15 @@ public abstract class AbstractJpaDao<T extends Serializable> {
     }
 
     public void deleteById(final long entityId) {
-        final T entity = findOne(entityId);
-        delete(entity);
+        if (DELETE_BY_ID != null) {
+            getEntityManager()
+                    .createQuery(DELETE_BY_ID)
+                    .setParameter("id_", entityId)
+                    .executeUpdate();
+        } else {
+            final T entity = findOne(entityId);
+            delete(entity);
+        }
     }
 
     public Class<T> getClazz() {
