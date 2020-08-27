@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,7 @@ public class Constants {
     public static final String EMPTY_STRING = "";
     public static final String IS_MALICIOUS = " is malicious or can not be uploaded";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+    public static List<String> appImageFormats;
 
     public static final GsonBuilder BUILDER_BRIEF;
 
@@ -100,6 +102,7 @@ public class Constants {
     }
 
     private ICorePropertyService corePropertyService;
+
     private ConcurrentHashMap<String, CoreProperty> properties;
 
     @Autowired
@@ -149,11 +152,16 @@ public class Constants {
                 }
             }
         }
-        if (corePropertyService.retrieveByName(newProperty.getName()) == null ) {
+        if (corePropertyService.retrieveByName(newProperty.getName()) == null) {
             corePropertyService.update(property);
         } else {
             corePropertyService.create(newProperty);
         }
+    }
+
+    @Value("#{'${arrayOfStrings}'.split(',')}")
+    private void setAppImageFormats(List<String> imageFormats) {
+        appImageFormats = imageFormats;
     }
 
     @Scheduled(fixedDelay = 1_000 * 60 * 10)

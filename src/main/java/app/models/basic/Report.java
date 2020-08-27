@@ -32,7 +32,7 @@ public class Report extends IdentityBaseEntity {
     @Column(name = "time")
     private Time time;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(cascade = {CascadeType.REFRESH})
     @JoinTable(name = "reports_docs",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "doc_id")
@@ -40,7 +40,7 @@ public class Report extends IdentityBaseEntity {
     @ExcludeForJsonReport
     private List<BriefDocument> documents;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(cascade = {CascadeType.REFRESH})
     @JoinTable(name = "reports_docs",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "doc_id")
@@ -48,7 +48,7 @@ public class Report extends IdentityBaseEntity {
     @Column(insertable = false, updatable = false)
     private List<BriefJsonDocument> docList;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(cascade = {CascadeType.REFRESH})
     @JoinTable(name = "comment_post",
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "id")
@@ -56,7 +56,7 @@ public class Report extends IdentityBaseEntity {
     private List<ReportComment> comments;
 
     @OneToOne(fetch = FetchType.LAZY,
-            cascade = {CascadeType.REFRESH, CascadeType.PERSIST},
+            cascade = {CascadeType.REFRESH},
             mappedBy = "report")
     @ExcludeForJsonReport
     private Task task;

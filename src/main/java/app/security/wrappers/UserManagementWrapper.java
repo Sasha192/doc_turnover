@@ -10,6 +10,7 @@ import app.security.utils.DefaultPasswordEncoder;
 import app.security.utils.RememberMeUtil;
 import app.service.interfaces.IPerformerService;
 import app.service.interfaces.IPerformerUpdateEventListenerService;
+import app.utils.ImgToken;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.security.Principal;
@@ -80,6 +81,8 @@ public class UserManagementWrapper
                             dto.getLastName());
             performer.setName(performerName);
             performer.setRoles(customUser.getRoles());
+            String imgToken = ImgToken.generate(performer.getName());
+            performer.setImgIdToken(imgToken);
             performerService.create(performer);
             customUser.setPerformer(performer);
             userService.update(customUser);
@@ -89,6 +92,7 @@ public class UserManagementWrapper
             boolean rememmberMe = dto.getRemember().booleanValue();
             if (rememmberMe) {
                 RememberMeToken token = rememberMeUtil.getRememberMeToken(customUser);
+                token.setIp(request.getRemoteAddr());
                 userService.registerRememberMeToken(token);
                 Cookie uuid = new Cookie(Constants.REMEMBER_ME_UUID, token.getUuid().toString());
                 uuid.setMaxAge(Constants.VALID_REMEMBER_ME_TOKEN_TIME_SEC);

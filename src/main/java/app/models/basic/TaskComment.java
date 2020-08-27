@@ -19,7 +19,7 @@ public class TaskComment
         extends TaskHolderComment
         implements Serializable {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", insertable = false, updatable = false)
     @ExcludeForJsonComment
@@ -41,6 +41,10 @@ public class TaskComment
             this.setPerformerIds(ids);
         }
         return performerIds;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     public Task getTask() {

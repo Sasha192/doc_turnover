@@ -3,7 +3,6 @@ package app.security.models;
 import app.models.VerificationCode;
 import app.security.models.annotations.ValidPasswordPattern;
 import com.google.gson.annotations.Expose;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;

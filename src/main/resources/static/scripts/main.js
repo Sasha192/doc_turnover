@@ -343,9 +343,14 @@ import { validation } from "./modules/form-handler.js"
 
                     status.find(".status-text").html(""); status.css("opacity", "1"); status.find(".status-spinner").removeClass("d-none").addClass("d-flex")
 
+                    let docArray = data;
+                    let taskId = todosHandle.getData();
+                    let commentString = $("#add-ExistingTodo").find("#taskHolderComment").val();
 
-
-                    Http.post("/task/modify/doc_list", { docList: data, todoId: todosHandle.getData(), comment: $("#add-ExistingTodo").find("#taskHolderComment").val() }, data => {
+                    Http.post(
+                        `/task/modify/docs?todoId=${taskId}&docIds=${docArray}&comment=${commentString}`
+                        ,null
+                        ,data => {
                         status.find(".status-text").html(""); status.css("opacity", "0"); status.find(".status-spinner").removeClass("d-flex").addClass("d-none");
                         location.reload()
                     })

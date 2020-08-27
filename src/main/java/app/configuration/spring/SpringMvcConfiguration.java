@@ -40,31 +40,13 @@ public class SpringMvcConfiguration
         extends WebSecurityConfigurerAdapter
         implements WebMvcConfigurer {
 
-    private static final int MAX_SIZE_UPLOAD = 20_000_000;
+    private static final int MAX_SIZE_UPLOAD = 5 * 0b10000000000 * 0b10000000000;
 
     private static final Logger LOGGER = Logger.getLogger(SpringMvcConfiguration.class);
 
     private final DefaultUserDetailsService userDetailsService;
 
     private final DefaultPasswordEncoder defaultPasswordEncoder;
-
-    /*@Autowired
-    @Qualifier("default_access_denied_handler")
-    private AccessDeniedHandler accessDeniedHandler;
-
-    @Autowired
-    @Qualifier("default.auth.success.handler")
-    private DefaultAuthenticationSuccessHandler defaultAuthenticationSuccessHandler;
-
-    @Autowired
-    @Qualifier("default.auth.failure.handler")
-    private DefaultAuthenticationFailureHandler defaultAuthenticationFailureHandler;*/
-
-    /*@Autowired
-    private ResourceLoader resourceLoader;
-
-    @Autowired
-    private Filter authenticationFilter;*/
 
     private final Constants constants;
 
@@ -85,14 +67,6 @@ public class SpringMvcConfiguration
         return handlebarsViewResolver;
     }
 
-    @Override
-    public void addViewControllers(final ViewControllerRegistry viewControllerRegistry) {
-        viewControllerRegistry.addViewController("/")
-                .setViewName("auth");
-        //@TODO : myboard
-        //@TODO : SessionWrapper
-    }
-
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver multipartResolver() {
         final CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
@@ -103,15 +77,20 @@ public class SpringMvcConfiguration
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("scripts/**")
-                .addResourceLocations("classpath:/static/scripts/");
+                .addResourceLocations("classpath:/static/scripts/")
+                .setCachePeriod(60 * 60);
         registry.addResourceHandler("fonts/**")
-                .addResourceLocations("classpath:/static/fonts/");
+                .addResourceLocations("classpath:/static/fonts/")
+                .setCachePeriod(60 * 60);
         registry.addResourceHandler("img/**")
-                .addResourceLocations("classpath:/static/img/");
+                .addResourceLocations("classpath:/static/img/")
+                .setCachePeriod(60 * 60);
         registry.addResourceHandler("libs/**")
-                .addResourceLocations("classpath:/static/libs/");
+                .addResourceLocations("classpath:/static/libs/")
+                .setCachePeriod(60 * 60);
         registry.addResourceHandler("css/**")
-                .addResourceLocations("classpath:/static/css/");
+                .addResourceLocations("classpath:/static/css/")
+                .setCachePeriod(60 * 60);
     }
 
     @Bean("for.email.template")

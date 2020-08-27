@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
@@ -33,7 +34,7 @@ public class PerformerController extends JsonSupportController {
     // @TODO : What should we do if connection is not via http ??? Could it be ???
     // @TODO : any operations to DB perform in queue???
 
-    private static final Logger LOGGER = Logger.getLogger("intExceptionLogger");
+    private static final Logger INTLOGGER = Logger.getLogger("intExceptionLogger");
 
     private IUserService userService;
     private IAuthenticationWrapper authenticationWrapper;
@@ -101,26 +102,42 @@ public class PerformerController extends JsonSupportController {
             throws IOException {
         Performer performer = performerWrapper.retrievePerformer(request);
         File folder = ResourceUtils
-                .getFile("classpath:static/img/performers_avatars");
-        String dbFilePath = "/img/performers_avatars/";
+                .getFile("classpath:static/img/avatars");
         if (folder.exists()) {
-            String filePath = folder.getAbsolutePath();
-            int hash = performer.getName().hashCode();
-            hash = hash < 0 ? hash * -1 : hash;
-            String ext = FilenameUtils
+            String ext = Constants.DOT + FilenameUtils
                     .getExtension(mpfile.getOriginalFilename());
-            // @TODO : check for executed file. i.e. .exe
-            String fileName =
-                    hash + "u" + performer.getId()
-                    + Constants.DOT + ext;
-            dbFilePath = dbFilePath + fileName;
-            filePath = filePath + Constants.SLASH + fileName;
-            File file = filesUploader.upload(filePath, mpfile);
-            performer.setImgPath(dbFilePath);
-            performerService.update(performer);
+            if (!checkForAppropriateImageExtension(ext)) {
+                sendDefaultJson(response, false, "");
+                return;
+            }
+            updatePerformerImagePath(performer, mpfile, ext, folder);
             sendDefaultJson(response, true, Constants.EMPTY_STRING);
         } else {
             sendDefaultJson(response, false, "Server Internal Error. Please try later");
         }
+    }
+
+    private void updatePerformerImagePath(Performer performer,
+                                          MultipartFile mpfile,
+                                          String ext,
+                                          File folder)
+            throws IOException {
+        String dbFilePath = "/img/avatars/";
+        String fileName = generateFileName(performer, ext);
+        dbFilePath = dbFilePath + fileName;
+        String filePath = folder.getAbsolutePath();
+        filePath = filePath + Constants.SLASH + fileName;
+        File file = filesUploader.upload(filePath, mpfile);
+        performer.setImgPath(dbFilePath);
+        performerService.update(performer);
+    }
+
+    private boolean checkForAppropriateImageExtension(String imgExt) {
+        List<String> strings = Constants.appImageFormats;
+        return strings.contains(imgExt);
+    }
+
+    private String generateFileName(Performer performer, String ext) {
+        return performer.getImgIdToken() + Constants.DOT + ext;
     }
 }

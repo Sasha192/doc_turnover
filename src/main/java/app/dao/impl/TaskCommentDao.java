@@ -14,13 +14,13 @@ public class TaskCommentDao
         implements ITaskCommentDao {
 
     private static final String FROM =
-            " select tc from TaskComment tc ";
+            " select tc from TaskComment tc ORDER BY id DESC";
 
     private static final String FIND_BY_TASK_ID =
-            FROM + " WHERE task_id=:id ";
+            FROM + " WHERE task_id=:id ORDER BY id DESC ";
 
     private static final String FIND_BY_TASK_NAME =
-            FROM + " INNER JOIN tc.task t ON t.toDo = :name ";
+            FROM + " INNER JOIN tc.task t ON t.toDo = :name ORDER BY id DESC ";
 
     public TaskCommentDao() {
         setClazz(TaskComment.class);

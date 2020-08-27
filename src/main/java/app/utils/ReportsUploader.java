@@ -69,18 +69,31 @@ public class ReportsUploader {
             reportService.create(report);
             task.setReport(report);
             taskService.update(task);
+            report.setTask(task);
         }
-        String folderPath = folderPathGenerator.getFolderArchivePath();
-        List<File> files = filesUploader.upload(folderPath, mfiles);
-        List<BriefDocument> documents =
-                FileDocumentsMapperUtil.map(files, folderPath, performer);
-        documentService.create(documents);
-        report.addDocument(documents);
-        report = reportService.update(report);
+        List<File> files = null;
+        if (mfiles != null && mfiles.length > 0) {
+            String folderPath = folderPathGenerator.getFolderArchivePath();
+            files = filesUploader.upload(folderPath, mfiles);
+            List<BriefDocument> documents =
+                    FileDocumentsMapperUtil.map(files, folderPath, performer);
+            documentService.create(documents);
+            report.addDocument(documents);
+            report = reportService.update(report);
+        }
+        if (comment == null || comment.isEmpty()) {
+            comment = performer.getName() + " завантажив " + files.get(0).getName();
+            if (files.size() > 1) {
+                comment = comment + " +" + (files.size() - 1) + " документів";
+            }
+        }
+        comment = StringToUtf8Utils.encodeUtf8(comment);
         ReportComment reportComment = new ReportComment();
         reportComment.setReport(report);
         reportComment.setAuthorId(performer.getId());
+        reportComment.setAuthor(performer);
         reportComment.setComment(comment);
+        reportComment.setReport(report);
         commentService.create(reportComment);
         commentPublisher.publish(reportComment, performer);
         reportPublisher.publish(report, performer);

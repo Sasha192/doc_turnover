@@ -1,6 +1,5 @@
 package app.models.basic;
 
-import app.controllers.dto.PerformerDto;
 import app.models.abstr.IdentityBaseEntity;
 import app.models.serialization.ExcludeForJsonPerformer;
 import app.security.models.SimpleRole;
@@ -31,10 +30,12 @@ public class Performer
         extends IdentityBaseEntity
         implements Serializable {
 
+    private static final String IMG_DEFAULT = "/img/default.jpg";
+
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id", insertable = false, updatable = false)
     private Department department;
@@ -42,7 +43,7 @@ public class Performer
     @Column(name = "department_id")
     private Long departmentId;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.REFRESH})
     @JoinTable(
             name = "tasks_performers",
             joinColumns = @JoinColumn(name = "performer_id"),
@@ -55,7 +56,7 @@ public class Performer
     private List<TaskStatus> status;
 
     @Column(name = "img_path")
-    private String imgPath;
+    private String imgPath = IMG_DEFAULT;
 
     @OneToOne(mappedBy = "performer")
     @ExcludeForJsonPerformer
@@ -69,14 +70,8 @@ public class Performer
     @Column(name = "role")
     private Set<SimpleRole> roles;
 
-    public Performer() {
-        imgPath = "/img/default.jpg";
-    }
-
-    public Performer(PerformerDto dto) {
-
-        imgPath = "/img/avatars/6.jpg";
-    }
+    @Column(name = "img_token")
+    private String imgIdToken;
 
     public String getName() {
         return this.name;
@@ -112,6 +107,14 @@ public class Performer
 
     public void setStatus(final List<TaskStatus> status) {
         this.status = status;
+    }
+
+    public String getImgIdToken() {
+        return imgIdToken;
+    }
+
+    public void setImgIdToken(String imgIdToken) {
+        this.imgIdToken = imgIdToken;
     }
 
     @Override

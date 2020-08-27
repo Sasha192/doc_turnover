@@ -22,7 +22,7 @@ public class TaskStatus
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "performer_id")
     private Performer performer;
@@ -31,7 +31,7 @@ public class TaskStatus
     private Boolean custom;
 
     @OneToMany(mappedBy = "status", fetch = FetchType.LAZY,
-            cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+            cascade = {CascadeType.REFRESH})
     private List<Task> taskList;
 
     public Long getId() {

@@ -9,7 +9,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class Page404Controller {
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ModelAndView handleNoHandlerFoundException(NoHandlerFoundException ex) {
+    public ModelAndView handleNoHandlerFoundException(Exception ex) {
         ModelAndView modelAndView = new ModelAndView("status");
         modelAndView.addObject("msg", "Сторінку не знайдено");
         modelAndView.addObject("status", "404");

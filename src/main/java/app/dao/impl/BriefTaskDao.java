@@ -60,7 +60,7 @@ public class BriefTaskDao extends GenericJpaRepository<BriefTask>
     @Override
     public List<BriefTask> findByStatus(String status) {
         TypedQuery<BriefTask> query = getEntityManager()
-                .createQuery(FIND_BY_PERF_N_STATUS, BriefTask.class);
+                .createQuery(FIND_BY_STATUS, BriefTask.class);
         query.setParameter("status_name_", status);
         return query.getResultList();
     }

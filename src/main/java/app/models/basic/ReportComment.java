@@ -17,7 +17,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class ReportComment
         extends TaskHolderComment {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "report_id")
     @ExcludeForJsonComment

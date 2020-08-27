@@ -22,8 +22,7 @@ public class Department
     @Column(name = "department_name")
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,
-            CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "parent_department_id",
             insertable = false,
             updatable = false)
@@ -33,7 +32,7 @@ public class Department
     private Long parentDepartmentId;
 
     @OneToMany(mappedBy = "department",
-            cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+            cascade = {CascadeType.REFRESH})
     @ExcludeForJsonPerformer
     private Set<Performer> performers;
 

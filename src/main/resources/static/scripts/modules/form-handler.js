@@ -285,10 +285,10 @@ class Insert_Tasks {
                 let name = document.querySelector("#task-info .todo-title").value.trim(),
                     description = document.querySelector("#task-info .description-text").textContent.trim()
 
-                Http.post("/task/modify/name_description", { name, description ,todo_id: todoId }, data => {
-                    location.reload()
-                })
-
+                Http.post(
+                    `/task/modify/name?todoId=${todoId}&name=${name}&description=${description}`,
+                    null,
+                    data => { location.reload() })
             }
 
             // success

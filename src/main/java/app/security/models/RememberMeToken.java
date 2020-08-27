@@ -32,7 +32,18 @@ public class RememberMeToken {
     @Column(name = "creation_time", nullable = false)
     private long creationTime;
 
+    @Column(name = "token_ip")
+    private String ip;
+
     public RememberMeToken() {
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public Long getId() {

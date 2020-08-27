@@ -46,6 +46,12 @@ public class AuthenticationFilter extends GenericFilterBean {
     private ApplicationContext context;
 
     @Override
+    protected void initFilterBean() throws ServletException {
+        super.initFilterBean();
+        init(getServletContext());
+    }
+
+    @Override
     public void doFilter(ServletRequest servletRequest,
                          ServletResponse servletResponse,
                          FilterChain filterChain)
@@ -53,15 +59,6 @@ public class AuthenticationFilter extends GenericFilterBean {
         // @TODO : if servlerRequest is not HttpServletRequest ? session is NULL
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
-            if (authWrapper == null) {
-                authWrapperInitialization(req);
-            }
-            if (userService == null) {
-                userServiceInitialization(req);
-            }
-            if (authManager == null) {
-                authManagerInitialization(req);
-            }
             String requestUri = req.getRequestURI();
             if (isResourceRequest(requestUri)) {
                 filterChain.doFilter(servletRequest, servletResponse);
@@ -102,7 +99,8 @@ public class AuthenticationFilter extends GenericFilterBean {
                             if (authenticatedViaCookies(req)) {
                                 if (requestUri.equals(Constants.EMPTY_STRING)
                                         || requestUri.equals("/")) {
-                                    ((HttpServletResponse) servletResponse).sendRedirect("/myboard");
+                                    ((HttpServletResponse) servletResponse)
+                                            .sendRedirect("/myboard");
                                     return;
                                 }
                                 filterChain.doFilter(servletRequest, servletResponse);
@@ -121,6 +119,21 @@ public class AuthenticationFilter extends GenericFilterBean {
             }
         }
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    private void init(ServletContext context) {
+        if (authWrapper == null) {
+            authWrapper = getContext(context)
+                    .getBean(IAuthenticationWrapper.class);
+        }
+        if (userService == null) {
+            userService = getContext(context)
+                    .getBean(IUserService.class);
+        }
+        if (authManager == null) {
+            authManager = getContext(context)
+                    .getBean(IAuthenticationManagement.class);
+        }
     }
 
     private boolean authenticatedViaCookies(HttpServletRequest req) {
@@ -145,6 +158,9 @@ public class AuthenticationFilter extends GenericFilterBean {
             RememberMeToken me = userService
                     .retrieveRememberMeToken(Long.parseLong(id.getValue()));
             if (RememberMeUtil.isValidToken(me)) {
+                if (!req.getRemoteAddr().equals(me.getIp())) {
+                    return false;
+                }
                 String uuidVal = uuid.getValue();
                 String uuidExpected = me.getUuid().toString();
                 if (uuidVal.equals(uuidExpected)) {
@@ -160,6 +176,9 @@ public class AuthenticationFilter extends GenericFilterBean {
                 } else {
                     return false;
                 }
+            } else {
+                userService.removeRememberMeToken(me.getId());
+                return false;
             }
         } catch (NumberFormatException ex) {
             LOGGER.error("NUMBER FORMAT EXCEPTION : " + ex.getMessage());
@@ -171,26 +190,13 @@ public class AuthenticationFilter extends GenericFilterBean {
         return false;
     }
 
-    private ApplicationContext getContext(HttpServletRequest req) {
+    private ApplicationContext getContext(ServletContext servletContext) {
         if (context == null) {
-            ServletContext servletContext = req.getServletContext();
             WebApplicationContext webApplicationContext = WebApplicationContextUtils
                     .getWebApplicationContext(servletContext);
             this.context = webApplicationContext;
         }
         return context;
-    }
-
-    private void userServiceInitialization(HttpServletRequest req) {
-        userService = getContext(req).getBean(IUserService.class);
-    }
-
-    private void authManagerInitialization(HttpServletRequest req) {
-        authManager = getContext(req).getBean(IAuthenticationManagement.class);
-    }
-
-    private void authWrapperInitialization(HttpServletRequest req) {
-        authWrapper = getContext(req).getBean(IAuthenticationWrapper.class);
     }
 
     private boolean isResourceRequest(String uri) {

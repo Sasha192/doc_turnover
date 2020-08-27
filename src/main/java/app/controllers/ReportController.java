@@ -42,7 +42,7 @@ public class ReportController extends JsonSupportController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(@RequestParam(value = "file", required = false) final MultipartFile[] mfiles,
-                       @RequestParam("comment") final String comment,
+                       @RequestParam(value = "comment", required = false) final String comment,
                        @RequestParam("todoId") final Integer taskId,
                        HttpServletResponse response,
                        HttpServletRequest request) {
@@ -57,7 +57,9 @@ public class ReportController extends JsonSupportController {
             Performer performer = performerWrapper
                     .retrievePerformer(request);
             Task task = taskService.findOne(taskId);
-            uploader.upload(performer, task, comment, mfiles);
+            if (comment != null || mfiles != null) {
+                uploader.upload(performer, task, comment, mfiles);
+            }
         } catch (MaliciousFoundException ioex) {
             sendDefaultJson(response, false, ioex.getMessage());
         } catch (IOException e) {

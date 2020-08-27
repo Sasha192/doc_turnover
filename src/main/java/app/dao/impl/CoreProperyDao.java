@@ -12,7 +12,7 @@ public class CoreProperyDao extends GenericJpaRepository<CoreProperty>
         implements ICorePropertyDao {
 
     private static final String FROM =
-            " FROM " + CoreProperty.class.getName() + " corep ";
+            "SELECT corep FROM " + CoreProperty.class.getName() + " corep ";
     private static final String RETRIEVE_BY_NAME = FROM
             .concat(" corep.name=:name ");
 

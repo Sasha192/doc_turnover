@@ -173,6 +173,7 @@ public class TaskNavigationController extends JsonSupportController {
         taskComment.setAuthorId(performer.getId());
         taskComment.setComment(commentDto.getComment());
         taskComment.setTaskId(task.getId());
+        taskComment.setTask(task);
         taskCommentService.create(taskComment);
         commentPublisher.publish(taskComment, performer);
         sendDefaultJson(response, true, "");
@@ -215,17 +216,16 @@ public class TaskNavigationController extends JsonSupportController {
                     task.addDocumentId(id);
                 }
                 taskService.update(task);
-                if (comment != null) {
-                    if (comment.isEmpty()) {
-                        comment = performer.getName() + " вніс(внесла) зміни до завдання.";
-                    }
-                    TaskComment taskComment = new TaskComment();
-                    taskComment.setTaskId(taskId);
-                    taskComment.setComment(comment);
-                    taskComment.setAuthorId(performer.getId());
-                    taskCommentService.create(taskComment);
-                    commentPublisher.publish(taskComment, performer);
+                if (comment == null || comment.isEmpty()) {
+                    comment = performer.getName() + " вніс(внесла) зміни до завдання.";
                 }
+                TaskComment taskComment = new TaskComment();
+                taskComment.setTaskId(taskId);
+                taskComment.setComment(comment);
+                taskComment.setAuthorId(performer.getId());
+                taskComment.setTask(task);
+                taskCommentService.create(taskComment);
+                commentPublisher.publish(taskComment, performer);
                 sendDefaultJson(response, true, "");
             } catch (NumberFormatException ex) {
                 LOGGER.error("NUMBER FORMAT EXCEPTION " + ex.getMessage());
@@ -250,6 +250,7 @@ public class TaskNavigationController extends JsonSupportController {
         Set<SimpleRole> roles = performer.getRoles();
         if (allowOp(roles)) {
             taskService.updateNameDescription(newName, description, taskId);
+            sendDefaultJson(response, true, "");
         } else {
             sendDefaultJson(response, false, "Access Denied");
             return;

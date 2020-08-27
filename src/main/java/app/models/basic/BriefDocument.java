@@ -35,7 +35,7 @@ public class BriefDocument
     @Column(name = "full_path")
     private String path;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.REFRESH})
     @JoinTable(
             name = "tasks_documents",
             joinColumns = @JoinColumn(name = "doc_id"),
@@ -43,7 +43,7 @@ public class BriefDocument
     private List<Task> task;
 
     @ManyToOne(fetch = FetchType.LAZY,
-            cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+            cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "performer_id")
     private Performer performer;
 
