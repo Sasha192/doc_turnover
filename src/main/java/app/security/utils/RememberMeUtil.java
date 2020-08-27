@@ -4,6 +4,7 @@ import app.configuration.spring.constants.Constants;
 import app.models.basic.CustomUser;
 import app.security.models.RememberMeToken;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
@@ -14,11 +15,13 @@ public class RememberMeUtil {
     @Autowired
     private SessionLocaleResolver slr;
 
-    public RememberMeToken getRememberMeToken(CustomUser user) {
+    public RememberMeToken getRememberMeToken(CustomUser user,
+                                              HttpServletRequest request) {
         RememberMeToken token = new RememberMeToken();
         token.setUser(user);
         token.setCreationTime(System.currentTimeMillis());
         token.setUuid(UUID.randomUUID());
+        token.setIp(request.getRemoteAddr());
         return token;
     }
 

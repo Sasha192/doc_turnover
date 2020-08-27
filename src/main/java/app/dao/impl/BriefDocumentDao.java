@@ -105,4 +105,14 @@ public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
         }
         return query;
     }
+
+    @Override
+    public void delete(BriefDocument entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void deleteById(long entityId) {
+        throw new UnsupportedOperationException();
+    }
 }

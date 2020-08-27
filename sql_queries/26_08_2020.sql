@@ -101,3 +101,24 @@ alter table rem_me_tokens
 alter table performers
 	add img_token varchar(128) not null;
 
+/*alter table doc_statistics drop foreign key doc_statistics_brief_documents_id_fk;
+
+alter table doc_statistics
+	add constraint doc_statistics_brief_documents_id_fk
+		foreign key (doc_id) references brief_documents (id)
+			on delete cascade;
+
+alter table reports_docs drop foreign key reports_docs_brief_documents_id_fk;
+
+alter table reports_docs
+	add constraint reports_docs_brief_documents_id_fk
+		foreign key (doc_id) references brief_documents (id)
+			on delete cascade;
+
+alter table tasks_documents drop foreign key tasks_documents_brief_documents_id_fk;
+
+alter table tasks_documents
+	add constraint tasks_documents_brief_documents_id_fk
+		foreign key (doc_id) references brief_documents (id)
+			on delete cascade;*/
+

@@ -5,12 +5,11 @@ import app.models.basic.CustomUser;
 import app.models.basic.Performer;
 import app.security.models.RememberMeToken;
 import app.security.models.UserDto;
+import app.security.service.IUserCreation;
 import app.security.service.IUserService;
-import app.security.utils.DefaultPasswordEncoder;
 import app.security.utils.RememberMeUtil;
 import app.service.interfaces.IPerformerService;
 import app.service.interfaces.IPerformerUpdateEventListenerService;
-import app.utils.ImgToken;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.security.Principal;
@@ -38,9 +37,9 @@ public class UserManagementWrapper
 
     private final IPerformerService performerService;
 
-    private final AuthenticationManager authManager;
+    private final IUserCreation userCreation;
 
-    private final DefaultPasswordEncoder encoder;
+    private final AuthenticationManager authManager;
 
     private final IPerformerUpdateEventListenerService listenerService;
 
@@ -49,14 +48,14 @@ public class UserManagementWrapper
     @Autowired
     public UserManagementWrapper(IUserService userService,
                                  IPerformerService performerService,
+                                 IUserCreation userCreation,
                                  AuthenticationManager authManager,
-                                 DefaultPasswordEncoder encoder,
                                  IPerformerUpdateEventListenerService listenerService,
                                  RememberMeUtil rememberMeUtil) {
         this.userService = userService;
         this.performerService = performerService;
+        this.userCreation = userCreation;
         this.authManager = authManager;
-        this.encoder = encoder;
         this.listenerService = listenerService;
         this.rememberMeUtil = rememberMeUtil;
     }
@@ -67,43 +66,15 @@ public class UserManagementWrapper
                              UserDto dto) {
         CustomUser customUser;
         if (userService.retrieveByName(dto.getEmail()) == null) {
-            customUser = new CustomUser(dto, encoder);
-            customUser.setEnabled(true);
-            userService.create(customUser);
-            Performer performer = new Performer();
-            String performerName =
-                    (dto.getFirstName() == null
-                            ? Constants.EMPTY_STRING :
-                            dto.getFirstName())
-                            + " "
-                            + (dto.getLastName() == null
-                            ? Constants.EMPTY_STRING :
-                            dto.getLastName());
-            performer.setName(performerName);
-            performer.setRoles(customUser.getRoles());
-            String imgToken = ImgToken.generate(performer.getName());
-            performer.setImgIdToken(imgToken);
-            performerService.create(performer);
-            customUser.setPerformer(performer);
-            userService.update(customUser);
+            customUser = userCreation.create(dto);
         }
         customUser = auth(request, dto);
         if (dto.getRemember() != null) {
             boolean rememmberMe = dto.getRemember().booleanValue();
             if (rememmberMe) {
-                RememberMeToken token = rememberMeUtil.getRememberMeToken(customUser);
-                token.setIp(request.getRemoteAddr());
+                RememberMeToken token = rememberMeUtil.getRememberMeToken(customUser, request);
                 userService.registerRememberMeToken(token);
-                Cookie uuid = new Cookie(Constants.REMEMBER_ME_UUID, token.getUuid().toString());
-                uuid.setMaxAge(Constants.VALID_REMEMBER_ME_TOKEN_TIME_SEC);
-                uuid.setHttpOnly(true);
-                uuid.setPath("/");
-                Cookie id = new Cookie(Constants.REMEMBER_ME_ID, token.getId().toString());
-                id.setMaxAge(Constants.VALID_REMEMBER_ME_TOKEN_TIME_SEC);
-                id.setHttpOnly(true);
-                id.setPath("/");
-                response.addCookie(uuid);
-                response.addCookie(id);
+                setTokenToCookies(response, token);
             }
         }
     }
@@ -114,9 +85,22 @@ public class UserManagementWrapper
             throws IOException {
         HttpSession session = request.getSession(true);
         if (session != null) {
-            //token.setAuthenticated(true);
             setToSession(token, token.getName(), session);
         }
+    }
+
+    private void setTokenToCookies(HttpServletResponse response,
+                                   RememberMeToken token) {
+        Cookie uuid = new Cookie(Constants.REMEMBER_ME_UUID, token.getUuid().toString());
+        uuid.setMaxAge(Constants.VALID_REMEMBER_ME_TOKEN_TIME_SEC);
+        uuid.setHttpOnly(true);
+        uuid.setPath("/");
+        Cookie id = new Cookie(Constants.REMEMBER_ME_ID, token.getId().toString());
+        id.setMaxAge(Constants.VALID_REMEMBER_ME_TOKEN_TIME_SEC);
+        id.setHttpOnly(true);
+        id.setPath("/");
+        response.addCookie(uuid);
+        response.addCookie(id);
     }
 
     private void setToSession(Authentication auth,
