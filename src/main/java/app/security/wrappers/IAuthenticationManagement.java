@@ -15,5 +15,6 @@ public interface IAuthenticationManagement {
     void authenticate(UsernamePasswordAuthenticationToken token,
                       HttpServletRequest request) throws IOException;
 
-    void invalidate(HttpServletRequest request, HttpServletResponse res);
+    void invalidate(HttpServletRequest request, HttpServletResponse res)
+            throws IOException;
 }

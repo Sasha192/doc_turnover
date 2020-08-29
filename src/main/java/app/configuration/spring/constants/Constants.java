@@ -7,11 +7,13 @@ import com.google.gson.GsonBuilder;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -159,9 +161,14 @@ public class Constants {
         }
     }
 
-    @Value("#{'${arrayOfStrings}'.split(',')}")
-    private void setAppImageFormats(List<String> imageFormats) {
-        appImageFormats = imageFormats;
+    @Autowired
+    // because writing logic with BeanPostProcessors is longer
+    // this approach much faster
+    private void setAppImageFormats(Environment e) {
+        appImageFormats = Arrays.asList(
+                e.getProperty("img_ext")
+                .split(",")
+        );
     }
 
     @Scheduled(fixedDelay = 1_000 * 60 * 10)

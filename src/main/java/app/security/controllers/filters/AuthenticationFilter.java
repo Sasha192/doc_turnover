@@ -157,6 +157,9 @@ public class AuthenticationFilter extends GenericFilterBean {
         try {
             RememberMeToken me = userService
                     .retrieveRememberMeToken(Long.parseLong(id.getValue()));
+            if (me == null) {
+                return false;
+            }
             if (RememberMeUtil.isValidToken(me)) {
                 if (!req.getRemoteAddr().equals(me.getIp())) {
                     return false;

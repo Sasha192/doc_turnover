@@ -86,8 +86,9 @@ public class ReportsUploader {
             if (files.size() > 1) {
                 comment = comment + " +" + (files.size() - 1) + " документів";
             }
+        } else {
+            comment = StringToUtf8Utils.encodeUtf8(comment);
         }
-        comment = StringToUtf8Utils.encodeUtf8(comment);
         ReportComment reportComment = new ReportComment();
         reportComment.setReport(report);
         reportComment.setAuthorId(performer.getId());

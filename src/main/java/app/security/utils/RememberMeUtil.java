@@ -26,6 +26,9 @@ public class RememberMeUtil {
     }
 
     public static boolean isValidToken(RememberMeToken token) {
+        if (token == null) {
+            return false;
+        }
         int diff = (int) ((System.currentTimeMillis() - token.getCreationTime()) / (1_000));
         if (diff < Constants.VALID_REMEMBER_ME_TOKEN_TIME_SEC) {
             return true;

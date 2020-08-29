@@ -17,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +33,8 @@ public class UserManagementWrapper
         implements IPerformerWrapper,
         IAuthenticationWrapper,
         IAuthenticationManagement {
+
+    private static final Logger LOGGER = Logger.getLogger("intExceptionLogger");
 
     private final IUserService userService;
 
@@ -134,8 +137,26 @@ public class UserManagementWrapper
     }
 
     @Override
-    public void invalidate(HttpServletRequest request, HttpServletResponse response) {
+    public void invalidate(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            Cookie cid = null;
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(Constants.REMEMBER_ME_ID)) {
+                    cid = cookie;
+                }
+            }
+            try {
+                Long id = Long.valueOf(cid.getValue());
+                userService.removeRememberMeToken(id);
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex.getMessage());
+                LOGGER.error(ex.getStackTrace());
+            }
+        }
         cleanData(request, response);
+        request.getSession().invalidate();
     }
 
     private void cleanData(final HttpServletRequest req, final HttpServletResponse res) {

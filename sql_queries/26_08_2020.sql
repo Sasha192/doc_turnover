@@ -122,3 +122,12 @@ alter table tasks_documents
 		foreign key (doc_id) references brief_documents (id)
 			on delete cascade;*/
 
+			alter table users_roles drop foreign key users_roles_users_id_fk;
+
+alter table users_roles
+	add constraint users_roles_users_id_fk
+		foreign key (user_id) references users (id)
+			on delete cascade;
+
+
+
