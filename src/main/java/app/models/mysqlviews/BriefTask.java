@@ -5,7 +5,7 @@ import app.models.basic.Performer;
 import app.models.basic.Report;
 import app.models.basic.TaskComment;
 import app.models.serialization.ExcludeForJsonBriefTask;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;

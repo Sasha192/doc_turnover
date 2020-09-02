@@ -3,8 +3,7 @@ package app.dao.impl;
 import app.dao.interfaces.ITaskDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.models.basic.Task;
-import java.sql.Date;
-import java.time.LocalDate;
+import app.utils.CustomAppDateTimeUtil;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -49,7 +48,7 @@ public class TaskDao extends GenericJpaRepository<Task>
 
     @Override
     public Task update(Task entity) {
-        entity.setModificationDate(Date.valueOf(LocalDate.now()));
+        entity.setModificationDate(CustomAppDateTimeUtil.now());
         return super.update(entity);
     }
 

@@ -11,6 +11,7 @@ import app.security.wrappers.IPerformerWrapper;
 import app.service.extapis.GMailService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
+import app.utils.CustomAppDateTimeUtil;
 import app.utils.DocumentsUploader;
 import app.utils.ZipUtils;
 import app.utils.exceptions.MaliciousFoundException;
@@ -23,9 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
 import java.text.MessageFormat;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
@@ -274,7 +273,7 @@ public class DocumentsNavigationController extends JsonSupportController {
         );
         zipOut.setCreateUnicodeExtraFields(UnicodeExtraFieldPolicy.ALWAYS);
         response.setContentType("application/zip;charset=UTF-8");
-        final String zipName = Constants.DATE_FORMAT.format(Date.valueOf(LocalDate.now()));
+        final String zipName = Constants.DATE_FORMAT.format(CustomAppDateTimeUtil.now());
         response.setHeader("Content-Disposition", MessageFormat
                 .format("attachment; filename=\"{0}.zip\"",
                         URLEncoder.encode(zipName, StandardCharsets.UTF_8)));

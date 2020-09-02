@@ -1,4 +1,4 @@
-package app.models.events;
+package app.events;
 
 import java.io.Serializable;
 import javax.persistence.Column;

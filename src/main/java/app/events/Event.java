@@ -1,14 +1,15 @@
-package app.models.events;
+package app.events;
 
 import app.models.abstr.IdentityBaseEntity;
 import app.models.basic.Performer;
+import app.models.mysqlviews.BriefPerformer;
 import app.models.serialization.ExcludeForJsonEvent;
+import app.utils.CustomAppDateTimeUtil;
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -58,6 +59,9 @@ public abstract class Event
     @ExcludeForJsonEvent
     protected Long authorId;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "performer_id", insertable = false, updatable = false)
+    protected BriefPerformer author;
     /**
      * Long[] performersId stores performers Id, for whom to show this event
      * as notification about origin of event
@@ -84,7 +88,7 @@ public abstract class Event
     protected String description;
 
     public Event() {
-        Date date = Date.valueOf(LocalDate.now());
+        Date date = CustomAppDateTimeUtil.now();
         this.date = date;
         this.time = Time.valueOf(LocalTime.now());
         timeStamp = new Timestamp(date.getTime());

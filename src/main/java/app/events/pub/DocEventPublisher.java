@@ -1,4 +1,4 @@
-package app.models.events.pub;
+package app.events.pub;
 
 import app.models.basic.BriefDocument;
 import app.models.basic.Performer;
@@ -16,7 +16,7 @@ public class DocEventPublisher
     @Override
     /**
      * @TODO Implement
-     * @see for example app.models.events.pub.
+     * @see for example app.events.pub.
      */
     public void publish(BriefDocument entity, Performer author) {
         throw new UnsupportedOperationException();

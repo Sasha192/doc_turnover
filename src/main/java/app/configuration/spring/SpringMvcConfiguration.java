@@ -8,11 +8,13 @@ import com.github.jknack.handlebars.io.FileTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -49,6 +51,9 @@ public class SpringMvcConfiguration
 
     private final Constants constants;
 
+    @Autowired
+    private Environment environment;
+
     public SpringMvcConfiguration(DefaultUserDetailsService userDetailsService,
                                   DefaultPasswordEncoder defaultPasswordEncoder,
                                   @Qualifier("app_constants") Constants constants) {
@@ -60,7 +65,8 @@ public class SpringMvcConfiguration
     @Bean
     public ViewResolver viewResolver() {
         final HandlebarsViewResolver handlebarsViewResolver = new HandlebarsViewResolver();
-        handlebarsViewResolver.setPrefix("/WEB-INF/views/");
+        //String prefixViewResolver = environment.getProperty("prefixViewResolver");
+        handlebarsViewResolver.setPrefix("WEB-INF/views");
         handlebarsViewResolver.setSuffix(".hbs");
         handlebarsViewResolver.setCache(false);
         return handlebarsViewResolver;

@@ -1,7 +1,9 @@
 package app;
 
+import app.utils.ImgToken;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -110,6 +112,21 @@ class MainTest {
             System.out.println(test.getStr() + " " + res);
             Assert.assertSame(res, test.isResult());
         }
+    }
+
+    @Test
+    void testtest() {
+        String name = "WEB-INF/views/status.hbs";
+        name = FilenameUtils.getExtension(name);
+        System.out.println(name);
+    }
+
+    @Test
+    void testtesttest() {
+        String name = "WEB-INF/views/statewj,fhvbewybr23yrvt2 "
+                + " 37rt    672te7  236crt2 37cbr   23cus.hbs";
+        name = ImgToken.generate(name);
+        System.out.println(name);
     }
 
     private static class TestHolder {

@@ -1,9 +1,9 @@
 package app.service.interfaces;
 
 import app.dao.persistance.IOperations;
-import app.models.events.Event;
-import app.models.events.PerformerEventAgent;
-import java.sql.Date;
+import app.events.Event;
+import app.events.PerformerEventAgent;
+import java.util.Date;
 import java.util.List;
 
 public interface IEventService extends IOperations<Event> {

@@ -1,9 +1,9 @@
 package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
+import app.utils.CustomAppDateTimeUtil;
 import java.io.Serializable;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -106,7 +106,7 @@ public class Task
     private Report report;
 
     public Task() {
-        Date now = Date.valueOf(LocalDate.now());
+        Date now = CustomAppDateTimeUtil.now();
         setCreationDate(now);
         setDeadlineDate(now);
         setControlDate(now);

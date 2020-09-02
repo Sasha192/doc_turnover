@@ -30,7 +30,7 @@ public abstract class IdentityBaseEntity
     )*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Access(AccessType.FIELD)
+    @Access(AccessType.PROPERTY)
     /**
      * It is for MySql configuration
      */

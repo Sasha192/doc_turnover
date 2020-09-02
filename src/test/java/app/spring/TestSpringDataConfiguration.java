@@ -1,15 +1,11 @@
 package app.spring;
 
-import java.lang.reflect.Proxy;
+import com.github.jknack.handlebars.Handlebars;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.io.FileTemplateLoader;
-import com.github.jknack.handlebars.io.TemplateLoader;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

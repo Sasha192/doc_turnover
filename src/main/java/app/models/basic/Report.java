@@ -3,11 +3,11 @@ package app.models.basic;
 import app.models.abstr.IdentityBaseEntity;
 import app.models.mysqlviews.BriefJsonDocument;
 import app.models.serialization.ExcludeForJsonReport;
-import java.sql.Date;
+import app.utils.CustomAppDateTimeUtil;
 import java.sql.Time;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -62,7 +62,7 @@ public class Report extends IdentityBaseEntity {
     private Task task;
 
     public Report() {
-        date = Date.valueOf(LocalDate.now());
+        date = CustomAppDateTimeUtil.now();
         time = Time.valueOf(LocalTime.now());
     }
 

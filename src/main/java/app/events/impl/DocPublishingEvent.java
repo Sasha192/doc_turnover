@@ -1,7 +1,7 @@
-package app.models.events.impl;
+package app.events.impl;
 
+import app.events.Event;
 import app.models.basic.BriefDocument;
-import app.models.events.Event;
 import app.models.serialization.ExcludeForJsonEvent;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

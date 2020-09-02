@@ -787,9 +787,9 @@ function changeTaskState() {
 
                 $("#notifications-list").append(
                     `<div class="notification" data-todo-id="${notification.event.taskId}">
-                        <img src="${notification.author.imgPath}" alt="">
+                        <img src="${notification.event.author.imgPath}" alt="">
                         <div class="notification-content">
-                            <div class="title">${notification.author.name}</div>
+                            <div class="title">${notification.event.author.name}</div>
                             <div class="desc">${desc}</div>
                             <div class="meta">${notification.event.date}</div>
                         </div>

@@ -1,7 +1,6 @@
-package app.models.events;
+package app.events;
 
 import app.models.basic.Performer;
-import app.models.mysqlviews.BriefPerformer;
 import app.models.serialization.ExcludeForJsonEvent;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -23,10 +22,6 @@ public class PerformerEventAgent {
     @JoinColumn(name = "perf_id", insertable = false, updatable = false)
     @ExcludeForJsonEvent
     private Performer performer;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "perf_id", insertable = false, updatable = false)
-    private BriefPerformer author;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("eventId")
@@ -65,13 +60,5 @@ public class PerformerEventAgent {
 
     public void setSeen(boolean seen) {
         this.seen = seen;
-    }
-
-    public BriefPerformer getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(BriefPerformer author) {
-        this.author = author;
     }
 }

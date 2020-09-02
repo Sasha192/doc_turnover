@@ -2,9 +2,9 @@ package app.dao.impl;
 
 import app.dao.interfaces.IEventDao;
 import app.dao.persistance.GenericJpaRepository;
-import app.models.events.Event;
-import app.models.events.PerformerEventAgent;
-import java.sql.Date;
+import app.events.Event;
+import app.events.PerformerEventAgent;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;

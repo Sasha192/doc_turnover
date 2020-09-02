@@ -5,4 +5,8 @@ public class Main {
         System.out.println();
         return word.matches(regEx);
     }
+
+    public static void main(String[] args) {
+        System.out.println();
+    }
 }

@@ -1,4 +1,4 @@
-package app.models.events.pub;
+package app.events.pub;
 
 import app.service.interfaces.IEventService;
 

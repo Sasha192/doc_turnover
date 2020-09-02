@@ -9,11 +9,11 @@ import app.models.basic.TaskStatus;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IPerformerService;
 import app.service.interfaces.IStatusService;
+import app.utils.CustomAppDateTimeUtil;
 import com.google.common.collect.Sets;
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -84,10 +84,10 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
     }
 
     private void setTaskFields(TaskDto dto, Task task) throws ParseException {
-        Date now = Date.valueOf(LocalDate.now());
+        Date now = CustomAppDateTimeUtil.now();
         task.setToDo(dto.getName());
-        task.setControlDate(FORMATTER.parse(dto.getDateControl()).getTime());
-        task.setDeadlineDate(FORMATTER.parse(dto.getDeadline()).getTime());
+        task.setControlDate(CustomAppDateTimeUtil.parse(dto.getDateControl()));
+        task.setDeadlineDate(CustomAppDateTimeUtil.parse(dto.getDeadline()));
         task.setCreationDate(now);
         task.setPriority(Constants.EMPTY_STRING);
         task.setDescription(dto.getDescription());

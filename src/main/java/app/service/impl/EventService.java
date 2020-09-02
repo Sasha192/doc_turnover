@@ -2,11 +2,11 @@ package app.service.impl;
 
 import app.dao.interfaces.IEventDao;
 import app.dao.persistance.IGenericDao;
-import app.models.events.Event;
-import app.models.events.PerformerEventAgent;
+import app.events.Event;
+import app.events.PerformerEventAgent;
 import app.service.abstraction.AbstractService;
 import app.service.interfaces.IEventService;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

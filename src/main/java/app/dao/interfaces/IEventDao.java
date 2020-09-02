@@ -1,9 +1,9 @@
 package app.dao.interfaces;
 
 import app.dao.persistance.IGenericDao;
-import app.models.events.Event;
-import app.models.events.PerformerEventAgent;
-import java.sql.Date;
+import app.events.Event;
+import app.events.PerformerEventAgent;
+import java.util.Date;
 import java.util.List;
 
 public interface IEventDao extends IGenericDao<Event> {

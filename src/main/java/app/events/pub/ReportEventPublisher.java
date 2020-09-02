@@ -1,8 +1,8 @@
-package app.models.events.pub;
+package app.events.pub;
 
+import app.events.impl.ReportPublishingEvent;
 import app.models.basic.Performer;
 import app.models.basic.Report;
-import app.models.events.impl.ReportPublishingEvent;
 import app.service.interfaces.IEventService;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,8 +24,13 @@ public class ReportEventPublisher
         event.setReportId(entity.getId());
         event.setAuthorId(author.getId());
         Set<Long> performersIds = new HashSet<>(entity.getTask().getPerformerIds());
-        performersIds.add(entity.getTask().getTaskOwnerId());
-        performersIds.add(author.getId());
+        Long taskOwnerId = entity
+                .getTask()
+                .getTaskOwnerId();
+        if (!taskOwnerId.equals(author.getId())) {
+            performersIds.add(entity.getTask().getTaskOwnerId());
+        }
+        performersIds.remove(author.getId());
         event.setPerformersId(performersIds);
         event.setTaskId(entity.getTask().getId());
         getEventService().create(event);

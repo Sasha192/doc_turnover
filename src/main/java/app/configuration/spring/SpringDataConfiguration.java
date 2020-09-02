@@ -2,13 +2,14 @@ package app.configuration.spring;
 
 import app.configuration.spring.constants.AppConstants;
 import app.configuration.spring.constants.Constants;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.TimeZone;
+
+import java.util.*;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
@@ -35,7 +36,8 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         @ComponentScan("app.security.dao"),
         @ComponentScan("app.security.service"),
         @ComponentScan("app.configuration"),
-        @ComponentScan("app.utils")
+        @ComponentScan("app.utils"),
+        @ComponentScan("app.eventdriven")
 })
 public class SpringDataConfiguration {
 
@@ -45,6 +47,9 @@ public class SpringDataConfiguration {
     @Autowired
     @AppConstants
     private Constants constants;
+
+    @Autowired
+    private ApplicationContext context;
 
     @Bean
     public DataSource getDataSource() {
@@ -90,6 +95,18 @@ public class SpringDataConfiguration {
         slr.setDefaultTimeZone(TimeZone.getTimeZone(timeZone));
         return slr;
     }
+
+    /*@Bean(name = "default_task_event_services_map")
+    public EnumMap<TaskEventEnum, List<ITaskEventService>> getTaskEventServices() {
+        EnumMap<TaskEventEnum, List<ITaskEventService>> services =
+                new EnumMap<TaskEventEnum, List<ITaskEventService>>(TaskEventEnum.class);
+        return services;
+    }
+*/
+    /*@Bean(name = "default_task_app_event_listener")
+    public TaskApplicationEventListener getTaskEVentListener() {
+
+    }*/
 
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();

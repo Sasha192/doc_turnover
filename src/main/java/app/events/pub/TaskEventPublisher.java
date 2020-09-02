@@ -1,8 +1,8 @@
-package app.models.events.pub;
+package app.events.pub;
 
+import app.events.impl.TaskEvent;
 import app.models.basic.Performer;
 import app.models.basic.Task;
-import app.models.events.impl.TaskEvent;
 import app.service.interfaces.IEventService;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,8 +23,7 @@ public class TaskEventPublisher extends GenericEventPublisher<Task> {
         event.setTaskId(entity.getId());
         event.setAuthorId(author.getId());
         Set<Long> ids = new HashSet<>(entity.getPerformerIds());
-        ids.add(entity.getTaskOwnerId());
-        ids.add(author.getId());
+        ids.remove(author.getId());
         event.setPerformersId(ids);
         event.setTaskId(entity.getId());
         getEventService().create(event);

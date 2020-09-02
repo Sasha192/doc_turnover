@@ -1,8 +1,8 @@
-package app.models.events.pub;
+package app.events.pub;
 
+import app.events.impl.TaskCommentPublishingEvent;
 import app.models.abstr.TaskHolderComment;
 import app.models.basic.Performer;
-import app.models.events.impl.TaskCommentPublishingEvent;
 import app.service.interfaces.IEventService;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,11 @@ public class CommentEventPublisher
         event.setCommentId(entity.getId());
         event.setAuthorId(author.getId());
         Set<Long> ids = new HashSet<>(entity.getPerformerIds());
-        ids.add(author.getId());
+        ids.remove(author.getId());
+        /**
+         *  @see TaskHolderComment#getPerformerIds()  -> returns performersIds
+         *  relative to task for TaskHolderComment
+         */
         event.setPerformersId(ids);
         event.setTaskId(entity.getTaskId());
         getEventService().create(event);

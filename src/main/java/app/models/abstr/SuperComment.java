@@ -3,11 +3,11 @@ package app.models.abstr;
 import app.models.basic.Performer;
 import app.models.mysqlviews.BriefPerformer;
 import app.models.serialization.ExcludeForJsonComment;
-import java.sql.Date;
+import app.utils.CustomAppDateTimeUtil;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,7 +51,7 @@ public abstract class SuperComment
     protected transient Timestamp dateTime;
 
     public SuperComment() {
-        this.date = Date.valueOf(LocalDate.now());
+        this.date = CustomAppDateTimeUtil.now();
         this.time = Time.valueOf(LocalTime.now());
     }
 
@@ -101,7 +101,7 @@ public abstract class SuperComment
 
     /**
      * @return Set of Performer Ids, that will see this comment on frontend part Notifications
-     * @see app.models.events.pub.CommentEventPublisher#publish(TaskHolderComment, Performer)
+     * @see app.events.pub.CommentEventPublisher#publish(TaskHolderComment, Performer)
      */
     public abstract Set<Long> getPerformerIds();
 
