@@ -3,6 +3,7 @@ package app.models.basic;
 import app.models.abstr.IdentityBaseEntity;
 import app.models.serialization.ExcludeForJsonPerformer;
 import app.security.models.SimpleRole;
+import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
 import app.statisticsmodule.abstr.AbstractPerformerStatistics;
 import com.google.common.base.Objects;
 import java.io.Serializable;
@@ -74,14 +75,14 @@ public class Performer
     @Column(name = "img_token")
     private String imgIdToken;
 
-    @OneToMany(mappedBy = "performer")
-    private Set<AbstractPerformerStatistics> statistics;
+    @OneToMany(mappedBy = "performer", cascade = CascadeType.REFRESH)
+    private Set<AbstractCalendarPerformerStatistic> statistics;
 
-    public Set<AbstractPerformerStatistics> getStatistics() {
+    public Set<AbstractCalendarPerformerStatistic> getStatistics() {
         return statistics;
     }
 
-    public void setStatistics(Set<AbstractPerformerStatistics> statistics) {
+    public void setStatistics(Set<AbstractCalendarPerformerStatistic> statistics) {
         this.statistics = statistics;
     }
 

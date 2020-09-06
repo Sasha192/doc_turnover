@@ -10,7 +10,9 @@ import app.statisticsmodule.domain.WeeklyPerformerStatistics;
 import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PerformerStatisticCreationComponent
         implements IPerformerStatisticCreation {
 

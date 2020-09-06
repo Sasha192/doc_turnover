@@ -24,10 +24,10 @@ public abstract class AbstractPerformerStatistics
     @Column(name = "performer_id")
     private Long performerId;
 
-    @ExcludeForJsonPerformer
     @JoinColumn(name = "performer_id", insertable = false, updatable = false)
     @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.LAZY)
+    @ExcludeForJsonPerformer
     private Performer performer;
 
     @JoinColumn(name = "performer_id", insertable = false, updatable = false)

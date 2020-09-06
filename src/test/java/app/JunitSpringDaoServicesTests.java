@@ -204,6 +204,12 @@ public class JunitSpringDaoServicesTests {
     }
 
     @Test
+    public void testStatisticPerformer() {
+        Performer performer = performerService.findOne(40L);
+        System.out.println(new GsonBuilder().create().toJson(performer.getStatistics()));
+    }
+
+    @Test
     public void testImgResourceHandler() {
         try {
             File file = ResourceUtils.getFile("classpath:static/img");

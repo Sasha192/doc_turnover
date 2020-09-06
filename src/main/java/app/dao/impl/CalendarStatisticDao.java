@@ -4,7 +4,9 @@ import app.dao.interfaces.ICalendarStatisticDao;
 import app.dao.persistance.GenericJpaRepository;
 import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class CalendarStatisticDao
         extends GenericJpaRepository<AbstractCalendarPerformerStatistic>
         implements ICalendarStatisticDao {

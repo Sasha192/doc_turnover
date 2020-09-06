@@ -2,6 +2,7 @@ package app.dao.persistance;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -26,7 +27,6 @@ public abstract class AbstractJpaDao<T extends Serializable> {
     public final void setClazz(final Class<T> clazzToSet) {
         this.clazz = clazzToSet;
         deleteById = FROM + clazz.getName() + " WHERE id=:id_ ";
-        tableName = TableNameResolver.getTableName(entityManager, clazzToSet);
     }
 
     public T findOne(final long id) {

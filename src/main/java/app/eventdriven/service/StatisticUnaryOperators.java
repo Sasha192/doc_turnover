@@ -28,6 +28,7 @@ public class StatisticUnaryOperators {
             @Override
             public AbstractCalendarPerformerStatistic apply(
                     AbstractCalendarPerformerStatistic statistic) {
+                statistic.incrementNew();
                 return statistic;
             }
         };
@@ -35,6 +36,7 @@ public class StatisticUnaryOperators {
             @Override
             public AbstractCalendarPerformerStatistic apply(
                     AbstractCalendarPerformerStatistic statistic) {
+                statistic.decrementNew();
                 return statistic;
             }
         };
@@ -59,6 +61,7 @@ public class StatisticUnaryOperators {
             @Override
             public AbstractCalendarPerformerStatistic apply(
                     AbstractCalendarPerformerStatistic statistic) {
+                statistic.incrementOverdue();
                 return statistic;
             }
         };
@@ -66,6 +69,7 @@ public class StatisticUnaryOperators {
             @Override
             public AbstractCalendarPerformerStatistic apply(
                     AbstractCalendarPerformerStatistic statistic) {
+                statistic.decrementOverdue();
                 return statistic;
             }
         };

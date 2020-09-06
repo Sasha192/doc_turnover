@@ -166,10 +166,17 @@ public class Constants {
     // because writing logic with BeanPostProcessors is longer
     // this approach much faster
     private void setAppImageFormats(Environment e) {
-        appImageFormats = Arrays.asList(
-                e.getProperty("img_ext")
-                .split(",")
-        );
+        if (e.getProperty("img_ext") != null) {
+            appImageFormats = Arrays.asList(
+                    e.getProperty("img_ext")
+                            .split(",")
+            );
+        } else {
+            appImageFormats = Arrays.asList(
+                    ".jpeg,.jpg,.png,.gif,.tiff"
+                            .split(",")
+            );
+        }
     }
 
     public void updateConstants() {

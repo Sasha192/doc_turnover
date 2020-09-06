@@ -20,6 +20,7 @@ public class CreationTaskEventService
     @Autowired
     private ICalendarStatistic statistic;
 
+    @Autowired
     private IPerformerStatisticCreation statisticCreation;
 
     @Override
@@ -52,25 +53,17 @@ public class CreationTaskEventService
         Boolean expiredO = stat.getExpired();
         boolean expired = expiredO == null ? true : expiredO.booleanValue();
         if (!expired) {
-            increment(stat);
+            stat.incrementAmount();
+            stat.incrementNew();
             statistic.update(stat);
         } else {
             statistic.delete(stat);
             AbstractCalendarPerformerStatistic newStat = (AbstractCalendarPerformerStatistic)
                     stat.clone();
-            increment(newStat);
+            newStat.incrementAmount();
+            newStat.incrementNew();
             statistic.create(newStat);
         }
-    }
-
-    private void increment(
-            AbstractCalendarPerformerStatistic stat) {
-        if (stat == null) {
-            return;
-        }
-        int amount = stat.getAmount();
-        amount++;
-        stat.setAmount(amount);
     }
 
     @Override

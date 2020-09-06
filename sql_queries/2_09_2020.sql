@@ -28,3 +28,9 @@ alter table cal_perf_statistics
 		foreign key (performer_id) references performers (id)
 			on delete cascade;
 
+alter table cal_perf_statistics
+	add overdue int not null;
+
+alter table cal_perf_statistics
+	add new_status int not null;
+

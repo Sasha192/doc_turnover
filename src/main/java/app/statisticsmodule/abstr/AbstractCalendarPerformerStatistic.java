@@ -11,8 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
@@ -30,7 +28,6 @@ public abstract class AbstractCalendarPerformerStatistic
     private long expirationTime;
 
     @Column(name = "creation_timestamp")
-    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp creationDate;
 
     @Column(name = "expired")
@@ -38,6 +35,12 @@ public abstract class AbstractCalendarPerformerStatistic
 
     @Column(name = "amount")
     private Integer amount = 0;
+
+    @Column(name = "new_status")
+    private Integer newS = 0;
+
+    @Column(name = "overdue")
+    private Integer overdue = 0;
 
     @Column(name = "completed")
     private Integer completed = 0;
@@ -150,6 +153,14 @@ public abstract class AbstractCalendarPerformerStatistic
         this.completed = this.completed + 1;
     }
 
+    public void incrementNew() {
+        this.newS = this.newS + 1;
+    }
+
+    public void incrementOverdue() {
+        this.overdue = this.overdue + 1;
+    }
+
     public void incrementExpiredDeadline() {
         this.expiredDeadline = this.expiredDeadline + 1;
     }
@@ -160,5 +171,17 @@ public abstract class AbstractCalendarPerformerStatistic
 
     public void decrementOnhold() {
         this.onhold = this.onhold - 1;
+    }
+
+    public void decrementNew() {
+        this.newS = this.newS - 1;
+    }
+
+    public void decrementOverdue() {
+        this.overdue = this.overdue - 1;
+    }
+
+    public void incrementAmount() {
+        this.amount = this.amount + 1;
     }
 }

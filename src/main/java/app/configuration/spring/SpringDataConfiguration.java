@@ -38,7 +38,8 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         @ComponentScan("app.configuration"),
         @ComponentScan("app.utils"),
         @ComponentScan("app.eventdriven"),
-        @ComponentScan("app.statisticsmodule")
+        @ComponentScan("app.statisticsmodule"),
+        @ComponentScan("app.events")
 })
 public class SpringDataConfiguration {
 

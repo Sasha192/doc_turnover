@@ -7,10 +7,7 @@ import java.util.TimeZone;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -31,7 +28,11 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         @ComponentScan("app.security.dao"),
         @ComponentScan("app.security.service"),
         @ComponentScan("app.utils"),
-        @ComponentScan("app.security.utils")
+        @ComponentScan("app.security.utils"),
+        @ComponentScan("app.statisticsmodule"),
+        @ComponentScan("app.eventdriven"),
+        @ComponentScan("app.events")
+
 })
 public class TestSpringDataConfiguration {
 
@@ -71,11 +72,11 @@ public class TestSpringDataConfiguration {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(getDataSource());
-        em.setPackagesToScan(new String[]{"app.models", "app.security.models"});
+        em.setPackagesToScan(new String[]{"app.models", "app.security.models",
+                "app.statisticsmodule"});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(hibernateProperties());
-
         return em;
     }
 
