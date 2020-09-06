@@ -4,7 +4,6 @@ import app.models.abstr.IdentityBaseEntity;
 import app.models.serialization.ExcludeForJsonPerformer;
 import app.security.models.SimpleRole;
 import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
-import app.statisticsmodule.abstr.AbstractPerformerStatistics;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.HashSet;

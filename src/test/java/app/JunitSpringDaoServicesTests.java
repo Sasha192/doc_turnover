@@ -31,6 +31,7 @@ import app.service.interfaces.ITaskCommentService;
 import app.service.interfaces.ITaskService;
 import app.spring.TestSpringDataConfiguration;
 import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
+import app.statisticsmodule.domain.CalendarPerformerEnum;
 import app.statisticsmodule.domain.MonthlyPerformerStatistic;
 import app.utils.CustomAppDateTimeUtil;
 import com.google.gson.Gson;
@@ -206,7 +207,26 @@ public class JunitSpringDaoServicesTests {
     @Test
     public void testStatisticPerformer() {
         Performer performer = performerService.findOne(40L);
-        System.out.println(new GsonBuilder().create().toJson(performer.getStatistics()));
+        System.out.println(new GsonBuilder()
+                .addSerializationExclusionStrategy(
+                        ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER
+                )
+                .setPrettyPrinting()
+                .create()
+                .toJson(performer.getStatistics()));
+    }
+
+    @Test
+    public void testStatisticType() {
+        List<AbstractCalendarPerformerStatistic> stat =
+                statistics.findAllByType(CalendarPerformerEnum.MONTHLY);
+        System.out.println(new GsonBuilder()
+                .addSerializationExclusionStrategy(
+                        ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER
+                )
+                .setPrettyPrinting()
+                .create()
+                .toJson(stat));
     }
 
     @Test

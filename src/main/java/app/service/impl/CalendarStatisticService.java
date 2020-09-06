@@ -5,6 +5,7 @@ import app.dao.persistance.IGenericDao;
 import app.service.abstraction.AbstractService;
 import app.service.interfaces.ICalendarStatistic;
 import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
+import app.statisticsmodule.domain.CalendarPerformerEnum;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,5 +30,11 @@ public class CalendarStatisticService
     @Override
     public List<AbstractCalendarPerformerStatistic> findByPerformerId(Long id) {
         return dao.findByPerformerId(id);
+    }
+
+    @Override
+    public List<AbstractCalendarPerformerStatistic> findAllByType(
+            CalendarPerformerEnum type) {
+        return dao.findAllByType(type);
     }
 }
