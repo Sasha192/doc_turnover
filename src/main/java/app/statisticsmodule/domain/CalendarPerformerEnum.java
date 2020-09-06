@@ -3,7 +3,8 @@ package app.statisticsmodule.domain;
 public enum CalendarPerformerEnum {
     WEEKLY(Values.WEEKLY),
     MONTHLY(Values.MONTHLY),
-    ANNUALLY(Values.ANNUALLY);
+    ANNUALLY(Values.ANNUALLY),
+    DAILY(Values.DAILY);
 
     private String name;
 
@@ -15,5 +16,6 @@ public enum CalendarPerformerEnum {
         public static final String WEEKLY = "WEEKLY";
         public static final String MONTHLY = "MONTHLY";
         public static final String ANNUALLY = "ANNUALLY";
+        public static final String DAILY = "DAILY";
     }
 }

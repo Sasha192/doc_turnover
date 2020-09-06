@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,6 +32,8 @@ public class Constants {
     public static final String IS_MALICIOUS = " is malicious or can not be uploaded";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
     public static List<String> appImageFormats;
+
+    public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
 
     public static final GsonBuilder BUILDER_BRIEF;
 
@@ -84,6 +85,7 @@ public class Constants {
             "/fonts", "/img",
             "/libs", "/partials"
     };
+
     public static final int VALID_REMEMBER_ME_TOKEN_TIME_SEC =
             60 * 60 * 24 * 7;
 
@@ -170,7 +172,6 @@ public class Constants {
         );
     }
 
-    @Scheduled(fixedDelay = 1_000 * 60 * 10)
     public void updateConstants() {
         List<CoreProperty> properties = corePropertyService.findAll();
         for (CoreProperty property : properties) {

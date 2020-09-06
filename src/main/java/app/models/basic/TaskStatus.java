@@ -1,9 +1,13 @@
 package app.models.basic;
 
+import app.eventdriven.service.StatisticUnaryOperators;
 import app.models.abstr.IdentityBaseEntity;
+import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +22,101 @@ import javax.persistence.Table;
 public class TaskStatus
         extends IdentityBaseEntity
         implements Serializable {
+
+    public static enum DefaultStatus {
+        NEW("new") {
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> increment() {
+                return StatisticUnaryOperators.INC_NEW;
+            }
+
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
+                return StatisticUnaryOperators.DEC_NEW;
+            }
+        }, INPROGRESS("inprogress") {
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> increment() {
+                return StatisticUnaryOperators.INC_INPROGRESS;
+            }
+
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
+                return StatisticUnaryOperators.DEC_INPROGRESS;
+            }
+        }, OVERDUE("overdue") {
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> increment() {
+                return StatisticUnaryOperators.INC_OVERDUE;
+            }
+
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
+                return StatisticUnaryOperators.DEC_OVERDUE;
+            }
+        },
+        COMPLETED("completed") {
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> increment() {
+                return StatisticUnaryOperators.INC_COMPLETED;
+            }
+
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
+                return StatisticUnaryOperators.DEC_COMPLETED;
+            }
+        }, ONHOLD("onhold") {
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> increment() {
+                return StatisticUnaryOperators.INC_ONHOLD;
+            }
+
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
+                return StatisticUnaryOperators.DEC_ONHOLD;
+            }
+        }, ACTIVE("active") {
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> increment() {
+                return StatisticUnaryOperators.INC_ACTIVE;
+            }
+
+            @Override
+            public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
+                return StatisticUnaryOperators.DEC_ACTIVE;
+            }
+        };
+
+        public static HashMap<String, DefaultStatus> statusesMap;
+
+        static {
+            statusesMap = new HashMap<>();
+            statusesMap.put(NEW.getName(), NEW);
+            statusesMap.put(INPROGRESS.getName(), INPROGRESS);
+            statusesMap.put(OVERDUE.getName(), OVERDUE);
+            statusesMap.put(COMPLETED.getName(), COMPLETED);
+            statusesMap.put(ONHOLD.getName(), ONHOLD);
+            statusesMap.put(ACTIVE.getName(), ACTIVE);
+        }
+
+        private String name;
+
+        DefaultStatus(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static DefaultStatus getByName(String name) {
+            return statusesMap.get(name);
+        }
+
+        public abstract UnaryOperator<AbstractCalendarPerformerStatistic> increment();
+
+        public abstract UnaryOperator<AbstractCalendarPerformerStatistic> decrement();
+    }
 
     @Column(name = "name")
     private String name;
@@ -40,6 +139,14 @@ public class TaskStatus
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public DefaultStatus getStatus() {
+        if (name != null) {
+            return DefaultStatus.getByName(name);
+        } else {
+            return null;
+        }
     }
 
     public String getName() {

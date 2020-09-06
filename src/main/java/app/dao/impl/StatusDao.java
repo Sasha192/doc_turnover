@@ -12,14 +12,17 @@ public class StatusDao extends GenericJpaRepository<TaskStatus>
         implements IStatusDao {
 
     private static final String FIND_BY_PERFORMER_ID =
-            "from TaskStatus WHERE performer_id=:id";
+            "from TaskStatus WHERE performer.id=:id";
 
     private static final String FIND_BY_TITLE_AND_PERF_ID =
             FIND_BY_PERFORMER_ID
             + " AND name=:title ";
 
     private static final String FIND_BY_TITLE =
-            " from TaskStatus WHERE name=:title ";
+            "select stat from TaskStatus stat WHERE name=:title ";
+
+    private static final String FIND_ALL_NOT_CUSTOM =
+            "select stat from TaskStatus stat WHERE custom=false";
 
     public StatusDao() {
         setClazz(TaskStatus.class);
@@ -57,5 +60,12 @@ public class StatusDao extends GenericJpaRepository<TaskStatus>
             return list.get(0);
         }
         return null;
+    }
+
+    @Override
+    public List<TaskStatus> findAllNotCustom() {
+        return getEntityManager()
+                .createQuery(FIND_ALL_NOT_CUSTOM, TaskStatus.class)
+                .getResultList();
     }
 }

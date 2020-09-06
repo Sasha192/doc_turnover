@@ -2,9 +2,9 @@ package app.eventdriven.domain;
 
 import app.models.basic.Task;
 
-public class CreationTaskEvent extends TaskApplicationEvent {
+public class TaskCreationEvent extends TaskApplicationEvent {
 
-    public CreationTaskEvent(Task task) {
+    public TaskCreationEvent(Task task) {
         super(task);
     }
 

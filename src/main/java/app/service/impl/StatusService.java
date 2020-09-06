@@ -47,4 +47,9 @@ public class StatusService extends AbstractService<TaskStatus>
     public TaskStatus findByTitle(String title) {
         return dao.findByTitle(title);
     }
+
+    @Override
+    public List<TaskStatus> findAllNotCustom() {
+        return dao.findAllNotCustom();
+    }
 }

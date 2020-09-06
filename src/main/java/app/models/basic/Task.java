@@ -161,7 +161,7 @@ public class Task
         return this.deadline;
     }
 
-    public void setDeadline(final Boolean deadline) {
+    void setDeadline(final Boolean deadline) {
         this.deadline = deadline;
     }
 
@@ -209,7 +209,7 @@ public class Task
         return this.status;
     }
 
-    public void setStatus(final TaskStatus status) {
+    void setStatus(final TaskStatus status) {
         this.status = status;
     }
 

@@ -2,10 +2,10 @@ package app.eventdriven.domain;
 
 import app.models.basic.Task;
 
-public class DeadlineTaskEvent
+public class TaskDeadlineEvent
         extends TaskApplicationEvent {
 
-    public DeadlineTaskEvent(Task task) {
+    public TaskDeadlineEvent(Task task) {
         super(task);
     }
 

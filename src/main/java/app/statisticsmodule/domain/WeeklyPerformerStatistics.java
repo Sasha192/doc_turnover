@@ -6,16 +6,16 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(CalendarPerformerEnum.Values.MONTHLY)
-public class MonthlyPerformerStatistic
+@DiscriminatorValue(CalendarPerformerEnum.Values.WEEKLY)
+public class WeeklyPerformerStatistics
         extends AbstractCalendarPerformerStatistic {
 
-    public MonthlyPerformerStatistic() {
-        super(CalendarPerformerEnum.MONTHLY, Constants.DAY_IN_MS * 30);
+    public WeeklyPerformerStatistics() {
+        super(CalendarPerformerEnum.WEEKLY, Constants.DAY_IN_MS * 7);
     }
 
     @Override
     public Object clone() {
-        return super.clone(new MonthlyPerformerStatistic());
+        return super.clone(new WeeklyPerformerStatistics());
     }
 }

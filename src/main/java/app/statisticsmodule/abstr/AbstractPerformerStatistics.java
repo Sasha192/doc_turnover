@@ -8,6 +8,7 @@ import app.models.mysqlviews.BriefPerformer;
 import app.models.serialization.ExcludeForJsonPerformer;
 import app.statisticsmodule.domain.StatisticsTypeEnum;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,6 +20,9 @@ public abstract class AbstractPerformerStatistics
         implements IStatistics {
 
     private static StatisticsTypeEnum type = PERFORMER_DEFAULT_STATISTIC;
+
+    @Column(name = "performer_id")
+    private Long performerId;
 
     @ExcludeForJsonPerformer
     @JoinColumn(name = "performer_id", insertable = false, updatable = false)
@@ -35,6 +39,14 @@ public abstract class AbstractPerformerStatistics
         return type;
     }
 
+    public Long getPerformerId() {
+        return performerId;
+    }
+
+    public void setPerformerId(Long performerId) {
+        this.performerId = performerId;
+    }
+
     public Performer getPerformer() {
         return performer;
     }
@@ -49,5 +61,12 @@ public abstract class AbstractPerformerStatistics
 
     public void setBriefPerformer(BriefPerformer briefPerformer) {
         this.briefPerformer = briefPerformer;
+    }
+
+    protected Object clone(AbstractPerformerStatistics statistics) {
+        statistics.setPerformerId(getPerformerId());
+        statistics.setPerformer(getPerformer());
+        statistics.setBriefPerformer(getBriefPerformer());
+        return statistics;
     }
 }

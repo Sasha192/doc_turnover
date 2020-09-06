@@ -11,4 +11,6 @@ public interface IStatusService extends IOperations<TaskStatus> {
     TaskStatus findByTitleAndPerformer(Long performerId, String title);
 
     TaskStatus findByTitle(String title);
+
+    List<TaskStatus> findAllNotCustom();
 }

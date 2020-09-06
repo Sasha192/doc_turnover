@@ -2,8 +2,10 @@ package app.service.impl;
 
 import app.dao.interfaces.ITaskDao;
 import app.dao.persistance.IGenericDao;
+import app.eventdriven.publishers.TaskEventPublisher;
 import app.models.basic.Performer;
 import app.models.basic.Task;
+import app.models.basic.TaskStatus;
 import app.service.abstraction.AbstractService;
 import app.service.interfaces.ITaskService;
 import java.util.List;
@@ -18,6 +20,9 @@ public class TaskService extends AbstractService<Task>
 
     @Autowired
     private ITaskDao dao;
+
+    @Autowired
+    private TaskEventPublisher publisher;
 
     public TaskService() {
     }
@@ -54,6 +59,28 @@ public class TaskService extends AbstractService<Task>
                                       String description,
                                       Long taskId) {
         dao.updateNameDescription(newName, description, taskId);
+    }
+
+    @Override
+    public Task create(Task entity) {
+        Task task = super.create(entity);
+        publisher.onCreate(task);
+        return task;
+    }
+
+    @Override
+    public void create(List<Task> entities) {
+        super.create(entities);
+    }
+
+    @Override
+    public List<Task> findOnDeadlineDate(int pageNumber, int pageSize) {
+        return dao.findOnDeadlineDate(pageNumber, pageSize);
+    }
+
+    @Override
+    public int countOnTaskStatus(long perfId, TaskStatus status) {
+        return dao.countOnTaskStatus(perfId, status);
     }
 }
 

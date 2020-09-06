@@ -1,10 +1,13 @@
 package app.statisticsmodule.abstr;
 
 import app.statisticsmodule.domain.CalendarPerformerEnum;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
@@ -19,35 +22,143 @@ import javax.persistence.Transient;
 public abstract class AbstractCalendarPerformerStatistic
         extends AbstractPerformerStatistics {
 
-    @Transient
+    @Column(name = "calendar_enum_type")
+    @Enumerated(EnumType.ORDINAL)
     protected CalendarPerformerEnum type;
+
+    @Transient
+    private long expirationTime;
 
     @Column(name = "creation_timestamp")
     @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date creationDate;
+    private Timestamp creationDate;
 
     @Column(name = "expired")
     private Boolean expired;
 
-    public AbstractCalendarPerformerStatistic(CalendarPerformerEnum type) {
+    @Column(name = "amount")
+    private Integer amount = 0;
+
+    @Column(name = "completed")
+    private Integer completed = 0;
+
+    @Column(name = "inprogress")
+    private Integer inprogress = 0;
+
+    @Column(name = "onhold")
+    private Integer onhold = 0;
+
+    @Column(name = "expired_deadline")
+    private Integer expiredDeadline = 0;
+
+    public AbstractCalendarPerformerStatistic(CalendarPerformerEnum type, long expirationTime) {
         this.type = type;
+        this.expirationTime = expirationTime;
+        this.creationDate = Timestamp.valueOf(LocalDateTime.now());
     }
 
-    public abstract CalendarPerformerEnum getType();
+    public abstract Object clone();
 
-    public Date getCreationDate() {
+    public Object clone(AbstractCalendarPerformerStatistic statistic) {
+        statistic = (AbstractCalendarPerformerStatistic)
+                super.clone(statistic);
+        statistic.setExpiredDeadline(getExpiredDeadline());
+        statistic.setExpired(getExpired());
+        statistic.setAmount(getAmount());
+        statistic.setCompleted(getCompleted());
+        statistic.setCreationDate(getCreationDate());
+        statistic.setInprogress(getInprogress());
+        statistic.setOnhold(getOnhold());
+        return statistic;
+    }
+
+    public CalendarPerformerEnum getType() {
+        return type;
+    }
+
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 
     public Boolean getExpired() {
-        return expired;
+        long now = System.currentTimeMillis();
+        long crDate = getCreationDate().getTime();
+        if (now - crDate < expirationTime) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void setExpired(Boolean expired) {
         this.expired = expired;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public Integer getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Integer completed) {
+        this.completed = completed;
+    }
+
+    public Integer getInprogress() {
+        return inprogress;
+    }
+
+    public void setInprogress(Integer inprogress) {
+        this.inprogress = inprogress;
+    }
+
+    public Integer getOnhold() {
+        return onhold;
+    }
+
+    public void setOnhold(Integer onhold) {
+        this.onhold = onhold;
+    }
+
+    public Integer getExpiredDeadline() {
+        return expiredDeadline;
+    }
+
+    public void setExpiredDeadline(Integer expiredDeadline) {
+        this.expiredDeadline = expiredDeadline;
+    }
+
+    public void incrementInProgress() {
+        this.inprogress = this.inprogress + 1;
+    }
+
+    public void incrementOnhold() {
+        this.onhold = this.onhold + 1;
+    }
+
+    public void incrementCompleted() {
+        this.completed = this.completed + 1;
+    }
+
+    public void incrementExpiredDeadline() {
+        this.expiredDeadline = this.expiredDeadline + 1;
+    }
+
+    public void decrementInProgress() {
+        this.inprogress = this.inprogress - 1;
+    }
+
+    public void decrementOnhold() {
+        this.onhold = this.onhold - 1;
     }
 }

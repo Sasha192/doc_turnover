@@ -1,7 +1,8 @@
 package app.eventdriven.publishers;
 
-import app.eventdriven.domain.CreationTaskEvent;
 import app.eventdriven.domain.GenericApplicationEvent;
+import app.eventdriven.domain.TaskCreationEvent;
+import app.eventdriven.domain.TaskDeadlineEvent;
 import app.eventdriven.domain.TaskStatusModificationEvent;
 import app.models.basic.Task;
 import app.models.basic.TaskStatus;
@@ -20,7 +21,7 @@ public class TaskEventPublisher {
     }
 
     public void onCreate(final Task task) {
-        GenericApplicationEvent<Task> event = new CreationTaskEvent(task);
+        GenericApplicationEvent<Task> event = new TaskCreationEvent(task);
         publisher.publishEvent(event);
     }
 
@@ -29,6 +30,12 @@ public class TaskEventPublisher {
                                final TaskStatus newStatus) {
         GenericApplicationEvent<Task> event =
                 new TaskStatusModificationEvent(task, oldStatus, newStatus);
+        publisher.publishEvent(event);
+    }
+
+    public void onDeadlineSet(final Task task) {
+        GenericApplicationEvent<Task> event =
+                new TaskDeadlineEvent(task);
         publisher.publishEvent(event);
     }
 }

@@ -17,5 +17,4 @@ public interface IPerformerService extends IOperations<Performer> {
     Performer retrieveByUsername(String username);
 
     List<Performer> findByDepartmentId(Long departmentId);
-
 }
