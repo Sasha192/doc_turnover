@@ -159,7 +159,7 @@ public class TaskNavigationController extends JsonSupportController {
                              HttpServletResponse response) {
         Task task = taskService.findOne(taskId);
         TaskStatus status = statusService.findByTitle(newStatus);
-        taskStatusChanger.setTaskStatus(task, status);
+        taskStatusChanger.change(task, status);
         taskService.update(task);
         sendDefaultJson(response, true, "");
     }

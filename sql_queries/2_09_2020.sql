@@ -23,3 +23,8 @@ alter table cal_perf_statistics
 alter table cal_perf_statistics
     add calendar_enum_type int not null;
 
+alter table cal_perf_statistics
+	add constraint cal_perf_statistics_performers_id_fk
+		foreign key (performer_id) references performers (id)
+			on delete cascade;
+

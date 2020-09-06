@@ -20,6 +20,7 @@ import app.security.utils.RememberMeUtil;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IBriefJsonDocumentService;
 import app.service.interfaces.IBriefTaskService;
+import app.service.interfaces.ICalendarStatistic;
 import app.service.interfaces.ICorePropertyService;
 import app.service.interfaces.IDepartmentService;
 import app.service.interfaces.IEventService;
@@ -29,6 +30,8 @@ import app.service.interfaces.IStatusService;
 import app.service.interfaces.ITaskCommentService;
 import app.service.interfaces.ITaskService;
 import app.spring.TestSpringDataConfiguration;
+import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
+import app.statisticsmodule.domain.MonthlyPerformerStatistic;
 import app.utils.CustomAppDateTimeUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -86,6 +89,8 @@ public class JunitSpringDaoServicesTests {
 
     private IBriefTaskService briefTaskService;
 
+    private final ICalendarStatistic statistics;
+
     @Autowired
     private RememberMeUtil rememberMeUtil;
 
@@ -106,7 +111,8 @@ public class JunitSpringDaoServicesTests {
                                        IStatusService statusService, ITaskService taskService,
                                        ITaskCommentService taskCommentService,
                                        IReportCommentService reportCommentService,
-                                       IBriefTaskService briefTaskService) {
+                                       IBriefTaskService briefTaskService,
+                                       ICalendarStatistic statistics) {
         this.departmentService = departmentService;
         this.documentService = documentService;
         this.jsonDocumentService = jsonDocumentService;
@@ -117,6 +123,7 @@ public class JunitSpringDaoServicesTests {
         this.taskCommentService = taskCommentService;
         this.reportCommentService = reportCommentService;
         this.briefTaskService = briefTaskService;
+        this.statistics = statistics;
     }
 
     @BeforeEach
@@ -185,6 +192,15 @@ public class JunitSpringDaoServicesTests {
         List<BriefTask> tasks = briefTaskService.findAll();
         Gson gson = BUILDER.create();
         gson.toJson(tasks);
+    }
+
+    @Test
+    public void testStatistic() {
+        statistics.findAll();
+        AbstractCalendarPerformerStatistic stat =
+                new MonthlyPerformerStatistic();
+        stat.setPerformerId(40L);
+        statistics.create(stat);
     }
 
     @Test

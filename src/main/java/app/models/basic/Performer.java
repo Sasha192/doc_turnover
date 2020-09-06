@@ -3,6 +3,7 @@ package app.models.basic;
 import app.models.abstr.IdentityBaseEntity;
 import app.models.serialization.ExcludeForJsonPerformer;
 import app.security.models.SimpleRole;
+import app.statisticsmodule.abstr.AbstractPerformerStatistics;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -72,6 +73,17 @@ public class Performer
 
     @Column(name = "img_token")
     private String imgIdToken;
+
+    @OneToMany(mappedBy = "performer")
+    private Set<AbstractPerformerStatistics> statistics;
+
+    public Set<AbstractPerformerStatistics> getStatistics() {
+        return statistics;
+    }
+
+    public void setStatistics(Set<AbstractPerformerStatistics> statistics) {
+        this.statistics = statistics;
+    }
 
     public String getName() {
         return this.name;

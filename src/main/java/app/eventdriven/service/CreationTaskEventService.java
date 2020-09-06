@@ -5,12 +5,8 @@ import app.eventdriven.domain.TaskCreationEvent;
 import app.eventdriven.domain.TaskEventEnum;
 import app.models.basic.Task;
 import app.service.interfaces.ICalendarStatistic;
+import app.service.interfaces.IPerformerStatisticCreation;
 import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
-import app.statisticsmodule.domain.AnnuallyPerformerStatistics;
-import app.statisticsmodule.domain.DailyPerformerStatistic;
-import app.statisticsmodule.domain.MonthlyPerformerStatistic;
-import app.statisticsmodule.domain.WeeklyPerformerStatistics;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +19,8 @@ public class CreationTaskEventService
 
     @Autowired
     private ICalendarStatistic statistic;
+
+    private IPerformerStatisticCreation statisticCreation;
 
     @Override
     public TaskEventEnum getType() {
@@ -42,33 +40,12 @@ public class CreationTaskEventService
             List<AbstractCalendarPerformerStatistic> stats =
                     statistic.findByPerformerId(id);
             if (stats == null || stats.isEmpty()) {
-                stats = initStatistics(id);
+                stats = statisticCreation.create(id);
             }
             for (AbstractCalendarPerformerStatistic stat : stats) {
                 process(stat);
             }
         }
-    }
-
-    private List<AbstractCalendarPerformerStatistic> initStatistics(Long perfId) {
-        DailyPerformerStatistic daily = new DailyPerformerStatistic();
-        daily.setPerformerId(perfId);
-        statistic.create(daily);
-        WeeklyPerformerStatistics weekly = new WeeklyPerformerStatistics();
-        weekly.setPerformerId(perfId);
-        statistic.create(weekly);
-        MonthlyPerformerStatistic monthly = new MonthlyPerformerStatistic();
-        monthly.setPerformerId(perfId);
-        statistic.create(monthly);
-        AnnuallyPerformerStatistics annually = new AnnuallyPerformerStatistics();
-        annually.setPerformerId(perfId);
-        statistic.create(annually);
-        List<AbstractCalendarPerformerStatistic> statistics = new LinkedList<>();
-        statistics.add(daily);
-        statistics.add(weekly);
-        statistics.add(monthly);
-        statistics.add(annually);
-        return statistics;
     }
 
     private void process(AbstractCalendarPerformerStatistic stat) {
