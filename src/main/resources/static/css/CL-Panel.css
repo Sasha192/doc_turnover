@@ -8,6 +8,7 @@ table#CL-Panel {
     border-collapse: separate;
     border-spacing: 0px 10px;
     margin-top: 20px;
+    width:100%;
 }
 
 /* CL-Panel Titles */

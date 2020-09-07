@@ -18,11 +18,17 @@
                 </div>
                 <div class="drop-down_list">
                     <div id="notifications-list">
+                        <div class="notification-title  grey-text d-flex align-items-center">
+                            <i class="mr-3 text-info fa fa-envelope"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="option-item">
-                <a href="/Clpanel"><img src="img/services/settings.png" alt=""></a>
+            <div class="option-item" id="clpanel-link" style="display: none" >
+                <a href="/CLpanel"><img src="img/services/settings.png" alt=""></a>
+            </div>
+            <div class="option-item" id="charts" style="display: none" >
+                <a href="/chart"><img src="img/services/graph.png" alt=""></a>
             </div>
         </div>
         <div class="padding-block col-0 col-sm-0 col-md-0 col-lg-0 col-xl-1"> </div>
@@ -37,7 +43,7 @@
                                     Дошка моєї команди
                                 </button>
                             </div>
-                            <div class="nav-bar_item active">
+                            <div class="nav-bar_item">
                                 <button onclick="window.location = '/myboard'">
                                     <img src="img/services/man.png" alt="" class="bg_purple">
                                     Моя дошка
@@ -68,10 +74,6 @@
                                     </div>
                                 </button>
                                 <div class="drop-down_list">
-                                    <div class="drop-down_item">
-                                        Налаштування
-                                        <i class="fa fa-cog"></i>
-                                    </div>
                                     <div class="drop-down_item">
                                         Вийти
                                         <i class="fa fa-power-off"></i>

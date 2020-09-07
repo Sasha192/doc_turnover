@@ -50,10 +50,10 @@ export { Http }
 (function () {
 
     const months = [
-        "Jenuary", "February", "March",
-        "April", "May", "June",
-        "July", "August", "September",
-        "October", "November", "December"]
+        "Січень", "Лютий", "Березень",
+        "Квітень", "Травень", "Червень",
+        "Липень", "Серпень", "Вересень",
+        "Жовтень", "Листопад", "Грудень"]
 
     let date = new Date(),
         month_id = date.getMonth(),

@@ -37,6 +37,11 @@ public class ViewsController {
         return "tmboard";
     }
 
+    @RequestMapping("/chart")
+    public String chartMap(ModelMap map) {
+        return "charts";
+    }
+
     @RequestMapping("/CLpanel")
     public ModelAndView clPanel(ModelAndView modelAndView,
                           HttpServletRequest request) {

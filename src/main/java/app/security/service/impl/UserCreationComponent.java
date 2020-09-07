@@ -14,6 +14,8 @@ import app.utils.ImgToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class UserCreationComponent implements IUserCreation {
 
@@ -52,7 +54,7 @@ public class UserCreationComponent implements IUserCreation {
                         ? Constants.EMPTY_STRING :
                         dto.getLastName());
         performer.setName(performerName);
-        performer.setRoles(customUser.getRoles());
+        performer.setRoles(Set.copyOf(customUser.getRoles()));
         String imgToken = ImgToken.generate(performer.getName());
         performer.setImgIdToken(imgToken);
         performerService.create(performer);

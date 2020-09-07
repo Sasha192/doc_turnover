@@ -14,7 +14,7 @@ import { Http } from "./modules/services.js"
 
 
    Http.get("/performer/my/info", User => {
-       if (User.roles[0] == "PERFORMER" || User.roles[0] == "SECRETARY" || User.roles[0] == "MANAGER") {
+       if (User.roles[0] == "PERFORMER" || User.roles[0] == "SECRETARY") {
 
            {  // Todo
                document.querySelectorAll("[contenteditable]").forEach(editor => {
@@ -27,15 +27,8 @@ import { Http } from "./modules/services.js"
            }
 
        } else {
-
-           {   // Todo
-               // $("#task-info #todo-send-report-control").css("display", "none")
-               // $("#task-info .report-msg").css("display", "none")
-               // $("#task-info #send-report-files").css("display", "none")
-           }
-
            $("#clpanel-link").css("display", "block")
-
+           $("#charts").css("display", "block")
        }
 
        dropDown()

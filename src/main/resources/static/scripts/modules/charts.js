@@ -157,26 +157,26 @@ window.onload = () => {
 
     class dateToggle {
         static week() {
-            Http.get("/test", data => {
-                updateData(newData)
+            Http.get("/statistic/all/weekly", data => {
+                updateData(data)
             })
             currentLink.innerHTML = "За останній тиждень"
         }
         static month() {
-            Http.get("/test", data => {
-                updateData(newData)
+            Http.get("/statistic/all/monthly", data => {
+                updateData(data)
             })
             currentLink.innerHTML = "За останній місяць"
         }
         static year() {
-            Http.get("/test", data => {
-                updateData(newData)
+            Http.get("/statistic/all/annualy", data => {
+                updateData(data)
             })
             currentLink.innerHTML = "За останній рік"
         }
         static allTime() {
-            Http.get("/test", data => {
-                updateData(newData)
+            Http.get("/statistic/all", data => {
+                updateData(data)
             })
             currentLink.innerHTML = "За весь час"
         }
@@ -189,8 +189,8 @@ window.onload = () => {
         document.querySelector("#allTimeChart").onclick = () => dateToggle.allTime()
     }
 
-    Http.get("/test", data => {
-        updateData(newData)
+    Http.get("/statistic/all/monthly", data => {
+        updateData(data)
         currentLink.innerHTML = "За останній місяць"
     })
 

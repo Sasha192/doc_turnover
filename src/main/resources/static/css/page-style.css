@@ -46,6 +46,14 @@ body {
     transition: .2s;
 }
 
+.option-item a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
 .option-item img {
     width: 18px;
     height: auto;
@@ -493,6 +501,11 @@ body {
     overflow-y: auto;
     height: 340px;
     padding: 0px 15px;
+    min-width: 200px !important;
+}
+
+.notification-title {
+    padding-bottom: 20px;
 }
 
 #notifications-list::-webkit-scrollbar {
