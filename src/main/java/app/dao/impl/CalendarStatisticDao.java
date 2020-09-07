@@ -16,8 +16,8 @@ public class CalendarStatisticDao
             " from ";
 
     private static final String FIND_BY_PERF =
-            "SELECT stat FROM AbstractCalendarPerformerStatistic "
-            + " WHERE stat.performerId = :perf_id_ ";
+            "FROM AbstractCalendarPerformerStatistic "
+            + " WHERE performerId = :perf_id_ ";
 
     public CalendarStatisticDao() {
         setClazz(AbstractCalendarPerformerStatistic.class);

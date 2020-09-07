@@ -20,10 +20,10 @@ public class TaskDeadlineChanger implements IChanger<Task, Boolean> {
             if (null != task.getId() && deadline) {
                 task.setDeadline(deadline);
                 publisher.onDeadlineSet(task);
+                taskService.update(task);
             } else {
                 task.setDeadline(deadline);
             }
-            taskService.update(task);
         }
     }
 }

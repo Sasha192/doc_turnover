@@ -145,11 +145,14 @@ public class UserManagementWrapper
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(Constants.REMEMBER_ME_ID)) {
                     cid = cookie;
+                    break;
                 }
             }
             try {
-                Long id = Long.valueOf(cid.getValue());
-                userService.removeRememberMeToken(id);
+                if (cid != null) {
+                    Long id = Long.valueOf(cid.getValue());
+                    userService.removeRememberMeToken(id);
+                }
             } catch (NumberFormatException ex) {
                 LOGGER.error(ex.getMessage());
                 LOGGER.error(ex.getStackTrace());

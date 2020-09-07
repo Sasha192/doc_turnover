@@ -37,8 +37,8 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         @ComponentScan("app.security.service"),
         @ComponentScan("app.configuration"),
         @ComponentScan("app.utils"),
-        @ComponentScan("app.eventdriven"),
         @ComponentScan("app.statisticsmodule"),
+        @ComponentScan("app.eventdriven"),
         @ComponentScan("app.events")
 })
 public class SpringDataConfiguration {
@@ -68,7 +68,10 @@ public class SpringDataConfiguration {
         final LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(this.getDataSource());
-        em.setPackagesToScan("app.models", "app.security.models", "app.statisticsmodule");
+        em.setPackagesToScan("app.models",
+                "app.security.models",
+                "app.statisticsmodule",
+                "app.events");
         final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(this.hibernateProperties());

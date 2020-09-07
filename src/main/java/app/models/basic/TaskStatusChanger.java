@@ -18,6 +18,10 @@ public class TaskStatusChanger implements IChanger<Task, TaskStatus> {
     public void change(Task task, TaskStatus newState) {
         if (null != newState && null != task) {
             TaskStatus oldState = task.getStatus();
+            if (oldState == null) {
+                task.setStatus(newState);
+                return;
+            }
             if (isValidStatus(oldState, newState)) {
                 task.setStatus(newState);
                 if (null != task.getId()) {

@@ -2,6 +2,7 @@ package app.controllers;
 
 import app.controllers.dto.PerformerDto;
 import app.controllers.dto.mappers.IEntityDtoMapper;
+import app.models.basic.CustomUser;
 import app.models.basic.Department;
 import app.models.basic.Performer;
 import app.models.mysqlviews.BriefPerformer;
@@ -93,7 +94,9 @@ public class PerformersNavigationController extends JsonSupportController {
         SimpleRole newRole = SimpleRole.valueOf(role);
         Performer performer = performerService.findOne(performerId);
         performer.addRole(newRole);
-        performer.getUser().addRole(newRole);
+        CustomUser user = performer.getUser();
+        user.addRole(newRole);
+        userService.update(user);
         performerService.update(performer);
         sendDefaultJson(response, true, "");
     }

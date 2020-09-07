@@ -3,6 +3,7 @@ package app.security.service.impl;
 import app.configuration.spring.constants.Constants;
 import app.models.basic.CustomUser;
 import app.models.basic.Performer;
+import app.security.models.SimpleRole;
 import app.security.models.UserDto;
 import app.security.service.IUserCreation;
 import app.security.service.IUserService;
@@ -39,6 +40,7 @@ public class UserCreationComponent implements IUserCreation {
     public CustomUser create(UserDto dto) {
         CustomUser customUser = new CustomUser(dto, encoder);
         customUser.setEnabled(true);
+        customUser.addRole(SimpleRole.PERFORMER);
         userService.create(customUser);
         Performer performer = new Performer();
         String performerName =
