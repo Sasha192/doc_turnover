@@ -16,12 +16,6 @@
     position: relative;
 }
 
-.user-options .user-img img {
-    width:30px;
-    height: 30px;
-
-}
-
 [data-type="status"] {
     width: 12px;
     height: 12px;
@@ -41,10 +35,9 @@
 .user-options .user-name {
     margin:0px 30px;
     font-size: 14px;
-    color:#454545;
+    color:#999999;
     transition: .2s;
     cursor: pointer;
-    font-family: "Roboto light";
 }
 
 .user-options .drop-down i {
