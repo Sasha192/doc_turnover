@@ -77,7 +77,7 @@ public class StatisticUnaryOperators {
             @Override
             public AbstractCalendarPerformerStatistic apply(
                     AbstractCalendarPerformerStatistic statistic) {
-                statistic.incrementInProgress();
+                statistic.incrementCompleted();
                 return statistic;
             }
         };
@@ -85,6 +85,7 @@ public class StatisticUnaryOperators {
             @Override
             public AbstractCalendarPerformerStatistic apply(
                     AbstractCalendarPerformerStatistic statistic) {
+                statistic.decrementCompleted();
                 return statistic;
             }
         };

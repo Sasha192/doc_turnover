@@ -184,4 +184,8 @@ public abstract class AbstractCalendarPerformerStatistic
     public void incrementAmount() {
         this.amount = this.amount + 1;
     }
+
+    public void decrementCompleted() {
+        this.completed = this.completed + 1;
+    }
 }
