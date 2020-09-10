@@ -11,10 +11,9 @@ import app.security.utils.DefaultPasswordEncoder;
 import app.service.interfaces.IPerformerService;
 import app.service.interfaces.IPerformerStatisticCreation;
 import app.utils.ImgToken;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 @Component
 public class UserCreationComponent implements IUserCreation {

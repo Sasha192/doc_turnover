@@ -2,7 +2,6 @@ package app.service.abstraction;
 
 import app.dao.persistance.IGenericDao;
 import app.dao.persistance.IOperations;
-import com.google.common.collect.Lists;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.criteria.Order;
@@ -21,7 +20,7 @@ public abstract class AbstractService<T extends Serializable> implements IOperat
     @Override
     @Transactional(readOnly = true)
     public List<T> findAll() {
-        return Lists.newArrayList(getDao().findAll());
+        return (getDao().findAll());
     }
 
     @Transactional(readOnly = true)

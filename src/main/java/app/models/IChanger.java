@@ -1,4 +1,4 @@
-package app.models.basic;
+package app.models;
 
 @Deprecated
 /**

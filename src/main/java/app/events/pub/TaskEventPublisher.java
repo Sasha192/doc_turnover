@@ -2,7 +2,7 @@ package app.events.pub;
 
 import app.events.impl.TaskEvent;
 import app.models.basic.Performer;
-import app.models.basic.Task;
+import app.models.basic.taskmodels.Task;
 import app.service.interfaces.IEventService;
 import java.util.HashSet;
 import java.util.Set;

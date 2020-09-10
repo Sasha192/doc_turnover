@@ -1,6 +1,7 @@
 package app.models.basic;
 
 import app.models.abstr.TaskHolderComment;
+import app.models.basic.taskmodels.Task;
 import app.models.serialization.ExcludeForJsonComment;
 import java.io.Serializable;
 import java.util.Set;

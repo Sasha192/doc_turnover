@@ -3,10 +3,11 @@ package app.eventdriven.service;
 import app.eventdriven.domain.GenericApplicationEvent;
 import app.eventdriven.domain.TaskCreationEvent;
 import app.eventdriven.domain.TaskEventEnum;
-import app.models.basic.Task;
+import app.models.basic.taskmodels.Task;
 import app.service.interfaces.ICalendarStatistic;
 import app.service.interfaces.IPerformerStatisticCreation;
 import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
+import app.statisticsmodule.service.ClonePerformerStatisticComponent;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,9 @@ public class CreationTaskEventService
             statistic.update(stat);
         } else {
             statistic.delete(stat);
-            AbstractCalendarPerformerStatistic newStat = (AbstractCalendarPerformerStatistic)
-                    stat.clone();
+            AbstractCalendarPerformerStatistic newStat;
+            newStat = (AbstractCalendarPerformerStatistic)
+            ClonePerformerStatisticComponent.clone(stat);
             newStat.incrementAmount();
             newStat.incrementNew();
             statistic.create(newStat);

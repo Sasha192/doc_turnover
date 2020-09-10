@@ -3,10 +3,11 @@ package app.eventdriven.service;
 import app.eventdriven.domain.GenericApplicationEvent;
 import app.eventdriven.domain.TaskEventEnum;
 import app.eventdriven.domain.TaskStatusModificationEvent;
-import app.models.basic.Task;
 import app.models.basic.TaskStatus;
+import app.models.basic.taskmodels.Task;
 import app.service.interfaces.ICalendarStatistic;
 import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
+import app.statisticsmodule.service.ClonePerformerStatisticComponent;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -59,9 +60,9 @@ public class TaskStatusModificationEventService
             statistic.update(stat);
         } else {
             statistic.delete(stat);
-            AbstractCalendarPerformerStatistic newStat =
-                    (AbstractCalendarPerformerStatistic)
-                            stat.clone();
+            AbstractCalendarPerformerStatistic newStat;
+            newStat = (AbstractCalendarPerformerStatistic)
+                    ClonePerformerStatisticComponent.clone(stat);
             operator.apply(newStat);
             statistic.create(newStat);
         }

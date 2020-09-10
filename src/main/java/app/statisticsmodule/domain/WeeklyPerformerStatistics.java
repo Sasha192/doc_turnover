@@ -14,8 +14,4 @@ public class WeeklyPerformerStatistics
         super(CalendarPerformerEnum.WEEKLY, Constants.DAY_IN_MS * 7);
     }
 
-    @Override
-    public Object clone() {
-        return super.clone(new WeeklyPerformerStatistics());
-    }
 }

@@ -62,11 +62,4 @@ public abstract class AbstractPerformerStatistics
     public void setBriefPerformer(BriefPerformer briefPerformer) {
         this.briefPerformer = briefPerformer;
     }
-
-    protected Object clone(AbstractPerformerStatistics statistics) {
-        statistics.setPerformerId(getPerformerId());
-        statistics.setPerformer(getPerformer());
-        statistics.setBriefPerformer(getBriefPerformer());
-        return statistics;
-    }
 }

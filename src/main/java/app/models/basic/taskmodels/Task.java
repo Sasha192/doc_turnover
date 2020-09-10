@@ -1,6 +1,12 @@
-package app.models.basic;
+package app.models.basic.taskmodels;
 
+import app.configuration.spring.appfactory.ApplicationFactory;
+import app.eventdriven.publishers.TaskEventPublisher;
 import app.models.abstr.IdentityBaseEntity;
+import app.models.basic.BriefDocument;
+import app.models.basic.Performer;
+import app.models.basic.Report;
+import app.models.basic.TaskStatus;
 import app.utils.CustomAppDateTimeUtil;
 import java.io.Serializable;
 import java.util.Date;
@@ -18,14 +24,28 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "tasks")
+@Component
+@Configurable(preConstruction = true, autowire = Autowire.BY_TYPE)
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class Task
         extends IdentityBaseEntity
         implements Serializable {
+
+    @Autowired
+    @Transient
+    private TaskEventPublisher publisher;
 
     @Column(name = "task")
     private String toDo;
@@ -111,6 +131,11 @@ public class Task
         setDeadlineDate(now);
         setControlDate(now);
         setModificationDate(now);
+        checkPublisher();
+    }
+
+    public TaskEventPublisher getPublisher() {
+        return publisher;
     }
 
     public Long getTaskOwnerId() {
@@ -161,8 +186,12 @@ public class Task
         return this.deadline;
     }
 
-    void setDeadline(final Boolean deadline) {
+    public void setDeadline(final Boolean deadline) {
         this.deadline = deadline;
+        if (null != getId() && deadline
+                && checkPublisher()) {
+            publisher.onDeadlineSet(this);
+        }
     }
 
     public String getPriority() {
@@ -209,8 +238,19 @@ public class Task
         return this.status;
     }
 
-    void setStatus(final TaskStatus status) {
-        this.status = status;
+    public void setStatus(final TaskStatus newState) {
+        if (null != newState) {
+            TaskStatus oldState = getStatus();
+            if (oldState != null) {
+                boolean check = TaskStatusValidator
+                        .check(oldState, newState);
+                if (check && null != getId()
+                        && checkPublisher()) {
+                    publisher.onStatusUpdate(this, oldState, newState);
+                }
+            }
+            this.status = newState;
+        }
     }
 
     public String getStatusString() {
@@ -322,5 +362,14 @@ public class Task
                 .append(getTaskOwner())
                 .append(getModificationDate())
                 .toHashCode();
+    }
+
+    private boolean checkPublisher() {
+        if (publisher == null) {
+            publisher = (TaskEventPublisher)
+                    ApplicationFactory
+                            .getBean(TaskEventPublisher.class);
+        }
+        return publisher != null;
     }
 }

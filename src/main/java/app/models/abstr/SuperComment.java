@@ -27,7 +27,7 @@ public abstract class SuperComment
     @Column(name = "comment")
     protected String comment;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "performer_id", insertable = false, updatable = false)
     @ExcludeForJsonComment
@@ -36,7 +36,7 @@ public abstract class SuperComment
     @Column(name = "performer_id")
     protected Long authorId;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.EAGER)
     @JoinColumn(name = "performer_id", insertable = false, updatable = false)
     protected BriefPerformer performer;

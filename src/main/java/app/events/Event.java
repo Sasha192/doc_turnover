@@ -49,7 +49,7 @@ public abstract class Event
     protected EventType eventTypeEnum;
 
     @ManyToOne(cascade = {CascadeType.REFRESH,
-            CascadeType.MERGE,},
+            },
             fetch = FetchType.LAZY)
     @JoinColumn(name = "performer_id", insertable = false, updatable = false)
     @ExcludeForJsonEvent
@@ -76,7 +76,7 @@ public abstract class Event
 
     /*@OneToMany(mappedBy = "event", fetch = FetchType.LAZY,
             cascade = {CascadeType.REFRESH,
-                    CascadeType.MERGE,
+
                     CascadeType.PERSIST})
     @ExcludeForJsonEvent
     protected List<PerformerEventAgent> performerEventAgent*/;

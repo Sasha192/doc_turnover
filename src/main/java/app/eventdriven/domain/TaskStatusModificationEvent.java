@@ -1,7 +1,7 @@
 package app.eventdriven.domain;
 
-import app.models.basic.Task;
 import app.models.basic.TaskStatus;
+import app.models.basic.taskmodels.Task;
 
 public class TaskStatusModificationEvent extends TaskApplicationEvent {
 

@@ -2,8 +2,8 @@ package app.service.impl;
 
 import app.dao.interfaces.ITaskCommentDao;
 import app.dao.persistance.IGenericDao;
-import app.models.basic.Task;
 import app.models.basic.TaskComment;
+import app.models.basic.taskmodels.Task;
 import app.service.abstraction.AbstractService;
 import app.service.interfaces.ITaskCommentService;
 import java.util.List;

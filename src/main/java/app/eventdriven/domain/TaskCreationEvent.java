@@ -1,6 +1,6 @@
 package app.eventdriven.domain;
 
-import app.models.basic.Task;
+import app.models.basic.taskmodels.Task;
 
 public class TaskCreationEvent extends TaskApplicationEvent {
 

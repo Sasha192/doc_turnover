@@ -68,4 +68,14 @@ public class StatisticController
                 statisticService.findAllByType(CalendarPerformerEnum.WEEKLY);
         writeToResponse(response, GSON_BUILDER, data);
     }
+
+    @RequestMapping(value = "/all",
+            method = RequestMethod.GET)
+    public void selectAll(HttpServletRequest request,
+                             HttpServletResponse response)
+            throws IOException {
+        List<AbstractCalendarPerformerStatistic> data =
+                statisticService.findAllByType(CalendarPerformerEnum.ALL_TIME);
+        writeToResponse(response, GSON_BUILDER, data);
+    }
 }

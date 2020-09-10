@@ -146,7 +146,7 @@ public class DocumentsNavigationController extends JsonSupportController {
     private boolean allowUploadArchive(Set<SimpleRole> roles) {
         return roles.contains(SimpleRole.G_MANAGER)
                 || roles.contains(SimpleRole.ADMIN)
-                || roles.contains(SimpleRole.MANAGER);
+                || roles.contains(SimpleRole.SECRETARY);
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)

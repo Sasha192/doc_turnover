@@ -3,10 +3,9 @@ package app.controllers.dto.mappers;
 import app.configuration.spring.constants.Constants;
 import app.controllers.dto.TaskDto;
 import app.models.basic.BriefDocument;
-import app.models.basic.IChanger;
 import app.models.basic.Performer;
-import app.models.basic.Task;
 import app.models.basic.TaskStatus;
+import app.models.basic.taskmodels.Task;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IPerformerService;
 import app.service.interfaces.IStatusService;
@@ -21,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("task_mapper")
@@ -37,14 +35,6 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
 
     @Autowired
     private IStatusService statusService;
-
-    @Autowired
-    @Qualifier("task_status_modify")
-    private IChanger<Task, TaskStatus> taskStatusChanger;
-
-    @Autowired
-    @Qualifier("deadline_modify")
-    private IChanger<Task, Boolean> taskDeadlineChanger;
 
     @PostConstruct
     private void init() {
@@ -81,12 +71,12 @@ public class TaskMapper implements IEntityDtoMapper<Task, TaskDto> {
         }
         TaskStatus taskStatus = statusService.findByTitle(dto.getStatus());
         if (taskStatus != null) {
-            taskStatusChanger.change(task, taskStatus);
+            task.setStatus(taskStatus);
         } else {
             throw new IllegalArgumentException("Not valid TaskStatus. Actual : " + dto.getStatus());
         }
         List<Performer> performers = performerService.findSeveralById(dto.getPerformerId());
-        taskDeadlineChanger.change(task, false);
+        task.setDeadline(false);
         task.setPerformerIds(performers.stream().map(perf -> {
             return perf.getId();
         }).collect(Collectors.toSet()));

@@ -6,7 +6,7 @@ import app.models.basic.BriefDocument;
 import app.models.basic.Performer;
 import app.models.basic.Report;
 import app.models.basic.ReportComment;
-import app.models.basic.Task;
+import app.models.basic.taskmodels.Task;
 import app.service.impl.ExecutionService;
 import app.service.interfaces.IBriefDocumentService;
 import app.service.interfaces.IReportCommentService;

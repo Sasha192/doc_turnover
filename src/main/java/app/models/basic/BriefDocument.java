@@ -1,6 +1,7 @@
 package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
+import app.models.basic.taskmodels.Task;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;

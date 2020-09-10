@@ -14,8 +14,4 @@ public class MonthlyPerformerStatistic
         super(CalendarPerformerEnum.MONTHLY, Constants.DAY_IN_MS * 30);
     }
 
-    @Override
-    public Object clone() {
-        return super.clone(new MonthlyPerformerStatistic());
-    }
 }

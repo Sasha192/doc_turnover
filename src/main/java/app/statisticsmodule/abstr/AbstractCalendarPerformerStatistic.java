@@ -54,25 +54,15 @@ public abstract class AbstractCalendarPerformerStatistic
     @Column(name = "expired_deadline")
     private Integer expiredDeadline = 0;
 
-    public AbstractCalendarPerformerStatistic(CalendarPerformerEnum type, long expirationTime) {
+    public AbstractCalendarPerformerStatistic(CalendarPerformerEnum type) {
+        this(type, -1);
+    }
+
+    public AbstractCalendarPerformerStatistic(CalendarPerformerEnum type,
+                                              long expirationTime) {
         this.type = type;
         this.expirationTime = expirationTime;
         this.creationDate = Timestamp.valueOf(LocalDateTime.now());
-    }
-
-    public abstract Object clone();
-
-    public Object clone(AbstractCalendarPerformerStatistic statistic) {
-        statistic = (AbstractCalendarPerformerStatistic)
-                super.clone(statistic);
-        statistic.setExpiredDeadline(getExpiredDeadline());
-        statistic.setExpired(getExpired());
-        statistic.setAmount(getAmount());
-        statistic.setCompleted(getCompleted());
-        statistic.setCreationDate(getCreationDate());
-        statistic.setInprogress(getInprogress());
-        statistic.setOnhold(getOnhold());
-        return statistic;
     }
 
     public CalendarPerformerEnum getType() {
@@ -88,6 +78,9 @@ public abstract class AbstractCalendarPerformerStatistic
     }
 
     public Boolean getExpired() {
+        if (expirationTime < 0) {
+            return false;
+        }
         long now = System.currentTimeMillis();
         long crDate = getCreationDate().getTime();
         if (now - crDate < expirationTime) {

@@ -14,8 +14,4 @@ public class AnnuallyPerformerStatistics
         super(CalendarPerformerEnum.ANNUALLY, Constants.DAY_IN_MS * 365);
     }
 
-    @Override
-    public Object clone() {
-        return super.clone(new AnnuallyPerformerStatistics());
-    }
 }

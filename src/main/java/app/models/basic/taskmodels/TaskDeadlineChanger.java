@@ -1,11 +1,10 @@
-package app.models.basic;
+package app.models.basic.taskmodels;
 
 import app.eventdriven.publishers.TaskEventPublisher;
+import app.models.IChanger;
 import app.service.interfaces.ITaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component("deadline_modify")
 public class TaskDeadlineChanger implements IChanger<Task, Boolean> {
 
     @Autowired
@@ -16,14 +15,6 @@ public class TaskDeadlineChanger implements IChanger<Task, Boolean> {
 
     @Override
     public void change(Task task, Boolean deadline) {
-        if (null != task) {
-            if (null != task.getId() && deadline) {
-                task.setDeadline(deadline);
-                publisher.onDeadlineSet(task);
-                taskService.update(task);
-            } else {
-                task.setDeadline(deadline);
-            }
-        }
+        ;
     }
 }

@@ -2,8 +2,8 @@ package app.service.interfaces;
 
 import app.dao.persistance.IOperations;
 import app.models.basic.Performer;
-import app.models.basic.Task;
 import app.models.basic.TaskStatus;
+import app.models.basic.taskmodels.Task;
 import java.util.List;
 import java.util.Map;
 

@@ -107,7 +107,7 @@ public class BriefTask
     @ExcludeForJsonBriefTask
     private Report report;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(cascade = { CascadeType.REFRESH})
     @JoinTable(name = "comment_post",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "id")

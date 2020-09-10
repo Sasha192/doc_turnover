@@ -2,8 +2,8 @@ package app.dao.impl;
 
 import app.dao.interfaces.ITaskCommentDao;
 import app.dao.persistance.GenericJpaRepository;
-import app.models.basic.Task;
 import app.models.basic.TaskComment;
+import app.models.basic.taskmodels.Task;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;

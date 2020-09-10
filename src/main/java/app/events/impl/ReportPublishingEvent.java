@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue(value = "report_event")
 public class ReportPublishingEvent extends Event {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "report_id", insertable = false, updatable = false)
     @ExcludeForJsonEvent

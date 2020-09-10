@@ -1,6 +1,7 @@
 package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
+import app.models.basic.taskmodels.Task;
 import app.models.serialization.ExcludeForJsonPerformer;
 import app.security.models.SimpleRole;
 import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;

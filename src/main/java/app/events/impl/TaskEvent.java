@@ -1,7 +1,7 @@
 package app.events.impl;
 
 import app.events.Event;
-import app.models.basic.Task;
+import app.models.basic.taskmodels.Task;
 import app.models.serialization.ExcludeForJsonEvent;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue(value = "task_event")
 public class TaskEvent extends Event {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", insertable = false, updatable = false)
     @ExcludeForJsonEvent

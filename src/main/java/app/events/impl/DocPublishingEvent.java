@@ -1,3 +1,4 @@
+
 package app.events.impl;
 
 import app.events.Event;
@@ -16,7 +17,7 @@ import javax.persistence.ManyToOne;
 public class DocPublishingEvent extends Event {
 
     @ManyToOne(fetch = FetchType.LAZY,
-            cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+            cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "doc_id", insertable = false, updatable = false)
     @ExcludeForJsonEvent
     private BriefDocument document;

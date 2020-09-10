@@ -2,8 +2,8 @@ package app.dao.impl;
 
 import app.dao.interfaces.ITaskDao;
 import app.dao.persistance.GenericJpaRepository;
-import app.models.basic.Task;
 import app.models.basic.TaskStatus;
+import app.models.basic.taskmodels.Task;
 import app.utils.CustomAppDateTimeUtil;
 import java.util.List;
 import javax.persistence.Query;

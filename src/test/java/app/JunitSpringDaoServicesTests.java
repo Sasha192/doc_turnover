@@ -10,8 +10,8 @@ import app.models.basic.Department;
 import app.models.basic.Performer;
 import app.models.basic.Report;
 import app.models.basic.ReportComment;
-import app.models.basic.Task;
 import app.models.basic.TaskComment;
+import app.models.basic.taskmodels.Task;
 import app.models.mysqlviews.BriefPerformer;
 import app.models.mysqlviews.BriefTask;
 import app.models.serialization.ExcludeStrategies;
@@ -48,6 +48,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -94,6 +95,9 @@ public class JunitSpringDaoServicesTests {
 
     @Autowired
     private RememberMeUtil rememberMeUtil;
+
+    @Autowired
+    private ApplicationContext context;
 
     @Autowired
     private IUserService userService;
@@ -193,6 +197,16 @@ public class JunitSpringDaoServicesTests {
         List<BriefTask> tasks = briefTaskService.findAll();
         Gson gson = BUILDER.create();
         gson.toJson(tasks);
+    }
+
+    @Test
+    public void testTaskServiceWiring() {
+        Task task = new Task();
+        System.out.println(task.getPublisher());
+        List<Task> tasks = taskService.findAll();
+        for (Task task1 : tasks) {
+            System.out.println(task1.getPublisher());
+        }
     }
 
     @Test

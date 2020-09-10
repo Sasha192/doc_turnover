@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue(value = "comment_event")
 public class TaskCommentPublishingEvent extends Event {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+    @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", insertable = false, updatable = false)
     @ExcludeForJsonEvent

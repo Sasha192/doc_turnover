@@ -1,8 +1,8 @@
 package app.dao.interfaces;
 
 import app.dao.persistance.IGenericDao;
-import app.models.basic.Task;
 import app.models.basic.TaskStatus;
+import app.models.basic.taskmodels.Task;
 import java.util.List;
 
 public interface ITaskDao extends IGenericDao<Task> {

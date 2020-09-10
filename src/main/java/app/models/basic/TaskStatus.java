@@ -2,6 +2,7 @@ package app.models.basic;
 
 import app.eventdriven.service.StatisticUnaryOperators;
 import app.models.abstr.IdentityBaseEntity;
+import app.models.basic.taskmodels.Task;
 import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
 import java.io.Serializable;
 import java.util.HashMap;

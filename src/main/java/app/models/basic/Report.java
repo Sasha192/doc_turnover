@@ -1,6 +1,7 @@
 package app.models.basic;
 
 import app.models.abstr.IdentityBaseEntity;
+import app.models.basic.taskmodels.Task;
 import app.models.mysqlviews.BriefJsonDocument;
 import app.models.serialization.ExcludeForJsonReport;
 import app.utils.CustomAppDateTimeUtil;

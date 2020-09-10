@@ -7,10 +7,9 @@ import app.controllers.dto.mappers.IEntityDtoMapper;
 import app.events.pub.GenericEventPublisher;
 import app.models.abstr.TaskHolderComment;
 import app.models.basic.Performer;
-import app.models.basic.Task;
 import app.models.basic.TaskComment;
 import app.models.basic.TaskStatus;
-import app.models.basic.TaskStatusChanger;
+import app.models.basic.taskmodels.Task;
 import app.models.mysqlviews.BriefTask;
 import app.security.models.SimpleRole;
 import app.security.wrappers.IPerformerWrapper;
@@ -60,8 +59,6 @@ public class TaskNavigationController extends JsonSupportController {
 
     private final GenericEventPublisher<TaskHolderComment> commentPublisher;
 
-    private final TaskStatusChanger taskStatusChanger;
-
     public TaskNavigationController(IPerformerWrapper performerWrapper,
                                     ITaskService taskService,
                                     IStatusService statusService,
@@ -70,8 +67,7 @@ public class TaskNavigationController extends JsonSupportController {
                                     @Qualifier("task_mapper")
                                             IEntityDtoMapper<Task, TaskDto> taskMapper,
                                     GenericEventPublisher<Task> taskPublisher,
-                                    GenericEventPublisher<TaskHolderComment> commentPublisher,
-                                    TaskStatusChanger taskStatusChanger) {
+                                    GenericEventPublisher<TaskHolderComment> commentPublisher) {
         this.performerWrapper = performerWrapper;
         this.taskService = taskService;
         this.statusService = statusService;
@@ -80,7 +76,6 @@ public class TaskNavigationController extends JsonSupportController {
         this.taskMapper = taskMapper;
         this.taskPublisher = taskPublisher;
         this.commentPublisher = commentPublisher;
-        this.taskStatusChanger = taskStatusChanger;
     }
 
     @RequestMapping(value = "/list/{task_status}", method = RequestMethod.GET)
@@ -159,7 +154,8 @@ public class TaskNavigationController extends JsonSupportController {
                              HttpServletResponse response) {
         Task task = taskService.findOne(taskId);
         TaskStatus status = statusService.findByTitle(newStatus);
-        taskStatusChanger.change(task, status);
+        //@TODO : taskStatusChanger.change(task, status);
+        task.setStatus(status);
         taskService.update(task);
         sendDefaultJson(response, true, "");
     }
