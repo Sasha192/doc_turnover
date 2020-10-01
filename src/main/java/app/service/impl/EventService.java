@@ -65,6 +65,13 @@ public class EventService extends AbstractService<Event>
     }
 
     @Override
+    public List<PerformerEventAgent> retrieveAfterLastReceivedForPerformerId(
+            Long id, Long lastReceivedEventId
+    ) {
+        return dao.retrieveAfterLastReceivedForPerformerId(id, lastReceivedEventId);
+    }
+
+    @Override
     @Deprecated
     /**
      * Not implemented yet

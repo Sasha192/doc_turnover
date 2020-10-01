@@ -40,6 +40,9 @@ public class CoreProperty implements Serializable {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "cached")
+    private boolean cached;
+
     public CoreProperty() {
     }
 
@@ -97,6 +100,14 @@ public class CoreProperty implements Serializable {
 
     public void setFloatValue(final float floatValue) {
         this.floatValue = floatValue;
+    }
+
+    public boolean isCached() {
+        return cached;
+    }
+
+    public void setCached(boolean cached) {
+        this.cached = cached;
     }
 
     public enum CorePropertyType {

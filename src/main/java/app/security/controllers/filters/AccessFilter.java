@@ -1,16 +1,7 @@
 package app.security.controllers.filters;
 
-import app.models.basic.Performer;
-import app.security.models.SimpleRole;
-import java.io.IOException;
-import java.util.Set;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.web.filter.GenericFilterBean;
-
+/*
+@Deprecated
 public class AccessFilter extends GenericFilterBean {
 
     private SimpleRole[] roles;
@@ -28,6 +19,7 @@ public class AccessFilter extends GenericFilterBean {
                          FilterChain filterChain)
             throws IOException, ServletException {
         // @TODO : check if smbd pass to wrong performer, except MANAGER, G_MANAGER
+        // WHAT DOEST IT MEAN ? WHY IT SHOULD BE HANDLED ?
         // @TODO : add filter for no HttpServlerRequest!!!
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -64,3 +56,4 @@ public class AccessFilter extends GenericFilterBean {
         return false;
     }
 }
+*/

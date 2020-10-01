@@ -33,4 +33,8 @@ public interface IEventService extends IOperations<Event> {
     Long countNewEvents(Long performerId);
 
     void seeAllEvents(Long performerId);
+
+    List<PerformerEventAgent> retrieveAfterLastReceivedForPerformerId(
+            Long id, Long lastReceivedEventId
+    );
 }

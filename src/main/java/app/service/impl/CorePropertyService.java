@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class CorePropertyService extends AbstractService<CoreProperty>
@@ -34,5 +36,10 @@ public class CorePropertyService extends AbstractService<CoreProperty>
     @Transactional(readOnly = true)
     public CoreProperty retrieveByName(String name) {
         return dao.retrieveByName(name);
+    }
+
+    @Override
+    public List<CoreProperty> findCached() {
+        return dao.findCached();
     }
 }

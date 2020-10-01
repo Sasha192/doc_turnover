@@ -32,7 +32,8 @@ public class StatisticManagerService
         int pageSize = 25;
         List<Task> tasks = null;
         while (null != (tasks
-                = taskService.findOnDeadlineDate(pageNumber++, pageSize))) {
+                = taskService.findOnDeadlineDate(pageNumber++, pageSize))
+                && (!tasks.isEmpty())) {
             for (Task task : tasks) {
                 task.setDeadline(true);
                 taskService.update(task);

@@ -6,8 +6,10 @@ import app.service.interfaces.ICorePropertyService;
 import com.google.gson.GsonBuilder;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
@@ -32,60 +34,26 @@ public class Constants {
     public static final String IS_MALICIOUS = " is malicious or can not be uploaded";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
     public static List<String> appImageFormats;
-
     public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
-
     public static final GsonBuilder BUILDER_BRIEF;
-
     public static final GsonBuilder BUILDER_DETAILS;
-
     public static final String MAX_FILES_UPLOAD = "max_files_upload";
-
     public static final String MAX_FILES_DOWNLOAD = "max_files_download";
-
-    public static final String SPRING_SECURITY_CONTEXT_KEY =
-            org
-                    .springframework
+    public static final String SPRING_SECURITY_CONTEXT_KEY = org.springframework
                     .security
                     .web.context
                     .HttpSessionSecurityContextRepository
                     .SPRING_SECURITY_CONTEXT_KEY;
-
     public static final String PERFORMER_SESSION_KEY =
             "PERFORMER_SESSION_KEY";
-
     public static final String REMEMBER_ME_UUID;
-
-    public static final String REMEMBER_ME_ID = "REMEMBER_ME_ID";
-
+    public static final String REMEMBER_ME_ID;
     public static final int MAX_INACTIVE_SESSION_INTERVAL_SECONDS = 60 * 60;
-
-    public static final String BAD_REQUEST_REGEX =
-            "(?!"
-                    + "(\\/[a-zA-Z]+)+"
-                    + "(\\?"
-                    + "(\\&{0,1}"
-                    + "[a-zA-Z]+"
-                    + "\\={1}"
-                    + "[a-zA-Zа-яА-ЯЁІіЙйЪъЇї0-9" + "\\s" + "]+"
-                    + ")+"
-                    + "){0,1}"
-                    + "\\/{0,1}"
-                    + "$).*";
-
-    public static final String RESOURCES_PATH_REGEX = "(\\/css.*)"
-            + "|(\\/scripts.*)"
-            + "|(\\/fonts.*)"
-            + "|(\\/img.*)"
-            + "|(\\/libs.*)"
-            + "|(\\/partials.*)";
-
     public static final String[] RESOURCES_PATH = new String[] {
             "/css", "/scripts",
             "/fonts", "/img",
             "/libs", "/partials"
     };
-
     public static final int VALID_REMEMBER_ME_TOKEN_TIME_SEC =
             60 * 60 * 24 * 7;
 
@@ -101,11 +69,18 @@ public class Constants {
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
                 .setDateFormat(Constants.DATE_FORMAT.toPattern());
-        REMEMBER_ME_UUID = "REMEMBER_ME_UUID";
+        Base64.Encoder enc = Base64.getEncoder();
+        REMEMBER_ME_UUID = enc.encodeToString(
+                        "REMEMBERMEUUID"
+                                .getBytes(StandardCharsets.UTF_8)
+                );
+        REMEMBER_ME_ID = enc.encodeToString(
+                        "REMEMBERMEID"
+                                .getBytes(StandardCharsets.UTF_8)
+                );
     }
 
     private ICorePropertyService corePropertyService;
-
     private ConcurrentHashMap<String, CoreProperty> properties;
 
     @Autowired
@@ -122,7 +97,11 @@ public class Constants {
     }
 
     public CoreProperty get(String name) {
-        return properties.get(name);
+        CoreProperty prop = properties.get(name);
+        if (prop == null) {
+            prop = corePropertyService.retrieveByName(name);
+        }
+        return prop;
     }
 
     public void put(CoreProperty newProperty) {
@@ -180,9 +159,29 @@ public class Constants {
     }
 
     public void updateConstants() {
-        List<CoreProperty> properties = corePropertyService.findAll();
+        List<CoreProperty> properties = corePropertyService.findCached();
         for (CoreProperty property : properties) {
             this.properties.put(property.getName(), property);
         }
     }
+
+    /*public static final String BAD_REQUEST_REGEX =
+            "(?!"
+                    + "(\\/[a-zA-Z]+)+"
+                    + "(\\?"
+                    + "(\\&{0,1}"
+                    + "[a-zA-Z]+"
+                    + "\\={1}"
+                    + "[a-zA-Zа-яА-ЯЁІіЙйЪъЇї0-9" + "\\s" + "]+"
+                    + ")+"
+                    + "){0,1}"
+                    + "\\/{0,1}"
+                    + "$).*";
+
+    public static final String RESOURCES_PATH_REGEX = "(\\/css.*)"
+            + "|(\\/scripts.*)"
+            + "|(\\/fonts.*)"
+            + "|(\\/img.*)"
+            + "|(\\/libs.*)"
+            + "|(\\/partials.*)";*/
 }

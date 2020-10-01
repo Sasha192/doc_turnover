@@ -37,6 +37,13 @@ public class EventDao
             + " INNER JOIN Event evnt ON evnt.id=pev.id.eventId "
             + " WHERE pev.id.performerId = :perf_id_ "
             + " ORDER BY pev.id.eventId DESC ";
+
+    private static final String RETRIEVE_AFTER_LAST_RECEIVED_FOR_PERF_ID =
+            " SELECT pev FROM PerformerEventAgent pev "
+                    + " INNER JOIN Event evnt ON evnt.id=pev.id.eventId "
+                    + " WHERE pev.id.performerId = :perf_id_ AND evnt.seen=false "
+                    + " AND evnt.id > :last_received "
+                    + " ORDER BY pev.id.eventId DESC ";
     /*FROM + " INNER JOIN PerformerEventAgent pev ON pev.id.eventId = evnt.id "
                     + " WHERE pev.id.performerId = :perf_id_ "
                     + " ORDER BY evnt.timeStamp DESC";*/
@@ -58,7 +65,6 @@ public class EventDao
         return getEntityManager()
                 .createQuery(RETRIEVE_LAST_EVENTS_FOR_PERF_ID, PerformerEventAgent.class)
                 .setParameter("perf_id_", performerId)
-                .setMaxResults(10)
                 .getResultList();
     }
 
@@ -111,5 +117,17 @@ public class EventDao
                 .createQuery(SEE_ALL_EVENTS_FOR_PERFORMER)
                 .setParameter("performer_id_", performerId)
                 .executeUpdate();
+    }
+
+    @Override
+    public List<PerformerEventAgent> retrieveAfterLastReceivedForPerformerId(
+            Long perfId, Long lastReceivedEventId
+    ) {
+        return getEntityManager()
+                .createQuery(RETRIEVE_AFTER_LAST_RECEIVED_FOR_PERF_ID,
+                        PerformerEventAgent.class)
+                .setParameter("perf_id_", perfId)
+                .setParameter("last_received", lastReceivedEventId)
+                .getResultList();
     }
 }

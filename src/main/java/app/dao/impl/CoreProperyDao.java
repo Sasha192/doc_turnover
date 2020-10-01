@@ -14,7 +14,9 @@ public class CoreProperyDao extends GenericJpaRepository<CoreProperty>
     private static final String FROM =
             "SELECT corep FROM " + CoreProperty.class.getName() + " corep ";
     private static final String RETRIEVE_BY_NAME = FROM
-            .concat(" corep.name=:name ");
+            .concat(" WHERE corep.name=:name ");
+    private static final String FIND_CACHED = FROM
+            + " WHERE corep.cached=true ";
 
     public CoreProperyDao() {
         setClazz(CoreProperty.class);
@@ -30,5 +32,12 @@ public class CoreProperyDao extends GenericJpaRepository<CoreProperty>
             return list.get(0);
         }
         return null;
+    }
+
+    @Override
+    public List<CoreProperty> findCached() {
+        return getEntityManager()
+                .createQuery(FIND_CACHED, CoreProperty.class)
+                .getResultList();
     }
 }

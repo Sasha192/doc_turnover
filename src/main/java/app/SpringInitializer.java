@@ -2,10 +2,8 @@ package app;
 
 import app.configuration.spring.SpringDataConfiguration;
 import app.configuration.spring.SpringMvcConfiguration;
-import app.security.controllers.filters.AccessFilter;
-import app.security.controllers.filters.AuthenticationFilter;
-import app.security.controllers.filters.BlockRequestFilter;
-import app.security.models.SimpleRole;
+import app.security.controllers.filters.AuthenticationMeFilter;
+import app.security.controllers.filters.GpanelAccessFilter;
 import javax.servlet.Filter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -35,19 +33,10 @@ public class SpringInitializer
 
     @Override
     protected Filter[] getServletFilters() {
-        return new Filter[] {
-                new BlockRequestFilter(),
-                new AuthenticationFilter(),
-                new AccessFilter("/performers",
-                        SimpleRole.ADMIN,
-                        SimpleRole.G_MANAGER,
-                        SimpleRole.MANAGER),
-                new AccessFilter("/departments",
-                        SimpleRole.ADMIN,
-                        SimpleRole.G_MANAGER),
-                new AccessFilter("/roles",
-                        SimpleRole.ADMIN,
-                        SimpleRole.G_MANAGER)};
+        return new Filter[]{
+                new AuthenticationMeFilter(),
+                new GpanelAccessFilter()
+        };
     }
 
     @Override

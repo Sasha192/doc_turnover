@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component("date_file_path_generator")
 public class TodayFolderArchivePathGenerator {
 
-    private static final Logger LOGGER = Logger.getLogger("infoLooger");
+    private static final Logger LOGGER = Logger.getLogger("infoLogger");
 
     private static final Logger EXC_LOGGER = Logger.getLogger("intExceptionLogger");
 

@@ -8,20 +8,26 @@ import app.security.wrappers.IPerformerWrapper;
 import app.service.interfaces.IEventService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Controller
 @RequestMapping("/notifications")
 public class NotificationsController extends JsonSupportController {
 
     private static final GsonBuilder BUILDER;
+
+    @Autowired
+    private ConcurrentTaskExecutor executorService;
 
     static {
         BUILDER = new GsonBuilder()
@@ -48,11 +54,21 @@ public class NotificationsController extends JsonSupportController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public void list(HttpServletResponse response,
-                           HttpServletRequest request)
+                     HttpServletRequest request,
+                     @RequestParam(value = "last_received_id", required = false)
+                                 Long lastReceivedEventId)
             throws IOException {
         Performer performer = performerWrapper.retrievePerformer(request);
-        List<PerformerEventAgent> events = eventService
-                .retrieveLastEventsForPerformerId(performer.getId());
+        List<PerformerEventAgent> events = null;
+        if (lastReceivedEventId == null) {
+            events = eventService
+                    .retrieveLastEventsForPerformerId(performer.getId());
+        } else {
+            events = eventService
+                    .retrieveAfterLastReceivedForPerformerId(
+                            performer.getId(), lastReceivedEventId
+                    );
+        }
         writeToResponse(response, BUILDER, events);
     }
 

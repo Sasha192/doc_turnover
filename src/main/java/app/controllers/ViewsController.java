@@ -17,6 +17,11 @@ public class ViewsController {
     @Autowired
     private IPerformerWrapper performerWrapper;
 
+    @RequestMapping("/")
+    public String testMapping() {
+        return "test";
+    }
+
     @RequestMapping("/archive")
     public String archiveMap(ModelMap map) {
         return "archive";
@@ -44,7 +49,7 @@ public class ViewsController {
 
     @RequestMapping("/CLpanel")
     public ModelAndView clPanel(ModelAndView modelAndView,
-                          HttpServletRequest request) {
+                                HttpServletRequest request) {
         Performer performer = performerWrapper.retrievePerformer(request);
         Set<SimpleRole> roles = performer.getRoles();
         if (roles.contains(SimpleRole.ADMIN)

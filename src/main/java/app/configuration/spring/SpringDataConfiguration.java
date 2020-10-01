@@ -26,12 +26,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
-@PropertySource("/WEB-INF/spring/app.properties")
+@PropertySource("classpath:app.properties")
 @EnableTransactionManagement
 @ComponentScans({
         @ComponentScan("app.dao"),
         @ComponentScan("app.models"),
-        @ComponentScan("app.service"),
         @ComponentScan("app.security.models"),
         @ComponentScan("app.security.dao"),
         @ComponentScan("app.security.service"),
@@ -39,7 +38,8 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         @ComponentScan("app.utils"),
         @ComponentScan("app.statisticsmodule"),
         @ComponentScan("app.eventdriven"),
-        @ComponentScan("app.events")
+        @ComponentScan("app.events"),
+        @ComponentScan("app.service")
 })
 public class SpringDataConfiguration {
 
