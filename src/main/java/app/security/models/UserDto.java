@@ -1,7 +1,7 @@
 package app.security.models;
 
-import app.models.VerificationCode;
 import app.security.models.annotations.ValidPasswordPattern;
+import app.security.models.auth.VerificationCode;
 import com.google.gson.annotations.Expose;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -35,7 +35,7 @@ public class UserDto {
     @NotNull(groups = {New.class, Auth.class})
     @Null(groups = UpdatePassword.class)
     @Email
-    private String email;
+    private String login;
 
     @ValidPasswordPattern(groups = {New.class, UpdatePassword.class})
     @NotNull(groups = {New.class, UpdatePassword.class, Auth.class})
@@ -46,13 +46,13 @@ public class UserDto {
 
     private String lastName;
 
+    private String middleName;
+
     private Boolean remember;
 
     private transient String verificationCode;
 
     private transient long creationTime;
-
-    private transient long verificationId;
 
     public String getPassword() {
         return password;
@@ -71,11 +71,11 @@ public class UserDto {
     }
 
     public String getEmail() {
-        return email;
+        return login;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getLogin() {
+        return login;
     }
 
     public String getVerificationCode() {
@@ -87,7 +87,6 @@ public class UserDto {
     }
 
     public void setVerificationCode(VerificationCode code) {
-        this.setVerificationId(code.getId());
         this.setVerificationCode(code.getCode());
         this.setCreationTime(code.getCreationtime());
     }
@@ -98,14 +97,6 @@ public class UserDto {
 
     public void setCreationTime(long creationTime) {
         this.creationTime = creationTime;
-    }
-
-    public long getVerificationId() {
-        return verificationId;
-    }
-
-    public void setVerificationId(long verificationId) {
-        this.verificationId = verificationId;
     }
 
     public Boolean getRemember() {
@@ -126,6 +117,18 @@ public class UserDto {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     public void setLastName(String lastName) {

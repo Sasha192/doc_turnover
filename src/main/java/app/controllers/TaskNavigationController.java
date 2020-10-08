@@ -4,22 +4,21 @@ import app.configuration.spring.constants.Constants;
 import app.controllers.dto.CommentDto;
 import app.controllers.dto.TaskDto;
 import app.controllers.dto.mappers.IEntityDtoMapper;
-import app.events.pub.GenericEventPublisher;
-import app.models.abstr.TaskHolderComment;
-import app.models.basic.Performer;
-import app.models.basic.TaskComment;
-import app.models.basic.TaskStatus;
-import app.models.basic.taskmodels.Task;
-import app.models.mysqlviews.BriefTask;
+import app.customtenant.events.pub.GenericEventPublisher;
+import app.customtenant.models.abstr.TaskHolderComment;
+import app.customtenant.models.basic.Performer;
+import app.customtenant.models.basic.TaskComment;
+import app.customtenant.models.basic.TaskStatus;
+import app.customtenant.models.basic.taskmodels.Task;
+import app.customtenant.models.mysqlviews.BriefTask;
+import app.customtenant.service.interfaces.IBriefTaskService;
+import app.customtenant.service.interfaces.IStatusService;
+import app.customtenant.service.interfaces.ITaskCommentService;
+import app.customtenant.service.interfaces.ITaskService;
 import app.security.models.SimpleRole;
 import app.security.wrappers.IPerformerWrapper;
-import app.service.interfaces.IBriefTaskService;
-import app.service.interfaces.IStatusService;
-import app.service.interfaces.ITaskCommentService;
-import app.service.interfaces.ITaskService;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
@@ -87,7 +86,7 @@ public class TaskNavigationController extends JsonSupportController {
         Performer performer = performerWrapper.retrievePerformer(request);
         Long depoId = performer.getDepartmentId();
         List<BriefTask> tasks = null;
-        Set<SimpleRole> roles = performer.getRoles();
+        SimpleRole roles = performer.getRoles();
         if (status == null) {
             tasks = briefTaskService.findByDepartment(depoId);
         } else {
@@ -100,10 +99,10 @@ public class TaskNavigationController extends JsonSupportController {
         writeToResponse(response, Constants.BUILDER_BRIEF, tasks);
     }
 
-    private boolean allowAllOp(Set<SimpleRole> roles) {
-        return roles.contains(SimpleRole.ADMIN)
-                || roles.contains(SimpleRole.G_MANAGER)
-                || roles.contains(SimpleRole.SECRETARY);
+    private boolean allowAllOp(SimpleRole roles) {
+        return roles.equals(SimpleRole.ADMIN)
+                || roles.equals(SimpleRole.G_MANAGER)
+                || roles.equals(SimpleRole.SECRETARY);
     }
 
     @RequestMapping(value = "/my/list/{task_status}", method = RequestMethod.GET)
@@ -208,7 +207,7 @@ public class TaskNavigationController extends JsonSupportController {
                                    String comment)
             throws IOException {
         Performer performer = performerWrapper.retrievePerformer(request);
-        Set<SimpleRole> roles = performer.getRoles();
+        SimpleRole roles = performer.getRoles();
         if (allowOp(roles)) {
             Task task = taskService.findOne(taskId);
             try {
@@ -248,7 +247,7 @@ public class TaskNavigationController extends JsonSupportController {
             throws IOException {
         Performer performer = performerWrapper
                 .retrievePerformer(request);
-        Set<SimpleRole> roles = performer.getRoles();
+        SimpleRole roles = performer.getRoles();
         if (allowOp(roles)) {
             taskService.updateNameDescription(newName, description, taskId);
             sendDefaultJson(response, true, "");
@@ -258,9 +257,9 @@ public class TaskNavigationController extends JsonSupportController {
         }
     }
 
-    private boolean allowOp(Set<SimpleRole> roles) {
-        return roles.contains(SimpleRole.G_MANAGER)
-                || roles.contains(SimpleRole.ADMIN)
-                || roles.contains(SimpleRole.MANAGER);
+    private boolean allowOp(SimpleRole roles) {
+        return roles.equals(SimpleRole.G_MANAGER)
+                || roles.equals(SimpleRole.ADMIN)
+                || roles.equals(SimpleRole.MANAGER);
     }
 }

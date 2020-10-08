@@ -73,6 +73,8 @@ public class AuthenticationMeFilter extends GenericFilterBean {
                     ((HttpServletResponse) response).sendRedirect("/");
                     return;
                 }
+                chain.doFilter(request, response);
+                return;
             }
         }
     }

@@ -2,18 +2,23 @@ package app.configuration.spring;
 
 import app.configuration.spring.constants.AppConstants;
 import app.configuration.spring.constants.Constants;
+import app.tenantconfiguration.TenantConnectionProvider;
+import app.tenantconfiguration.TenantContext;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.hibernate.MultiTenancyStrategy;
+import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -28,18 +33,20 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 @Configuration
 @PropertySource("classpath:app.properties")
 @EnableTransactionManagement
+@EnableAspectJAutoProxy
 @ComponentScans({
-        @ComponentScan("app.dao"),
-        @ComponentScan("app.models"),
+        @ComponentScan("app.customtenant.dao"),
+        @ComponentScan("app.customtenant.models"),
         @ComponentScan("app.security.models"),
         @ComponentScan("app.security.dao"),
         @ComponentScan("app.security.service"),
         @ComponentScan("app.configuration"),
         @ComponentScan("app.utils"),
-        @ComponentScan("app.statisticsmodule"),
-        @ComponentScan("app.eventdriven"),
-        @ComponentScan("app.events"),
-        @ComponentScan("app.service")
+        @ComponentScan("app.customtenant.statisticsmodule"),
+        @ComponentScan("app.customtenant.eventdriven"),
+        @ComponentScan("app.customtenant.events"),
+        @ComponentScan("app.customtenant.service"),
+        @ComponentScan("app.tenantconfiguration")
 })
 public class SpringDataConfiguration {
 
@@ -53,11 +60,13 @@ public class SpringDataConfiguration {
     @Autowired
     private ApplicationContext context;
 
-    @Bean
+    @Bean("bcrew_default_data_source")
     public DataSource getDataSource() {
         final BasicDataSource dataSource = new BasicDataSource();
+        String url = env.getProperty("db.abstract_url");
+        url = url.replaceAll("\\{db_name\\}", "bcrew_default");
         dataSource.setDriverClassName(this.env.getProperty("db.driver"));
-        dataSource.setUrl(this.env.getProperty("db.url"));
+        dataSource.setUrl(url);
         dataSource.setUsername(this.env.getProperty("db.username"));
         dataSource.setPassword(this.env.getProperty("db.password"));
         return dataSource;
@@ -67,11 +76,11 @@ public class SpringDataConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(this.getDataSource());
-        em.setPackagesToScan("app.models",
+        //em.setDataSource(this.getDataSource());
+        em.setPackagesToScan("app.customtenant.models",
                 "app.security.models",
-                "app.statisticsmodule",
-                "app.events");
+                "app.customtenant.statisticsmodule",
+                "app.customtenant.events");
         final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(this.hibernateProperties());
@@ -101,6 +110,11 @@ public class SpringDataConfiguration {
         return slr;
     }
 
+    @Bean("tenant_conn_provider")
+    public TenantConnectionProvider multiTenantConnectionProvider(Properties properties) {
+        return new TenantConnectionProvider(getDataSource(), env, properties);
+    }
+
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto",
@@ -113,6 +127,19 @@ public class SpringDataConfiguration {
                 String.valueOf(true));
         hibernateProperties.setProperty("hibernate.show_sql",
                 env.getProperty("hibernate.show_sql"));
+
+        hibernateProperties.put(org.hibernate.cfg.Environment.MULTI_TENANT,
+                MultiTenancyStrategy.SCHEMA);
+        TenantConnectionProvider tenantConnectionProvider =
+                multiTenantConnectionProvider(hibernateProperties);
+        hibernateProperties.put(
+                org.hibernate.cfg.Environment.MULTI_TENANT_CONNECTION_PROVIDER,
+                tenantConnectionProvider);
+        hibernateProperties.setProperty(
+                AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER,
+                TenantContext.TenantIdentifierResolver.class.getName()
+        );
+
         /*hibernateProperties.setProperty("hibernate.jdbc.batch_size",
                 env.getProperty("hibernate.jdbc.batch_size"));
         hibernateProperties.setProperty("hibernate.order_inserts",

@@ -55,6 +55,7 @@ public class GpanelAccessFilter extends GenericFilterBean {
                 }
             } else {
                 chain.doFilter(request, response);
+                return;
             }
             RestrictRedirectUtil.restrict(response);
         }

@@ -33,6 +33,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         @ComponentScan("app.security.controllers"),
         @ComponentScan("app.security.utils"),
         @ComponentScan("app.security.wrappers"),
+        @ComponentScan("app.tenantdefault.controllers")
 })
 @EnableScheduling
 @EnableWebMvc
@@ -41,7 +42,7 @@ public class SpringMvcConfiguration
         extends WebSecurityConfigurerAdapter
         implements WebMvcConfigurer {
 
-    private static final int MAX_SIZE_UPLOAD = 5 * 0b10000000000 * 0b10000000000;
+    public static final long MAX_SIZE_UPLOAD = 5 * 0b10000000000 * 0b10000000000;
 
     private static final Logger LOGGER = Logger.getLogger(SpringMvcConfiguration.class);
 
@@ -65,7 +66,6 @@ public class SpringMvcConfiguration
     @Bean
     public ViewResolver viewResolver() {
         final HandlebarsViewResolver handlebarsViewResolver = new HandlebarsViewResolver();
-        //String prefixViewResolver = environment.getProperty("prefixViewResolver");
         handlebarsViewResolver.setPrefix("WEB-INF/views");
         handlebarsViewResolver.setSuffix(".hbs");
         handlebarsViewResolver.setCache(false);

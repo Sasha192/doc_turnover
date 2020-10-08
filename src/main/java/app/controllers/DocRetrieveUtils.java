@@ -1,8 +1,8 @@
 package app.controllers;
 
 import app.configuration.spring.constants.Constants;
-import app.models.basic.BriefDocument;
-import app.service.interfaces.IBriefDocumentService;
+import app.customtenant.models.basic.BriefDocument;
+import app.customtenant.service.interfaces.IBriefDocumentService;
 import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

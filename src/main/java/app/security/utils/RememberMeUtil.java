@@ -1,8 +1,8 @@
 package app.security.utils;
 
 import app.configuration.spring.constants.Constants;
-import app.models.basic.CustomUser;
-import app.security.models.RememberMeToken;
+import app.security.models.auth.CustomUser;
+import app.security.models.auth.RememberMeToken;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;

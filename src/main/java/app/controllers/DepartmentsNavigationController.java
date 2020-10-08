@@ -1,13 +1,12 @@
 package app.controllers;
 
 import app.configuration.spring.constants.Constants;
-import app.models.basic.Department;
-import app.models.serialization.ExcludeStrategies;
-import app.service.interfaces.IDepartmentService;
+import app.customtenant.models.basic.Department;
+import app.customtenant.models.serialization.ExcludeStrategies;
+import app.customtenant.service.interfaces.IDepartmentService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,16 +28,6 @@ public class DepartmentsNavigationController extends JsonSupportController {
     private IDepartmentService departmentService;
 
     private Long rootDepartment;
-
-    @PostConstruct
-    public void initRootDepo() {
-        if (departmentService.retrieveOneByName("/") == null) {
-            Department department = new Department();
-            department.setName("/");
-            departmentService.create(department);
-            rootDepartment = department.getId();
-        }
-    }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public void create(HttpServletResponse res,

@@ -1,8 +1,8 @@
 package app.utils;
 
 import app.configuration.spring.constants.Constants;
-import app.models.basic.BriefDocument;
-import app.models.basic.Performer;
+import app.customtenant.models.basic.BriefDocument;
+import app.customtenant.models.basic.Performer;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;

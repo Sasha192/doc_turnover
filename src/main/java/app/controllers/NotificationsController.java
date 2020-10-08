@@ -1,14 +1,13 @@
 package app.controllers;
 
 import app.configuration.spring.constants.Constants;
-import app.events.PerformerEventAgent;
-import app.models.basic.Performer;
-import app.models.serialization.ExcludeStrategies;
+import app.customtenant.events.PerformerEventAgent;
+import app.customtenant.models.basic.Performer;
+import app.customtenant.models.serialization.ExcludeStrategies;
+import app.customtenant.service.interfaces.IEventService;
 import app.security.wrappers.IPerformerWrapper;
-import app.service.interfaces.IEventService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Controller
 @RequestMapping("/notifications")

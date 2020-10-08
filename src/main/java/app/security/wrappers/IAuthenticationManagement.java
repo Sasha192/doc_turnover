@@ -1,11 +1,10 @@
 package app.security.wrappers;
 
 import app.security.models.UserDto;
+import app.security.models.auth.CustomUser;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 public interface IAuthenticationManagement {
 
@@ -16,9 +15,10 @@ public interface IAuthenticationManagement {
     /**
      *  U should never, ever pass anything excepty UsernamePasswordAuthenticationToken or
      *  SecurityContextImpl should always hold UsernamePasswordAuthenticationToken
-     * @see app.messenger.ws.AuthenticationWsInterceptor#retrieveUser(StompHeaderAccessor)
+     * @see app.customtenant.messenger.ws.AuthenticationWsInterceptor
+     * #retrieveUser(StompHeaderAccessor)
      */
-    void authenticate(UsernamePasswordAuthenticationToken token,
+    void authenticate(CustomUser user,
                       HttpServletRequest request) throws IOException;
 
     void invalidate(HttpServletRequest request, HttpServletResponse res)

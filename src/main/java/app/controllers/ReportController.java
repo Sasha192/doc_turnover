@@ -1,10 +1,10 @@
 package app.controllers;
 
 import app.configuration.spring.constants.Constants;
-import app.models.basic.Performer;
-import app.models.basic.taskmodels.Task;
+import app.customtenant.models.basic.Performer;
+import app.customtenant.models.basic.taskmodels.Task;
+import app.customtenant.service.interfaces.ITaskService;
 import app.security.wrappers.IPerformerWrapper;
-import app.service.interfaces.ITaskService;
 import app.utils.ReportsUploader;
 import app.utils.exceptions.MaliciousFoundException;
 import java.io.IOException;

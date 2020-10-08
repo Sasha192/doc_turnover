@@ -1,7 +1,7 @@
 package app.security.service.impl;
 
-import app.models.basic.CustomUser;
 import app.security.models.DefaultUserDetails;
+import app.security.models.auth.CustomUser;
 import app.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +16,8 @@ public class DefaultUserDetailsService implements UserDetailsService {
     private IUserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userName)
+            throws UsernameNotFoundException {
         CustomUser customUser = userService.retrieveByName(userName);
         return new DefaultUserDetails(customUser);
     }

@@ -1,17 +1,17 @@
 package app.utils;
 
-import app.events.pub.GenericEventPublisher;
-import app.models.abstr.TaskHolderComment;
-import app.models.basic.BriefDocument;
-import app.models.basic.Performer;
-import app.models.basic.Report;
-import app.models.basic.ReportComment;
-import app.models.basic.taskmodels.Task;
-import app.service.impl.ExecutionService;
-import app.service.interfaces.IBriefDocumentService;
-import app.service.interfaces.IReportCommentService;
-import app.service.interfaces.IReportService;
-import app.service.interfaces.ITaskService;
+import app.customtenant.events.pub.GenericEventPublisher;
+import app.customtenant.models.abstr.TaskHolderComment;
+import app.customtenant.models.basic.BriefDocument;
+import app.customtenant.models.basic.Performer;
+import app.customtenant.models.basic.Report;
+import app.customtenant.models.basic.ReportComment;
+import app.customtenant.models.basic.taskmodels.Task;
+import app.customtenant.service.impl.ExecutionService;
+import app.customtenant.service.interfaces.IBriefDocumentService;
+import app.customtenant.service.interfaces.IReportCommentService;
+import app.customtenant.service.interfaces.IReportService;
+import app.customtenant.service.interfaces.ITaskService;
 import app.utils.exceptions.MaliciousFoundException;
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class ReportsUploader {
     private final IBriefDocumentService documentService;
     private final IReportService reportService;
     private final FilesUploader filesUploader;
-    private final TodayFolderArchivePathGenerator folderPathGenerator;
+    //private final TodayFolderArchivePathGenerator folderPathGenerator;
     private final IReportCommentService commentService;
     private final ITaskService taskService;
     private final GenericEventPublisher<Report> reportPublisher;
@@ -42,8 +42,8 @@ public class ReportsUploader {
                            ExecutionService executionService,
                            IReportService reportService,
                            @Qualifier("files_uploader") FilesUploader filesUploader,
-                           @Qualifier("date_file_path_generator")
-                                   TodayFolderArchivePathGenerator folderPathGenerator,
+                           /*@Qualifier("date_file_path_generator")
+                                   TodayFolderArchivePathGenerator folderPathGenerator,*/
                            IReportCommentService commentService,
                            ITaskService taskService,
                            GenericEventPublisher<Report> reportPublisher,
@@ -51,7 +51,7 @@ public class ReportsUploader {
         this.documentService = documentService;
         this.reportService = reportService;
         this.filesUploader = filesUploader;
-        this.folderPathGenerator = folderPathGenerator;
+        //this.folderPathGenerator = folderPathGenerator;
         this.commentService = commentService;
         this.taskService = taskService;
         this.reportPublisher = reportPublisher;
@@ -73,7 +73,7 @@ public class ReportsUploader {
         }
         List<File> files = null;
         if (mfiles != null && mfiles.length > 0) {
-            String folderPath = folderPathGenerator.getFolderArchivePath();
+            String folderPath = null;//folderPathGenerator.getFolderArchivePath();
             files = filesUploader.upload(folderPath, mfiles);
             List<BriefDocument> documents =
                     FileDocumentsMapperUtil.map(files, folderPath, performer);

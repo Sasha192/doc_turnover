@@ -1,9 +1,9 @@
 package app.utils;
 
 import app.configuration.spring.constants.Constants;
-import app.service.extapis.VirusTotalScan;
-import app.service.impl.ExecutionService;
-import app.service.interfaces.IBriefDocumentService;
+import app.customtenant.service.extapis.VirusTotalScan;
+import app.customtenant.service.impl.ExecutionService;
+import app.customtenant.service.interfaces.IBriefDocumentService;
 import app.utils.exceptions.MaliciousFoundException;
 import java.io.File;
 import java.io.IOException;
@@ -24,24 +24,25 @@ public class FilesUploader {
     private final Constants constants;
     private final VirusTotalScan virusTotalScan;
     private final IStorage storage;
-    private final TodayFolderArchivePathGenerator pathGenerator;
 
     @Autowired
     public FilesUploader(Constants constants,
                          VirusTotalScan virusTotalScan,
                          IBriefDocumentService documentService,
                          ExecutionService executionService,
-                         IStorage storage,
-                         TodayFolderArchivePathGenerator folderPathGenerator) {
+                         IStorage storage
+                         //TodayFolderArchivePathGenerator folderPathGenerator
+                         ) {
         this.constants = constants;
         this.virusTotalScan = virusTotalScan;
         this.storage = storage;
-        this.pathGenerator = folderPathGenerator;
+        //this.pathGenerator = folderPathGenerator;
     }
 
+    //@CHANGE!!!
     public List<File> upload(MultipartFile... mfiles)
             throws IOException, MaliciousFoundException {
-        String folderPath = pathGenerator.getFolderArchivePath();
+        String folderPath = null;//pathGenerator.getFolderArchivePath();
         List<File> files = checkMalicious(mfiles, folderPath);
         return files;
     }

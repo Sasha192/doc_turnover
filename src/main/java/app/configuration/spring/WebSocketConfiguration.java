@@ -18,7 +18,7 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @Configuration
 @EnableWebSocketMessageBroker
 @ComponentScans({
-        @ComponentScan("app.messenger.ws")
+        @ComponentScan("app.customtenant.messenger.ws")
 })
 public class WebSocketConfiguration
         implements WebSocketMessageBrokerConfigurer {

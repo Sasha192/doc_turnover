@@ -1,14 +1,14 @@
 package app.controllers;
 
 import app.configuration.spring.constants.Constants;
-import app.models.basic.CustomUser;
-import app.models.basic.Performer;
-import app.models.serialization.ExcludeStrategies;
+import app.customtenant.models.basic.Performer;
+import app.customtenant.models.serialization.ExcludeStrategies;
+import app.customtenant.service.interfaces.IPerformerService;
+import app.security.models.auth.CustomUser;
 import app.security.service.IUserService;
 import app.security.utils.DefaultPasswordEncoder;
 import app.security.wrappers.IAuthenticationWrapper;
 import app.security.wrappers.IPerformerWrapper;
-import app.service.interfaces.IPerformerService;
 import app.utils.FilesUploader;
 import com.google.gson.GsonBuilder;
 import java.io.File;

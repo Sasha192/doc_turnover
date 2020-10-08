@@ -4,13 +4,13 @@ import static org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.U
 
 import app.configuration.spring.constants.Constants;
 import app.controllers.dto.EmailDto;
-import app.models.basic.Performer;
-import app.models.mysqlviews.BriefJsonDocument;
+import app.customtenant.models.basic.Performer;
+import app.customtenant.models.mysqlviews.BriefJsonDocument;
+import app.customtenant.service.extapis.GMailService;
+import app.customtenant.service.interfaces.IBriefDocumentService;
+import app.customtenant.service.interfaces.IBriefJsonDocumentService;
 import app.security.models.SimpleRole;
 import app.security.wrappers.IPerformerWrapper;
-import app.service.extapis.GMailService;
-import app.service.interfaces.IBriefDocumentService;
-import app.service.interfaces.IBriefJsonDocumentService;
 import app.utils.CustomAppDateTimeUtil;
 import app.utils.DocumentsUploader;
 import app.utils.ZipUtils;
@@ -26,7 +26,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -119,14 +118,14 @@ public class DocumentsNavigationController extends JsonSupportController {
         }
         final String search = request.getParameter("search");
         Performer performer = performerWrapper.retrievePerformer(request);
-        Set<SimpleRole> roles = performer.getRoles();
+        SimpleRole roles = performer.getRoles();
         List<BriefJsonDocument> list = null;
         if (allowListArchive(roles)) {
             list = this.jsonDocService
                     .findBy(pageId, search, yearInt, monthInt, dayInt);
             writeToResponse(response, builder, list);
         } else {
-            if (roles.contains(SimpleRole.MANAGER)) {
+            if (roles.equals(SimpleRole.MANAGER)) {
                 list = jsonDocService.findByAndDepartment(pageId, search, yearInt, monthInt,
                         dayInt, performer.getDepartmentId());
             } else {
@@ -137,16 +136,16 @@ public class DocumentsNavigationController extends JsonSupportController {
         }
     }
 
-    private boolean allowListArchive(Set<SimpleRole> roles) {
-        return roles.contains(SimpleRole.ADMIN)
-                || roles.contains(SimpleRole.G_MANAGER)
-                || roles.contains(SimpleRole.SECRETARY);
+    private boolean allowListArchive(SimpleRole roles) {
+        return roles.equals(SimpleRole.ADMIN)
+                || roles.equals(SimpleRole.G_MANAGER)
+                || roles.equals(SimpleRole.SECRETARY);
     }
 
-    private boolean allowUploadArchive(Set<SimpleRole> roles) {
-        return roles.contains(SimpleRole.G_MANAGER)
-                || roles.contains(SimpleRole.ADMIN)
-                || roles.contains(SimpleRole.SECRETARY);
+    private boolean allowUploadArchive(SimpleRole roles) {
+        return roles.equals(SimpleRole.G_MANAGER)
+                || roles.equals(SimpleRole.ADMIN)
+                || roles.equals(SimpleRole.SECRETARY);
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
@@ -163,7 +162,7 @@ public class DocumentsNavigationController extends JsonSupportController {
             return;
         }
         Performer performer = performerWrapper.retrievePerformer(req);
-        Set<SimpleRole> roles = performer.getRoles();
+        SimpleRole roles = performer.getRoles();
         if (allowUploadArchive(roles)) {
             try {
                 uploader.upload(performer, mfiles);

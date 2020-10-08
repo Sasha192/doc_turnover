@@ -1,9 +1,9 @@
 package app.controllers;
 
-import app.models.serialization.ExcludeStrategies;
-import app.service.interfaces.ICalendarStatistic;
-import app.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
-import app.statisticsmodule.domain.CalendarPerformerEnum;
+import app.customtenant.models.serialization.ExcludeStrategies;
+import app.customtenant.service.interfaces.ICalendarStatistic;
+import app.customtenant.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
+import app.customtenant.statisticsmodule.domain.CalendarPerformerEnum;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.List;

@@ -1,8 +1,8 @@
 package app.configuration.spring.constants;
 
-import app.models.basic.CoreProperty;
-import app.models.serialization.ExcludeStrategies;
-import app.service.interfaces.ICorePropertyService;
+import app.customtenant.models.basic.CoreProperty;
+import app.customtenant.models.serialization.ExcludeStrategies;
+import app.customtenant.service.interfaces.ICorePropertyService;
 import com.google.gson.GsonBuilder;
 import java.net.FileNameMap;
 import java.net.URLConnection;
@@ -46,6 +46,8 @@ public class Constants {
                     .SPRING_SECURITY_CONTEXT_KEY;
     public static final String PERFORMER_SESSION_KEY =
             "PERFORMER_SESSION_KEY";
+    public static final String CUSTOM_USER_SESSION_KEY =
+            "CUSTOM_USER_SESSION_KEY";
     public static final String REMEMBER_ME_UUID;
     public static final String REMEMBER_ME_ID;
     public static final int MAX_INACTIVE_SESSION_INTERVAL_SECONDS = 60 * 60;
@@ -56,6 +58,7 @@ public class Constants {
     };
     public static final int VALID_REMEMBER_ME_TOKEN_TIME_SEC =
             60 * 60 * 24 * 7;
+    public static final String TENANT_SESSION_ID = "tenant_id";
 
     static {
         BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()
@@ -159,7 +162,7 @@ public class Constants {
     }
 
     public void updateConstants() {
-        List<CoreProperty> properties = corePropertyService.findCached();
+        List<CoreProperty> properties = corePropertyService.findAll();
         for (CoreProperty property : properties) {
             this.properties.put(property.getName(), property);
         }

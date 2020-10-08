@@ -1,8 +1,8 @@
 package app.security.models;
 
-import app.models.basic.CustomUser;
-import app.models.basic.Department;
-import app.models.basic.Performer;
+import app.customtenant.models.basic.Department;
+import app.security.models.auth.ApplicationRoles;
+import app.security.models.auth.CustomUser;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,45 +28,22 @@ public class DefaultUserDetails implements UserDetails {
         this.setPassword(customUser.getPassword());
         this.setUserName(customUser.getEmail());
         this.setEnabled(customUser.isEnabled());
-        Performer performer = customUser.getPerformer();
-        if (performer != null) {
-            Department department = performer.getDepartment();
-            if (department != null) {
-                this.setDepartment(department);
-            }
-        }
-        setAuthorities(mapAuthorities(customUser.getRoles()));
+        setAuthorities(mapAuthorities(customUser.getRole()));
     }
 
-    public static Set<GrantedAuthority> mapAuthorities(
-            Set<SimpleRole> roles
-    ) {
+    public static Set<GrantedAuthority> mapAuthorities(ApplicationRoles role) {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        for (final SimpleRole role : roles) {
-            switch (role) {
-                case PERFORMER: {
-                    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-                    break;
-                }
-                case ADMIN: {
-                    authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-                    break;
-                }
-                case MANAGER: {
-                    authorities.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
-                    break;
-                }
-                case G_MANAGER: {
-                    authorities.add(new SimpleGrantedAuthority("ROLE_G_MANAGER"));
-                    break;
-                }
-                case SECRETARY: {
-                    authorities.add(new SimpleGrantedAuthority("SECRETARY"));
-                    break;
-                }
-                default:
-                    break;
+        switch (role) {
+            case ROLE_USER: {
+                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+                break;
             }
+            case ROLE_ADMIN: {
+                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                break;
+            }
+            default:
+                break;
         }
         return authorities;
     }

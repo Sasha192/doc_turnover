@@ -1,18 +1,17 @@
 package app.security.wrappers;
 
 import app.configuration.spring.constants.Constants;
-import app.models.basic.CustomUser;
-import app.models.basic.Performer;
-import app.security.models.RememberMeToken;
+import app.customtenant.service.interfaces.IPerformerService;
+import app.customtenant.service.interfaces.IPerformerUpdateEventListenerService;
+import app.security.models.DefaultUserDetails;
 import app.security.models.UserDto;
+import app.security.models.auth.CustomUser;
+import app.security.models.auth.RememberMeToken;
 import app.security.service.IUserCreation;
 import app.security.service.IUserService;
 import app.security.utils.RememberMeUtil;
-import app.service.interfaces.IPerformerService;
-import app.service.interfaces.IPerformerUpdateEventListenerService;
-import com.google.common.base.Preconditions;
 import java.io.IOException;
-import java.security.Principal;
+import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,16 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserManagementWrapper
-        implements IPerformerWrapper,
-        IAuthenticationWrapper,
+        implements IAuthenticationWrapper,
         IAuthenticationManagement {
 
     private static final Logger LOGGER = Logger.getLogger("intExceptionLogger");
@@ -52,13 +50,13 @@ public class UserManagementWrapper
     public UserManagementWrapper(IUserService userService,
                                  IPerformerService performerService,
                                  IUserCreation userCreation,
-                                 AuthenticationManager authManager,
+                                 //AuthenticationManager authManager,
                                  IPerformerUpdateEventListenerService listenerService,
                                  RememberMeUtil rememberMeUtil) {
         this.userService = userService;
         this.performerService = performerService;
         this.userCreation = userCreation;
-        this.authManager = authManager;
+        this.authManager = null;
         this.listenerService = listenerService;
         this.rememberMeUtil = rememberMeUtil;
     }
@@ -68,10 +66,10 @@ public class UserManagementWrapper
                              HttpServletResponse response,
                              UserDto dto) {
         CustomUser customUser;
-        if (userService.retrieveByName(dto.getEmail()) == null) {
+        if ((customUser = userService.retrieveByName(dto.getEmail())) == null) {
             customUser = userCreation.create(dto);
         }
-        customUser = auth(request, dto);
+        auth(request, customUser);
         if (dto.getRemember() != null) {
             boolean rememmberMe = dto.getRemember().booleanValue();
             if (rememmberMe) {
@@ -83,12 +81,18 @@ public class UserManagementWrapper
     }
 
     @Override
-    public void authenticate(UsernamePasswordAuthenticationToken token,
+    public void authenticate(CustomUser user,
                              HttpServletRequest request)
             throws IOException {
         HttpSession session = request.getSession(true);
+        Set<GrantedAuthority> authorities = DefaultUserDetails
+                .mapAuthorities(user.getRole());
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(
+                        user.getEmail(), user.getPassword(), authorities
+                );
         if (session != null) {
-            setToSession(token, token.getName(), session);
+            setToSession(token, user.getLogin(), user, session);
         }
     }
 
@@ -108,32 +112,28 @@ public class UserManagementWrapper
 
     private void setToSession(Authentication auth,
                               String username,
+                              CustomUser user,
                               HttpSession session) {
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
         session.setAttribute(Constants.SPRING_SECURITY_CONTEXT_KEY, sc);
-        Performer performer = performerService
-                .retrieveByUsername(username);
         session.setAttribute(
-                Constants
-                        .PERFORMER_SESSION_KEY, performer
+                Constants.CUSTOM_USER_SESSION_KEY, user
         );
         session.setMaxInactiveInterval(
-                Constants
-                        .MAX_INACTIVE_SESSION_INTERVAL_SECONDS
+                Constants.MAX_INACTIVE_SESSION_INTERVAL_SECONDS
         );
     }
 
-    private CustomUser auth(HttpServletRequest request,
-                           UserDto dto) {
+    private void auth(HttpServletRequest request,
+                            CustomUser user) {
         HttpSession session = null;
         session = request.getSession(true);
         UsernamePasswordAuthenticationToken authReq
                 = new UsernamePasswordAuthenticationToken(
-                dto.getEmail(), dto.getPassword());
+                user.getEmail(), user.getPassword());
         Authentication auth = authManager.authenticate(authReq);
-        setToSession(auth, dto.getEmail(), session);
-        return userService.retrieveByName(dto.getEmail());
+        setToSession(auth, user.getLogin(), user, session);
     }
 
     @Override
@@ -217,7 +217,7 @@ public class UserManagementWrapper
         return null;
     }
 
-    @Override
+    /*@Override
     public Performer retrievePerformer(HttpServletRequest request) {
         Performer performer = null;
         HttpSession session = request.getSession();
@@ -235,9 +235,9 @@ public class UserManagementWrapper
         }
         Preconditions.checkNotNull(performer);
         return performer;
-    }
+    }*/
 
-    private Performer retrievePerformer(HttpSession session) {
+    /*private Performer retrievePerformer(HttpSession session) {
         Performer performer = (Performer) session
                 .getAttribute(Constants.PERFORMER_SESSION_KEY);
         Long id = performer.getId();
@@ -251,5 +251,5 @@ public class UserManagementWrapper
             );
             return performer;
         }
-    }
+    }*/
 }

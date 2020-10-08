@@ -2,16 +2,15 @@ package app.controllers;
 
 import app.controllers.dto.PerformerDto;
 import app.controllers.dto.mappers.IEntityDtoMapper;
-import app.models.basic.CustomUser;
-import app.models.basic.Department;
-import app.models.basic.Performer;
-import app.models.mysqlviews.BriefPerformer;
-import app.models.serialization.ExcludeStrategies;
+import app.customtenant.models.basic.Department;
+import app.customtenant.models.basic.Performer;
+import app.customtenant.models.mysqlviews.BriefPerformer;
+import app.customtenant.models.serialization.ExcludeStrategies;
+import app.customtenant.service.interfaces.IBriefPerformerService;
+import app.customtenant.service.interfaces.IDepartmentService;
+import app.customtenant.service.interfaces.IPerformerService;
 import app.security.models.SimpleRole;
 import app.security.service.IUserService;
-import app.service.interfaces.IBriefPerformerService;
-import app.service.interfaces.IDepartmentService;
-import app.service.interfaces.IPerformerService;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.List;
@@ -94,9 +93,6 @@ public class PerformersNavigationController extends JsonSupportController {
         SimpleRole newRole = SimpleRole.valueOf(role);
         Performer performer = performerService.findOne(performerId);
         performer.addRole(newRole);
-        CustomUser user = performer.getUser();
-        user.addRole(newRole);
-        userService.update(user);
         performerService.update(performer);
         sendDefaultJson(response, true, "");
     }

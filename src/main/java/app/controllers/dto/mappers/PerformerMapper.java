@@ -1,9 +1,9 @@
 package app.controllers.dto.mappers;
 
 import app.controllers.dto.PerformerDto;
-import app.models.basic.Department;
-import app.models.basic.Performer;
-import app.service.interfaces.IDepartmentService;
+import app.customtenant.models.basic.Department;
+import app.customtenant.models.basic.Performer;
+import app.customtenant.service.interfaces.IDepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

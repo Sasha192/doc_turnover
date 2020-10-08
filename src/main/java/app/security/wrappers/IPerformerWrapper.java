@@ -1,6 +1,6 @@
 package app.security.wrappers;
 
-import app.models.basic.Performer;
+import app.customtenant.models.basic.Performer;
 import javax.servlet.http.HttpServletRequest;
 
 public interface IPerformerWrapper {

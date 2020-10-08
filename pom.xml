@@ -17,9 +17,59 @@
         </maven.checkstyle.plugin.configLocation>
         <spring.version>5.2.7.RELEASE</spring.version>
         <security.version>5.3.3.RELEASE</security.version>
+        <flyway.user>bcrew_user</flyway.user>
+        <flyway.password>1324domik</flyway.password>
+        <flyway.schemas>bcrew_default</flyway.schemas>
     </properties>
 
     <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/net.ttddyy/datasource-proxy -->
+        <dependency>
+            <groupId>net.ttddyy</groupId>
+            <artifactId>datasource-proxy</artifactId>
+            <version>1.7</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.6.8</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator -->
+        <dependency>
+            <groupId>com.fasterxml.uuid</groupId>
+            <artifactId>java-uuid-generator</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.morphia.morphia</groupId>
+            <artifactId>core</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.12.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>3.0.3.RELEASE</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>7.0.0</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
         <dependency>
@@ -302,6 +352,19 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>4.0.3</version>
+                <configuration>
+                    <user>${flyway.user}</user>
+                    <password>${flyway.password}</password>
+<!--                    <url>jdbc:mysql://192.168.31.76/bcrew?serverTimezone=Europe/Kiev&amp;useUnicode=yes&amp;characterEncoding=UTF-8&amp;useLegacyDatetimeCode=false</url>
+                    <locations>
+                        <location>/home/kolmogorov/Java_Practice/bcrew/doc_turnover/src/main/resources/migration/default</location>
+                    </locations>-->
                 </configuration>
             </plugin>
             <plugin>

@@ -1,9 +1,9 @@
 package app.utils;
 
-import app.models.basic.BriefDocument;
-import app.models.basic.Performer;
-import app.service.impl.ExecutionService;
-import app.service.interfaces.IBriefDocumentService;
+import app.customtenant.models.basic.BriefDocument;
+import app.customtenant.models.basic.Performer;
+import app.customtenant.service.impl.ExecutionService;
+import app.customtenant.service.interfaces.IBriefDocumentService;
 import app.utils.exceptions.MaliciousFoundException;
 import java.io.File;
 import java.io.IOException;
@@ -23,23 +23,23 @@ public class DocumentsUploader {
     private final IBriefDocumentService documentService;
     private final ExecutionService executionService;
     private final FilesUploader filesUploader;
-    private final TodayFolderArchivePathGenerator folderPathGenerator;
+    //private final TodayFolderArchivePathGenerator folderPathGenerator;
 
     @Autowired
     public DocumentsUploader(IBriefDocumentService documentService,
                              ExecutionService executionService,
-                             @Qualifier("files_uploader") FilesUploader filesUploader,
-                             @Qualifier("date_file_path_generator")
-                                     TodayFolderArchivePathGenerator folderPathGenerator) {
+                             @Qualifier("files_uploader") FilesUploader filesUploader) {
+        /*@Qualifier("date_file_path_generator")
+            TodayFolderArchivePathGenerator folderPathGenerator*/
         this.documentService = documentService;
         this.executionService = executionService;
         this.filesUploader = filesUploader;
-        this.folderPathGenerator = folderPathGenerator;
+        //this.folderPathGenerator = folderPathGenerator;
     }
 
     public boolean upload(Performer performer, MultipartFile... mfiles)
             throws IOException, MaliciousFoundException {
-        String folderPath = folderPathGenerator.getFolderArchivePath();
+        String folderPath = null;//folderPathGenerator.getFolderArchivePath();
         List<File> files = filesUploader.upload(folderPath, mfiles);
         List<BriefDocument> documents =
                 FileDocumentsMapperUtil.map(files, folderPath, performer);
