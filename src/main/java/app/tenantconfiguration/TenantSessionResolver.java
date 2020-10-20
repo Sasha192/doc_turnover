@@ -1,7 +1,7 @@
 package app.tenantconfiguration;
 
 import app.configuration.spring.constants.Constants;
-import app.security.wrappers.CustomRequestContextHolder;
+import app.security.wrappers.impl.CustomRequestContextHolder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;

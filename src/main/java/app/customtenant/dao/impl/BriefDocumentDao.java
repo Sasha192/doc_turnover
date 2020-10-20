@@ -1,109 +1,91 @@
 package app.customtenant.dao.impl;
 
-import app.configuration.spring.constants.Constants;
 import app.customtenant.dao.interfaces.IBriefDocumentDao;
 import app.customtenant.dao.persistance.GenericJpaRepository;
 import app.customtenant.models.basic.BriefDocument;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import javax.persistence.Parameter;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
         implements IBriefDocumentDao {
 
-    private static final String FROM = " FROM " + BriefDocument.class.getName() + " ";
-
-    private static final String WHERE_ARCHIVED = FROM.concat(" WHERE is_archive=true");
-
-    private static final String WHERE_NO_ARCHIVED = FROM.concat(" WHERE is_archive=false");
+    private static final String FROM = " FROM " + BriefDocument.class.getName() + " bd ";
 
     private static final Logger LOGGER = Logger.getLogger(BriefDocument.class);
 
-    private static final String AND = " and ";
+    private static final String FIND_BY_DATE =
+            FROM
+            + " WHERE bd.date = :date_ ";
 
-    private static final String WHERE = " WHERE ";
-    
-    /*private static final String QUERY_FIND_BY_FILTERS = FROM
-            + WHERE
-            + (" (:fileName is null or file_name = :fileName) ")
-            + (AND)
-            + (" (:extName is null or ext_name = :extName) ")
-            + (AND)
-            + (" (:fullPath is null or full_path = :fullPath) ")
-            + (AND)
-            + (" (:creationDate is null or creation_date = :creationDate) ")
-            + (AND)
-            + (" (:like is null or file_name LIKE :like or ext_name LIKE :like) ")
-            + (AND)
-            + (" (:year is null or YEAR(creation_date)=:year) ")
-            + (AND)
-            + (" (:month is null or (MONTH(creation_date) + 1) = :month) ")
-            + (AND)
-            + (" (:day is null or DAY(creation_date) = :day) ")
-            + (" ORDER BY creation_date ")
-            + (" LIMIT : :offset , :pageSize");*/
+    private static final String FIND_BY_TIME =
+            FROM
+            + " WHERE bd.time BETWEEN :start_time AND :end_time ";
 
-    private static final String QUERY_FIND_BY_FILTERS =
-            "CALL FILTERED_BRIEF_DOC_INFO("
-                    + ":fileName, :extName, :fullPath, :creationDate,"
-                    + ":like, :year, :month, :day, :offset, :pageSize)";
+    private static final String FIND_BY_DATE_DEPO_ID =
+            "SELECT id, file_name, ext_name, creation_date, "
+                    + "creation_time, uuid, performer_id, signed FROM brief_documents\n"
+                    + "INNER JOIN tasks_documents td on brief_documents.id = td.doc_id\n"
+                    + "INNER JOIN tasks_performers tp on td.task_id = tp.task_id\n"
+                    + "INNER JOIN performers p on tp.performer_id = p.id\n"
+                    + "WHERE creation_date <= :date_ AND p.department_id = :depo_id";
 
-    private static final char PERCENTAGE = '%';
-    private static final String ROWS_ON_PAGE_ARHIVE_DOC = "rows_on_page_arhive_doc";
-
-    @Autowired
-    @Qualifier("app_constants")
-    private Constants constants;
+    private static final String FIND_BY_DATE_PERF_ID =
+            "SELECT id, file_name, ext_name, creation_date, "
+                    + "creation_time, uuid, performer_id, signed FROM brief_documents \n"
+                    + "INNER JOIN tasks_documents td on brief_documents.id = td.doc_id \n"
+                    + "INNER JOIN tasks_performers tp on td.task_id = tp.task_id \n"
+                    + " WHERE creation_date <= :date_ AND tp.id = :perf_id \n";
 
     public BriefDocumentDao() {
         setClazz(BriefDocument.class);
     }
 
     @Override
-    public List<BriefDocument> findArchived() {
-        return getEntityManager().createQuery(WHERE_ARCHIVED).getResultList();
+    public List<BriefDocument> findBy(int page, int pageSize, Date date) {
+        TypedQuery<BriefDocument> query = getEntityManager()
+                .createQuery(FIND_BY_DATE, BriefDocument.class);
+        query.setParameter("date_", date, TemporalType.DATE);
+        return offsetLimitQuery(page, pageSize, query);
     }
 
     @Override
-    public List<BriefDocument> findActive() {
-        return getEntityManager().createQuery(WHERE_NO_ARCHIVED).getResultList();
+    public List<BriefDocument> findBy(int page, int pageSize, long start, long end) {
+        TypedQuery<BriefDocument> query = getEntityManager()
+                .createQuery(FIND_BY_TIME, BriefDocument.class);
+        query.setParameter("start_time", start);
+        query.setParameter("end_time", end);
+        return offsetLimitQuery(page, pageSize, query);
     }
 
     @Override
-    public List<BriefDocument> findBy(int pageId, String search,
-                                      Integer year, Integer month,
-                                      Integer day) {
-        int pageSize = constants
-                .get(ROWS_ON_PAGE_ARHIVE_DOC)
-                .getIntValue();
-        final int offset = pageSize * (pageId - 1);
-        if (null != search) {
-            search = PERCENTAGE + search + PERCENTAGE;
-        }
+    public List<BriefDocument> findByAndDepartment(int page, int pageSize, Date date, long depoId) {
         Query query = getEntityManager()
-                .createStoredProcedureQuery(QUERY_FIND_BY_FILTERS, BriefDocument.class);
-        query = setAllParametersToNull(query);
-        query.setParameter("like", search);
-        query.setParameter("year", year);
-        query.setParameter("month", month);
-        query.setParameter("day", day);
-        query.setParameter("offset", offset);
-        query.setParameter("pageSize", pageSize);
-        return query.getResultList();
+                .createNativeQuery(FIND_BY_DATE_DEPO_ID, BriefDocument.class);
+        query.setParameter("date_", date, TemporalType.DATE);
+        query.setParameter("depo_id", depoId);
+        return offsetLimitQuery(page, pageSize, query);
     }
 
-    private Query setAllParametersToNull(Query query) {
-        Set<Parameter<?>> parameters = query.getParameters();
-        for (Parameter<?> parameter : parameters) {
-            query.setParameter(parameter.getName(), null);
-        }
-        return query;
+    @Override
+    public List<BriefDocument> findByAndPerformerInTaskId(int page, int pageSize,
+                                                          Date date, long perfId) {
+        Query query = getEntityManager()
+                .createNativeQuery(FIND_BY_DATE_PERF_ID, BriefDocument.class);
+        query.setParameter("date_", date, TemporalType.DATE);
+        query.setParameter("perf_id", perfId);
+        return offsetLimitQuery(page, pageSize, query);
+    }
+
+    private List<BriefDocument> offsetLimitQuery(int page, int pageSize, Query query) {
+        query.setMaxResults(pageSize);
+        query.setFirstResult((page - 1) * pageSize);
+        return query.getResultList();
     }
 
     @Override

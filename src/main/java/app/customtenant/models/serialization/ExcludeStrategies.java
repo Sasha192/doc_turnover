@@ -1,6 +1,5 @@
 package app.customtenant.models.serialization;
 
-import app.security.models.annotations.ExcludeMatchingPassword;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import javax.persistence.ManyToMany;
@@ -97,18 +96,6 @@ public class ExcludeStrategies {
         @Override
         public boolean shouldSkipField(FieldAttributes field) {
             return field.getAnnotation(ExcludeForBDocs.class) != null;
-        }
-    };
-
-    public static final ExclusionStrategy EXCLUDE_MATCHING_PASSWORD = new ExclusionStrategy() {
-        @Override
-        public boolean shouldSkipField(FieldAttributes field) {
-            return field.getAnnotation(ExcludeMatchingPassword.class) != null;
-        }
-
-        @Override
-        public boolean shouldSkipClass(Class<?> clazz) {
-            return false;
         }
     };
 

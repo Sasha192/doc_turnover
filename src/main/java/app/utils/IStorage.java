@@ -1,3 +1,4 @@
+/*
 package app.utils;
 
 import java.io.File;
@@ -16,3 +17,4 @@ public interface IStorage {
 
     void remove(List<File> files) throws IOException;
 }
+*/

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 @Entity
@@ -75,5 +76,10 @@ public class RememberMeToken {
 
     public void setCreationTime(long creationTime) {
         this.creationTime = creationTime;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        this.creationTime = System.currentTimeMillis();
     }
 }

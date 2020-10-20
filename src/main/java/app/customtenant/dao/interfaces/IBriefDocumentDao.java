@@ -2,19 +2,20 @@ package app.customtenant.dao.interfaces;
 
 import app.customtenant.dao.persistance.IGenericDao;
 import app.customtenant.models.basic.BriefDocument;
+import java.util.Date;
 import java.util.List;
 
 public interface IBriefDocumentDao extends IGenericDao<BriefDocument> {
 
-    List<BriefDocument> findArchived();
+    List<BriefDocument> findBy(int page, int pageSize, Date date);
 
-    List<BriefDocument> findActive();
+    List<BriefDocument> findBy(int page, int pageSize,
+                               long start, long end);
 
-    List<BriefDocument> findBy(int pageId, String search,
-                               Integer year, Integer month,
-                               Integer date);
+    List<BriefDocument> findByAndDepartment(int page, int pageSize,
+                                            Date date, long depoId);
 
-    //BriefDocument retrieveByName(String name) throws NoSuchObjectException;
+    List<BriefDocument> findByAndPerformerInTaskId(int page, int pageSize, Date date, long perfId);
 }
 
 

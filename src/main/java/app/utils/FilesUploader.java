@@ -1,4 +1,5 @@
 package app.utils;
+/*
 
 import app.configuration.spring.constants.Constants;
 import app.customtenant.service.extapis.VirusTotalScan;
@@ -23,21 +24,6 @@ public class FilesUploader {
 
     private final Constants constants;
     private final VirusTotalScan virusTotalScan;
-    private final IStorage storage;
-
-    @Autowired
-    public FilesUploader(Constants constants,
-                         VirusTotalScan virusTotalScan,
-                         IBriefDocumentService documentService,
-                         ExecutionService executionService,
-                         IStorage storage
-                         //TodayFolderArchivePathGenerator folderPathGenerator
-                         ) {
-        this.constants = constants;
-        this.virusTotalScan = virusTotalScan;
-        this.storage = storage;
-        //this.pathGenerator = folderPathGenerator;
-    }
 
     //@CHANGE!!!
     public List<File> upload(MultipartFile... mfiles)
@@ -66,11 +52,6 @@ public class FilesUploader {
         if (mfile == null) {
             return null;
         }
-        String fileName = new String(mfile
-                .getOriginalFilename()
-                .getBytes(StandardCharsets.ISO_8859_1),
-                StandardCharsets.UTF_8
-        );
         final File fileToSave = new File(filePath);
         mfile.transferTo(fileToSave);
         if (!this.virusTotalScan.scan(fileToSave)) {
@@ -123,3 +104,4 @@ public class FilesUploader {
         return files;
     }
 }
+*/

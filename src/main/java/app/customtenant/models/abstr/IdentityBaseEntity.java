@@ -29,11 +29,8 @@ public abstract class IdentityBaseEntity
             generator = "sequenceGenerator"
     )*/
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Access(AccessType.PROPERTY)
-    /**
-     * It is for MySql configuration
-     */
     protected Long id;
 
     public Long getId() {

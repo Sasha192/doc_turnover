@@ -1,22 +1,13 @@
 package app.customtenant.models.basic;
 
 import app.customtenant.models.abstr.IdentityBaseEntity;
-import app.customtenant.models.basic.taskmodels.Task;
+import app.tenantdefault.models.DocumentEntity;
+import app.utils.CustomAppDateTimeUtil;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "brief_documents")
@@ -25,7 +16,7 @@ public class BriefDocument
         implements Serializable {
 
     @Column(name = "creation_date")
-    private Date date;
+    private Date date = CustomAppDateTimeUtil.now();
 
     @Column(name = "file_name")
     private String name;
@@ -33,34 +24,51 @@ public class BriefDocument
     @Column(name = "ext_name")
     private String extName;
 
-    @Column(name = "full_path")
-    private String path;
+    @Column(name = "path_uuid")
+    private String uuid;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH})
-    @JoinTable(
-            name = "tasks_documents",
-            joinColumns = @JoinColumn(name = "doc_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id"))
-    private List<Task> task;
+    @Column(name = "creation_time")
+    private long time = System.currentTimeMillis();
 
-    @ManyToOne(fetch = FetchType.LAZY,
-            cascade = {CascadeType.REFRESH})
-    @JoinColumn(name = "performer_id")
-    private Performer performer;
+    @Column(name = "signed")
+    private boolean signed = false;
 
-    @Transient
-    private Set<Long> taskIds;
+    @Column(name = "performer_id")
+    private Long performerId;
 
     public BriefDocument() {
         ;
     }
 
-    public List<Task> getTask() {
-        return this.task;
+    public BriefDocument(DocumentEntity entity) {
+        super();
+        setExtName(entity.getExtension());
+        setName(entity.getName());
+        setUuid(entity.getId());
     }
 
-    public void setTask(final List<Task> task) {
-        this.task = task;
+    public BriefDocument(DocumentEntity entity, Long perfId) {
+        super();
+        setExtName(entity.getExtension());
+        setName(entity.getName());
+        setUuid(entity.getId());
+        setPerformerId(perfId);
+    }
+
+    public boolean isSigned() {
+        return signed;
+    }
+
+    public void setSigned(boolean signed) {
+        this.signed = signed;
+    }
+
+    public Long getPerformerId() {
+        return performerId;
+    }
+
+    public void setPerformerId(Long performerId) {
+        this.performerId = performerId;
     }
 
     public Date getDate() {
@@ -87,12 +95,12 @@ public class BriefDocument
         this.extName = extName;
     }
 
-    public String getPath() {
-        return this.path;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setPath(final String path) {
-        this.path = path;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public Long getId() {
@@ -103,23 +111,11 @@ public class BriefDocument
         this.id = id;
     }
 
-    public Performer getPerformer() {
-        return performer;
+    public long getTime() {
+        return time;
     }
 
-    public void setPerformer(Performer performer) {
-        this.performer = performer;
-    }
-
-    public Set<Long> getTaskIds() {
-        if (taskIds == null || taskIds.isEmpty()) {
-            taskIds = new HashSet<>();
-            getTask().stream().forEach(task -> taskIds.add(task.getId()));
-        }
-        return this.taskIds;
-    }
-
-    public void setTaskIds(final Set<Long> taskIds) {
-        this.taskIds = taskIds;
+    public void setTime(long time) {
+        this.time = time;
     }
 }

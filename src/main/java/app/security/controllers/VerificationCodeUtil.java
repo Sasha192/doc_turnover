@@ -1,7 +1,7 @@
 package app.security.controllers;
 
 import app.configuration.spring.constants.Constants;
-import app.controllers.JsonSupportController;
+import app.controllers.customtenant.JsonSupportController;
 import app.customtenant.service.extapis.IMailService;
 import app.customtenant.service.impl.ExecutionService;
 import app.security.models.UserDto;

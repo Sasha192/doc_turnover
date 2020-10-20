@@ -19,6 +19,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class DocumentStorage implements IDocumentStorage {
 
+    private static final BsonDocument projection;
+
+    static {
+        projection = new BsonDocument();
+        projection.append(
+                "document",
+                new BsonBoolean(false)
+        );
+        projection.append(
+                "sign",
+                new BsonDocument(
+                        "data",
+                        new BsonBoolean(false)
+                )
+        );
+    }
+
     @Autowired
     private IEntityConverter<DocumentEntity> docEntityConverter;
 
@@ -34,7 +51,7 @@ public class DocumentStorage implements IDocumentStorage {
     public void initAfterContruct() {
         docCollection = datastore
                 .getDatabase()
-                .getCollection("documents");
+                .getCollection(DocumentEntity.COLLECTION_NAME);
     }
 
     @Override
@@ -53,10 +70,7 @@ public class DocumentStorage implements IDocumentStorage {
 
     @Override
     public DocumentEntity findForJson(String uuid) {
-        BsonDocument projection = new BsonDocument();
         BsonDocument filter = new BsonDocument();
-        projection.append("document", new BsonBoolean(false));
-        projection.append("sign", new BsonDocument("data", new BsonBoolean(false)));
         filter.append("_id", new BsonString(uuid));
         Document document = docCollection.find(filter).projection(projection).first();
         return docEntityConverter.convert(document);

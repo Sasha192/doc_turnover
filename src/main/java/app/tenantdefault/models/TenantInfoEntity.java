@@ -3,11 +3,14 @@ package app.tenantdefault.models;
 import app.controllers.dto.TenantDto;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
-
+import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity("tenant_info")
-public class TenantInfoEntity {
+public class TenantInfoEntity implements Serializable {
+
+    public static final String COLLECTION_NAME = "tenant_info";
 
     @Id
     private String tenantId;
@@ -19,6 +22,8 @@ public class TenantInfoEntity {
     private String companyAddress;
 
     private PaymentTariff tariff;
+
+    private boolean privateAccount;
 
     private java.util.Date creationDate;
 
@@ -39,6 +44,10 @@ public class TenantInfoEntity {
         creationDate = java.util.Calendar
                 .getInstance()
                 .getTime();
+        setPrivateAccount(dto.isPrivate());
+        String invite = dto.getCompanyName().hashCode()
+                + UUID.randomUUID().toString()
+                .replace("-", "");
     }
 
     public String getCompanyName() {
@@ -83,5 +92,13 @@ public class TenantInfoEntity {
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    public void setPrivateAccount(boolean privateAccount) {
+        this.privateAccount = privateAccount;
+    }
+
+    public boolean isPrivateAccount() {
+        return privateAccount;
     }
 }

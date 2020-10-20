@@ -7,13 +7,10 @@ import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface IPerformerDao extends IGenericDao<Performer> {
-    Performer retrieveByUserDetails(UserDetails userDetails);
-
-    Performer retrieveByUser(CustomUser user);
-
-    Performer retrieveByUsername(String username);
 
     List<Performer> findByDepartmentId(Long departmentId);
+
+    Performer retrieveByUserId(Long id);
 
     //Performer retrieveByName(String name) throws NoSuchObjectException;
 

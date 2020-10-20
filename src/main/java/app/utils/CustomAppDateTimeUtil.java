@@ -6,10 +6,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-/**
- * It was created for customization of App DateTime and storing it correctly;
- * Kinda Like Single Responsibility
- */
 public class CustomAppDateTimeUtil {
 
     private static final SimpleDateFormat FORMATTER = Constants.DATE_FORMAT;

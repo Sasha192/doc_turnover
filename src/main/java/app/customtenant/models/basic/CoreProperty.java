@@ -1,25 +1,18 @@
 package app.customtenant.models.basic;
 
+import app.customtenant.models.abstr.IdentityBaseEntity;
 import java.io.Serializable;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "core_properties")
-public class CoreProperty implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Access(AccessType.PROPERTY)
-    private Long id;
+@Table(name = "core_properties", schema = "bcrew_default")
+public class CoreProperty
+        extends IdentityBaseEntity
+        implements Serializable {
 
     @Column(name = "name")
     private String name;

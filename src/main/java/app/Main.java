@@ -1,12 +1,11 @@
 package app;
 
+import org.apache.commons.io.FilenameUtils;
+
 public class Main {
-    public static boolean test(String regEx, String word) {
-        System.out.println();
-        return word.matches(regEx);
-    }
 
     public static void main(String[] args) {
-        System.out.println();
+        String name = "/home/kolmogorov/Java_Practice/bcrew/doc_turnover/src/main/java/app/Main.java";
+        System.out.println(FilenameUtils.getExtension(name));
     }
 }

@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class VerificationCodeGenerator {
 
-    private static int CODE_LENGTH = 6; // @TODO MAKE IT CUSTOMIZABLE
+    private static int CODE_LENGTH = 6;
     private static final Random random = new Random(123123123);
 
     public static String generate() {

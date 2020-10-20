@@ -56,8 +56,7 @@ public class CustomUser
             schema = "bcrew_default",
             joinColumns = @JoinColumn(name = "user_id")
     )
-    @Column(name = "user_id")
-    @Access(AccessType.PROPERTY)
+    @Column(name = "tenant_id")
     private Set<String> tenantsId;
 
     public CustomUser() {
@@ -151,5 +150,9 @@ public class CustomUser
             tenantsId = new HashSet<>();
         }
         tenantsId.add(id);
+    }
+
+    public void setTenantsId(Set<String> tenantsId) {
+        this.tenantsId = tenantsId;
     }
 }

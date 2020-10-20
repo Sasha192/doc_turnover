@@ -4,12 +4,13 @@ import app.configuration.spring.constants.Constants;
 import app.utils.JsonUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.io.File;
-import java.io.IOException;
+
+import java.io.*;
 import javax.annotation.PostConstruct;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -40,9 +41,26 @@ public class VirusTotalScan implements IMaliciousScan {
     }
 
     @Override
-    public boolean scan(File file) {
-        try {
-            String id = getIdForFile(file);
+    public boolean scan(File file)
+            throws FileNotFoundException {
+        try (FileInputStream stream = new FileInputStream(file)) {
+            return scan(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean scan(byte[] bytes) {
+        return scan(new ByteArrayInputStream(bytes));
+    }
+
+    @Override
+    public boolean scan(InputStream inputStream) {
+        try (inputStream) {
+            String id = getIdForFile(inputStream);
             HttpGet request = new HttpGet(ANALYSIS_URL.concat(id));
             request.setHeader("x-apikey", apiKeyVt);
             HttpResponse response = client.execute(request);
@@ -54,16 +72,18 @@ public class VirusTotalScan implements IMaliciousScan {
             if (harmless == 0 && malicious == 0 && (suspicious < THRESHOLD)) {
                 return true;
             }
+        } catch (ClientProtocolException e) {
+            return false;
         } catch (IOException e) {
-            EXCEPTIONS_LOGGER.error("IOEXCEPTION WHILE SCANNING FILE FOR VIRUSES : ", e);
+            return false;
         }
         return false;
     }
 
-    private String getIdForFile(File file) throws IOException {
+    private String getIdForFile(InputStream stream) throws IOException {
         HttpEntity entity = MultipartEntityBuilder
                 .create()
-                .addBinaryBody("file", file)
+                .addBinaryBody("file", stream)
                 .build();
         HttpPost request = new HttpPost(UPLOAD_URL);
         request.setEntity(entity);

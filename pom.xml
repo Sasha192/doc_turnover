@@ -24,6 +24,27 @@
 
     <dependencies>
 
+        <!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.warrenstrange/googleauth -->
+        <dependency>
+            <groupId>com.warrenstrange</groupId>
+            <artifactId>googleauth</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/net.ttddyy/datasource-proxy -->
         <dependency>
             <groupId>net.ttddyy</groupId>
@@ -361,10 +382,12 @@
                 <configuration>
                     <user>${flyway.user}</user>
                     <password>${flyway.password}</password>
-<!--                    <url>jdbc:mysql://192.168.31.76/bcrew?serverTimezone=Europe/Kiev&amp;useUnicode=yes&amp;characterEncoding=UTF-8&amp;useLegacyDatetimeCode=false</url>
+                    <url>jdbc:mysql://192.168.31.76/bcrew?serverTimezone=Europe/Kiev&amp;useUnicode=yes&amp;characterEncoding=UTF-8&amp;useLegacyDatetimeCode=false</url>
                     <locations>
-                        <location>/home/kolmogorov/Java_Practice/bcrew/doc_turnover/src/main/resources/migration/default</location>
-                    </locations>-->
+                        <location>/migration/default</location>
+                    </locations>
+                    <baselineOnMigrate>true</baselineOnMigrate>
+                    <baselineDescription>/migration/default/V1_0_0__DEFAULT.sql</baselineDescription>
                 </configuration>
             </plugin>
             <plugin>

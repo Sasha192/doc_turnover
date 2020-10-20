@@ -4,10 +4,14 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 
 @Entity("documents")
-public class DocumentEntity extends CollectionNameHolder {
+public class DocumentEntity {
+
+    public static final String COLLECTION_NAME = "documents";
 
     @Id
     private String id;
@@ -25,7 +29,7 @@ public class DocumentEntity extends CollectionNameHolder {
     private List<DocumentSignEntity> sign;
 
     public DocumentEntity() {
-        super("documents");
+        ;
     }
 
     public String getId() {

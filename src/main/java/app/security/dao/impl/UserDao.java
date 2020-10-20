@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public class UserDao extends GenericJpaRepository<CustomUser> implements IUserDao {
 
     private static final String SELECT_BY_USERNAME =
-            "SELECT cu FROM CustomUser cu where email=:email";
+            "SELECT cu FROM CustomUser cu where login=:login";
 
     private static final String REMOVE_TOKEN =
             "DELETE FROM RememberMeToken WHERE id=:id_";
@@ -22,10 +22,10 @@ public class UserDao extends GenericJpaRepository<CustomUser> implements IUserDa
         setClazz(CustomUser.class);
     }
 
-    public CustomUser retrieveByEmail(String email) {
+    public CustomUser retrieveByEmail(String login) {
         TypedQuery<CustomUser> query = getEntityManager()
                 .createQuery(SELECT_BY_USERNAME, CustomUser.class);
-        query.setParameter("email", email);
+        query.setParameter("login", login);
         List<CustomUser> users = query.getResultList();
         if (!users.isEmpty()) {
             return users.get(0);

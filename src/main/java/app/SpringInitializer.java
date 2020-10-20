@@ -2,8 +2,8 @@ package app;
 
 import app.configuration.spring.SpringDataConfiguration;
 import app.configuration.spring.SpringMvcConfiguration;
-import app.security.controllers.filters.AuthenticationMeFilter;
-import app.security.controllers.filters.GpanelAccessFilter;
+import app.security.controllers.defaultenantfilters.AuthenticationMeFilter;
+import app.security.controllers.defaultenantfilters.GpanelAccessFilter;
 import javax.servlet.Filter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;

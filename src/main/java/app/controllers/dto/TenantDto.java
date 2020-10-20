@@ -13,6 +13,9 @@ public class TenantDto {
     @NotNull
     private String paymentTariff;
 
+    @NotNull
+    private boolean isPrivate;
+
     public String getCompanyName() {
         return companyName;
     }
@@ -23,5 +26,9 @@ public class TenantDto {
 
     public String getPaymentTariff() {
         return paymentTariff;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
     }
 }

@@ -1,6 +1,6 @@
 package app.security.controllers;
 
-import app.controllers.JsonSupportController;
+import app.controllers.customtenant.JsonSupportController;
 import app.security.models.UserDto;
 import app.security.service.IUserService;
 import app.security.wrappers.IAuthenticationManagement;
@@ -43,16 +43,12 @@ public class RegistrationController extends JsonSupportController {
         final Authentication authentication = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
-        if (authentication != null) {
-            authenticationManagement.invalidate(req, res);
-        }
         if (userService.retrieveByName(userDto.getEmail()) != null) {
             sendDefaultJson(res, false, "User with such email is already exist");
             return;
         }
         codeUtil.createVerificationCode(userDto);
         codeUtil.sendVerificationCode(userDto, req, res);
-        // @TODO : Create more beautiful verification email
     }
 
 }

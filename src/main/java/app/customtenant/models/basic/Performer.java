@@ -5,6 +5,8 @@ import app.customtenant.models.basic.taskmodels.Task;
 import app.customtenant.models.serialization.ExcludeForJsonPerformer;
 import app.customtenant.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
 import app.security.models.SimpleRole;
+import app.security.models.auth.CustomUser;
+import app.security.models.auth.UserInfo;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.List;
@@ -30,6 +32,9 @@ public class Performer
 
     private static final String IMG_DEFAULT = "/img/default.jpg";
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @Column(name = "name")
     private String name;
 
@@ -53,22 +58,33 @@ public class Performer
     @ExcludeForJsonPerformer
     private List<TaskStatus> status;
 
-    @Column(name = "img_path")
-    private String imgPath = IMG_DEFAULT;
-
-    @Column(name = "user_id")
-    @ExcludeForJsonPerformer
-    private Long userId;
-
     @Enumerated(value = EnumType.ORDINAL)
     @Column(name = "role")
     private SimpleRole roles;
 
-    @Column(name = "img_token")
-    private String imgIdToken;
-
     @OneToMany(mappedBy = "performer", cascade = CascadeType.REFRESH)
     private Set<AbstractCalendarPerformerStatistic> statistics;
+
+    public Performer(CustomUser user) {
+        super();
+        UserInfo info = user.getUserInfo();
+        String name = info.getFirstName()
+                + " "
+                + info.getMiddleName()
+                + " "
+                + info.getLastName();
+        setName(name);
+        setRoles(SimpleRole.GUEST);
+        setUserId(user.getId());
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public Set<AbstractCalendarPerformerStatistic> getStatistics() {
         return statistics;
@@ -114,22 +130,6 @@ public class Performer
         this.status = status;
     }
 
-    public String getImgIdToken() {
-        return imgIdToken;
-    }
-
-    public void setImgIdToken(String imgIdToken) {
-        this.imgIdToken = imgIdToken;
-    }
-
-    public String getImgPath() {
-        return imgPath;
-    }
-
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
-    }
-
     public SimpleRole getRoles() {
         return roles;
     }
@@ -148,14 +148,6 @@ public class Performer
 
     public void setDepartment(Department department) {
         this.department = department;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public void addRole(SimpleRole newRole) {

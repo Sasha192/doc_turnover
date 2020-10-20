@@ -17,6 +17,10 @@ public class TenantContext {
         TENANT_IDENTIFIER.remove();
     }
 
+    public static String getTenant() {
+        return TENANT_IDENTIFIER.get();
+    }
+
     public static class TenantIdentifierResolver
             implements CurrentTenantIdentifierResolver {
 

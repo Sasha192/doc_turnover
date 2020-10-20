@@ -3,9 +3,8 @@ package app.configuration.spring.constants;
 import app.customtenant.models.basic.CoreProperty;
 import app.customtenant.models.serialization.ExcludeStrategies;
 import app.customtenant.service.interfaces.ICorePropertyService;
+import app.tenantconfiguration.TenantContext;
 import com.google.gson.GsonBuilder;
-import java.net.FileNameMap;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -29,7 +28,6 @@ public class Constants {
 
     public static final String DOT = ".";
     public static final String SLASH = "/";
-    public static final FileNameMap CONTENT_TYPE_MAP = URLConnection.getFileNameMap();
     public static final String EMPTY_STRING = "";
     public static final String IS_MALICIOUS = " is malicious or can not be uploaded";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
@@ -40,10 +38,10 @@ public class Constants {
     public static final String MAX_FILES_UPLOAD = "max_files_upload";
     public static final String MAX_FILES_DOWNLOAD = "max_files_download";
     public static final String SPRING_SECURITY_CONTEXT_KEY = org.springframework
-                    .security
-                    .web.context
-                    .HttpSessionSecurityContextRepository
-                    .SPRING_SECURITY_CONTEXT_KEY;
+            .security
+            .web.context
+            .HttpSessionSecurityContextRepository
+            .SPRING_SECURITY_CONTEXT_KEY;
     public static final String PERFORMER_SESSION_KEY =
             "PERFORMER_SESSION_KEY";
     public static final String CUSTOM_USER_SESSION_KEY =
@@ -59,6 +57,7 @@ public class Constants {
     public static final int VALID_REMEMBER_ME_TOKEN_TIME_SEC =
             60 * 60 * 24 * 7;
     public static final String TENANT_SESSION_ID = "tenant_id";
+    public static final int DEFAULT_PAGE_SIZE = 30;
 
     static {
         BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()
@@ -74,13 +73,13 @@ public class Constants {
                 .setDateFormat(Constants.DATE_FORMAT.toPattern());
         Base64.Encoder enc = Base64.getEncoder();
         REMEMBER_ME_UUID = enc.encodeToString(
-                        "REMEMBERMEUUID"
-                                .getBytes(StandardCharsets.UTF_8)
-                );
+                "REMEMBERMEUUID"
+                        .getBytes(StandardCharsets.UTF_8)
+        );
         REMEMBER_ME_ID = enc.encodeToString(
-                        "REMEMBERMEID"
-                                .getBytes(StandardCharsets.UTF_8)
-                );
+                "REMEMBERMEID"
+                        .getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     private ICorePropertyService corePropertyService;
@@ -100,53 +99,10 @@ public class Constants {
     }
 
     public CoreProperty get(String name) {
-        CoreProperty prop = properties.get(name);
-        if (prop == null) {
-            prop = corePropertyService.retrieveByName(name);
-        }
-        return prop;
-    }
-
-    public void put(CoreProperty newProperty) {
-        CoreProperty property = corePropertyService
-                .retrieveByName(newProperty.getName());
-        if (property != null) {
-            if (!(property.equals(newProperty))) {
-                switch (property.getTypeValue()) {
-                    case NUMBER: {
-                        property.setIntValue(
-                                newProperty.getIntValue()
-                        );
-                        break;
-                    }
-                    case STRING: {
-                        property.setStringValue(
-                                newProperty.getStringValue()
-                        );
-                        break;
-                    }
-                    case DECIMAL: {
-                        property.setFloatValue(
-                                newProperty.getFloatValue()
-                        );
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-            }
-        }
-        if (corePropertyService.retrieveByName(newProperty.getName()) == null) {
-            corePropertyService.update(property);
-        } else {
-            corePropertyService.create(newProperty);
-        }
+        return properties.get(name);
     }
 
     @Autowired
-    // because writing logic with BeanPostProcessors is longer
-    // this approach much faster
     private void setAppImageFormats(Environment e) {
         if (e.getProperty("img_ext") != null) {
             appImageFormats = Arrays.asList(
@@ -162,9 +118,16 @@ public class Constants {
     }
 
     public void updateConstants() {
+        String tenant = TenantContext.getTenant();
+        TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
         List<CoreProperty> properties = corePropertyService.findAll();
         for (CoreProperty property : properties) {
             this.properties.put(property.getName(), property);
+        }
+        if (tenant == null) {
+            TenantContext.reset(tenant);
+        } else {
+            TenantContext.setTenant(tenant);
         }
     }
 

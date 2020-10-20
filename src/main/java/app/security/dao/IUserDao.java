@@ -7,7 +7,7 @@ import app.security.models.auth.UserInfo;
 
 public interface IUserDao extends IGenericDao<CustomUser> {
 
-    CustomUser retrieveByEmail(String email);
+    CustomUser retrieveByEmail(String login);
 
     RememberMeToken retrieveRememberMeToken(long id);
 

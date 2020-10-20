@@ -35,6 +35,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
 @ComponentScans({
+        @ComponentScan("app.security.authenticator"),
         @ComponentScan("app.customtenant.dao"),
         @ComponentScan("app.customtenant.models"),
         @ComponentScan("app.security.models"),

@@ -1,3 +1,4 @@
+/*
 package app.utils.exceptions;
 
 public class MaliciousFoundException extends RuntimeException {
@@ -6,3 +7,4 @@ public class MaliciousFoundException extends RuntimeException {
         super(message);
     }
 }
+*/

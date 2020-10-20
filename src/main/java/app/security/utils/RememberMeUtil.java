@@ -19,7 +19,6 @@ public class RememberMeUtil {
                                               HttpServletRequest request) {
         RememberMeToken token = new RememberMeToken();
         token.setUser(user);
-        token.setCreationTime(System.currentTimeMillis());
         token.setUuid(UUID.randomUUID());
         token.setIp(request.getRemoteAddr());
         return token;

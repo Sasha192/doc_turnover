@@ -1,6 +1,8 @@
 package app.customtenant.service.extapis;
 
+import app.tenantdefault.models.DocumentEntity;
 import java.io.File;
+import java.util.List;
 import org.springframework.core.io.FileSystemResource;
 
 public interface IMailService {
@@ -13,4 +15,6 @@ public interface IMailService {
                             FileSystemResource... resources);
 
     boolean sendFile(String to, String subject, String plaintext, File... files);
+
+    boolean sendFile(String to, String subject, String plaintext, List<DocumentEntity> files);
 }

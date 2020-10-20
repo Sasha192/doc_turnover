@@ -3,10 +3,13 @@ package app.customtenant.service.extapis;
 import app.configuration.spring.constants.Constants;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.activation.FileTypeMap;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -18,6 +21,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+
+import app.tenantdefault.models.DocumentEntity;
+import app.utils.ContentTypeFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
@@ -69,21 +76,17 @@ public class GMailService implements IMailService {
     }
 
     @Override
-    public boolean sendFile(String to, String subject, String plaintext, File... files) {
+    public boolean sendFile(String to, String subject,
+                            String plaintext, List<DocumentEntity> entities) {
         try {
             if (to == null) {
                 return false;
             }
-            MimeBodyPart textPart = new MimeBodyPart();
-            textPart.setText(plaintext);
             Multipart multipart = new MimeMultipart();
-            for (File file : files) {
-                addAttachment(multipart, file);
+            for (DocumentEntity ent : entities) {
+                addAttachment(multipart, ent);
             }
-            Message message =
-                    createMessage(to, subject, plaintext);
-            multipart.addBodyPart(textPart);
-            message.setContent(multipart);
+            Message message = createMessage(to, subject, plaintext, multipart);
             Transport.send(message);
             return true;
         } catch (AddressException e) {
@@ -94,11 +97,69 @@ public class GMailService implements IMailService {
         return false;
     }
 
+    @Override
+    public boolean sendFile(String to, String subject, String plaintext, File... files) {
+        try {
+            if (to == null) {
+                return false;
+            }
+            Multipart multipart = new MimeMultipart();
+            for (File file : files) {
+                addAttachment(multipart, file);
+            }
+            Message message = createMessage(to, subject, plaintext, multipart);
+            Transport.send(message);
+            return true;
+        } catch (AddressException e) {
+            ;
+        } catch (MessagingException e) {
+            ;
+        }
+        return false;
+    }
+
+    private Message createMessage(String to, String subject,
+                             String plaintext, Multipart multipart)
+            throws MessagingException {
+        MimeBodyPart textPart = new MimeBodyPart();
+        textPart.setText(plaintext);
+        Message message =
+                createMessage(to, subject, plaintext);
+        multipart.addBodyPart(textPart);
+        message.setContent(multipart);
+        return message;
+    }
+
+    private Message createMessage(String to, String subject, String plainText)
+            throws MessagingException {
+        subject = subject == null ? Constants.EMPTY_STRING : subject;
+        plainText = plainText == null ? Constants.EMPTY_STRING : plainText;
+        Session session = getSession();
+        Message message = new MimeMessage(session);
+        message.setFrom(emailInternetAddress);
+        message.setRecipients(Message.RecipientType.TO,
+                InternetAddress.parse(to));
+        message.setSubject(subject);
+        message.setText(plainText);
+        return message;
+    }
+
     private void addAttachment(Multipart multipart, File file) throws MessagingException {
         MimeBodyPart messageBodyPart = new MimeBodyPart();
         DataSource source = new FileDataSource(file);
         messageBodyPart.setDataHandler(new DataHandler(source));
         messageBodyPart.setFileName(file.getName());
+        multipart.addBodyPart(messageBodyPart);
+    }
+
+    private void addAttachment(Multipart multipart, DocumentEntity entity)
+            throws MessagingException {
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+        byte[] bytes = entity.getDocument().getData();
+        String contentType = ContentTypeFileUtil.getContentType(entity.getName());
+        DataSource source = new ByteArrayDataSource(bytes, contentType);
+        messageBodyPart.setDataHandler(new DataHandler(source));
+        messageBodyPart.setFileName(entity.getName());
         multipart.addBodyPart(messageBodyPart);
     }
 
@@ -123,20 +184,6 @@ public class GMailService implements IMailService {
             }
         }
         return mimeMessage;
-    }
-
-    private Message createMessage(String to, String subject, String plainText)
-            throws MessagingException {
-        subject = subject == null ? Constants.EMPTY_STRING : subject;
-        plainText = plainText == null ? Constants.EMPTY_STRING : plainText;
-        Session session = getSession();
-        Message message = new MimeMessage(session);
-        message.setFrom(emailInternetAddress);
-        message.setRecipients(Message.RecipientType.TO,
-                InternetAddress.parse(to));
-        message.setSubject(subject);
-        message.setText(plainText);
-        return message;
     }
 
     private Session getSession() throws AddressException {
