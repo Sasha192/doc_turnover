@@ -7,13 +7,15 @@ import java.util.List;
 
 public interface ITaskDao extends IGenericDao<Task> {
 
-    List<Task> findByPerformerId(long id);
-
-    List<Task> findByPerformerIdStaticStatus(long id);
+    List<Task> findByPerformerId(int page, int pageSize, long perfId);
 
     void updateNameDescription(String newName, String description, Long taskId);
 
     List<Task> findOnDeadlineDate(int pageNumber, int pageSize);
 
-    Integer countOnTaskStatus(long perfId, TaskStatus status);
+    List<Task> findByDepartment(int pageId, int pageSize, long departmentId);
+
+    List<Task> findByStatus(int page, int pageSize, TaskStatus byName);
+
+    List<Task> findByPerformerAndStatus(int pageId, int pageSize, long performerId, TaskStatus byName);
 }

@@ -1,25 +1,25 @@
 package app.customtenant.service.interfaces;
 
 import app.customtenant.dao.persistance.IOperations;
-import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.basic.taskmodels.Task;
 import java.util.List;
-import java.util.Map;
 
 public interface ITaskService extends IOperations<Task> {
 
-    List<Task> findBy(Map<String, String> filters);
+    List<Task> findByPerformer(int page, int pageSize, long perfId);
 
-    List<Task> findByPerformer(Performer performer);
-
-    List<Task> findByPerformerIdStaticStatus(long id);
-
+    List<Task> findOnDeadlineDate(int pageNumber, int pageSize);
+    
+    List<Task> findByDepartment(int pageId, int pageSize, long departmentId);
+    
     void updateNameDescription(String newName,
                                String description,
                                Long taskId);
 
-    List<Task> findOnDeadlineDate(int pageNumber, int pageSize);
+    List<Task> findByStatus(int page, int pageSize, TaskStatus byName);
 
-    int countOnTaskStatus(long perfId, TaskStatus status);
+    List<Task> findByPerformerAndStatus(
+            int pageId, int pageSizeLong, long performerId, TaskStatus byName
+    );
 }

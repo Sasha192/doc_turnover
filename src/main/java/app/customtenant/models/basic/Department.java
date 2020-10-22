@@ -1,16 +1,13 @@
 package app.customtenant.models.basic;
 
 import app.customtenant.models.abstr.IdentityBaseEntity;
-import app.customtenant.models.serialization.ExcludeForJsonPerformer;
 import com.google.common.base.Objects;
 import java.io.Serializable;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -30,11 +27,6 @@ public class Department
 
     @Column(name = "parent_department_id")
     private Long parentDepartmentId;
-
-    @OneToMany(mappedBy = "department",
-            cascade = {CascadeType.REFRESH})
-    @ExcludeForJsonPerformer
-    private Set<Performer> performers;
 
     public Department() {
     }
@@ -61,14 +53,6 @@ public class Department
 
     public void setParentDepartment(Department parentDepartment) {
         this.parentDepartment = parentDepartment;
-    }
-
-    public Set<Performer> getPerformers() {
-        return this.performers;
-    }
-
-    public void setPerformers(final Set<Performer> performers) {
-        this.performers = performers;
     }
 
     public Long getParentDepartmentId() {

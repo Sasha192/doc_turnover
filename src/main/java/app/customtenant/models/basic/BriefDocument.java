@@ -1,12 +1,18 @@
 package app.customtenant.models.basic;
 
 import app.customtenant.models.abstr.IdentityBaseEntity;
+import app.customtenant.models.serialization.ExcludeForBDocs;
 import app.tenantdefault.models.DocumentEntity;
 import app.utils.CustomAppDateTimeUtil;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 @Entity
@@ -36,22 +42,33 @@ public class BriefDocument
     @Column(name = "performer_id")
     private Long performerId;
 
+    @ElementCollection
+    @CollectionTable(name = "words_documents",
+            joinColumns = @JoinColumn(name = "doc_id",
+                    referencedColumnName = "id"))
+    @Column(name = "word")
+    @ExcludeForBDocs
+    private Set<String> searchWords;
+
     public BriefDocument() {
         ;
     }
 
     public BriefDocument(DocumentEntity entity) {
         super();
-        setExtName(entity.getExtension());
-        setName(entity.getName());
+        String ex = entity.getExtension().toLowerCase().trim();
+        String nm = entity.getName().toLowerCase().trim();
+        setExtName(ex);
+        setName(nm);
         setUuid(entity.getId());
+        addSearchWord(ex);
+        for (String word : nm.split(" ")) {
+            addSearchWord(word);
+        }
     }
 
     public BriefDocument(DocumentEntity entity, Long perfId) {
-        super();
-        setExtName(entity.getExtension());
-        setName(entity.getName());
-        setUuid(entity.getId());
+        this(entity);
         setPerformerId(perfId);
     }
 
@@ -117,5 +134,20 @@ public class BriefDocument
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public Set<String> getSearchWords() {
+        return searchWords;
+    }
+
+    public void setSearchWords(Set<String> searchWords) {
+        this.searchWords = searchWords;
+    }
+
+    public void addSearchWord(String word) {
+        if (searchWords == null) {
+            searchWords = new HashSet<>();
+        }
+        searchWords.add(word);
     }
 }

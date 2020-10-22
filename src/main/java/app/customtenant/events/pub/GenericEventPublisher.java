@@ -1,21 +1,17 @@
 package app.customtenant.events.pub;
 
-import app.customtenant.service.interfaces.IEventService;
+import org.springframework.context.ApplicationEventPublisher;
 
 public abstract class GenericEventPublisher<T>
         implements EventPublisher<T> {
 
-    private IEventService eventService;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public GenericEventPublisher(IEventService eventService) {
-        this.eventService = eventService;
+    public GenericEventPublisher(ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
     }
 
-    public IEventService getEventService() {
-        return eventService;
-    }
-
-    public final void setEventService(IEventService eventService) {
-        this.eventService = eventService;
+    public ApplicationEventPublisher getEventPublisher() {
+        return eventPublisher;
     }
 }

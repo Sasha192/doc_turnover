@@ -3,18 +3,17 @@ package app.customtenant.service.impl;
 import app.customtenant.dao.interfaces.ITaskDao;
 import app.customtenant.dao.persistance.IGenericDao;
 import app.customtenant.eventdriven.publishers.TaskEventPublisher;
-import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.basic.taskmodels.Task;
 import app.customtenant.service.abstraction.AbstractService;
 import app.customtenant.service.interfaces.ITaskService;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TaskService extends AbstractService<Task>
         implements ITaskService {
 
@@ -23,9 +22,6 @@ public class TaskService extends AbstractService<Task>
 
     @Autowired
     private TaskEventPublisher publisher;
-
-    public TaskService() {
-    }
 
     @Override
     protected IGenericDao<Task> getDao() {
@@ -38,20 +34,8 @@ public class TaskService extends AbstractService<Task>
 
     @Override
     @Transactional(readOnly = true)
-    public List<Task> findBy(Map<String, String> filters) {
-        return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Task> findByPerformer(Performer performer) {
-        return dao.findByPerformerId(performer.getId());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Task> findByPerformerIdStaticStatus(long id) {
-        return dao.findByPerformerIdStaticStatus(id);
+    public List<Task> findByPerformer(int page, int pageSize, long perfId) {
+        return dao.findByPerformerId(page, pageSize, perfId);
     }
 
     @Override
@@ -69,18 +53,29 @@ public class TaskService extends AbstractService<Task>
     }
 
     @Override
-    public void create(List<Task> entities) {
-        super.create(entities);
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public List<Task> findOnDeadlineDate(int pageNumber, int pageSize) {
         return dao.findOnDeadlineDate(pageNumber, pageSize);
     }
 
     @Override
-    public int countOnTaskStatus(long perfId, TaskStatus status) {
-        return dao.countOnTaskStatus(perfId, status);
+    @Transactional(readOnly = true)
+    public List<Task> findByDepartment(int pageId, int pageSize, long departmentId) {
+        return dao.findByDepartment(pageId, pageSize, departmentId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Task> findByStatus(
+            int page, int pageSize, TaskStatus byName) {
+        return dao.findByStatus(page, pageSize, byName);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Task> findByPerformerAndStatus(
+            int pageId, int pageSize, long performerId, TaskStatus byName) {
+        return dao.findByPerformerAndStatus(pageId, pageSize, performerId, byName);
     }
 }
 

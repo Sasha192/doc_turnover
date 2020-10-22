@@ -4,74 +4,75 @@ import app.customtenant.dao.interfaces.ITaskDao;
 import app.customtenant.dao.persistance.GenericJpaRepository;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.basic.taskmodels.Task;
-import app.utils.CustomAppDateTimeUtil;
 import java.util.List;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class TaskDao extends GenericJpaRepository<Task>
         implements ITaskDao {
 
-    private static final String FROM =
-            "from Task t ";
+    private static final String HQL_FROM =
+            " SELECT t from Task t ";
+
+    private static final String MYSQL_FROM =
+            "SELECT t.id, t.creation_time, t.is_deadline, "
+                    + "               t.task, t.deadline, t.control_date, "
+                    + "               t.status_id, t.task_owner_id, "
+                    + "               t.description, t.report_id "
+                    + "FROM tasks t ";
 
     private static final String FIND_BY_PERFORMER_ID =
-            FROM.concat("WHERE t.performer_id=:id ");
+                        MYSQL_FROM
+                    + " INNER JOIN tasks_performers tp on t.id = tp.task_id "
+                    + " WHERE tp.performer_id = :_perf_id ";
 
-    private static final String FIND_BY_PERFORMER_ID_STATIC_STATUS =
-            FROM.concat("INNER JOIN custom_status cs "
-                    + "ON cs.is_custom=false AND t.performer_id=cs.performer_id ")
-                    .concat(FIND_BY_PERFORMER_ID);
+    private static final String FIND_BY_DEPARTMENT_ID =
+                    MYSQL_FROM
+                    + " INNER JOIN tasks_performers tp on t.id = tp.task_id "
+                    + " INNER JOIN performers p on tp.performer_id = p.id "
+                    + " WHERE p.department_id = :depo_id ";
+
+    private static final String FIND_BY_STATUS =
+            HQL_FROM
+            + " WHERE t.status = :status_ ";
+
+    private static final String FIND_BY_PEFORMER_N_STATUS =
+                    FIND_BY_PERFORMER_ID
+                    + " AND t.status_id = :_status_ ";
 
     private static final String UPDATE_NAME_DESCRIPTION =
-            "UPDATE Task t SET t.toDo = :name, t.description = :descript ";
+            "UPDATE Task t SET t.name = :name, t.description = :descript ";
 
     private static final String SELECT_ALL_DEADLINE_DATE_AND_DEADLINE_FALSE =
             "SELECT * FROM tasks WHERE is_deadline = false AND "
                     + " deadline < CURRENT_TIMESTAMP "
                     + " LIMIT :page_size_ OFFSET :offset_";
 
-    private static final String COUNT_ON_TASK_STATUS_PERF_ID =
-            "SELECT COUNT(*) FROM task_performers tp "
-                    + " INNER JOIN tasks t ON t.id=tp.task_id "
-                    + " WHERE performer_id=:perf_id_ AND t.status_id=:status_id_";
-
     public TaskDao() {
         setClazz(Task.class);
     }
 
-    @Override
-    public List<Task> findByPerformerId(long id) {
-        TypedQuery<Task> query = getEntityManager()
-                .createQuery(FIND_BY_PERFORMER_ID, Task.class);
-        query.setParameter("id", id);
+    private List<Task> offsetLimitQuery(int page, int pageSize, Query query) {
+        query.setFirstResult((page - 1) * pageSize);
+        query.setMaxResults(pageSize);
         return query.getResultList();
     }
 
     @Override
-    public List<Task> findByPerformerIdStaticStatus(long id) {
-        TypedQuery<Task> query = getEntityManager()
-                .createQuery(FIND_BY_PERFORMER_ID_STATIC_STATUS, Task.class);
-        query.setParameter("id", id);
-        return query.getResultList();
+    public List<Task> findByPerformerId(int page, int pageSize, long perfId) {
+        Query query = getEntityManager()
+                .createNativeQuery(FIND_BY_PERFORMER_ID, Task.class);
+        query.setParameter("_perf_id", perfId);
+        return offsetLimitQuery(page, pageSize, query);
     }
 
     @Override
-    public Task update(Task entity) {
-        entity.setModificationDate(CustomAppDateTimeUtil.now());
-        return super.update(entity);
-    }
-
-    @Override
-    public void updateNameDescription(String newName,
-                                      String description,
-                                      Long taskId) {
-        getEntityManager().createQuery(UPDATE_NAME_DESCRIPTION)
-                .setParameter("name", newName)
-                .setParameter("descript", description)
-                .executeUpdate();
+    public List<Task> findByDepartment(int pageId, int pageSize, long departmentId) {
+        Query query = getEntityManager()
+                .createNativeQuery(FIND_BY_DEPARTMENT_ID, Task.class);
+        query.setParameter("depo_id", departmentId);
+        return offsetLimitQuery(pageId, pageSize, query);
     }
 
     @Override
@@ -89,14 +90,31 @@ public class TaskDao extends GenericJpaRepository<Task>
     }
 
     @Override
-    public Integer countOnTaskStatus(long perfId, TaskStatus status) {
-        Object o = getEntityManager().createNativeQuery(COUNT_ON_TASK_STATUS_PERF_ID)
-                .setParameter("perf_id_", perfId)
-                .setParameter("status_id_", status.getId())
-                .getSingleResult();
-        if (o instanceof Number) {
-            return (Integer) o;
-        }
-        throw new UnsupportedOperationException();
+    public List<Task> findByStatus(int page, int pageSize, TaskStatus status) {
+        Query query = getEntityManager()
+                .createQuery(FIND_BY_STATUS, Task.class);
+        query.setParameter("status_", status);
+        return offsetLimitQuery(page, pageSize, query);
     }
+
+    @Override
+    public List<Task> findByPerformerAndStatus(
+            int page, int pageSize, long performerId, TaskStatus status) {
+        Query query = getEntityManager()
+                .createNativeQuery(FIND_BY_PEFORMER_N_STATUS, Task.class);
+        query.setParameter("_perf_id", performerId);
+        query.setParameter("_status_", status);
+        return offsetLimitQuery(page, pageSize, query);
+    }
+
+    @Override
+    public void updateNameDescription(String newName,
+                                      String description,
+                                      Long taskId) {
+        getEntityManager().createQuery(UPDATE_NAME_DESCRIPTION)
+                .setParameter("name", newName)
+                .setParameter("descript", description)
+                .executeUpdate();
+    }
+
 }

@@ -1,7 +1,6 @@
 package app.customtenant.models.basic;
 
 import app.customtenant.models.abstr.IdentityBaseEntity;
-import app.customtenant.models.basic.taskmodels.Task;
 import app.customtenant.models.serialization.ExcludeForJsonPerformer;
 import app.customtenant.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
 import app.security.models.SimpleRole;
@@ -9,7 +8,6 @@ import app.security.models.auth.CustomUser;
 import app.security.models.auth.UserInfo;
 import com.google.common.base.Objects;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,8 +16,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -38,31 +34,21 @@ public class Performer
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH},
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "department_id", insertable = false, updatable = false)
-    private Department department;
-
     @Column(name = "department_id")
-    private Long departmentId;
+    private long departmentId;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH})
-    @JoinTable(
-            name = "tasks_performers",
-            joinColumns = @JoinColumn(name = "performer_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id"))
-    @ExcludeForJsonPerformer
-    private List<Task> tasks;
-
-    @OneToMany(mappedBy = "performer")
-    @ExcludeForJsonPerformer
-    private List<TaskStatus> status;
+    @ManyToOne(cascade = {CascadeType.REFRESH},
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id",
+            insertable = false, updatable = false)
+    private Department department;
 
     @Enumerated(value = EnumType.ORDINAL)
     @Column(name = "role")
     private SimpleRole roles;
 
     @OneToMany(mappedBy = "performer", cascade = CascadeType.REFRESH)
+    @ExcludeForJsonPerformer
     private Set<AbstractCalendarPerformerStatistic> statistics;
 
     public Performer(CustomUser user) {
@@ -112,22 +98,6 @@ public class Performer
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public List<Task> getTasks() {
-        return this.tasks;
-    }
-
-    public void setTasks(final List<Task> tasks) {
-        this.tasks = tasks;
-    }
-
-    public List<TaskStatus> getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(final List<TaskStatus> status) {
-        this.status = status;
     }
 
     public SimpleRole getRoles() {

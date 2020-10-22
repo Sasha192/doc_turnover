@@ -1,4 +1,4 @@
-package app.controllers.customtenant.toChange;
+package app.controllers.customtenant;
 
 import app.configuration.spring.constants.Constants;
 import app.controllers.customtenant.JsonSupportController;
@@ -7,7 +7,6 @@ import app.customtenant.models.basic.taskmodels.Task;
 import app.customtenant.service.interfaces.ITaskService;
 import app.security.wrappers.IPerformerWrapper;
 import app.utils.ReportsUploader;
-import app.utils.exceptions.MaliciousFoundException;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,11 +57,13 @@ public class ReportController extends JsonSupportController {
             Performer performer = performerWrapper
                     .retrievePerformer(request);
             Task task = taskService.findOne(taskId);
-            if (comment != null || mfiles != null) {
-                uploader.upload(performer, task, comment, mfiles);
+            long perfId = performer.getId();
+            if (task.getTaskOwnerId().equals(perfId)
+                    || task.getPerformerIds().contains(perfId)) {
+                if (comment != null || mfiles != null) {
+                    uploader.upload(performer, task, comment, mfiles);
+                }
             }
-        } catch (MaliciousFoundException ioex) {
-            sendDefaultJson(response, false, ioex.getMessage());
         } catch (IOException e) {
             sendDefaultJson(response, false, "Internal Server Error. Please try later.");
         }

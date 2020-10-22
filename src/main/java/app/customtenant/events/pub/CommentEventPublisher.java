@@ -1,21 +1,22 @@
 package app.customtenant.events.pub;
 
+import app.customtenant.events.Event;
+import app.customtenant.events.impl.GenericDaoApplicationEvent;
 import app.customtenant.events.impl.TaskCommentPublishingEvent;
 import app.customtenant.models.abstr.TaskHolderComment;
 import app.customtenant.models.basic.Performer;
-import app.customtenant.service.interfaces.IEventService;
+import app.tenantconfiguration.TenantContext;
 import java.util.HashSet;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component("comment_pub")
 public class CommentEventPublisher
         extends GenericEventPublisher<TaskHolderComment> {
 
-    @Autowired
-    public CommentEventPublisher(IEventService eventService) {
-        super(eventService);
+    public CommentEventPublisher(ApplicationEventPublisher eventPublisher) {
+        super(eventPublisher);
     }
 
     @Override
@@ -25,12 +26,10 @@ public class CommentEventPublisher
         event.setAuthorId(author.getId());
         Set<Long> ids = new HashSet<>(entity.getPerformerIds());
         ids.remove(author.getId());
-        /**
-         *  @see TaskHolderComment#getPerformerIds()  -> returns performersIds
-         *  relative to task for TaskHolderComment
-         */
         event.setPerformersId(ids);
         event.setTaskId(entity.getTaskId());
-        getEventService().create(event);
+        getEventPublisher().publishEvent(new GenericDaoApplicationEvent(
+                event, Event.EventType.COMMENT_PUB, TenantContext.getTenant())
+        );
     }
 }

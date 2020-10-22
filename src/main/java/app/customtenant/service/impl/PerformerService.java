@@ -6,6 +6,7 @@ import app.customtenant.models.basic.Performer;
 import app.customtenant.service.abstraction.AbstractService;
 import app.customtenant.service.interfaces.IPerformerService;
 import app.customtenant.service.interfaces.IPerformerUpdateEventListenerService;
+import app.security.models.SimpleRole;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -51,5 +52,17 @@ public class PerformerService extends AbstractService<Performer>
     public Performer update(Performer entity) {
         listenerService.setUpdate(entity.getId());
         return super.update(entity);
+    }
+
+    @Override
+    public int updatePerformerDepartment(long perfId, long depoId) {
+        listenerService.setUpdate(perfId);
+        return dao.updatePerformerDepartment(perfId, depoId);
+    }
+
+    @Override
+    public int updatePerformerRole(Long performerId, SimpleRole role) {
+        listenerService.setUpdate(performerId);
+        return dao.updatePerformerRole(performerId, role);
     }
 }

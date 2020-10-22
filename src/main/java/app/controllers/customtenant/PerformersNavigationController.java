@@ -1,11 +1,7 @@
-package app.controllers.customtenant.toChange;
+package app.controllers.customtenant;
 
-import app.controllers.customtenant.JsonSupportController;
-import app.controllers.dto.PerformerDto;
 import app.controllers.dto.mappers.IEntityDtoMapper;
-import app.customtenant.models.basic.Department;
 import app.customtenant.models.basic.Performer;
-import app.customtenant.models.mysqlviews.BriefPerformer;
 import app.customtenant.models.serialization.ExcludeStrategies;
 import app.customtenant.service.interfaces.IBriefPerformerService;
 import app.customtenant.service.interfaces.IDepartmentService;
@@ -20,11 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,18 +54,18 @@ public class PerformersNavigationController extends JsonSupportController {
     public void list(HttpServletResponse response,
                      @PathVariable(required = false) Long departmentId)
             throws IOException {
-        List<BriefPerformer> performers = null;
+        List<Performer> performers = null;
         if (departmentId != null) {
-            performers = briefPerformerService
+            performers = performerService
                     .findByDepartmentId(departmentId);
         } else {
-            performers = briefPerformerService
+            performers = performerService
                     .findAll();
         }
         GsonBuilder builder = new GsonBuilder()
                 .addSerializationExclusionStrategy(
-                        ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER
-                ).setPrettyPrinting();
+                        ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+                .setPrettyPrinting();
         writeToResponse(response, builder, performers);
     }
 
@@ -80,10 +74,7 @@ public class PerformersNavigationController extends JsonSupportController {
     public void changeDepartment(HttpServletResponse response,
                                  @RequestParam("performer_id") Long performerId,
                                  @RequestParam("department_id") Long departmentId) {
-        Department newDepartment = departmentService.findOne(departmentId);
-        Performer performer = performerService.findOne(performerId);
-        performer.setDepartmentId(newDepartment.getId());
-        performerService.update(performer);
+        performerService.updatePerformerDepartment(performerId, departmentId);
         sendDefaultJson(response, true, "");
     }
 
@@ -92,17 +83,7 @@ public class PerformersNavigationController extends JsonSupportController {
                                  @RequestParam("performer_id") Long performerId,
                                  @RequestParam("role") String role) {
         SimpleRole newRole = SimpleRole.valueOf(role);
-        Performer performer = performerService.findOne(performerId);
-        performer.addRole(newRole);
-        performerService.update(performer);
-        sendDefaultJson(response, true, "");
-    }
-
-    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createPerformer(HttpServletResponse response,
-                                @Validated @RequestBody PerformerDto dto) {
-        Performer performer = (Performer) mapper.getEntity(dto);
-        performerService.create(performer);
+        performerService.updatePerformerRole(performerId, newRole);
         sendDefaultJson(response, true, "");
     }
 
@@ -111,5 +92,15 @@ public class PerformersNavigationController extends JsonSupportController {
                                 @RequestParam("performer_id") Long performerId) {
         performerService.deleteById(performerId);
         sendDefaultJson(response, true, "");
+    }
+
+    @PostMapping(value = "/undistrib", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void undistributed(HttpServletResponse response,
+                                @RequestParam("performer_id") Long performerId) {
+        sendDefaultJson(response, true, "");
+        Performer performer = performerService.findOne(performerId);
+        performer.setRoles(SimpleRole.GUEST);
+        performer.setDepartmentId(null);
+        performerService.update(performer);
     }
 }

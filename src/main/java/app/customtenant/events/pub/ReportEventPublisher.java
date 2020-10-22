@@ -1,21 +1,22 @@
 package app.customtenant.events.pub;
 
+import app.customtenant.events.Event;
+import app.customtenant.events.impl.GenericDaoApplicationEvent;
 import app.customtenant.events.impl.ReportPublishingEvent;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.Report;
-import app.customtenant.service.interfaces.IEventService;
+import app.tenantconfiguration.TenantContext;
 import java.util.HashSet;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component("report_pub")
 public class ReportEventPublisher
         extends GenericEventPublisher<Report> {
 
-    @Autowired
-    public ReportEventPublisher(IEventService eventService) {
-        super(eventService);
+    public ReportEventPublisher(ApplicationEventPublisher eventPublisher) {
+        super(eventPublisher);
     }
 
     @Override
@@ -23,16 +24,12 @@ public class ReportEventPublisher
         ReportPublishingEvent event = new ReportPublishingEvent();
         event.setReportId(entity.getId());
         event.setAuthorId(author.getId());
-        Set<Long> performersIds = new HashSet<>(entity.getTask().getPerformerIds());
-        Long taskOwnerId = entity
-                .getTask()
-                .getTaskOwnerId();
-        if (!taskOwnerId.equals(author.getId())) {
-            performersIds.add(entity.getTask().getTaskOwnerId());
-        }
+        Set<Long> performersIds = new HashSet<>(entity.getPerformerIds());
         performersIds.remove(author.getId());
         event.setPerformersId(performersIds);
-        event.setTaskId(entity.getTask().getId());
-        getEventService().create(event);
+        event.setTaskId(entity.getTaskId());
+        getEventPublisher().publishEvent(new GenericDaoApplicationEvent(
+                event, Event.EventType.REPORT_PUB, TenantContext.getTenant())
+        );
     }
 }

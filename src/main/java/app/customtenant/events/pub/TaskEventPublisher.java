@@ -1,20 +1,21 @@
 package app.customtenant.events.pub;
 
+import app.customtenant.events.Event;
+import app.customtenant.events.impl.GenericDaoApplicationEvent;
 import app.customtenant.events.impl.TaskEvent;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.taskmodels.Task;
-import app.customtenant.service.interfaces.IEventService;
+import app.tenantconfiguration.TenantContext;
 import java.util.HashSet;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component("task_pub")
 public class TaskEventPublisher extends GenericEventPublisher<Task> {
 
-    @Autowired
-    public TaskEventPublisher(IEventService eventService) {
-        super(eventService);
+    public TaskEventPublisher(ApplicationEventPublisher eventPublisher) {
+        super(eventPublisher);
     }
 
     @Override
@@ -26,6 +27,8 @@ public class TaskEventPublisher extends GenericEventPublisher<Task> {
         ids.remove(author.getId());
         event.setPerformersId(ids);
         event.setTaskId(entity.getId());
-        getEventService().create(event);
+        getEventPublisher().publishEvent(new GenericDaoApplicationEvent(
+                event, Event.EventType.TASK_PUB, TenantContext.getTenant())
+        );
     }
 }

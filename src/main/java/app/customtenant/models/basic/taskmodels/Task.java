@@ -1,14 +1,18 @@
 package app.customtenant.models.basic.taskmodels;
 
 import app.configuration.spring.appfactory.ApplicationFactory;
+import app.controllers.dto.TaskDto;
 import app.customtenant.eventdriven.publishers.TaskEventPublisher;
 import app.customtenant.models.abstr.IdentityBaseEntity;
 import app.customtenant.models.basic.BriefDocument;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.Report;
 import app.customtenant.models.basic.TaskStatus;
+import app.customtenant.models.serialization.ExcludeForJsonBriefTask;
 import app.utils.CustomAppDateTimeUtil;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,62 +21,65 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "tasks")
-@Component
-@Configurable(preConstruction = true, autowire = Autowire.BY_TYPE)
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class Task
         extends IdentityBaseEntity
         implements Serializable {
 
-    @Autowired
     @Transient
     private TaskEventPublisher publisher;
 
+    @Column(name = "creation_time")
+    private long creationTime;
+
+    @Column(name = "is_deadline")
+    private boolean deadline = false;
+
     @Column(name = "task")
-    private String toDo;
+    private String name;
+
+    @Column(name = "deadline")
+    private Date deadlineDate;
+
+    @Column(name = "control_date")
+    private Date controlDate;
 
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH})
-    @JoinTable(name = "tasks_performers",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "performer_id"))
-    @Column(insertable = false, updatable = false)
-    private Set<Performer> performers;
+    @Column(name = "status_id")
+    @Enumerated(EnumType.ORDINAL)
+    private TaskStatus status;
+
+    @Column(name = "task_owner_id")
+    private long taskOwnerId;
+
+    @ManyToOne(cascade = {CascadeType.REFRESH},
+            fetch = FetchType.EAGER)
+    @JoinColumn(name = "task_owner_id",
+            insertable = false,
+            updatable = false)
+    private Performer taskOwner;
 
     @ElementCollection
     @CollectionTable(name = "tasks_performers",
-            joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "task_id",
+                    referencedColumnName = "id")
     )
     @Column(name = "performer_id")
     private Set<Long> performerIds;
-
-    @ManyToMany(cascade = {CascadeType.REFRESH})
-    @JoinTable(
-            name = "tasks_documents",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "doc_id"))
-    private Set<BriefDocument> document;
 
     @ElementCollection
     @CollectionTable(name = "tasks_documents",
@@ -81,57 +88,67 @@ public class Task
     @Column(name = "doc_id")
     private Set<Long> documentsIds;
 
-    @Column(name = "creation_date")
-    private Date creationDate;
+    @Column(name = "report_id")
+    @ExcludeForJsonBriefTask
+    private Long reportId;
 
-    @Column(name = "is_deadline")
-    private Boolean deadline;
-
-    @Column(name = "priority")
-    private String priority;
-
-    @Column(name = "deadline")
-    private Date deadlineDate;
-
-    @Column(name = "control_date")
-    private Date controlDate;
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
+    @JoinColumn(name = "report_id",
+            referencedColumnName = "id",
+            updatable = false, insertable = false)
+    @ExcludeForJsonBriefTask
+    private Report report;
 
     @ElementCollection
     @CollectionTable(name = "tasks_keys",
             joinColumns = @JoinColumn(name = "task_id")
     )
     @Column(name = "key")
+    @ExcludeForJsonBriefTask
     private Set<String> keys;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-            fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_id")
-    private TaskStatus status;
+    @JoinTable(name = "tasks_performers",
+            joinColumns = @JoinColumn(name = "task_id",
+                    referencedColumnName = "id",
+                    insertable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "performer_id"))
+    @OneToMany(cascade = CascadeType.DETACH)
+    @ExcludeForJsonBriefTask
+    private Set<Performer> performers;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-            fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_owner_id",
-            insertable = false,
-            updatable = false)
-    private Performer taskOwner;
-
-    @Column(name = "task_owner_id")
-    private Long taskOwnerId;
-
-    @Column(name = "modification_date")
-    private Date modificationDate;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
-    @JoinColumn(name = "report_id", referencedColumnName = "id")
-    private Report report;
+    @JoinTable(name = "tasks_documents",
+            joinColumns = @JoinColumn(name = "task_id",
+                    referencedColumnName = "id",
+                    insertable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "doc_id"))
+    @OneToMany(cascade = CascadeType.DETACH)
+    @ExcludeForJsonBriefTask
+    private Set<BriefDocument> documents;
 
     public Task() {
-        Date now = CustomAppDateTimeUtil.now();
-        setCreationDate(now);
-        setDeadlineDate(now);
-        setControlDate(now);
-        setModificationDate(now);
-        checkPublisher();
+        this.creationTime = System.currentTimeMillis();
+        this.deadlineDate = CustomAppDateTimeUtil.now();
+        this.controlDate = deadlineDate;
+        this.status = TaskStatus.NEW;
+    }
+
+    public Task(TaskDto dto, long taskOwnerIdd)
+            throws ParseException {
+        this();
+        this.taskOwnerId = taskOwnerIdd;
+        this.status = TaskStatus.getByName(dto.getStatus());
+        this.controlDate = CustomAppDateTimeUtil.parse(dto.getDateControl());
+        this.deadlineDate = CustomAppDateTimeUtil.parse(dto.getDeadline());
+        this.description = dto.getDescription();
+        this.name = dto.getName();
+        this.documentsIds = new HashSet<>();
+        this.performerIds = new HashSet<>();
+        this.keys = new HashSet<>();
+        Collections.addAll(keys, dto.getKeyWords());
+        Collections.addAll(keys, name.trim().toLowerCase().split(" "));
+        Collections.addAll(keys, description.trim().toLowerCase().split(" "));
+        Collections.addAll(documentsIds, dto.getDocList());
+        Collections.addAll(performerIds, dto.getPerformerList());
     }
 
     public TaskEventPublisher getPublisher() {
@@ -146,6 +163,14 @@ public class Task
         this.taskOwnerId = taskOwnerId;
     }
 
+    public Long getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Long reportId) {
+        this.reportId = reportId;
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -154,60 +179,16 @@ public class Task
         this.id = id;
     }
 
-    public Set<Performer> getPerformers() {
-        return performers;
-    }
-
-    public void setPerformers(Set<Performer> performers) {
-        this.performers = performers;
-    }
-
-    public Set<BriefDocument> getDocument() {
-        return this.document;
-    }
-
-    public void setDocument(final Set<BriefDocument> document) {
-        this.document = document;
-    }
-
-    public Date getCreationDate() {
-        return this.creationDate;
-    }
-
-    public void setCreationDate(final Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public void setCreationDate(final long creationDate) {
-        this.creationDate = new Date(creationDate);
-    }
-
     public Boolean getDeadline() {
         return this.deadline;
     }
 
-    public void setDeadline(final Boolean deadline) {
-        this.deadline = deadline;
-        if (null != getId() && deadline
-                && checkPublisher()) {
-            publisher.onDeadlineSet(this);
-        }
-    }
-
-    public String getPriority() {
-        return this.priority;
-    }
-
-    public void setPriority(final String priority) {
-        this.priority = priority;
-    }
-
     public String getToDo() {
-        return this.toDo;
+        return this.name;
     }
 
     public void setToDo(final String toDo) {
-        this.toDo = toDo;
+        this.name = toDo;
     }
 
     public Date getDeadlineDate() {
@@ -238,6 +219,22 @@ public class Task
         return this.status;
     }
 
+    public Set<Performer> getPerformers() {
+        return performers;
+    }
+
+    public void setPerformers(Set<Performer> performers) {
+        this.performers = performers;
+    }
+
+    public Set<BriefDocument> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Set<BriefDocument> documents) {
+        this.documents = documents;
+    }
+
     public void setStatus(final TaskStatus newState) {
         if (null != newState) {
             TaskStatus oldState = getStatus();
@@ -250,6 +247,14 @@ public class Task
                 }
             }
             this.status = newState;
+        }
+    }
+
+    public void setDeadline(final Boolean deadline) {
+        this.deadline = deadline;
+        if (null != getId() && deadline
+                && checkPublisher()) {
+            publisher.onDeadlineSet(this);
         }
     }
 
@@ -279,14 +284,6 @@ public class Task
 
     public void setDescription(final String description) {
         this.description = description;
-    }
-
-    public Date getModificationDate() {
-        return this.modificationDate;
-    }
-
-    public void setModificationDate(final Date modificationDate) {
-        this.modificationDate = modificationDate;
     }
 
     public Report getReport() {
@@ -320,50 +317,6 @@ public class Task
         this.documentsIds = documentsIds;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Task)) {
-            return false;
-        }
-
-        Task task = (Task) o;
-
-        return new EqualsBuilder()
-                .append(getToDo(), task.getToDo())
-                .append(getDescription(), task.getDescription())
-                .append(getCreationDate(), task.getCreationDate())
-                .append(getDeadline(), task.getDeadline())
-                .append(getPriority(), task.getPriority())
-                .append(getDeadlineDate(), task.getDeadlineDate())
-                .append(getControlDate(), task.getControlDate())
-                .append(getKeys(), task.getKeys())
-                .append(getStatus(), task.getStatus())
-                .append(getTaskOwner(), task.getTaskOwner())
-                .append(getModificationDate(), task.getModificationDate())
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(getToDo())
-                .append(getDescription())
-                .append(getCreationDate())
-                .append(getDeadline())
-                .append(getPriority())
-                .append(getDeadlineDate())
-                .append(getControlDate())
-                .append(getKeys())
-                .append(getStatus())
-                .append(getTaskOwner())
-                .append(getModificationDate())
-                .toHashCode();
-    }
-
     private boolean checkPublisher() {
         if (publisher == null) {
             publisher = (TaskEventPublisher)
@@ -371,5 +324,43 @@ public class Task
                             .getBean(TaskEventPublisher.class);
         }
         return publisher != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Task)) {
+            return false;
+        }
+
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        Task task = (Task) o;
+
+        if (creationTime != task.creationTime) {
+            return false;
+        }
+        if (!name.equals(task.name)) {
+            return false;
+        }
+
+        if (getStatus() != task.getStatus()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (int) (creationTime ^ (creationTime >>> 32));
+        result = 31 * result + getStatus().hashCode();
+        return result;
     }
 }

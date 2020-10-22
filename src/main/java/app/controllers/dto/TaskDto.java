@@ -14,13 +14,11 @@ public class TaskDto {
     @NotNull
     private String deadline;
 
-    private transient String priority;
-
     @NotNull
     private String description;
 
     @NotNull
-    private Object[] keyWords;
+    private String[] keyWords;
 
     @NotNull
     private Long[] performerList;
@@ -32,18 +30,18 @@ public class TaskDto {
     private String status;
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
     public String getDateControl() {
-        return this.dateControl;
+        return dateControl;
     }
 
-    public void setDateControl(final String dateControl) {
+    public void setDateControl(String dateControl) {
         this.dateControl = dateControl;
     }
 
@@ -55,71 +53,46 @@ public class TaskDto {
         this.deadline = deadline;
     }
 
-    public String getPriority() {
-        return this.priority;
-    }
-
-    public void setPriority(final String priority) {
-        this.priority = priority;
-    }
-
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
-    public void setDescription(final String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public Object[] getKeyWords() {
+    public String[] getKeyWords() {
         return keyWords;
+    }
+
+    public void setKeyWords(String[] keyWords) {
+        this.keyWords = keyWords;
     }
 
     public Long[] getPerformerList() {
         return performerList;
     }
 
+    public void setPerformerList(Long[] performerList) {
+        this.performerList = performerList;
+    }
+
     public Long[] getDocList() {
         return docList;
     }
 
-    public void setKeyWords(final Set<String> keyWords) {
-        this.keyWords = new String[keyWords.size()];
-        int i = 0;
-        for (String key : keyWords) {
-            this.keyWords[i++] = key;
-        }
-    }
-
-    public Long[] getPerformerId() {
-        return this.performerList;
-    }
-
-    public void setPerformerId(final Set<Long> performerIds) {
-        this.performerList = new Long[performerIds.size()];
-        int i = 0;
-        for (Long val : performerIds) {
-            this.performerList[i++] = val;
-        }
-    }
-
-    public Long[] getDocsId() {
-        return this.docList;
-    }
-
-    public void setDocsId(final Set<Long> docsId) {
-        this.docList = new Long[docsId.size()];
-        int i = 0;
-        for (Long val : docsId) {
-            this.docList[i++] = val;
-        }
+    public void setDocList(Long[] docList) {
+        this.docList = docList;
     }
 
     public String getStatus() {
-        return this.status;
+        return status;
     }
 
-    public void setStatus(final String status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }
+
+
+

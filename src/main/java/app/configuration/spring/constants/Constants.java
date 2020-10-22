@@ -7,6 +7,7 @@ import app.tenantconfiguration.TenantContext;
 import com.google.gson.GsonBuilder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -31,6 +32,9 @@ public class Constants {
     public static final String EMPTY_STRING = "";
     public static final String IS_MALICIOUS = " is malicious or can not be uploaded";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter
+            .ofPattern(DATE_FORMAT.toPattern());
+    public static final GsonBuilder BUILDER_JSON_EVENTS;
     public static List<String> appImageFormats;
     public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
     public static final GsonBuilder BUILDER_BRIEF;
@@ -61,16 +65,19 @@ public class Constants {
 
     static {
         BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
-                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_BRIEF_TASK)
                 .setDateFormat(Constants.DATE_FORMAT.toPattern());
         BUILDER_DETAILS = new GsonBuilder().setPrettyPrinting()
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_REPORT)
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_BRIEF_TASK)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_BDOCS)
                 .setDateFormat(Constants.DATE_FORMAT.toPattern());
+        BUILDER_JSON_EVENTS = new GsonBuilder()
+                .setExclusionStrategies(ExcludeStrategies.EXCLUDE_FOR_JSON_EVENT)
+                .setDateFormat(Constants.DATE_FORMAT.toPattern())
+                .setPrettyPrinting();
         Base64.Encoder enc = Base64.getEncoder();
         REMEMBER_ME_UUID = enc.encodeToString(
                 "REMEMBERMEUUID"

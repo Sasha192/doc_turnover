@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface IBriefDocumentService extends IOperations<BriefDocument> {
 
-    List<BriefDocument> findBy(int page, Date date, Long start, Long end);
+    List<BriefDocument> findBy(int page, Date date, Long start, Long end, String word);
 
     List<BriefDocument> findByAndDepartment(int pageId,
                                             Date date,
                                             long depoId);
 
     List<BriefDocument> findByAndPerformerInTaskId(int pageId, Date date, long perfId);
+
+    List<BriefDocument> findByWord(int page, String word);
 }

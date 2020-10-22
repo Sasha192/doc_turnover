@@ -7,18 +7,17 @@ import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.Report;
 import app.customtenant.models.basic.ReportComment;
 import app.customtenant.models.basic.taskmodels.Task;
-import app.customtenant.service.impl.ExecutionService;
 import app.customtenant.service.interfaces.IBriefDocumentService;
 import app.customtenant.service.interfaces.IReportCommentService;
 import app.customtenant.service.interfaces.IReportService;
 import app.customtenant.service.interfaces.ITaskService;
-import app.utils.exceptions.MaliciousFoundException;
-import java.io.File;
+import app.tenantdefault.models.DocumentEntity;
+import dev.morphia.Datastore;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,10 +27,10 @@ public class ReportsUploader {
     private static final Logger EXCEPTION_LOGGER =
             Logger.getLogger("intExceptionLogger");
 
+    private final MaliciousDocumentsScanUtil scan;
+    private final Datastore datastore;
     private final IBriefDocumentService documentService;
     private final IReportService reportService;
-    private final FilesUploader filesUploader;
-    //private final TodayFolderArchivePathGenerator folderPathGenerator;
     private final IReportCommentService commentService;
     private final ITaskService taskService;
     private final GenericEventPublisher<Report> reportPublisher;
@@ -39,56 +38,55 @@ public class ReportsUploader {
 
     @Autowired
     public ReportsUploader(IBriefDocumentService documentService,
-                           ExecutionService executionService,
+                           MaliciousDocumentsScanUtil scan,
+                           Datastore datastore,
                            IReportService reportService,
-                           @Qualifier("files_uploader") FilesUploader filesUploader,
-                           /*@Qualifier("date_file_path_generator")
-                                   TodayFolderArchivePathGenerator folderPathGenerator,*/
                            IReportCommentService commentService,
                            ITaskService taskService,
                            GenericEventPublisher<Report> reportPublisher,
                            GenericEventPublisher<TaskHolderComment> commentPublisher) {
         this.documentService = documentService;
+        this.scan = scan;
+        this.datastore = datastore;
         this.reportService = reportService;
-        this.filesUploader = filesUploader;
-        //this.folderPathGenerator = folderPathGenerator;
         this.commentService = commentService;
         this.taskService = taskService;
         this.reportPublisher = reportPublisher;
         this.commentPublisher = commentPublisher;
     }
 
-    public Report upload(Performer performer, Task task, String comment, MultipartFile... mfiles)
-            throws IOException, MaliciousFoundException {
+    public boolean upload(Performer performer, Task task,
+                          String comment, MultipartFile... mfiles)
+            throws IOException {
         if (task == null) {
-            return null;
+            return false;
         }
-        Report report = task.getReport();
-        if (report == null) {
-            report = new Report();
-            reportService.create(report);
-            task.setReport(report);
-            taskService.update(task);
-            report.setTask(task);
+        Report report = getReport(task);
+        List<DocumentEntity> documents = scan.checkAndGet(mfiles);
+        long performerId = performer.getId();
+        for (DocumentEntity entity : documents) {
+            datastore.save(entity);
+            BriefDocument doc = new BriefDocument(entity, performerId);
+            documentService.create(doc);
+            report.addDocument(doc);
         }
-        List<File> files = null;
-        if (mfiles != null && mfiles.length > 0) {
-            String folderPath = null;//folderPathGenerator.getFolderArchivePath();
-            files = filesUploader.upload(folderPath, mfiles);
-            List<BriefDocument> documents =
-                    FileDocumentsMapperUtil.map(files, folderPath, performer);
-            documentService.create(documents);
-            report.addDocument(documents);
-            report = reportService.update(report);
-        }
+        reportService.update(report);
         if (comment == null || comment.isEmpty()) {
-            comment = performer.getName() + " завантажив " + files.get(0).getName();
-            if (files.size() > 1) {
-                comment = comment + " +" + (files.size() - 1) + " документів";
+            comment = performer.getName() + " завантажив " + documents.get(0).getName();
+            if (documents.size() > 1) {
+                comment = comment + " + " + (documents.size() - 1) + " документів";
             }
         } else {
             comment = StringToUtf8Utils.encodeUtf8(comment);
         }
+        publishComment(comment, report, performer);
+        reportPublisher.publish(report, performer);
+        return true;
+    }
+
+    private void publishComment(String comment,
+                                Report report,
+                                Performer performer) {
         ReportComment reportComment = new ReportComment();
         reportComment.setReport(report);
         reportComment.setAuthorId(performer.getId());
@@ -97,7 +95,22 @@ public class ReportsUploader {
         reportComment.setReport(report);
         commentService.create(reportComment);
         commentPublisher.publish(reportComment, performer);
-        reportPublisher.publish(report, performer);
+    }
+
+    private Report getReport(Task task) {
+        Report report = null;
+        if (task.getReportId() == null) {
+            report = new Report();
+            reportService.create(report);
+            task.setReportId(report.getId());
+            taskService.update(task);
+        } else {
+            report = task.getReport();
+        }
+        Set<Long> performerIds = task.getPerformerIds();
+        performerIds.add(task.getTaskOwnerId());
+        report.setPerformerIds(performerIds);
+        report.setTaskId(task.getId());
         return report;
     }
 }

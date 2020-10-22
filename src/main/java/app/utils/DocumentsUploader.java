@@ -2,7 +2,6 @@ package app.utils;
 
 import app.customtenant.models.basic.BriefDocument;
 import app.customtenant.models.basic.Performer;
-import app.customtenant.service.extapis.IMaliciousScan;
 import app.customtenant.service.interfaces.IBriefDocumentService;
 import app.tenantconfiguration.TenantContext;
 import app.tenantdefault.models.DocumentEntity;
@@ -26,12 +25,12 @@ public class DocumentsUploader {
 
     private final IBriefDocumentService documentService;
     private final Datastore datastore;
-    private final IMaliciousScan scan;
+    private final MaliciousDocumentsScanUtil scan;
 
     @Autowired
     public DocumentsUploader(IBriefDocumentService documentService,
                              Datastore datastore,
-                             IMaliciousScan scan) {
+                             MaliciousDocumentsScanUtil scan) {
         this.documentService = documentService;
         this.datastore = datastore;
         this.scan = scan;
@@ -39,29 +38,7 @@ public class DocumentsUploader {
 
     public boolean upload(Performer performer, MultipartFile... mfiles)
             throws IOException {
-        List<DocumentEntity> documents = new LinkedList<>();
-        for (MultipartFile mfile : mfiles) {
-            String fileName = new String(mfile
-                    .getOriginalFilename()
-                    .getBytes(StandardCharsets.ISO_8859_1),
-                    StandardCharsets.UTF_8
-            );
-            String ext = FilenameUtils.getExtension(fileName);
-            byte[] bytes = mfile.getBytes();
-            boolean malScan = scan.scan(bytes);
-            if (malScan) {
-                DocumentEntity doc = new DocumentEntity();
-                doc.setName(fileName);
-                doc.setExtension(ext);
-                doc.setTenantId(TenantContext.getTenant());
-                doc.setSize(mfile.getSize());
-                doc.setDocument(new Binary(bytes));
-                documents.add(doc);
-            } else {
-                documents.clear();
-                return false;
-            }
-        }
+        List<DocumentEntity> documents = scan.checkAndGet(mfiles);
         for (DocumentEntity entity : documents) {
             datastore.save(entity);
             BriefDocument doc = new BriefDocument(entity, performer.getId());

@@ -7,6 +7,7 @@ import app.customtenant.models.basic.BriefDocument;
 import app.customtenant.service.abstraction.AbstractService;
 import app.customtenant.service.interfaces.IBriefDocumentService;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,17 +41,24 @@ public class BriefDocumentService
     }
 
     @Override
-    public List<BriefDocument> findBy(int page, Date date, Long start, Long end) {
+    @Transactional(readOnly = true)
+    public List<BriefDocument> findBy(int page, Date date, Long start, Long end, String word) {
         int pageSize = constants
                 .get(ROWS_ON_PAGE_ARHIVE_DOC)
                 .getIntValue();
-        if (start == null || end == null) {
+        if (date != null) {
             return dao.findBy(page, pageSize, date);
+        } else if (word != null) {
+            return dao.findByWord(page, pageSize, word);
+        } else if (start != null && end != null) {
+            return dao.findBy(page, pageSize, start, end);
+        } else {
+            return new LinkedList<>();
         }
-        return dao.findBy(page, pageSize, start, end);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BriefDocument> findByAndDepartment(int page, Date date,
                                                    long depoId) {
         int pageSize = constants
@@ -60,11 +68,21 @@ public class BriefDocumentService
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BriefDocument> findByAndPerformerInTaskId(int page, Date date, long perfId) {
         int pageSize = constants
                 .get(ROWS_ON_PAGE_ARHIVE_DOC)
                 .getIntValue();
         return dao.findByAndPerformerInTaskId(page, pageSize, date, perfId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BriefDocument> findByWord(int page, String word) {
+        int pageSize = constants
+                .get(ROWS_ON_PAGE_ARHIVE_DOC)
+                .getIntValue();
+        return dao.findByWord(page, pageSize, word);
     }
 }
 

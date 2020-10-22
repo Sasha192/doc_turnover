@@ -16,6 +16,8 @@ public interface IBriefDocumentDao extends IGenericDao<BriefDocument> {
                                             Date date, long depoId);
 
     List<BriefDocument> findByAndPerformerInTaskId(int page, int pageSize, Date date, long perfId);
+
+    List<BriefDocument> findByWord(int page, int pageSize, String word);
 }
 
 

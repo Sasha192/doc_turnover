@@ -1,4 +1,4 @@
-package app.controllers.customtenant.toChange;
+package app.controllers.customtenant;
 
 import app.controllers.customtenant.JsonSupportController;
 import app.security.models.SimpleRole;

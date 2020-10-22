@@ -1,14 +1,10 @@
 package app.security.wrappers.impl;
 
-import app.configuration.spring.constants.Constants;
-import app.security.models.auth.ApplicationRoles;
 import app.security.models.auth.CustomUser;
-import app.security.models.auth.UserInfo;
 import app.security.service.IUserService;
 import app.security.wrappers.IAuthenticationViaCookies;
 import app.security.wrappers.ICustomUserWrapper;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

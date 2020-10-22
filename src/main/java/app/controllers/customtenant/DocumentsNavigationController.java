@@ -100,6 +100,7 @@ public class DocumentsNavigationController extends JsonSupportController {
         Date date = null;
         Long startTime = null;
         Long endTime = null;
+        String word = null;
         try {
             JsonObject json = element.getAsJsonObject();
             if (json.has("date")) {
@@ -112,14 +113,17 @@ public class DocumentsNavigationController extends JsonSupportController {
                 startTime = Long.valueOf(startTimeStr);
                 endTime = Long.valueOf(endTimeStr);
             }
-        } catch (ParseException | NumberFormatException e) {
+            if (json.has("search_word")) {
+                word = json.get("search_word").getAsString();
+            }
+        } catch (ParseException | NumberFormatException ignored) {
             ;
         }
         Performer performer = performerWrapper.retrievePerformer(request);
         SimpleRole roles = performer.getRoles();
         List<BriefDocument> list = null;
         if (allowListArchive(roles)) {
-            list = docService.findBy(pageId, date, startTime, endTime);
+            list = docService.findBy(pageId, date, startTime, endTime, word);
         } else {
             if (roles.equals(SimpleRole.MANAGER)) {
                 list = docService.findByAndDepartment(pageId, date,

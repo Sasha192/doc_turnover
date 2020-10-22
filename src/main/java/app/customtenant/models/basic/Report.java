@@ -1,25 +1,18 @@
 package app.customtenant.models.basic;
 
 import app.customtenant.models.abstr.IdentityBaseEntity;
-import app.customtenant.models.basic.taskmodels.Task;
-import app.customtenant.models.mysqlviews.BriefJsonDocument;
-import app.customtenant.models.serialization.ExcludeForJsonReport;
 import app.utils.CustomAppDateTimeUtil;
 import java.sql.Time;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -38,16 +31,7 @@ public class Report extends IdentityBaseEntity {
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "doc_id")
     )
-    @ExcludeForJsonReport
     private List<BriefDocument> documents;
-
-    @OneToMany(cascade = {CascadeType.REFRESH})
-    @JoinTable(name = "reports_docs",
-            joinColumns = @JoinColumn(name = "report_id"),
-            inverseJoinColumns = @JoinColumn(name = "doc_id")
-    )
-    @Column(insertable = false, updatable = false)
-    private List<BriefJsonDocument> docList;
 
     @OneToMany(cascade = {CascadeType.REFRESH})
     @JoinTable(name = "comment_post",
@@ -56,23 +40,30 @@ public class Report extends IdentityBaseEntity {
     )
     private List<ReportComment> comments;
 
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade = {CascadeType.REFRESH},
-            mappedBy = "report")
-    @ExcludeForJsonReport
-    private Task task;
+    private transient Set<Long> performerIds;
+
+    private transient Long taskId;
 
     public Report() {
         date = CustomAppDateTimeUtil.now();
         time = Time.valueOf(LocalTime.now());
+        performerIds = new HashSet<>();
     }
 
-    public Task getTask() {
-        return task;
+    public Long getTaskId() {
+        return taskId;
     }
 
-    public void setTask(Task task) {
-        this.task = task;
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
+    public Set<Long> getPerformerIds() {
+        return performerIds;
+    }
+
+    public void setPerformerIds(Set<Long> performerIds) {
+        this.performerIds = performerIds;
     }
 
     public Date getDate() {
@@ -118,14 +109,6 @@ public class Report extends IdentityBaseEntity {
             documents = new LinkedList<>();
         }
         documents.add(doc);
-    }
-
-    public List<BriefJsonDocument> getDocList() {
-        return docList;
-    }
-
-    public void setDocList(List<BriefJsonDocument> docList) {
-        this.docList = docList;
     }
 
     public List<ReportComment> getComments() {
