@@ -31,8 +31,8 @@ public class TaskStatusModificationEventService
     @Transactional
     public void service(GenericApplicationEvent gevent) {
         TaskStatusModificationEvent event = (TaskStatusModificationEvent) gevent;
-        TaskStatus.DefaultStatus oldS = event.getOldStatus().getStatus();
-        TaskStatus.DefaultStatus newS = event.getNewStatus().getStatus();
+        TaskStatus oldS = event.getOldStatus();
+        TaskStatus newS = event.getNewStatus();
         Function<AbstractCalendarPerformerStatistic,
                 AbstractCalendarPerformerStatistic> operator =
                 oldS.decrement().andThen(newS.increment());
@@ -49,12 +49,10 @@ public class TaskStatusModificationEventService
     }
 
     private void process(AbstractCalendarPerformerStatistic stat,
-                         Function<
-                                 AbstractCalendarPerformerStatistic,
+                         Function<AbstractCalendarPerformerStatistic,
                                  AbstractCalendarPerformerStatistic>
                                  operator) {
-        Boolean expiredO = stat.getExpired();
-        boolean expired = expiredO == null ? true : expiredO.booleanValue();
+        boolean expired = stat.getEnd().before(stat.getStart());
         if (!expired) {
             operator.apply(stat);
             statistic.update(stat);

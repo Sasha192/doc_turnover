@@ -50,4 +50,22 @@ public class MaliciousDocumentsScanUtil {
         }
         return documents;
     }
+
+    public boolean check(MultipartFile... mfiles)
+            throws IOException {
+        for (MultipartFile mfile : mfiles) {
+            String fileName = new String(mfile
+                    .getOriginalFilename()
+                    .getBytes(StandardCharsets.ISO_8859_1),
+                    StandardCharsets.UTF_8
+            );
+            String ext = FilenameUtils.getExtension(fileName);
+            byte[] bytes = mfile.getBytes();
+            boolean malScan = scan.scan(bytes);
+            if (!malScan) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

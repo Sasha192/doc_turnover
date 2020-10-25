@@ -43,8 +43,7 @@ public class DeadlineTaskEventService
 
     private void process(
             AbstractCalendarPerformerStatistic stat) {
-        Boolean expiredO = stat.getExpired();
-        boolean expired = expiredO == null ? true : expiredO.booleanValue();
+        boolean expired = stat.getEnd().before(stat.getStart());
         if (!expired) {
             stat.incrementExpiredDeadline();
             statistic.update(stat);

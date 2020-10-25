@@ -3,11 +3,13 @@ package app.customtenant.eventdriven.listeners;
 import app.customtenant.eventdriven.domain.TaskApplicationEvent;
 import app.customtenant.eventdriven.domain.TaskEventEnum;
 import app.customtenant.eventdriven.service.ITaskEventService;
+import app.tenantconfiguration.TenantContext;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,11 +32,18 @@ public class TaskApplicationEventListener
     }
 
     @Override
+    @Async
     public void onApplicationEvent(TaskApplicationEvent event) {
+        String tenant = event.getTenant();
+        String prevTenant = TenantContext.getTenant();
         List<ITaskEventService> services = servicesMap.get(event.getType());
         for (ITaskEventService service : services) {
             service.service(event);
         }
+        if (prevTenant == null) {
+            prevTenant = TenantContext.DEFAULT_TENANT_IDENTIFIER;
+        }
+        TenantContext.setTenant(prevTenant);
     }
 
 }

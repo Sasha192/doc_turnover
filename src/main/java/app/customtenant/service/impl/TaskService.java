@@ -8,6 +8,8 @@ import app.customtenant.models.basic.taskmodels.Task;
 import app.customtenant.service.abstraction.AbstractService;
 import app.customtenant.service.interfaces.ITaskService;
 import java.util.List;
+
+import app.tenantconfiguration.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +50,7 @@ public class TaskService extends AbstractService<Task>
     @Override
     public Task create(Task entity) {
         Task task = super.create(entity);
-        publisher.onCreate(task);
+        publisher.onCreate(task, TenantContext.getTenant());
         return task;
     }
 

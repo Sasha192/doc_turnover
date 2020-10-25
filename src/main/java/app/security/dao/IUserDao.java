@@ -16,4 +16,6 @@ public interface IUserDao extends IGenericDao<CustomUser> {
     void removeRememberMeToken(long id);
 
     UserInfo saveUserInfo(UserInfo info);
+
+    void updateUserInfo(UserInfo info);
 }

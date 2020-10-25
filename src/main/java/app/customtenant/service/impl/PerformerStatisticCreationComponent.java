@@ -4,7 +4,6 @@ import app.customtenant.service.interfaces.ICalendarStatistic;
 import app.customtenant.service.interfaces.IPerformerStatisticCreation;
 import app.customtenant.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
 import app.customtenant.statisticsmodule.domain.AnnuallyPerformerStatistics;
-import app.customtenant.statisticsmodule.domain.DailyPerformerStatistic;
 import app.customtenant.statisticsmodule.domain.MonthlyPerformerStatistic;
 import app.customtenant.statisticsmodule.domain.WeeklyPerformerStatistics;
 import java.util.LinkedList;

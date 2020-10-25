@@ -55,4 +55,9 @@ public class UserDao extends GenericJpaRepository<CustomUser> implements IUserDa
         getEntityManager().persist(info);
         return info;
     }
+
+    @Override
+    public void updateUserInfo(UserInfo info) {
+        getEntityManager().merge(info);
+    }
 }

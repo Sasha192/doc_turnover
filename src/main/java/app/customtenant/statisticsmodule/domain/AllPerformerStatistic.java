@@ -10,7 +10,7 @@ public class AllPerformerStatistic
         extends AbstractCalendarPerformerStatistic {
 
     public AllPerformerStatistic() {
-        super(CalendarPerformerEnum.ALL_TIME);
+        super(CalendarPerformerEnum.ALL_TIME, -1L);
     }
 
 }

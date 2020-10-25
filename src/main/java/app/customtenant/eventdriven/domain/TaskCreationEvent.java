@@ -4,8 +4,8 @@ import app.customtenant.models.basic.taskmodels.Task;
 
 public class TaskCreationEvent extends TaskApplicationEvent {
 
-    public TaskCreationEvent(Task task) {
-        super(task);
+    public TaskCreationEvent(Task task, String tenant) {
+        super(task, tenant);
     }
 
     @Override

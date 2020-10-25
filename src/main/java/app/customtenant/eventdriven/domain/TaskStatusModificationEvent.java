@@ -11,8 +11,9 @@ public class TaskStatusModificationEvent extends TaskApplicationEvent {
 
     public TaskStatusModificationEvent(Task task,
                                        TaskStatus oldStatus,
-                                       TaskStatus newStatus) {
-        super(task);
+                                       TaskStatus newStatus,
+                                       String tenant) {
+        super(task, tenant);
         this.oldStatus = oldStatus;
         this.newStatus = newStatus;
     }

@@ -6,8 +6,8 @@ public abstract class TaskApplicationEvent extends GenericApplicationEvent<Task>
 
     protected TaskEventEnum type;
 
-    public TaskApplicationEvent(Task task) {
-        super(task);
+    public TaskApplicationEvent(Task task, String tenant) {
+        super(task, tenant);
     }
 
     public abstract TaskEventEnum getType();

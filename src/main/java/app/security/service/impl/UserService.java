@@ -53,6 +53,11 @@ public class UserService extends AbstractService<CustomUser>
     }
 
     @Override
+    public void updateUserInfo(UserInfo info) {
+        dao.updateUserInfo(info);
+    }
+
+    @Override
     public UserInfo saveUserInfo(UserInfo info) {
         return dao.saveUserInfo(info);
     }

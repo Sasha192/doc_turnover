@@ -5,8 +5,8 @@ import app.customtenant.models.basic.taskmodels.Task;
 public class TaskDeadlineEvent
         extends TaskApplicationEvent {
 
-    public TaskDeadlineEvent(Task task) {
-        super(task);
+    public TaskDeadlineEvent(Task task, String tenant) {
+        super(task, tenant);
     }
 
     @Override

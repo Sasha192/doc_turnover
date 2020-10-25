@@ -2,7 +2,10 @@ package app.security.controllers;
 
 import app.controllers.customtenant.JsonSupportController;
 import app.security.models.auth.CustomUser;
+import app.security.models.auth.UserInfo;
+import app.security.service.IUserService;
 import app.security.wrappers.ICustomUserWrapper;
+import app.utils.IimageStorage;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -18,17 +21,32 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/settings")
 public class UserProfileController
         extends JsonSupportController {
 
-    @Autowired
-    private ICustomUserWrapper userWrapper;
+    private final ICustomUserWrapper userWrapper;
+
+    private final GoogleAuthenticator authenticator;
+
+    private final IimageStorage imageStorage;
+
+    private final IUserService userService;
 
     @Autowired
-    private GoogleAuthenticator authenticator;
+    public UserProfileController(ICustomUserWrapper userWrapper,
+                                 GoogleAuthenticator authenticator,
+                                 IimageStorage imageStorage, IUserService userService) {
+        this.userWrapper = userWrapper;
+        this.authenticator = authenticator;
+        this.imageStorage = imageStorage;
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "/authenticator/generate")
     public void generateGAuth(HttpServletResponse response,
@@ -43,5 +61,16 @@ public class UserProfileController
         ServletOutputStream outputStream = response.getOutputStream();
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
         outputStream.close();
+    }
+
+    @RequestMapping(value = "/change/image", method = RequestMethod.POST)
+    public void uploadImage(HttpServletResponse response,
+                            HttpServletRequest request,
+                            @RequestParam("file") final MultipartFile mfile)
+            throws IOException {
+        CustomUser user = userWrapper.retrieveUser(request);
+        UserInfo info = user.getUserInfo();
+        imageStorage.upload(mfile, info);
+        userService.updateUserInfo(info);
     }
 }

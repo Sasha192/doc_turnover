@@ -20,22 +20,23 @@ public class TaskEventPublisher {
         this.publisher = publisher;
     }
 
-    public void onCreate(final Task task) {
-        GenericApplicationEvent<Task> event = new TaskCreationEvent(task);
+    public void onCreate(final Task task, String tenant) {
+        GenericApplicationEvent<Task> event = new TaskCreationEvent(task, tenant);
         publisher.publishEvent(event);
     }
 
     public void onStatusUpdate(final Task task,
                                final TaskStatus oldStatus,
-                               final TaskStatus newStatus) {
+                               final TaskStatus newStatus,
+                               String tenant) {
         GenericApplicationEvent<Task> event =
-                new TaskStatusModificationEvent(task, oldStatus, newStatus);
+                new TaskStatusModificationEvent(task, oldStatus, newStatus, tenant);
         publisher.publishEvent(event);
     }
 
-    public void onDeadlineSet(final Task task) {
+    public void onDeadlineSet(final Task task, String tenant) {
         GenericApplicationEvent<Task> event =
-                new TaskDeadlineEvent(task);
+                new TaskDeadlineEvent(task, tenant);
         publisher.publishEvent(event);
     }
 }

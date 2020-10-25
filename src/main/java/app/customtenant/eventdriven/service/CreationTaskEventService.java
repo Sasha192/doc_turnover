@@ -51,8 +51,7 @@ public class CreationTaskEventService
     }
 
     private void process(AbstractCalendarPerformerStatistic stat) {
-        Boolean expiredO = stat.getExpired();
-        boolean expired = expiredO == null ? true : expiredO.booleanValue();
+        boolean expired = stat.getEnd().before(stat.getStart());
         if (!expired) {
             stat.incrementAmount();
             stat.incrementNew();

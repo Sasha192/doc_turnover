@@ -9,10 +9,17 @@ public abstract class GenericApplicationEvent<T>
 
     private final long occuredTime;
 
-    public GenericApplicationEvent(T source) {
+    private final String tenant;
+
+    public GenericApplicationEvent(T source, String tenant) {
         super(source);
         this.source = source;
         occuredTime = System.currentTimeMillis();
+        this.tenant = tenant;
+    }
+
+    public String getTenant() {
+        return tenant;
     }
 
     public long getOccuredTime() {

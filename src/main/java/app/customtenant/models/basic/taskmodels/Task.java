@@ -9,6 +9,7 @@ import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.Report;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.serialization.ExcludeForJsonBriefTask;
+import app.tenantconfiguration.TenantContext;
 import app.utils.CustomAppDateTimeUtil;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -243,7 +244,7 @@ public class Task
                         .check(oldState, newState);
                 if (check && null != getId()
                         && checkPublisher()) {
-                    publisher.onStatusUpdate(this, oldState, newState);
+                    publisher.onStatusUpdate(this, oldState, newState, TenantContext.getTenant());
                 }
             }
             this.status = newState;
@@ -254,7 +255,7 @@ public class Task
         this.deadline = deadline;
         if (null != getId() && deadline
                 && checkPublisher()) {
-            publisher.onDeadlineSet(this);
+            publisher.onDeadlineSet(this, TenantContext.getTenant());
         }
     }
 

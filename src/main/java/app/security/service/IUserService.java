@@ -16,4 +16,6 @@ public interface IUserService extends IOperations<CustomUser> {
     void registerRememberMeToken(RememberMeToken token);
 
     void removeRememberMeToken(long id);
+
+    void updateUserInfo(UserInfo info);
 }
