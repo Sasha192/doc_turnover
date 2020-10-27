@@ -4,8 +4,11 @@ import app.customtenant.dao.interfaces.ITaskDao;
 import app.customtenant.dao.persistance.GenericJpaRepository;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.basic.taskmodels.Task;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -44,10 +47,15 @@ public class TaskDao extends GenericJpaRepository<Task>
     private static final String UPDATE_NAME_DESCRIPTION =
             "UPDATE Task t SET t.name = :name, t.description = :descript ";
 
-    private static final String SELECT_ALL_DEADLINE_DATE_AND_DEADLINE_FALSE =
-            "SELECT * FROM tasks WHERE is_deadline = false AND "
-                    + " deadline < CURRENT_TIMESTAMP "
-                    + " LIMIT :page_size_ OFFSET :offset_";
+    private static final String SELECT_ALL_DEADLINE_DATE_AND_DEADLINE_FALSE_STATUS =
+            "SELECT t FROM Task t "
+            + " WHERE t.deadlineDate = :_deadline_date_ "
+            + " AND t.deadline IS FALSE "
+            + " AND t.status <> _not_status_ ";
+
+    private static final String FIND_ON_CONTROL_DATE_AND_STATUS_NOT_EQUAL =
+            "SELECT t FROM Task t "
+            + " WHERE t.controlDate = :_control_date AND t.status <> _not_status_ ";
 
     public TaskDao() {
         setClazz(Task.class);
@@ -76,17 +84,21 @@ public class TaskDao extends GenericJpaRepository<Task>
     }
 
     @Override
-    public List<Task> findOnDeadlineDate(int pageNumber, int pageSize) {
-        if (pageNumber > 0) {
-            int offset = (pageNumber - 1) * pageSize;
-            Query query = getEntityManager()
-                    .createNativeQuery(SELECT_ALL_DEADLINE_DATE_AND_DEADLINE_FALSE,
-                            Task.class).setParameter("page_size_", pageSize)
-                    .setParameter("offset_", offset);
-            return query.getResultList();
-        } else {
-            throw new IllegalArgumentException("pageNumber MUST be GREATER THAN 0");
-        }
+    public List<Task> findOnControlDate(int page, int pageSize, Date controlDate) {
+        TypedQuery<Task> query = getEntityManager()
+                .createQuery(FIND_ON_CONTROL_DATE_AND_STATUS_NOT_EQUAL, Task.class)
+                .setParameter("_control_date", controlDate, TemporalType.DATE)
+                .setParameter("_not_status_", TaskStatus.COMPLETED);
+        return offsetLimitQuery(page, pageSize, query);
+    }
+
+    @Override
+    public List<Task> findOnDeadlineDate(int page, int pageSize, Date deadLineDate) {
+        TypedQuery<Task> query = getEntityManager()
+                .createQuery(FIND_ON_CONTROL_DATE_AND_STATUS_NOT_EQUAL, Task.class)
+                .setParameter("_control_date", deadLineDate, TemporalType.DATE)
+                .setParameter("_not_status_", TaskStatus.COMPLETED);
+        return offsetLimitQuery(page, pageSize, query);
     }
 
     @Override

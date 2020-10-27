@@ -54,13 +54,11 @@ public class TaskNavigationController extends JsonSupportController {
 
     public TaskNavigationController(IPerformerWrapper performerWrapper,
                                     ITaskService taskService,
-                                    IStatusService statusService,
-                                    IBriefTaskService briefTaskService,
                                     ITaskCommentService taskCommentService,
-                                    @Qualifier("task_mapper")
-                                            IEntityDtoMapper<Task, TaskDto> taskMapper,
-                                    GenericEventPublisher<Task> taskPublisher,
-                                    GenericEventPublisher<TaskHolderComment> commentPublisher) {
+                                    @Qualifier("task_pub")
+                                            GenericEventPublisher<Task> taskPublisher,
+                                    @Qualifier("comment_pub")
+                                            GenericEventPublisher<TaskHolderComment> commentPublisher) {
         this.performerWrapper = performerWrapper;
         this.taskService = taskService;
         this.taskCommentService = taskCommentService;

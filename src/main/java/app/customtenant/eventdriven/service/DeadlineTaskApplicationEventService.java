@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DeadlineTaskEventService
-        implements ITaskEventService<TaskDeadlineEvent> {
+public class DeadlineTaskApplicationEventService
+        implements ITaskApplicationEventService<TaskDeadlineEvent> {
 
     @Autowired
     private ICalendarStatistic statistic;
@@ -70,7 +70,7 @@ public class DeadlineTaskEventService
         if (super.equals(obj)) {
             return true;
         }
-        if (obj instanceof DeadlineTaskEventService) {
+        if (obj instanceof DeadlineTaskApplicationEventService) {
             return true;
         }
         return false;

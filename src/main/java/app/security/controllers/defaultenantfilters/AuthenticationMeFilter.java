@@ -2,7 +2,7 @@ package app.security.controllers.defaultenantfilters;
 
 import app.configuration.spring.constants.Constants;
 import app.security.wrappers.IAuthenticated;
-
+import app.tenantconfiguration.TenantContext;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
@@ -12,8 +12,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import app.tenantconfiguration.TenantContext;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;

@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -138,13 +139,12 @@ public class SpringMvcConfiguration
         super.configure(auth);
     }
 
-    /*@Override
+    @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http
-                .logout()
-                .logoutUrl("/auth/logout")
-                .logoutSuccessUrl("/auth")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID");
-    }*/
+        http.authorizeRequests()
+                .anyRequest()
+                .permitAll()
+                .and()
+                .httpBasic();
+    }
 }

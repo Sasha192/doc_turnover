@@ -7,9 +7,9 @@ import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.basic.taskmodels.Task;
 import app.customtenant.service.abstraction.AbstractService;
 import app.customtenant.service.interfaces.ITaskService;
-import java.util.List;
-
 import app.tenantconfiguration.TenantContext;
+import java.util.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,8 +56,15 @@ public class TaskService extends AbstractService<Task>
 
     @Override
     @Transactional(readOnly = true)
-    public List<Task> findOnDeadlineDate(int pageNumber, int pageSize) {
-        return dao.findOnDeadlineDate(pageNumber, pageSize);
+    public List<Task> findOnControlDate(int page, int pageSize, Date controlDate) {
+        return dao.findOnControlDate(page, pageSize, controlDate);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Task> findOnDeadlineDate(int pageNumber, int pageSize,
+                                                     Date deadLineDate) {
+        return dao.findOnDeadlineDate(pageNumber, pageSize, deadLineDate);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package app.security.service.impl;
 
-import app.customtenant.service.interfaces.IPerformerService;
-import app.customtenant.service.interfaces.IPerformerStatisticCreation;
 import app.security.models.UserDto;
 import app.security.models.auth.CustomUser;
 import app.security.service.IUserCreation;
@@ -15,21 +13,13 @@ public class UserCreationComponent implements IUserCreation {
 
     private final IUserService userService;
 
-    private final IPerformerService performerService;
-
     private final DefaultPasswordEncoder encoder;
-
-    private final IPerformerStatisticCreation statisticCreation;
 
     @Autowired
     public UserCreationComponent(IUserService userService,
-                                 IPerformerService performerService,
-                                 DefaultPasswordEncoder encoder,
-                                 IPerformerStatisticCreation statisticCreation) {
+                                 DefaultPasswordEncoder encoder) {
         this.userService = userService;
-        this.performerService = performerService;
         this.encoder = encoder;
-        this.statisticCreation = statisticCreation;
     }
 
     @Override
@@ -37,5 +27,11 @@ public class UserCreationComponent implements IUserCreation {
         CustomUser customUser = new CustomUser(dto, encoder);
         userService.create(customUser);
         return customUser;
+    }
+
+    @Override
+    public CustomUser create(CustomUser user) {
+        userService.create(user);
+        return user;
     }
 }

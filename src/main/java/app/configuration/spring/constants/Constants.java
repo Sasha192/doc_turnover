@@ -52,7 +52,7 @@ public class Constants {
             "CUSTOM_USER_SESSION_KEY";
     public static final String REMEMBER_ME_UUID;
     public static final String REMEMBER_ME_ID;
-    public static final int MAX_INACTIVE_SESSION_INTERVAL_SECONDS = 60 * 60;
+    public static final int MAX_INACTIVE_SESSION_INTERVAL_SECONDS = 60 * 60 * 8;
     public static final String[] RESOURCES_PATH = new String[] {
             "/css", "/scripts",
             "/fonts", "/img",

@@ -40,6 +40,9 @@ public abstract class Event
     @Enumerated(EnumType.ORDINAL)
     protected EventType eventTypeEnum;
 
+    @Column(name = "event_message")
+    protected String message;
+
     @Column(name = "performer_id")
     protected Long authorId;
 
@@ -64,6 +67,14 @@ public abstract class Event
     public Event() {
         this.date = CustomAppDateTimeUtil.now();;
         this.creationTime = System.currentTimeMillis();
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Long getAuthorId() {
@@ -103,6 +114,6 @@ public abstract class Event
     }
 
     public enum EventType {
-        COMMENT_PUB, REPORT_PUB, TASK_PUB
+        COMMENT_PUB, REPORT_PUB, TASK_PUB, DEADLINE_NOTIFICATION, CONTROL_DATE_NOTIFICATION;
     }
 }

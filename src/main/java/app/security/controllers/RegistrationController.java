@@ -8,8 +8,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,14 +33,11 @@ public class RegistrationController extends JsonSupportController {
     }
 
     @PostMapping(value = "/reg", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void firstStepRegistration(@Validated(UserDto.New.class)
+    public void defaultRegistration(@Validated(UserDto.New.class)
                                       @RequestBody UserDto userDto,
                                       HttpServletRequest req,
                                       HttpServletResponse res)
             throws IOException {
-        final Authentication authentication = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
         if (userService.retrieveByName(userDto.getEmail()) != null) {
             sendDefaultJson(res, false, "User with such email is already exist");
             return;

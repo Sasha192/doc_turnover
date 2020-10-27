@@ -4,12 +4,11 @@ import app.customtenant.models.abstr.IdentityBaseEntity;
 import app.security.models.UserDto;
 import app.security.utils.DefaultPasswordEncoder;
 import app.utils.ImgToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -25,8 +24,6 @@ import javax.persistence.Table;
 public class CustomUser
         extends IdentityBaseEntity
         implements Serializable {
-
-    private static final String IMG_DEFAULT = "/img/default.jpg";
 
     @Column(name = "login")
     private String login;
@@ -79,6 +76,21 @@ public class CustomUser
         String imgToken = ImgToken.generate(info);
         info.setImgIdToken(imgToken);
         setUserInfo(info);
+    }
+
+    public CustomUser(GoogleIdToken.Payload payload) {
+        setLogin(payload.getEmail());
+        setPassword("");
+        setRole(ApplicationRoles.ROLE_USER);
+        UserInfo info = new UserInfo();
+        String familyName = (String) payload.get("family_name");
+        String givenName = (String) payload.get("given_name");
+        info.setFirstName(givenName);
+        info.setLastName(familyName);
+        String pictureUrl = (String) payload.get("picture");
+        info.setImgPath(pictureUrl);
+        String imgToken = ImgToken.generate(info);
+        info.setImgIdToken(imgToken);
     }
 
     public Long getId() {

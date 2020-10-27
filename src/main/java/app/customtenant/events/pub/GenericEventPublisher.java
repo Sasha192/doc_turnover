@@ -11,7 +11,7 @@ public abstract class GenericEventPublisher<T>
         this.eventPublisher = eventPublisher;
     }
 
-    public ApplicationEventPublisher getEventPublisher() {
+    protected ApplicationEventPublisher getEventPublisher() {
         return eventPublisher;
     }
 }

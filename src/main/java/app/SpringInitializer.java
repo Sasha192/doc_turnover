@@ -5,6 +5,8 @@ import app.configuration.spring.SpringMvcConfiguration;
 import app.security.controllers.defaultenantfilters.AuthenticationMeFilter;
 import app.security.controllers.defaultenantfilters.GpanelAccessFilter;
 import javax.servlet.Filter;
+
+import app.security.controllers.defaultenantfilters.SessionRequiredFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -34,6 +36,7 @@ public class SpringInitializer
     @Override
     protected Filter[] getServletFilters() {
         return new Filter[]{
+                new SessionRequiredFilter(),
                 new AuthenticationMeFilter(),
                 new GpanelAccessFilter()
         };

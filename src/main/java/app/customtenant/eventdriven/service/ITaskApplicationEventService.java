@@ -2,8 +2,8 @@ package app.customtenant.eventdriven.service;
 
 import app.customtenant.eventdriven.domain.TaskEventEnum;
 
-public interface ITaskEventService<T>
-        extends IEventService {
+public interface ITaskApplicationEventService<T>
+        extends IApplicationEventService {
 
     /**
      * @return TaskEventEnum SERVICED EVENT TYPE :

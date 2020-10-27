@@ -52,13 +52,13 @@ public class UserManagementWrapper
     public UserManagementWrapper(IUserService userService,
                                  IPerformerService performerService,
                                  IUserCreation userCreation,
-                                 //AuthenticationManager authManager,
+                                 AuthenticationManager authManager,
                                  IPerformerUpdateEventListenerService listenerService,
                                  RememberMeUtil rememberMeUtil) {
         this.userService = userService;
         this.performerService = performerService;
         this.userCreation = userCreation;
-        this.authManager = null;
+        this.authManager = authManager;
         this.listenerService = listenerService;
         this.rememberMeUtil = rememberMeUtil;
     }
@@ -79,6 +79,9 @@ public class UserManagementWrapper
     public void authenticate(CustomUser user,
                              HttpServletRequest request)
             throws IOException {
+        if (userService.retrieveByName(user.getLogin()) == null) {
+            user = userCreation.create(user);
+        }
         HttpSession session = request.getSession(true);
         Set<GrantedAuthority> authorities = DefaultUserDetails
                 .mapAuthorities(user.getRole());
@@ -86,6 +89,7 @@ public class UserManagementWrapper
                 new UsernamePasswordAuthenticationToken(
                         user.getEmail(), user.getPassword(), authorities
                 );
+        authManager.authenticate(token);
         if (session != null) {
             setToSession(token, user.getLogin(), user, session);
         }

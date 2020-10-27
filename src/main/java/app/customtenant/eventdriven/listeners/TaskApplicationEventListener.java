@@ -2,7 +2,7 @@ package app.customtenant.eventdriven.listeners;
 
 import app.customtenant.eventdriven.domain.TaskApplicationEvent;
 import app.customtenant.eventdriven.domain.TaskEventEnum;
-import app.customtenant.eventdriven.service.ITaskEventService;
+import app.customtenant.eventdriven.service.ITaskApplicationEventService;
 import app.tenantconfiguration.TenantContext;
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 public class TaskApplicationEventListener
         implements ApplicationListener<TaskApplicationEvent> {
 
-    private EnumMap<TaskEventEnum, List<ITaskEventService>> servicesMap;
+    private EnumMap<TaskEventEnum, List<ITaskApplicationEventService>> servicesMap;
 
     @Autowired
-    public TaskApplicationEventListener(List<ITaskEventService> services) {
-        servicesMap = new EnumMap<TaskEventEnum, List<ITaskEventService>>(TaskEventEnum.class);
-        for (ITaskEventService service : services) {
-            List<ITaskEventService> list = servicesMap.get(service.getType());
+    public TaskApplicationEventListener(List<ITaskApplicationEventService> services) {
+        servicesMap = new EnumMap<TaskEventEnum, List<ITaskApplicationEventService>>(TaskEventEnum.class);
+        for (ITaskApplicationEventService service : services) {
+            List<ITaskApplicationEventService> list = servicesMap.get(service.getType());
             if (list == null) {
                 list = new LinkedList<>();
                 servicesMap.put(service.getType(), list);
@@ -36,8 +36,8 @@ public class TaskApplicationEventListener
     public void onApplicationEvent(TaskApplicationEvent event) {
         String tenant = event.getTenant();
         String prevTenant = TenantContext.getTenant();
-        List<ITaskEventService> services = servicesMap.get(event.getType());
-        for (ITaskEventService service : services) {
+        List<ITaskApplicationEventService> services = servicesMap.get(event.getType());
+        for (ITaskApplicationEventService service : services) {
             service.service(event);
         }
         if (prevTenant == null) {

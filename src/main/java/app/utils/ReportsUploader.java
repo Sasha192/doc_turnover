@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,8 +44,10 @@ public class ReportsUploader {
                            IReportService reportService,
                            IReportCommentService commentService,
                            ITaskService taskService,
-                           GenericEventPublisher<Report> reportPublisher,
-                           GenericEventPublisher<TaskHolderComment> commentPublisher) {
+                           @Qualifier("report_pub")
+                                       GenericEventPublisher<Report> reportPublisher,
+                           @Qualifier("comment_pub")
+                                       GenericEventPublisher<TaskHolderComment> commentPublisher) {
         this.documentService = documentService;
         this.scan = scan;
         this.datastore = datastore;

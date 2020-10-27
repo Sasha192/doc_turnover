@@ -10,10 +10,11 @@ public class GenericDaoApplicationEvent
 
     private String tenant;
 
-    public GenericDaoApplicationEvent(Event source, Event.EventType type, String tenant) {
-        super(source);
+    public GenericDaoApplicationEvent(Event source,
+                                      Event.EventType type,
+                                      String tenant) {
+        super(source, tenant);
         this.type = type;
-        this.tenant = tenant;
     }
 
     public Event.EventType getType() {

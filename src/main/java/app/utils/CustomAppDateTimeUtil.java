@@ -32,6 +32,19 @@ public class CustomAppDateTimeUtil {
         );
     }
 
+    public static Date nowPlus(long amount, TemporalUnit unit) {
+        return java.sql.Date.valueOf(
+                LocalDateTime.now().plus(amount, unit).toLocalDate()
+        );
+    }
+
+    public static Date parsePlus(String date, long amount, TemporalUnit unit) {
+        return java.sql.Date.valueOf(
+                LocalDateTime.parse(date, DATE_TIME_FORMATTER)
+                        .plus(amount, unit).toLocalDate()
+        );
+    }
+
     public static Date parse(String date)
             throws ParseException {
         return new java.sql.Date(FORMATTER.parse(date).getTime());
