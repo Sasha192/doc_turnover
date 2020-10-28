@@ -6,19 +6,18 @@ public class TaskStatusValidator {
 
     public static boolean check(
             TaskStatus oldState, TaskStatus newState) {
-        TaskStatus.DefaultStatus oldS = getByName(oldState);
-        TaskStatus.DefaultStatus newS = getByName(newState);
-        if (oldS == TaskStatus.DefaultStatus.COMPLETED) {
+        TaskStatus oldS = getByName(oldState);
+        TaskStatus newS = getByName(newState);
+        if (oldS == TaskStatus.COMPLETED) {
             return false;
         }
-        if (newS == TaskStatus.DefaultStatus.NEW) {
+        if (newS == TaskStatus.NEW) {
             return false;
         }
         return true;
     }
 
-    private static TaskStatus.DefaultStatus getByName(TaskStatus status) {
-        return TaskStatus.DefaultStatus
-                .getByName(status.getName());
+    private static TaskStatus getByName(TaskStatus status) {
+        return TaskStatus.getByName(status.getName());
     }
 }

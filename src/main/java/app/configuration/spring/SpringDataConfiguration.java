@@ -4,15 +4,19 @@ import app.configuration.spring.constants.AppConstants;
 import app.configuration.spring.constants.Constants;
 import app.tenantconfiguration.TenantConnectionProvider;
 import app.tenantconfiguration.TenantContext;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.hibernate.Interceptor;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,7 +51,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         @ComponentScan("app.customtenant.eventdriven"),
         @ComponentScan("app.customtenant.events"),
         @ComponentScan("app.customtenant.service"),
-        @ComponentScan("app.tenantconfiguration")
+        @ComponentScan("app.tenantconfiguration"),
 })
 public class SpringDataConfiguration {
 
@@ -60,6 +64,10 @@ public class SpringDataConfiguration {
 
     @Autowired
     private ApplicationContext context;
+
+    @Autowired
+    @Qualifier("hibernate_empty_int_impl")
+    private Interceptor interceptor;
 
     @Bean("bcrew_default_data_source")
     public DataSource getDataSource() {
@@ -84,7 +92,7 @@ public class SpringDataConfiguration {
                 "app.customtenant.events");
         final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
-        em.setJpaProperties(this.hibernateProperties());
+        em.setJpaPropertyMap(this.hibernateProperties());
         return em;
     }
 
@@ -112,23 +120,29 @@ public class SpringDataConfiguration {
     }
 
     @Bean("tenant_conn_provider")
-    public TenantConnectionProvider multiTenantConnectionProvider(Properties properties) {
+    public TenantConnectionProvider multiTenantConnectionProvider(Map<String, Object> props) {
+        Properties properties = new Properties();
+        props.entrySet().stream().forEach(
+                (obj) -> {
+                    properties.put(obj.getKey(), obj.getValue());
+                }
+        );
         return new TenantConnectionProvider(getDataSource(), env, properties);
     }
 
-    private final Properties hibernateProperties() {
-        Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto",
+    public Map<String, Object> hibernateProperties() {
+        /*Properties hibernateProperties = new Properties();*/
+        Map<String, Object> hibernateProperties = new HashMap<>();
+        hibernateProperties.put("hibernate.hbm2ddl.auto",
                 this.env.getProperty("hibernate.hbm2ddl.auto"));
-        hibernateProperties.setProperty("hibernate.dialect",
+        hibernateProperties.put("hibernate.dialect",
                 this.env.getProperty("hibernate.dialect"));
-        hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans",
+        hibernateProperties.put("hibernate.enable_lazy_load_no_trans",
                 this.env.getProperty("hibernate.enable_lazy_load_no_trans"));
-        hibernateProperties.setProperty("hibernate.proc.param_null_passing",
+        hibernateProperties.put("hibernate.proc.param_null_passing",
                 String.valueOf(true));
-        hibernateProperties.setProperty("hibernate.show_sql",
+        hibernateProperties.put("hibernate.show_sql",
                 env.getProperty("hibernate.show_sql"));
-
         hibernateProperties.put(org.hibernate.cfg.Environment.MULTI_TENANT,
                 MultiTenancyStrategy.SCHEMA);
         TenantConnectionProvider tenantConnectionProvider =
@@ -136,7 +150,7 @@ public class SpringDataConfiguration {
         hibernateProperties.put(
                 org.hibernate.cfg.Environment.MULTI_TENANT_CONNECTION_PROVIDER,
                 tenantConnectionProvider);
-        hibernateProperties.setProperty(
+        hibernateProperties.put(
                 AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER,
                 TenantContext.TenantIdentifierResolver.class.getName()
         );

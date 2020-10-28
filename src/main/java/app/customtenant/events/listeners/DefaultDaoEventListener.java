@@ -5,6 +5,7 @@ import app.controllers.customtenant.ServerSentNotifications;
 import app.customtenant.events.Event;
 import app.customtenant.events.impl.GenericDaoApplicationEvent;
 import app.customtenant.service.interfaces.IEventService;
+import app.tenantconfiguration.TenantContext;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import java.io.IOException;
@@ -37,10 +38,12 @@ public class DefaultDaoEventListener
 
     @Override
     public void onApplicationEvent(GenericDaoApplicationEvent genEvent) {
+        String prevTenant = TenantContext.getTenant();
+        String tenant = genEvent.getTenant();
+        TenantContext.setTenant(tenant);
         Event event = genEvent.getSource();
         eventService.create(event);
         Set<Long> performerIds = event.getPerformersId();
-        String tenant = genEvent.getTenant();
         JsonElement element = BUILDER.create().toJsonTree(event);
         try {
             for (Long id : performerIds) {
@@ -52,6 +55,8 @@ public class DefaultDaoEventListener
             }
         } catch (IOException e) {
             ;
+        } finally {
+            TenantContext.setTenant(prevTenant);
         }
     }
 }

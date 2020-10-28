@@ -1,17 +1,15 @@
 package app.tenantconfiguration;
 
-import app.controllers.dto.TenantDto;
 import app.tenantconfiguration.interfaces.IFlywayTenantService;
 import app.tenantconfiguration.interfaces.ITenantCreatorService;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
 import dev.morphia.Datastore;
+import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLException;
 
 @Service("tenant_default_creator")
 public class TenantCreatorService implements ITenantCreatorService {

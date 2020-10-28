@@ -9,7 +9,6 @@ public class AuthenticatorConfig {
 
     private final CredentialsAuthenticator credentialRepository;
 
-
     public AuthenticatorConfig(CredentialsAuthenticator credentialRepository) {
         this.credentialRepository = credentialRepository;
     }

@@ -3,6 +3,7 @@ package app.customtenant.service.impl;
 import app.customtenant.service.interfaces.ICalendarStatistic;
 import app.customtenant.service.interfaces.IPerformerStatisticCreation;
 import app.customtenant.statisticsmodule.abstr.AbstractCalendarPerformerStatistic;
+import app.customtenant.statisticsmodule.domain.AllPerformerStatistic;
 import app.customtenant.statisticsmodule.domain.AnnuallyPerformerStatistics;
 import app.customtenant.statisticsmodule.domain.MonthlyPerformerStatistic;
 import app.customtenant.statisticsmodule.domain.WeeklyPerformerStatistics;
@@ -20,9 +21,6 @@ public class PerformerStatisticCreationComponent
 
     @Override
     public List<AbstractCalendarPerformerStatistic> create(Long perfId) {
-        DailyPerformerStatistic daily = new DailyPerformerStatistic();
-        daily.setPerformerId(perfId);
-        statistic.create(daily);
         WeeklyPerformerStatistics weekly = new WeeklyPerformerStatistics();
         weekly.setPerformerId(perfId);
         statistic.create(weekly);
@@ -32,11 +30,14 @@ public class PerformerStatisticCreationComponent
         AnnuallyPerformerStatistics annually = new AnnuallyPerformerStatistics();
         annually.setPerformerId(perfId);
         statistic.create(annually);
+        AllPerformerStatistic allStat = new AllPerformerStatistic();
+        allStat.setPerformerId(perfId);
+        statistic.create(allStat);
         List<AbstractCalendarPerformerStatistic> statistics = new LinkedList<>();
-        statistics.add(daily);
         statistics.add(weekly);
         statistics.add(monthly);
         statistics.add(annually);
+        statistics.add(allStat);
         return statistics;
     }
 }

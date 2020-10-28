@@ -28,10 +28,10 @@ public class TaskDeadlineEventPublisher
 
     @Override
     public void publish(Task entity, Performer author) {
-        Date controlDate = entity.getDeadlineDate();
+        Date deadlineDate = entity.getDeadlineDate();
         Date now = CustomAppDateTimeUtil.now();
         try {
-            String message = createMessage(now, controlDate);
+            String message = createMessage(now, deadlineDate);
             DeadlinePublishingEvent event = new DeadlinePublishingEvent(message);
             event.setTaskId(entity.getId());
             Set<Long> ids = new HashSet<>(entity.getPerformerIds());
@@ -59,14 +59,10 @@ public class TaskDeadlineEventPublisher
             long controlMs = deadLine.getTime();
             long daysLeft = (controlMs - nowMs) / (Constants.DAY_IN_MS);
             return "Дата дедлайну через " + daysLeft + " днів";
-        }
-        if (compareResult == 0) {
+        } else if (compareResult == 0) {
             return "Сьогодні дата дедлайну";
+        } else {
+            return "Просрочено дедлайн : " + deadLine;
         }
-        throw new UnsupportedOperationException(
-                "NOT SUPPORTED DEADLINE DATE "
-                        + deadLine
-                        + " NOW = "
-                        + now);
     }
 }

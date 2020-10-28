@@ -18,7 +18,8 @@ public interface ITaskDao extends IGenericDao<Task> {
 
     List<Task> findByStatus(int page, int pageSize, TaskStatus byName);
 
-    List<Task> findByPerformerAndStatus(int pageId, int pageSize, long performerId, TaskStatus byName);
+    List<Task> findByPerformerAndStatus(int pageId, int pageSize,
+                                        long performerId, TaskStatus byName);
 
     List<Task> findOnControlDate(int page, int pageSize, Date controlDate);
 }

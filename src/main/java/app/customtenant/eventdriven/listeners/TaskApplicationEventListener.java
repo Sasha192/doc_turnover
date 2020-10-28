@@ -20,7 +20,8 @@ public class TaskApplicationEventListener
 
     @Autowired
     public TaskApplicationEventListener(List<ITaskApplicationEventService> services) {
-        servicesMap = new EnumMap<TaskEventEnum, List<ITaskApplicationEventService>>(TaskEventEnum.class);
+        servicesMap = new EnumMap<TaskEventEnum,
+                List<ITaskApplicationEventService>>(TaskEventEnum.class);
         for (ITaskApplicationEventService service : services) {
             List<ITaskApplicationEventService> list = servicesMap.get(service.getType());
             if (list == null) {

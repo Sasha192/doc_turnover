@@ -6,9 +6,6 @@ import app.customtenant.events.Event;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.LockModeType;
-import javax.persistence.Query;
-
 @Repository
 public class EventDao
         extends GenericJpaRepository<Event>
@@ -16,8 +13,8 @@ public class EventDao
 
     private static final String NEW_COUNT =
             " SELECT COUNT(*) from PerformerEventAgent pev "
-            + " WHERE pev.id.performerId = :perf_id_ "
-            + " AND seen = false";
+                    + " WHERE pev.id.performerId = :perf_id_ "
+                    + " AND seen = false";
 
     private static final String SEE_ALL_EVENTS_FOR_PERFORMER =
             " UPDATE PerformerEventAgent evnt SET evnt.seen=true "

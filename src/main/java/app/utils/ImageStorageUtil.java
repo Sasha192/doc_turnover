@@ -4,7 +4,6 @@ import app.configuration.spring.constants.Constants;
 import app.security.models.auth.UserInfo;
 import java.io.File;
 import java.io.IOException;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

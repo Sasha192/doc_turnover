@@ -4,9 +4,10 @@ import app.configuration.spring.SpringDataConfiguration;
 import app.configuration.spring.SpringMvcConfiguration;
 import app.security.controllers.defaultenantfilters.AuthenticationMeFilter;
 import app.security.controllers.defaultenantfilters.GpanelAccessFilter;
+import app.security.controllers.defaultenantfilters.SessionRequiredFilter;
 import javax.servlet.Filter;
 
-import app.security.controllers.defaultenantfilters.SessionRequiredFilter;
+import app.security.controllers.defaultenantfilters.TenantRequiredFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -37,6 +38,7 @@ public class SpringInitializer
     protected Filter[] getServletFilters() {
         return new Filter[]{
                 new SessionRequiredFilter(),
+                new TenantRequiredFilter(),
                 new AuthenticationMeFilter(),
                 new GpanelAccessFilter()
         };

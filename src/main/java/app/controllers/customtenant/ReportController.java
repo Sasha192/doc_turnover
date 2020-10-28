@@ -1,7 +1,6 @@
 package app.controllers.customtenant;
 
 import app.configuration.spring.constants.Constants;
-import app.controllers.customtenant.JsonSupportController;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.taskmodels.Task;
 import app.customtenant.service.interfaces.ITaskService;
@@ -42,7 +41,6 @@ public class ReportController extends JsonSupportController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(@RequestParam(value = "file", required = false) final MultipartFile[] mfiles,
-                       @RequestParam(value = "comment", required = false) final String comment,
                        @RequestParam("todoId") final Integer taskId,
                        HttpServletResponse response,
                        HttpServletRequest request) {
@@ -60,9 +58,7 @@ public class ReportController extends JsonSupportController {
             long perfId = performer.getId();
             if (task.getTaskOwnerId().equals(perfId)
                     || task.getPerformerIds().contains(perfId)) {
-                if (comment != null || mfiles != null) {
-                    uploader.upload(performer, task, comment, mfiles);
-                }
+                uploader.upload(performer, task, mfiles);
             }
         } catch (IOException e) {
             sendDefaultJson(response, false, "Internal Server Error. Please try later.");

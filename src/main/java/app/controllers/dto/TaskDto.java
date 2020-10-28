@@ -1,6 +1,5 @@
 package app.controllers.dto;
 
-import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 public class TaskDto {

@@ -1,22 +1,15 @@
 package app.controllers.defaultcontrollers;
 
-import javax.servlet.http.HttpServletRequest;
-
 import app.customtenant.service.interfaces.IPerformerService;
-import app.security.models.auth.CustomUser;
 import app.security.wrappers.ICustomUserWrapper;
-import app.tenantconfiguration.TenantContext;
 import app.tenantconfiguration.interfaces.ITenantCreatorService;
-import app.tenantdefault.models.PaymentTariff;
-import app.tenantdefault.models.TenantInfoEntity;
 import dev.morphia.Datastore;
+import java.sql.SQLException;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.sql.SQLException;
-
 
 @Controller
 public class ViewsController {

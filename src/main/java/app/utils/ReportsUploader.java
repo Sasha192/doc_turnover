@@ -5,10 +5,8 @@ import app.customtenant.models.abstr.TaskHolderComment;
 import app.customtenant.models.basic.BriefDocument;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.Report;
-import app.customtenant.models.basic.ReportComment;
 import app.customtenant.models.basic.taskmodels.Task;
 import app.customtenant.service.interfaces.IBriefDocumentService;
-import app.customtenant.service.interfaces.IReportCommentService;
 import app.customtenant.service.interfaces.IReportService;
 import app.customtenant.service.interfaces.ITaskService;
 import app.tenantdefault.models.DocumentEntity;
@@ -58,8 +56,7 @@ public class ReportsUploader {
         this.commentPublisher = commentPublisher;
     }
 
-    public boolean upload(Performer performer, Task task,
-                          String comment, MultipartFile... mfiles)
+    public boolean upload(Performer performer, Task task, MultipartFile... mfiles)
             throws IOException {
         if (task == null) {
             return false;
@@ -74,30 +71,8 @@ public class ReportsUploader {
             report.addDocument(doc);
         }
         reportService.update(report);
-        if (comment == null || comment.isEmpty()) {
-            comment = performer.getName() + " завантажив " + documents.get(0).getName();
-            if (documents.size() > 1) {
-                comment = comment + " + " + (documents.size() - 1) + " документів";
-            }
-        } else {
-            comment = StringToUtf8Utils.encodeUtf8(comment);
-        }
-        publishComment(comment, report, performer);
         reportPublisher.publish(report, performer);
         return true;
-    }
-
-    private void publishComment(String comment,
-                                Report report,
-                                Performer performer) {
-        ReportComment reportComment = new ReportComment();
-        reportComment.setReport(report);
-        reportComment.setAuthorId(performer.getId());
-        reportComment.setAuthor(performer);
-        reportComment.setComment(comment);
-        reportComment.setReport(report);
-        commentService.create(reportComment);
-        commentPublisher.publish(reportComment, performer);
     }
 
     private Report getReport(Task task) {

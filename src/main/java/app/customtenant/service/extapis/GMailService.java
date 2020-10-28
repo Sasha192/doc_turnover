@@ -1,15 +1,15 @@
 package app.customtenant.service.extapis;
 
 import app.configuration.spring.constants.Constants;
+import app.tenantdefault.models.DocumentEntity;
+import app.utils.ContentTypeFileUtil;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import javax.activation.FileTypeMap;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -22,9 +22,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
-
-import app.tenantdefault.models.DocumentEntity;
-import app.utils.ContentTypeFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
@@ -119,7 +116,7 @@ public class GMailService implements IMailService {
     }
 
     private Message createMessage(String to, String subject,
-                             String plaintext, Multipart multipart)
+                                  String plaintext, Multipart multipart)
             throws MessagingException {
         MimeBodyPart textPart = new MimeBodyPart();
         textPart.setText(plaintext);

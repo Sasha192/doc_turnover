@@ -99,18 +99,6 @@ public class ExcludeStrategies {
         }
     };
 
-    public static final ExclusionStrategy EXLUDE_THIS = new ExclusionStrategy() {
-        @Override
-        public boolean shouldSkipField(FieldAttributes field) {
-            return field.getAnnotation(ExcludeThis.class) != null;
-        }
-
-        @Override
-        public boolean shouldSkipClass(Class<?> clazz) {
-            return false;
-        }
-    };
-
     public static final ExclusionStrategy EXCLUDE_FOR_JSON_PERFORMER = new ExclusionStrategy() {
         @Override
         public boolean shouldSkipField(FieldAttributes fieldAttributes) {

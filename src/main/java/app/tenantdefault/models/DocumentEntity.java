@@ -4,8 +4,6 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 
 @Entity("documents")

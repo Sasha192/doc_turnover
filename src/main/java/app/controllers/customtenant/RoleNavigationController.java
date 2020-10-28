@@ -1,6 +1,5 @@
 package app.controllers.customtenant;
 
-import app.controllers.customtenant.JsonSupportController;
 import app.security.models.SimpleRole;
 import java.io.IOException;
 import java.util.ArrayList;

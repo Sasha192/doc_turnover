@@ -3,15 +3,12 @@ package app.controllers.customtenant;
 import app.configuration.spring.constants.Constants;
 import app.controllers.dto.CommentDto;
 import app.controllers.dto.TaskDto;
-import app.controllers.dto.mappers.IEntityDtoMapper;
 import app.customtenant.events.pub.GenericEventPublisher;
 import app.customtenant.models.abstr.TaskHolderComment;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.TaskComment;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.basic.taskmodels.Task;
-import app.customtenant.service.interfaces.IBriefTaskService;
-import app.customtenant.service.interfaces.IStatusService;
 import app.customtenant.service.interfaces.ITaskCommentService;
 import app.customtenant.service.interfaces.ITaskService;
 import app.security.models.SimpleRole;
@@ -58,7 +55,8 @@ public class TaskNavigationController extends JsonSupportController {
                                     @Qualifier("task_pub")
                                             GenericEventPublisher<Task> taskPublisher,
                                     @Qualifier("comment_pub")
-                                            GenericEventPublisher<TaskHolderComment> commentPublisher) {
+                                            GenericEventPublisher<TaskHolderComment>
+                                            commentPublisher) {
         this.performerWrapper = performerWrapper;
         this.taskService = taskService;
         this.taskCommentService = taskCommentService;

@@ -4,10 +4,8 @@ import app.configuration.spring.constants.Constants;
 import app.security.wrappers.IAuthenticated;
 import app.security.wrappers.IAuthenticationViaCookies;
 import app.security.wrappers.IRequestAuthority;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
