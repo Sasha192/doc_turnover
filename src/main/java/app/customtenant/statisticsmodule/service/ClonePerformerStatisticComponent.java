@@ -1,6 +1,7 @@
 package app.customtenant.statisticsmodule.service;
 
 import app.customtenant.statisticsmodule.abstr.AbstractPerformerStatistics;
+
 import java.lang.reflect.InvocationTargetException;
 
 public class ClonePerformerStatisticComponent {
@@ -9,13 +10,11 @@ public class ClonePerformerStatisticComponent {
         try {
             AbstractPerformerStatistics statistics = getInstance(stat);
             statistics.setPerformerId(stat.getPerformerId());
-            statistics.setPerformer(stat.getPerformer());
-            statistics.setBriefPerformer(stat.getBriefPerformer());
             return statistics;
-        } catch (NoSuchMethodException
-                | IllegalAccessException
+        } catch (InstantiationException
                 | InvocationTargetException
-                | InstantiationException e) {
+                | NoSuchMethodException
+                | IllegalAccessException e) {
             return null;
         }
     }

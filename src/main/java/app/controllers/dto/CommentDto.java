@@ -5,17 +5,17 @@ import javax.validation.constraints.NotNull;
 public class CommentDto {
 
     @NotNull
-    private Integer todoId;
+    private Integer taskId;
 
     @NotNull
     private String comment;
 
-    public Integer getTodoId() {
-        return todoId;
+    public Integer getTaskId() {
+        return taskId;
     }
 
-    public void setTodoId(Integer todoId) {
-        this.todoId = todoId;
+    public void setTaskId(Integer taskId) {
+        this.taskId = taskId;
     }
 
     public String getComment() {

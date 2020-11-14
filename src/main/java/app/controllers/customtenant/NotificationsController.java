@@ -34,7 +34,7 @@ public class NotificationsController extends JsonSupportController {
     @Autowired
     private ServerSentNotifications notifications;
 
-    @RequestMapping(value = "/list/{page_id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/stream", method = RequestMethod.GET)
     public void register(HttpServletResponse response,
                      HttpServletRequest request)
             throws IOException {

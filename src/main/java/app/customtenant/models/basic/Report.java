@@ -1,6 +1,7 @@
 package app.customtenant.models.basic;
 
 import app.customtenant.models.abstr.IdentityBaseEntity;
+import app.customtenant.models.serialization.ExcludeForJsonBriefTask;
 import app.utils.CustomAppDateTimeUtil;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -10,13 +11,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -32,17 +28,18 @@ public class Report extends IdentityBaseEntity {
 
     @OneToMany(cascade = {CascadeType.REFRESH})
     @JoinTable(name = "reports_docs",
-            joinColumns = @JoinColumn(name = "report_id"),
+            joinColumns = @JoinColumn(name = "report_id",
+                    updatable = false, insertable = false),
             inverseJoinColumns = @JoinColumn(name = "doc_id")
     )
     private List<BriefDocument> documents;
 
-    @OneToMany(cascade = {CascadeType.REFRESH})
-    @JoinTable(name = "comment_post",
-            joinColumns = @JoinColumn(name = "report_id"),
-            inverseJoinColumns = @JoinColumn(name = "id")
+    @ElementCollection
+    @CollectionTable(name = "reports_docs",
+            joinColumns = @JoinColumn(name = "report_id")
     )
-    private List<ReportComment> comments;
+    @Column(name = "doc_id")
+    private List<Long> docIds;
 
     private transient Set<Long> performerIds;
 
@@ -99,6 +96,14 @@ public class Report extends IdentityBaseEntity {
         this.documents = documents;
     }
 
+    public List<Long> getDocIds() {
+        return docIds;
+    }
+
+    public void setDocIds(List<Long> docIds) {
+        this.docIds = docIds;
+    }
+
     public void addDocument(List<BriefDocument> docs) {
         if (documents == null) {
             documents = new LinkedList<>();
@@ -113,21 +118,6 @@ public class Report extends IdentityBaseEntity {
             documents = new LinkedList<>();
         }
         documents.add(doc);
-    }
-
-    public List<ReportComment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<ReportComment> comments) {
-        this.comments = comments;
-    }
-
-    public void addComment(ReportComment comment) {
-        if (comments == null) {
-            comments = new ArrayList<>();
-        }
-        comments.add(comment);
     }
 
     @Override

@@ -11,13 +11,10 @@ public class TaskDto {
     private String dateControl;
 
     @NotNull
-    private String deadline;
+    private String dateDeadline;
 
     @NotNull
     private String description;
-
-    @NotNull
-    private String[] keyWords;
 
     @NotNull
     private Long[] performerList;
@@ -44,12 +41,12 @@ public class TaskDto {
         this.dateControl = dateControl;
     }
 
-    public String getDeadline() {
-        return deadline;
+    public String getDateDeadline() {
+        return dateDeadline;
     }
 
-    public void setDeadline(String deadline) {
-        this.deadline = deadline;
+    public void setDateDeadline(String dateDeadline) {
+        this.dateDeadline = dateDeadline;
     }
 
     public String getDescription() {
@@ -58,14 +55,6 @@ public class TaskDto {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String[] getKeyWords() {
-        return keyWords;
-    }
-
-    public void setKeyWords(String[] keyWords) {
-        this.keyWords = keyWords;
     }
 
     public Long[] getPerformerList() {

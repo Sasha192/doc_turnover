@@ -1,13 +1,14 @@
 package app.controllers.dto;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 public class TenantDto {
 
     @NotNull
     private String companyName;
 
-    @NotNull
+    @Null
     private String companyAddress;
 
     @NotNull

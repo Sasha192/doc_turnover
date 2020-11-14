@@ -48,13 +48,6 @@ public class TaskService extends AbstractService<Task>
     }
 
     @Override
-    public Task create(Task entity) {
-        Task task = super.create(entity);
-        publisher.onCreate(task, TenantContext.getTenant());
-        return task;
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<Task> findOnControlDate(int page, int pageSize, Date controlDate) {
         return dao.findOnControlDate(page, pageSize, controlDate);

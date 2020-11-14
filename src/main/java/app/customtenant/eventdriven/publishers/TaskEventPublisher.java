@@ -37,6 +37,7 @@ public class TaskEventPublisher {
     public void onDeadlineSet(final Task task, String tenant) {
         GenericApplicationEvent<Task> event =
                 new TaskDeadlineEvent(task, tenant);
+        onStatusUpdate(task, task.getStatus(), TaskStatus.OVERDUE, tenant);
         publisher.publishEvent(event);
     }
 }

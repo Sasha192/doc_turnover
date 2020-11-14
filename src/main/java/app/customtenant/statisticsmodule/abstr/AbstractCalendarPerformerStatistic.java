@@ -25,11 +25,11 @@ public abstract class AbstractCalendarPerformerStatistic
     protected CalendarPerformerEnum type;
 
     @Column(name = "creation_calendar")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Calendar start;
 
     @Column(name = "expiration_calendar")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Calendar end;
 
     @Column(name = "amount")
@@ -60,7 +60,8 @@ public abstract class AbstractCalendarPerformerStatistic
         this.end = end;
     }
 
-    public AbstractCalendarPerformerStatistic(CalendarPerformerEnum allTime, long expiration) {
+    public AbstractCalendarPerformerStatistic(CalendarPerformerEnum type, long expiration) {
+        this(type, null, null);
         Calendar start = Calendar.getInstance();
         Calendar end = (Calendar) start.clone();
         if (expiration >= 0) {
@@ -68,8 +69,6 @@ public abstract class AbstractCalendarPerformerStatistic
         } else {
             end.setTimeInMillis(Long.MAX_VALUE);
         }
-        setStart(start);
-        setEnd(end);
     }
 
     public Calendar getStart() {
@@ -90,46 +89,6 @@ public abstract class AbstractCalendarPerformerStatistic
 
     public CalendarPerformerEnum getType() {
         return type;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
-    public Integer getCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(Integer completed) {
-        this.completed = completed;
-    }
-
-    public Integer getInprogress() {
-        return inprogress;
-    }
-
-    public void setInprogress(Integer inprogress) {
-        this.inprogress = inprogress;
-    }
-
-    public Integer getOnhold() {
-        return onhold;
-    }
-
-    public void setOnhold(Integer onhold) {
-        this.onhold = onhold;
-    }
-
-    public Integer getExpiredDeadline() {
-        return expiredDeadline;
-    }
-
-    public void setExpiredDeadline(Integer expiredDeadline) {
-        this.expiredDeadline = expiredDeadline;
     }
 
     public void incrementInProgress() {
@@ -178,5 +137,10 @@ public abstract class AbstractCalendarPerformerStatistic
 
     public void decrementCompleted() {
         this.completed = this.completed + 1;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

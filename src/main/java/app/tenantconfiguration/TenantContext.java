@@ -18,6 +18,10 @@ public class TenantContext {
     }
 
     public static String getTenant() {
+        String tenant = TENANT_IDENTIFIER.get();
+        if (tenant == null) {
+            setTenant(DEFAULT_TENANT_IDENTIFIER);
+        }
         return TENANT_IDENTIFIER.get();
     }
 

@@ -1,3 +1,4 @@
+/*
 package app;
 
 import app.configuration.spring.constants.Constants;
@@ -166,14 +167,16 @@ public class JunitSpringDaoServicesTests {
         }
     }
 
-    /*@Test
+    */
+/*@Test
     public void testVerificationCodeTablePlusRemMeTokens() {
         CustomUser user = userService.findAll().get(0);
         RememberMeToken token = rememberMeUtil.getRememberMeToken(user, request);
         userService.registerRememberMeToken(token);
         userService.retrieveRememberMeToken(token.getId());
     }
-*/
+*//*
+
     @Test
     public void testCommentServices() {
         taskCommentService.findAll();
@@ -369,3 +372,4 @@ public class JunitSpringDaoServicesTests {
     private void update() {
     }
 }
+*/

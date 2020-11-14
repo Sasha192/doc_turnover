@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,6 +78,17 @@ public class DepartmentsNavigationController extends JsonSupportController {
         Performer performer = wrapper.retrievePerformer(request);
         if (allowCreationOp(performer.getRoles())) {
             departmentService.changeDeparmentName(name, depoId);
+        } else {
+            sendDefaultJson(response, false, "Access Denied");
+        }
+    }
+
+    @GetMapping(value = "/remove")
+    public void remove(HttpServletResponse response, HttpServletRequest request,
+                       @RequestParam(value = "departmentId") Long depoId) {
+        Performer performer = wrapper.retrievePerformer(request);
+        if (allowCreationOp(performer.getRoles())) {
+            departmentService.deleteById(depoId);
         } else {
             sendDefaultJson(response, false, "Access Denied");
         }

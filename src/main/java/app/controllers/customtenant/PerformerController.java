@@ -1,5 +1,6 @@
 package app.controllers.customtenant;
 
+import app.controllers.customtenant.JsonSupportController;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.models.serialization.ExcludeStrategies;
 import app.security.models.auth.CustomUser;
@@ -34,7 +35,7 @@ public class PerformerController extends JsonSupportController {
         this.userWrapper = userWrapper;
     }
 
-    @RequestMapping("/my/info")
+    /*@RequestMapping("/my/info")
     public void myInfo(HttpServletRequest request,
                        HttpServletResponse response)
             throws IOException {
@@ -51,5 +52,5 @@ public class PerformerController extends JsonSupportController {
         JsonElement imgPath = new JsonPrimitive(user.getUserInfo().getImgPath());
         json.add("imgPath", imgPath);
         writeToResponse(response, builder, performer);
-    }
+    }*/
 }

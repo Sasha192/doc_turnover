@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+
+import app.tenantconfiguration.TenantContext;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -33,12 +35,22 @@ public abstract class IdentityBaseEntity
     @Access(AccessType.PROPERTY)
     protected Long id;
 
+    protected transient String tenantId;
+
+    public IdentityBaseEntity() {
+        this.tenantId = TenantContext.getTenant();
+    }
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTenantId() {
+        return tenantId;
     }
 
     @Override

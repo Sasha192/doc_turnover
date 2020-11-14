@@ -9,24 +9,13 @@ import app.security.models.auth.UserInfo;
 import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "performers")
 public class Performer
         extends IdentityBaseEntity
         implements Serializable {
-
-    private static final String IMG_DEFAULT = "/img/default.jpg";
 
     @Column(name = "user_id")
     private Long userId;
@@ -45,10 +34,9 @@ public class Performer
 
     @Enumerated(value = EnumType.ORDINAL)
     @Column(name = "role")
-    private SimpleRole roles;
+    private SimpleRole role;
 
-    @OneToMany(mappedBy = "performer", cascade = CascadeType.REFRESH)
-    @ExcludeForJsonPerformer
+    @OneToMany(mappedBy = "performer")
     private Set<AbstractCalendarPerformerStatistic> statistics;
 
     public Performer(CustomUser user) {
@@ -101,11 +89,11 @@ public class Performer
     }
 
     public SimpleRole getRoles() {
-        return roles;
+        return role;
     }
 
     public void setRoles(SimpleRole roles) {
-        this.roles = roles;
+        this.role = roles;
     }
 
     public Long getDepartmentId() {
@@ -121,7 +109,7 @@ public class Performer
     }
 
     public void addRole(SimpleRole newRole) {
-        this.roles = newRole;
+        this.role = newRole;
     }
 
     @Override

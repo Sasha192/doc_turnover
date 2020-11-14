@@ -13,6 +13,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,18 +26,16 @@ public class DefaultDaoEventListener
 
     private final ServerSentNotifications sentNotifications;
 
-    private final ApplicationEventPublisher publisher;
-
     @Autowired
     public DefaultDaoEventListener(IEventService eventService,
                                    ServerSentNotifications sentNotifications,
                                    ApplicationEventPublisher publisher) {
         this.eventService = eventService;
         this.sentNotifications = sentNotifications;
-        this.publisher = publisher;
     }
 
     @Override
+    @Async
     public void onApplicationEvent(GenericDaoApplicationEvent genEvent) {
         String prevTenant = TenantContext.getTenant();
         String tenant = genEvent.getTenant();

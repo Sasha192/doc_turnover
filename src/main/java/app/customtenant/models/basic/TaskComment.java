@@ -20,11 +20,7 @@ public class TaskComment
         extends TaskHolderComment
         implements Serializable {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH},
-            fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id", insertable = false, updatable = false)
-    @ExcludeForJsonComment
-    private Task task;
+    private transient Task task;
 
     @Override
     public Long getTaskId() {
@@ -44,12 +40,12 @@ public class TaskComment
         return performerIds;
     }
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
     public Task getTask() {
         return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     @Override
@@ -73,7 +69,7 @@ public class TaskComment
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .appendSuper(super.hashCode())
-                .append(getTask())
+                .append(getTaskId())
                 .toHashCode();
     }
 }

@@ -42,10 +42,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -86,35 +83,31 @@ public class DocumentsNavigationController extends JsonSupportController {
         this.documentStorage = documentStorage;
     }
 
-    @RequestMapping(value = "/list",
+    @RequestMapping(value = "/list/{pageId}",
             method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public void list(final HttpServletResponse response, final HttpServletRequest request,
-                     @RequestParam(name = "page_id") @NotNull final Integer pageId,
+                     @PathVariable(name = "pageId") @NotNull final Integer pageId,
+                     @RequestParam(name = "reverse") Boolean reverse,
                      @RequestBody String body)
             throws IOException {
         JsonElement element = JsonParser.parseString(body);
         if (!element.isJsonObject()) {
             sendDefaultJson(response, false, "");
         }
-        Date date = null;
-        Long startTime = null;
-        Long endTime = null;
+        Date startTime = null;
+        Date endTime = null;
         String word = null;
         try {
             JsonObject json = element.getAsJsonObject();
-            if (json.has("date")) {
-                String dateStr = json.get("date").getAsString();
-                date = Constants.DATE_FORMAT.parse(dateStr);
+            if (json.has("startDate") && json.has("endDate")) {
+                String dateStr = json.get("startDate").getAsString();
+                String endStr = json.get("endDate").getAsString();
+                startTime = Constants.DATE_FORMAT.parse(dateStr);
+                endTime = Constants.DATE_FORMAT.parse(endStr);
             }
-            if (json.has("start_time") && json.has("end_time")) {
-                String startTimeStr = json.get("start_time").getAsString();
-                String endTimeStr = json.get("end_time").getAsString();
-                startTime = Long.valueOf(startTimeStr);
-                endTime = Long.valueOf(endTimeStr);
-            }
-            if (json.has("search_word")) {
-                word = json.get("search_word").getAsString();
+            if (json.has("name")) {
+                word = json.get("name").getAsString();
             }
         } catch (ParseException | NumberFormatException ignored) {
             ;
@@ -122,14 +115,16 @@ public class DocumentsNavigationController extends JsonSupportController {
         Performer performer = performerWrapper.retrievePerformer(request);
         SimpleRole roles = performer.getRoles();
         List<BriefDocument> list = null;
-        if (allowListArchive(roles)) {
-            list = docService.findBy(pageId, date, startTime, endTime, word);
-        } else {
-            if (roles.equals(SimpleRole.MANAGER)) {
-                list = docService.findByAndDepartment(pageId, date,
-                        performer.getDepartment().getId());
+        if (startTime != null && endTime != null){
+            if (allowListArchive(roles)) {
+                list = docService.findBy(pageId, null, startTime.getTime(), endTime.getTime(), word);
             } else {
-                list = docService.findByAndPerformerInTaskId(pageId, date, performer.getId());
+                if (roles.equals(SimpleRole.MANAGER)) {
+                    list = docService.findByAndDepartment(pageId, endTime,
+                            performer.getDepartment().getId());
+                } else {
+                    list = docService.findByAndPerformerInTaskId(pageId, endTime, performer.getId());
+                }
             }
         }
         writeToResponse(response, builder, list);
@@ -148,7 +143,7 @@ public class DocumentsNavigationController extends JsonSupportController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public void upload(@RequestParam("file") final MultipartFile[] mfiles,
+    public void upload(@RequestParam("files") final MultipartFile[] mfiles,
                        final HttpServletResponse response,
                        final HttpServletRequest req) {
         if (mfiles.length > constants.get(Constants.MAX_FILES_UPLOAD).getIntValue()) {
@@ -178,7 +173,7 @@ public class DocumentsNavigationController extends JsonSupportController {
 
     @RequestMapping(path = "/download",
             method = RequestMethod.GET)
-    public void download(@RequestParam(value = "uuid") final String[] docIds,
+    public void download(@RequestParam(value = "docId") final String[] docIds,
                          final HttpServletResponse response) {
         if (docIds.length > constants.get(Constants.MAX_FILES_DOWNLOAD).getIntValue()) {
             sendDefaultJson(

@@ -26,8 +26,8 @@ public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
 
     private static final String FIND_BY_DATE_DEPO_ID =
             "SELECT id, file_name, ext_name, creation_date, "
-                    + "creation_time, uuid, performer_id, signed FROM brief_documents\n"
-                    + "INNER JOIN tasks_documents td on brief_documents.id = td.doc_id\n"
+                    + "creation_time, uuid, performer_id, signed FROM brief_documents bd \n"
+                    + "INNER JOIN tasks_documents td on bd.id = td.doc_id\n"
                     + "INNER JOIN tasks_performers tp on td.task_id = tp.task_id\n"
                     + "INNER JOIN performers p on tp.performer_id = p.id\n"
                     + "WHERE creation_date <= :date_ AND p.department_id = :depo_id "
@@ -35,10 +35,10 @@ public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
 
     private static final String FIND_BY_DATE_PERF_ID =
             "SELECT id, file_name, ext_name, creation_date, "
-                    + "creation_time, uuid, performer_id, signed FROM brief_documents \n"
-                    + "INNER JOIN tasks_documents td on brief_documents.id = td.doc_id \n"
-                    + "INNER JOIN tasks_performers tp on td.task_id = tp.task_id \n"
-                    + " WHERE creation_date <= :date_ AND tp.id = :perf_id \n"
+                    + "creation_time, uuid, performer_id, signed FROM brief_documents bd \n"
+                    + "INNER JOIN tasks_documents td on bd.id = td.doc_id \n"
+                    + "INNER JOIN tasks_performers tp on td.task_id = tp.task_id AND tp.performer_id = :perf_id \n"
+                    + " WHERE creation_date <= :date_ \n"
                     + " ORDER BY bd.id desc ";
 
     private static final String FIND_BY_WORD =
@@ -46,7 +46,8 @@ public class BriefDocumentDao extends GenericJpaRepository<BriefDocument>
                     + "       bd.creation_date, bd.creation_time, \n"
                     + "       bd.uuid, bd.performer_id, bd.signed FROM words_documents wd \n"
                     + "INNER JOIN brief_documents bd on wd.doc_id = bd.id \n"
-                    + "WHERE wd.word = :_word";
+                    + "WHERE wd.word = :_word "
+                    + " ORDER BY bd.id DESC ";
 
     public BriefDocumentDao() {
         setClazz(BriefDocument.class);

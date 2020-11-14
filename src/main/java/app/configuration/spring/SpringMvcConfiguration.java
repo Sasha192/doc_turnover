@@ -34,7 +34,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         @ComponentScan("app.security.controllers"),
         @ComponentScan("app.security.utils"),
         @ComponentScan("app.security.wrappers"),
-        @ComponentScan("app.tenantdefault.controllers")
+        @ComponentScan("app.tenantdefault")
 })
 @EnableScheduling
 @EnableWebMvc
@@ -110,15 +110,6 @@ public class SpringMvcConfiguration
         return new Handlebars(loader);
     }
 
-    /*@Bean
-    public ServletListenerRegistrationBean<DefaultSessionListener> sessionListenerWithMetrics() {
-        ServletListenerRegistrationBean<DefaultSessionListener> listenerRegBean =
-                new DefaultSessionListener<>();
-
-        listenerRegBean.setListener(new SessionListenerWithMetrics());
-        return listenerRegBean;
-    }
-*/
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

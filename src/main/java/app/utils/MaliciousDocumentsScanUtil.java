@@ -1,5 +1,6 @@
 package app.utils;
 
+import app.configuration.spring.constants.Constants;
 import app.customtenant.service.extapis.IMaliciousScan;
 import app.tenantconfiguration.TenantContext;
 import app.tenantdefault.models.DocumentEntity;
@@ -32,7 +33,7 @@ public class MaliciousDocumentsScanUtil {
                     .getBytes(StandardCharsets.ISO_8859_1),
                     StandardCharsets.UTF_8
             );
-            String ext = FilenameUtils.getExtension(fileName);
+            String ext = Constants.DOT + FilenameUtils.getExtension(fileName);
             byte[] bytes = mfile.getBytes();
             boolean malScan = scan.scan(bytes);
             if (malScan) {

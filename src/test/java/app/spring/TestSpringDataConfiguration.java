@@ -1,3 +1,4 @@
+/*
 package app.spring;
 
 import com.github.jknack.handlebars.Handlebars;
@@ -116,3 +117,4 @@ public class TestSpringDataConfiguration {
         return hibernateProperties;
     }
 }
+*/

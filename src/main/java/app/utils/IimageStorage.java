@@ -6,6 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface IimageStorage {
 
-    public void upload(MultipartFile file, UserInfo info) throws IOException;
+    void upload(MultipartFile file, UserInfo info) throws IOException;
 
 }

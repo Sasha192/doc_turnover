@@ -13,7 +13,7 @@ public class TenantInfoEntity implements Serializable {
     public static final String COLLECTION_NAME = "tenant_info";
 
     @Id
-    private String tenantId;
+    private String id;
 
     private String companyName;
 
@@ -27,11 +27,19 @@ public class TenantInfoEntity implements Serializable {
 
     private java.util.Date creationDate;
 
+    private int number = 0;
+
+    private boolean active = true;
+
+    private long space = 0;
+
+    private long maxSpace = 0;
+
     public TenantInfoEntity() {
     }
 
     public TenantInfoEntity(String tenantId) {
-        this.tenantId = tenantId;
+        this.id = tenantId;
     }
 
     public TenantInfoEntity(TenantDto dto) {
@@ -83,11 +91,11 @@ public class TenantInfoEntity implements Serializable {
     }
 
     public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
+        this.id = tenantId;
     }
 
     public String getTenantId() {
-        return tenantId;
+        return id;
     }
 
     public Date getCreationDate() {

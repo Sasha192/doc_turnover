@@ -30,7 +30,7 @@ public class StatisticController
     @Autowired
     private ICalendarStatistic statisticService;
 
-    @RequestMapping(value = "/all/{stat_type}",
+    @RequestMapping(value = "/{stat_type}",
             method = RequestMethod.GET)
     public void selectAll(HttpServletRequest request,
                           HttpServletResponse response,

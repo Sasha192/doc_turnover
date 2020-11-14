@@ -1,12 +1,8 @@
 package app.configuration.spring;
 
-import app.configuration.spring.constants.AppConstants;
-import app.configuration.spring.constants.Constants;
 import app.tenantconfiguration.TenantConnectionProvider;
 import app.tenantconfiguration.TenantContext;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 import javax.persistence.EntityManagerFactory;
@@ -15,14 +11,13 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.hibernate.Interceptor;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.AvailableSettings;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -45,7 +40,9 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         @ComponentScan("app.security.models"),
         @ComponentScan("app.security.dao"),
         @ComponentScan("app.security.service"),
-        @ComponentScan("app.configuration"),
+        @ComponentScan("app.configuration.spring.appfactory"),
+        @ComponentScan("app.configuration.spring.constants"),
+        @ComponentScan("app.configuration.spring.hibernateinterceptors"),
         @ComponentScan("app.utils"),
         @ComponentScan("app.customtenant.statisticsmodule"),
         @ComponentScan("app.customtenant.eventdriven"),
@@ -53,21 +50,23 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
         @ComponentScan("app.customtenant.service"),
         @ComponentScan("app.tenantconfiguration"),
 })
+@Import({AsyncConfig.class, FlyWayConfig.class,
+        MongoConfiguration.class,
+        SpringMvcConfiguration.class,
+        WebSocketConfiguration.class,
+        JmsActiveMQConfiguration.class
+})
 public class SpringDataConfiguration {
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
+    private final Interceptor interceptor;
 
-    @Autowired
-    @AppConstants
-    private Constants constants;
-
-    @Autowired
-    private ApplicationContext context;
-
-    @Autowired
-    @Qualifier("hibernate_empty_int_impl")
-    private Interceptor interceptor;
+    public SpringDataConfiguration(Environment env,
+                                   @Qualifier("hibernate_empty_int_impl")
+                                           Interceptor interceptor) {
+        this.env = env;
+        this.interceptor = interceptor;
+    }
 
     @Bean("bcrew_default_data_source")
     public DataSource getDataSource() {
@@ -85,14 +84,13 @@ public class SpringDataConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
-        //em.setDataSource(this.getDataSource());
         em.setPackagesToScan("app.customtenant.models",
                 "app.security.models",
                 "app.customtenant.statisticsmodule",
                 "app.customtenant.events");
         final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
-        em.setJpaPropertyMap(this.hibernateProperties());
+        em.setJpaProperties(hibernateProperties());
         return em;
     }
 
@@ -120,40 +118,34 @@ public class SpringDataConfiguration {
     }
 
     @Bean("tenant_conn_provider")
-    public TenantConnectionProvider multiTenantConnectionProvider(Map<String, Object> props) {
-        Properties properties = new Properties();
-        props.entrySet().stream().forEach(
-                (obj) -> {
-                    properties.put(obj.getKey(), obj.getValue());
-                }
-        );
+    public TenantConnectionProvider multiTenantConnectionProvider(Properties properties) {
         return new TenantConnectionProvider(getDataSource(), env, properties);
     }
 
-    public Map<String, Object> hibernateProperties() {
-        /*Properties hibernateProperties = new Properties();*/
-        Map<String, Object> hibernateProperties = new HashMap<>();
-        hibernateProperties.put("hibernate.hbm2ddl.auto",
+    private Properties hibernateProperties() {
+        Properties hibernateProperties = new Properties();
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto",
                 this.env.getProperty("hibernate.hbm2ddl.auto"));
-        hibernateProperties.put("hibernate.dialect",
+        hibernateProperties.setProperty("hibernate.dialect",
                 this.env.getProperty("hibernate.dialect"));
-        hibernateProperties.put("hibernate.enable_lazy_load_no_trans",
+        hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans",
                 this.env.getProperty("hibernate.enable_lazy_load_no_trans"));
-        hibernateProperties.put("hibernate.proc.param_null_passing",
+        hibernateProperties.setProperty("hibernate.proc.param_null_passing",
                 String.valueOf(true));
-        hibernateProperties.put("hibernate.show_sql",
+        hibernateProperties.setProperty("hibernate.show_sql",
                 env.getProperty("hibernate.show_sql"));
         hibernateProperties.put(org.hibernate.cfg.Environment.MULTI_TENANT,
                 MultiTenancyStrategy.SCHEMA);
+        hibernateProperties.setProperty(
+                AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER,
+                TenantContext.TenantIdentifierResolver.class.getName()
+        );
         TenantConnectionProvider tenantConnectionProvider =
                 multiTenantConnectionProvider(hibernateProperties);
         hibernateProperties.put(
                 org.hibernate.cfg.Environment.MULTI_TENANT_CONNECTION_PROVIDER,
                 tenantConnectionProvider);
-        hibernateProperties.put(
-                AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER,
-                TenantContext.TenantIdentifierResolver.class.getName()
-        );
+        hibernateProperties.put(AvailableSettings.INTERCEPTOR, interceptor);
 
         /*hibernateProperties.setProperty("hibernate.jdbc.batch_size",
                 env.getProperty("hibernate.jdbc.batch_size"));

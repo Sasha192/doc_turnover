@@ -1,15 +1,13 @@
 package app.customtenant.models.basic.taskmodels;
 
-import app.configuration.spring.appfactory.ApplicationFactory;
 import app.controllers.dto.TaskDto;
-import app.customtenant.eventdriven.publishers.TaskEventPublisher;
 import app.customtenant.models.abstr.IdentityBaseEntity;
+import app.customtenant.models.abstr.TaskHolderComment;
 import app.customtenant.models.basic.BriefDocument;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.Report;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.serialization.ExcludeForJsonBriefTask;
-import app.tenantconfiguration.TenantContext;
 import app.utils.CustomAppDateTimeUtil;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -31,7 +29,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tasks")
@@ -39,14 +36,11 @@ public class Task
         extends IdentityBaseEntity
         implements Serializable {
 
-    @Transient
-    private TaskEventPublisher publisher;
-
     @Column(name = "creation_time")
     private long creationTime;
 
     @Column(name = "is_deadline")
-    private boolean deadline = false;
+    private Boolean deadline = false;
 
     @Column(name = "task")
     private String name;
@@ -65,14 +59,15 @@ public class Task
     private TaskStatus status;
 
     @Column(name = "task_owner_id")
-    private long taskOwnerId;
+    private long ownerId;
 
     @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.EAGER)
     @JoinColumn(name = "task_owner_id",
             insertable = false,
             updatable = false)
-    private Performer taskOwner;
+    @ExcludeForJsonBriefTask
+    private Performer owner;
 
     @ElementCollection
     @CollectionTable(name = "tasks_performers",
@@ -90,7 +85,6 @@ public class Task
     private Set<Long> documentsIds;
 
     @Column(name = "report_id")
-    @ExcludeForJsonBriefTask
     private Long reportId;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
@@ -108,15 +102,6 @@ public class Task
     @ExcludeForJsonBriefTask
     private Set<String> keys;
 
-    @JoinTable(name = "tasks_performers",
-            joinColumns = @JoinColumn(name = "task_id",
-                    referencedColumnName = "id",
-                    insertable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "performer_id"))
-    @OneToMany(cascade = CascadeType.DETACH)
-    @ExcludeForJsonBriefTask
-    private Set<Performer> performers;
-
     @JoinTable(name = "tasks_documents",
             joinColumns = @JoinColumn(name = "task_id",
                     referencedColumnName = "id",
@@ -125,6 +110,22 @@ public class Task
     @OneToMany(cascade = CascadeType.DETACH)
     @ExcludeForJsonBriefTask
     private Set<BriefDocument> documents;
+
+    @JoinTable(name = "comment_post",
+            joinColumns = @JoinColumn(name = "task_id" ,
+                    insertable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "id"))
+    @OneToMany(cascade = CascadeType.DETACH)
+    @ExcludeForJsonBriefTask
+    private Set<TaskHolderComment> comments;
+
+    @ElementCollection
+    @CollectionTable(name = "comment_post",
+            joinColumns = @JoinColumn(name = "task_id")
+    )
+    @Column(name = "id")
+    @ExcludeForJsonBriefTask
+    private Set<Long> commentIds;
 
     public Task() {
         this.creationTime = System.currentTimeMillis();
@@ -136,32 +137,52 @@ public class Task
     public Task(TaskDto dto, long taskOwnerIdd)
             throws ParseException {
         this();
-        this.taskOwnerId = taskOwnerIdd;
+        this.ownerId = taskOwnerIdd;
         this.status = TaskStatus.getByName(dto.getStatus());
         this.controlDate = CustomAppDateTimeUtil.parse(dto.getDateControl());
-        this.deadlineDate = CustomAppDateTimeUtil.parse(dto.getDeadline());
+        this.deadlineDate = CustomAppDateTimeUtil.parse(dto.getDateDeadline());
         this.description = dto.getDescription();
         this.name = dto.getName();
-        this.documentsIds = new HashSet<>();
-        this.performerIds = new HashSet<>();
         this.keys = new HashSet<>();
-        Collections.addAll(keys, dto.getKeyWords());
         Collections.addAll(keys, name.trim().toLowerCase().split(" "));
         Collections.addAll(keys, description.trim().toLowerCase().split(" "));
         Collections.addAll(documentsIds, dto.getDocList());
         Collections.addAll(performerIds, dto.getPerformerList());
+        if (performerIds.isEmpty() || documentsIds.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 
-    public TaskEventPublisher getPublisher() {
-        return publisher;
+    public Set<Long> getCommentIds() {
+        return commentIds;
+    }
+
+    public void setCommentIds(Set<Long> commentIds) {
+        this.commentIds = commentIds;
+    }
+
+    public Set<TaskHolderComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<TaskHolderComment> comments) {
+        this.comments = comments;
     }
 
     public Long getTaskOwnerId() {
-        return taskOwnerId;
+        return ownerId;
     }
 
     public void setTaskOwnerId(Long taskOwnerId) {
-        this.taskOwnerId = taskOwnerId;
+        this.ownerId = taskOwnerId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getReportId() {
@@ -170,14 +191,6 @@ public class Task
 
     public void setReportId(Long reportId) {
         this.reportId = reportId;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Boolean getDeadline() {
@@ -220,14 +233,6 @@ public class Task
         return this.status;
     }
 
-    public Set<Performer> getPerformers() {
-        return performers;
-    }
-
-    public void setPerformers(Set<Performer> performers) {
-        this.performers = performers;
-    }
-
     public Set<BriefDocument> getDocuments() {
         return documents;
     }
@@ -237,54 +242,19 @@ public class Task
     }
 
     public void setStatus(final TaskStatus newState) {
-        if (null != newState) {
-            TaskStatus oldState = getStatus();
-            if (oldState != null) {
-                boolean check = TaskStatusValidator
-                        .check(oldState, newState);
-                if (check && null != getId()
-                        && checkPublisher()) {
-                    publisher.onStatusUpdate(this, oldState, newState, TenantContext.getTenant());
-                }
-            }
-            this.status = newState;
-        }
+        this.status = newState;
     }
 
     public void setDeadline(final Boolean deadline) {
         this.deadline = deadline;
-        if (null != getId() && deadline
-                && checkPublisher()) {
-            publisher.onDeadlineSet(this, TenantContext.getTenant());
-        }
-    }
-
-    public String getStatusString() {
-        return getStatus().getName();
-    }
-
-    public Set<String> getKeys() {
-        return this.keys;
-    }
-
-    public void setKeys(final Set<String> keys) {
-        this.keys = keys;
     }
 
     public Performer getTaskOwner() {
-        return this.taskOwner;
+        return this.owner;
     }
 
     public void setTaskOwner(final Performer taskOwner) {
-        this.taskOwner = taskOwner;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
+        this.owner = taskOwner;
     }
 
     public Report getReport() {
@@ -316,15 +286,6 @@ public class Task
 
     public void setDocumentsIds(Set<Long> documentsIds) {
         this.documentsIds = documentsIds;
-    }
-
-    private boolean checkPublisher() {
-        if (publisher == null) {
-            publisher = (TaskEventPublisher)
-                    ApplicationFactory
-                            .getBean(TaskEventPublisher.class);
-        }
-        return publisher != null;
     }
 
     @Override

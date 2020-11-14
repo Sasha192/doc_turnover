@@ -1,19 +1,13 @@
 package app.customtenant.models.abstr;
 
 import app.customtenant.models.basic.Performer;
-import app.customtenant.models.mysqlviews.BriefPerformer;
-import app.customtenant.models.serialization.ExcludeForJsonComment;
 import app.utils.CustomAppDateTimeUtil;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -27,19 +21,8 @@ public abstract class SuperComment
     @Column(name = "comment")
     protected String comment;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH},
-            fetch = FetchType.LAZY)
-    @JoinColumn(name = "performer_id", insertable = false, updatable = false)
-    @ExcludeForJsonComment
-    protected Performer author;
-
     @Column(name = "performer_id")
     protected Long authorId;
-
-    @ManyToOne(cascade = {CascadeType.REFRESH},
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "performer_id", insertable = false, updatable = false)
-    protected BriefPerformer performer;
 
     @Column(name = "date")
     protected Date date;
@@ -48,35 +31,15 @@ public abstract class SuperComment
     protected Time time;
 
     @Column(name = "date_time")
-    protected transient Timestamp dateTime;
+    protected Timestamp dateTime;
 
     public SuperComment() {
         this.date = CustomAppDateTimeUtil.now();
         this.time = Time.valueOf(LocalTime.now());
     }
 
-    @Deprecated
-    /**
-     * @see SuperComment#setAuthorId(Long)
-     */
-    public void setAuthor(Performer author) {
-        this.author = author;
-    }
-
-    public Long getAuthorId() {
-        return authorId;
-    }
-
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
-    }
-
-    public BriefPerformer getPerformer() {
-        return performer;
-    }
-
-    public String getComment() {
-        return comment;
     }
 
     public void setComment(String comment) {
@@ -91,12 +54,28 @@ public abstract class SuperComment
         this.date = date;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
     public Time getTime() {
         return time;
     }
 
     public void setTime(Time time) {
         this.time = time;
+    }
+
+    public Timestamp getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(Timestamp dateTime) {
+        this.dateTime = dateTime;
     }
 
     /**
@@ -131,18 +110,6 @@ public abstract class SuperComment
         return new HashCodeBuilder(17, 37)
                 .append(getId())
                 .toHashCode();
-    }
-
-    public Timestamp getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(Timestamp dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public Performer getAuthor() {
-        return author;
     }
 
 }

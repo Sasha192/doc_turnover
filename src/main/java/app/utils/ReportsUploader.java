@@ -30,7 +30,6 @@ public class ReportsUploader {
     private final Datastore datastore;
     private final IBriefDocumentService documentService;
     private final IReportService reportService;
-    private final IReportCommentService commentService;
     private final ITaskService taskService;
     private final GenericEventPublisher<Report> reportPublisher;
     private final GenericEventPublisher<TaskHolderComment> commentPublisher;
@@ -40,7 +39,6 @@ public class ReportsUploader {
                            MaliciousDocumentsScanUtil scan,
                            Datastore datastore,
                            IReportService reportService,
-                           IReportCommentService commentService,
                            ITaskService taskService,
                            @Qualifier("report_pub")
                                        GenericEventPublisher<Report> reportPublisher,
@@ -50,7 +48,6 @@ public class ReportsUploader {
         this.scan = scan;
         this.datastore = datastore;
         this.reportService = reportService;
-        this.commentService = commentService;
         this.taskService = taskService;
         this.reportPublisher = reportPublisher;
         this.commentPublisher = commentPublisher;

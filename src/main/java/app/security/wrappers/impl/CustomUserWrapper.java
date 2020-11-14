@@ -5,6 +5,8 @@ import app.security.service.IUserService;
 import app.security.wrappers.IAuthenticationViaCookies;
 import app.security.wrappers.ICustomUserWrapper;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +20,7 @@ public class CustomUserWrapper implements ICustomUserWrapper {
     private IUserService userService;
 
     @Override
-    public CustomUser retrieveUser(HttpServletRequest request) {
+    public @NotNull CustomUser retrieveUser(HttpServletRequest request) {
         return userService.findOne(1L);
         /*HttpSession session = request.getSession(false);
         if (session != null) {

@@ -1,3 +1,4 @@
+/*
 package app;
 
 import app.utils.ImgToken;
@@ -10,7 +11,8 @@ import org.junit.jupiter.api.Test;
 
 class MainTest {
 
-    private static String WHITESPACE = "\\s"; /*
+    private static String WHITESPACE = "\\s"; */
+/*
             + "\\u0009" // CHARACTER TABULATION
             + "\\u000A" // LINE FEED (LF)
             + "\\u000B" // LINE TABULATION
@@ -36,7 +38,8 @@ class MainTest {
             + "\\u2029" // PARAGRAPH SEPARATOR
             + "\\u202F" // NARROW NO-BREAK SPACE
             + "\\u205F" // MEDIUM MATHEMATICAL SPACE
-            + "\\u3000" // IDEOGRAPHIC SPACE*/
+            + "\\u3000" // IDEOGRAPHIC SPACE*//*
+
 
     private static final String REG_EX =
             "(\\/[a-zA-Z]+)+"
@@ -147,3 +150,4 @@ class MainTest {
         }
     }
 }
+*/

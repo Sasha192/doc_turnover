@@ -9,15 +9,21 @@ import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.TaskComment;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.basic.taskmodels.Task;
+import app.customtenant.service.interfaces.IPerformerService;
 import app.customtenant.service.interfaces.ITaskCommentService;
 import app.customtenant.service.interfaces.ITaskService;
 import app.security.models.SimpleRole;
 import app.security.wrappers.IPerformerWrapper;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -49,6 +55,8 @@ public class TaskNavigationController extends JsonSupportController {
 
     private final GenericEventPublisher<TaskHolderComment> commentPublisher;
 
+    private final IPerformerService performerService;
+
     public TaskNavigationController(IPerformerWrapper performerWrapper,
                                     ITaskService taskService,
                                     ITaskCommentService taskCommentService,
@@ -56,25 +64,31 @@ public class TaskNavigationController extends JsonSupportController {
                                             GenericEventPublisher<Task> taskPublisher,
                                     @Qualifier("comment_pub")
                                             GenericEventPublisher<TaskHolderComment>
-                                            commentPublisher) {
+                                            commentPublisher,
+                                    IPerformerService performerService) {
         this.performerWrapper = performerWrapper;
         this.taskService = taskService;
         this.taskCommentService = taskCommentService;
         this.taskPublisher = taskPublisher;
         this.commentPublisher = commentPublisher;
+        this.performerService = performerService;
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/{page_id}", method = RequestMethod.GET)
     public void list(HttpServletResponse response, HttpServletRequest request,
-                     @PathVariable(value = "pageId", required = false) Integer pageId)
+                     @PathVariable(value = "page_id", required = false) Integer pageId,
+                     @RequestParam(value = "depId", required = false) Long requestedDepId)
             throws IOException {
         Performer performer = performerWrapper.retrievePerformer(request);
-        Long depoId = performer.getDepartmentId();
         List<Task> tasks = null;
         SimpleRole roles = performer.getRoles();
         int pageSize = Constants.DEFAULT_PAGE_SIZE;
         if (allowAllOp(roles)) {
-            tasks = taskService.findAll(pageId, pageSize);
+            if (requestedDepId != null) {
+                tasks = taskService.findByDepartment(pageId, pageSize, requestedDepId);
+            } else {
+                tasks = taskService.findAll(pageId, pageSize);
+            }
         } else if (roles.equals(SimpleRole.MANAGER)) {
             tasks = taskService.findByDepartment(pageId, pageSize,
                     performer.getDepartmentId());
@@ -85,10 +99,10 @@ public class TaskNavigationController extends JsonSupportController {
         writeToResponse(response, Constants.BUILDER_BRIEF, tasks);
     }
 
-    @RequestMapping(value = "/my/list/{task_status}", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/{task_status}/{page_id}", method = RequestMethod.GET)
     public void list(HttpServletResponse response, HttpServletRequest request,
                      @PathVariable(value = "task_status") String status,
-                     @RequestParam(value = "page_id") Integer page,
+                     @PathVariable(value = "page_id") Integer page,
                      @RequestParam(value = "perf_id", required = false) Long performerId)
             throws IOException {
         Performer performer = performerWrapper.retrievePerformer(request);
@@ -117,6 +131,31 @@ public class TaskNavigationController extends JsonSupportController {
                 || roles.equals(SimpleRole.G_MANAGER);
     }
 
+    @RequestMapping(value = "/doc/remove",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void create(@RequestBody String body,
+                       HttpServletResponse response,
+                       HttpServletRequest request) {
+        JsonObject object = JsonParser.parseString(body).getAsJsonObject();
+        try {
+        Long taskId = object.get("taskId").getAsLong();
+        Long docId = object.get("docId").getAsLong();
+        Task task = taskService.findOne(taskId);
+        if (task != null) {
+                Performer ownerPerformer = task.getTaskOwner();
+                if (allowOp(ownerPerformer.getRoles())) {
+                    task.getDocumentsIds().remove(docId);
+                    taskService.update(task);
+                } else {
+                    sendDefaultJson(response, false, "Access Denied");
+                }
+            }
+        } catch (Exception ex) {
+            sendDefaultJson(response, false, "Wrong data passed");
+        }
+    }
+
     @RequestMapping(value = "/create",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -142,17 +181,122 @@ public class TaskNavigationController extends JsonSupportController {
     @RequestMapping(value = "/modify/status", method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public void changeStatus(@RequestParam("status") String newStatus,
-                             @RequestParam("task_id") Long taskId,
+                             @RequestParam("taskId") Long taskId,
                              HttpServletResponse response, HttpServletRequest request) {
         Task task = taskService.findOne(taskId);
         TaskStatus status = TaskStatus.getByName(newStatus);
         Performer performer = performerWrapper.retrievePerformer(request);
         if (task.getPerformerIds().contains(performer.getId())) {
+            task.setStatus(status);
             taskService.update(task);
             sendDefaultJson(response, true, "");
         } else {
             sendDefaultJson(response, false, "Access Denied");
         }
+    }
+
+    @RequestMapping(value = "/modify/deadline", method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void changeDeadline(@RequestBody String body,
+                             HttpServletResponse response, HttpServletRequest request) {
+        JsonElement element = JsonParser.parseString(body);
+        if (element.isJsonObject()) {
+            try {
+                JsonObject o = element.getAsJsonObject();
+                Long taskId = o.get("taskId").getAsLong();
+                String newDeadlineStr = o.get("date").getAsString();
+                Task task = taskService.findOne(taskId);
+                Date deadline = Constants.DATE_FORMAT.parse(newDeadlineStr);
+                Performer performer = performerWrapper.retrievePerformer(request);
+                if (task.getTaskOwnerId().equals(performer.getId())) {
+                    task.setDeadlineDate(deadline);
+                    taskService.update(task);
+                    sendDefaultJson(response, true, "");
+                }
+            } catch (ParseException e) {
+                ;
+            }
+        }
+        sendDefaultJson(response, false, "Access Denied");
+    }
+
+    @RequestMapping(value = "/modify/deadline", method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void changeControlDate(@RequestBody String body,
+                               HttpServletResponse response, HttpServletRequest request) {
+        JsonElement element = JsonParser.parseString(body);
+        if (element.isJsonObject()) {
+            try {
+                JsonObject o = element.getAsJsonObject();
+                Long taskId = o.get("taskId").getAsLong();
+                String newDeadlineStr = o.get("date").getAsString();
+                Task task = taskService.findOne(taskId);
+                Date deadline = Constants.DATE_FORMAT.parse(newDeadlineStr);
+                Performer performer = performerWrapper.retrievePerformer(request);
+                if (task.getTaskOwnerId().equals(performer.getId())) {
+                    task.setControlDate(deadline);
+                    taskService.update(task);
+                    sendDefaultJson(response, true, "");
+                }
+            } catch (ParseException e) {
+                ;
+            }
+        }
+        sendDefaultJson(response, false, "Access Denied");
+    }
+
+    @RequestMapping(value = "/performer/add", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addPerformer(@RequestBody String body,
+                               HttpServletRequest request,
+                               HttpServletResponse response) {
+        JsonElement elem = JsonParser.parseString(body);
+        if (elem.isJsonObject()) {
+            JsonObject o = elem.getAsJsonObject();
+            try {
+                Long taskId = o.get("taskId").getAsLong();
+                Long performerId = o.get("performerId").getAsLong();
+                Task task = taskService.findOne(taskId);
+                if (task != null) {
+                    if (performerService.findOne(performerId) != null) {
+                        task.getPerformerIds().add(performerId);
+                        taskService.update(task);
+                    }
+                }
+                sendDefaultJson(response, true, "");
+                return;
+            } catch (Exception e) {
+                ;
+            }
+        }
+        sendDefaultJson(response, false, "Wrong request");
+    }
+
+    @RequestMapping(value = "/performer/remove", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void removePerformer(@RequestBody String body,
+                               HttpServletRequest request,
+                               HttpServletResponse response) {
+        JsonElement elem = JsonParser.parseString(body);
+        if (elem.isJsonObject()) {
+            JsonObject o = elem.getAsJsonObject();
+            try {
+                Long taskId = o.get("taskId").getAsLong();
+                Long performerId = o.get("performerId").getAsLong();
+                Task task = taskService.findOne(taskId);
+                if (task != null) {
+                    if (performerService.findOne(performerId) != null) {
+                        task.getPerformerIds().remove(performerId);
+                        taskService.update(task);
+                    }
+                }
+                sendDefaultJson(response, true, "");
+                return;
+            } catch (Exception e) {
+                ;
+            }
+        }
+        sendDefaultJson(response, false, "Wrong request");
     }
 
     @RequestMapping(value = "/comment/add", method = RequestMethod.POST,
@@ -161,7 +305,7 @@ public class TaskNavigationController extends JsonSupportController {
                                HttpServletRequest request,
                                HttpServletResponse response) {
         TaskComment taskComment = new TaskComment();
-        Task task = taskService.findOne(commentDto.getTodoId());
+        Task task = taskService.findOne(commentDto.getTaskId());
         if (task == null) {
             sendDefaultJson(response, false, "");
         }
@@ -175,6 +319,26 @@ public class TaskNavigationController extends JsonSupportController {
             taskComment.setTask(task);
             taskCommentService.create(taskComment);
             commentPublisher.publish(taskComment, performer);
+        }
+        sendDefaultJson(response, true, "");
+    }
+
+    @RequestMapping(value = "/comment/remove", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void removeTaskComment(@RequestBody String body,
+                               HttpServletRequest request,
+                               HttpServletResponse response) {
+        JsonObject o = JsonParser.parseString(body).getAsJsonObject();
+        Long taskId = o.get("taskId").getAsLong();
+        Long commentId = o.get("commentId").getAsLong();
+        Performer performer = performerWrapper.retrievePerformer(request);
+        TaskComment comment = taskCommentService.findOne(commentId);
+        if (performer != null
+                && comment.getAuthorId().equals(performer.getId())) {
+            Task task = taskService.findOne(taskId);
+            if (task != null) {
+                task.getCommentIds().remove(commentId);
+            }
         }
         sendDefaultJson(response, true, "");
     }
@@ -194,66 +358,75 @@ public class TaskNavigationController extends JsonSupportController {
             sendDefaultJson(response, false, "");
             return;
         }
-        writeToResponse(response, Constants.BUILDER_DETAILS, task);
+        sendDefaultJson(response, task);
     }
 
     @RequestMapping(value = "/modify/docs",
             consumes = MediaType.APPLICATION_JSON_VALUE)
+    // @TODO : I CHANGED taskIds ->
     public void modifyTask(HttpServletResponse response,
                            HttpServletRequest request,
-                           @RequestParam("todoId") Long taskId,
+                           @RequestParam("todoIds") Long[] taskIds,
                            @RequestParam("docIds") String[] docIds,
                            @RequestParam(value = "comment", required = false)
                                    String comment)
             throws IOException {
         Performer performer = performerWrapper.retrievePerformer(request);
         SimpleRole roles = performer.getRoles();
-        if (allowOp(roles)) {
-            Task task = taskService.findOne(taskId);
-            try {
-                for (String docId : docIds) {
-                    final Long id = Long.valueOf(docId);
-                    task.addDocumentId(id);
+        for (Long taskId : taskIds) {
+            if (allowOp(roles)) {
+                Task task = taskService.findOne(taskId);
+                try {
+                    for (String docId : docIds) {
+                        final Long id = Long.valueOf(docId);
+                        task.addDocumentId(id);
+                    }
+                } catch (NumberFormatException ex) {
+                    LOGGER.error("NUMBER FORMAT EXCEPTION " + ex.getMessage());
+                    LOGGER.error(ex.getStackTrace());
+                    sendDefaultJson(response, false, "Access Denied");
                 }
-            } catch (NumberFormatException ex) {
-                LOGGER.error("NUMBER FORMAT EXCEPTION " + ex.getMessage());
-                LOGGER.error(ex.getStackTrace());
+                taskService.update(task);
+                if (comment == null || comment.isEmpty()) {
+                    comment = performer.getName() + " вніс(внесла) зміни до завдання.";
+                }
+                TaskComment taskComment = new TaskComment();
+                taskComment.setTaskId(taskId);
+                taskComment.setComment(comment);
+                taskComment.setAuthorId(performer.getId());
+                taskComment.setTask(task);
+                taskCommentService.create(taskComment);
+                commentPublisher.publish(taskComment, performer);
+            } else {
                 sendDefaultJson(response, false, "Access Denied");
+                return;
             }
-            taskService.update(task);
-            if (comment == null || comment.isEmpty()) {
-                comment = performer.getName() + " вніс(внесла) зміни до завдання.";
-            }
-            TaskComment taskComment = new TaskComment();
-            taskComment.setTaskId(taskId);
-            taskComment.setComment(comment);
-            taskComment.setAuthorId(performer.getId());
-            taskComment.setTask(task);
-            taskCommentService.create(taskComment);
-            commentPublisher.publish(taskComment, performer);
-            sendDefaultJson(response, true, "");
-        } else {
-            sendDefaultJson(response, false, "Access Denied");
         }
+        sendDefaultJson(response, true, "");
     }
 
     @RequestMapping(value = "/modify/name")
     public void modifyTaskName(@RequestParam("todoId") Long taskId,
-                               @RequestParam(value = "name", required = false) String newName,
+                               @RequestParam(value = "name", required = false)
+                                       String newName,
                                @RequestParam(value = "description", required = false)
                                        String description,
                                HttpServletRequest request,
-                               HttpServletResponse response)
-            throws IOException {
+                               HttpServletResponse response) {
         Performer performer = performerWrapper
                 .retrievePerformer(request);
         SimpleRole roles = performer.getRoles();
         if (allowOp(roles)) {
-            taskService.updateNameDescription(newName, description, taskId);
+            Task task = taskService.findOne(taskId);
+            if (newName != null) {
+                task.setToDo(newName);
+            }
+            if (description != null) {
+                task.setDescription(description);
+            }
             sendDefaultJson(response, true, "");
         } else {
             sendDefaultJson(response, false, "Access Denied");
-            return;
         }
     }
 
