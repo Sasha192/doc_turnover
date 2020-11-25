@@ -31,7 +31,7 @@ public abstract class IdentityBaseEntity
             generator = "sequenceGenerator"
     )*/
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Access(AccessType.PROPERTY)
     protected Long id;
 

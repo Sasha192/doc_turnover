@@ -1,6 +1,7 @@
 package app.tenantconfiguration;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,31 +23,38 @@ public class TenantConnectionProvider
 
     private BasicDataSource defaultDataSource;
 
+    private BasicDataSource phantomDataSource;
+
     private Environment env;
 
     private Properties properties;
 
-    public TenantConnectionProvider(DataSource dataSource,
+    public TenantConnectionProvider(DataSource defaultDs,
+                                    DataSource phantomDs,
+                                    Collection<String> tenants,
                                     Environment environment,
                                     Properties properties) {
         this.env = environment;
         this.properties = properties;
-        if (dataSource instanceof BasicDataSource) {
-            this.defaultDataSource = (BasicDataSource) dataSource;
+        if (defaultDs instanceof BasicDataSource
+                && phantomDs instanceof BasicDataSource) {
+            this.defaultDataSource = (BasicDataSource) defaultDs;
+            this.phantomDataSource = (BasicDataSource) phantomDs;
+            addTenantConnectionProvider(TenantContext.DEFAULT_TENANT_IDENTIFIER);
+            addTenantConnectionProvider(TenantContext.PHANTOM_TENANT_IDENTIFIER);
+            for (String id : tenants) {
+                addTenantConnectionProvider(id);
+            }
         } else {
             throw new UnsatisfiedDependencyException(TenantConnectionProvider.class.getName(),
                     BasicDataSource.class.getName(),
-                    dataSource.getClass().getName(),
+                    defaultDs.getClass().getName(),
                     "");
         }
     }
 
     @Override
     protected ConnectionProvider getAnyConnectionProvider() {
-        if (!connectionProviderMap.containsKey(
-                TenantContext.DEFAULT_TENANT_IDENTIFIER)) {
-            addTenantConnectionProvider(TenantContext.DEFAULT_TENANT_IDENTIFIER);
-        }
         return connectionProviderMap.get(
                 TenantContext.DEFAULT_TENANT_IDENTIFIER
         );
@@ -92,7 +100,11 @@ public class TenantConnectionProvider
 
     public BasicDataSource createDataSource(String tenantId) {
         BasicDataSource tenantDataSource = null;
-        if (!tenantId.equals(TenantContext.DEFAULT_TENANT_IDENTIFIER)) {
+        if (tenantId.equals(TenantContext.DEFAULT_TENANT_IDENTIFIER)) {
+            tenantDataSource = defaultDataSource;
+        } else if (tenantId.equals(TenantContext.PHANTOM_TENANT_IDENTIFIER)) {
+            tenantDataSource = phantomDataSource;
+        } else {
             String url = env.getProperty("db.abstract_url");
             url = url.replaceAll("\\{db_name\\}", tenantId);
             tenantDataSource = new BasicDataSource();
@@ -100,8 +112,6 @@ public class TenantConnectionProvider
             tenantDataSource.setUrl(url);
             tenantDataSource.setUsername(defaultDataSource.getUsername());
             tenantDataSource.setPassword(defaultDataSource.getPassword());
-        } else {
-            tenantDataSource = defaultDataSource;
         }
         return tenantDataSource;
     }
@@ -132,5 +142,15 @@ public class TenantConnectionProvider
                 .createStatement()
                 .execute("CREATE SCHEMA " + tenantId);
         return createDataSource(tenantId);
+    }
+
+    public void remove(String id)
+            throws SQLException {
+        String query = String.format("DROP SCHEMA IF EXISTS `%s`", id);
+        getAnyConnectionProvider()
+                .getConnection()
+                .createStatement()
+                .execute(query);
+        connectionProviderMap.remove(id);
     }
 }

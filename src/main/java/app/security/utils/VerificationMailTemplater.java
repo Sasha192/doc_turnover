@@ -16,9 +16,9 @@ public class VerificationMailTemplater {
     private Handlebars handlebars;
 
     public String render(String verificationCode) throws IOException {
-        Template template = handlebars.compile("verification_email_template");
+        Template template = handlebars.compile("verificatonMail");
         ModelMap modelMap = new ModelMap();
-        modelMap.addAttribute("verification_code", verificationCode);
+        modelMap.addAttribute("verificationCode", verificationCode);
         return template.apply(modelMap);
     }
 

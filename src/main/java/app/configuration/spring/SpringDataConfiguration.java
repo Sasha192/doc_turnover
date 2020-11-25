@@ -2,11 +2,15 @@ package app.configuration.spring;
 
 import app.tenantconfiguration.TenantConnectionProvider;
 import app.tenantconfiguration.TenantContext;
+
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+
+import app.tenantdefault.service.ITenantService;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.hibernate.Interceptor;
 import org.hibernate.MultiTenancyStrategy;
@@ -60,19 +64,34 @@ public class SpringDataConfiguration {
 
     private final Environment env;
     private final Interceptor interceptor;
+    private final ITenantService tenantService;
 
     public SpringDataConfiguration(Environment env,
                                    @Qualifier("hibernate_empty_int_impl")
-                                           Interceptor interceptor) {
+                                           Interceptor interceptor,
+                                   ITenantService tenantService) {
         this.env = env;
         this.interceptor = interceptor;
+        this.tenantService = tenantService;
     }
 
     @Bean("bcrew_default_data_source")
-    public DataSource getDataSource() {
+    public DataSource defaultDataSource() {
         final BasicDataSource dataSource = new BasicDataSource();
         String url = env.getProperty("db.abstract_url");
         url = url.replaceAll("\\{db_name\\}", "bcrew_default");
+        dataSource.setDriverClassName(this.env.getProperty("db.driver"));
+        dataSource.setUrl(url);
+        dataSource.setUsername(this.env.getProperty("db.username"));
+        dataSource.setPassword(this.env.getProperty("db.password"));
+        return dataSource;
+    }
+
+    @Bean("phantom_data_source")
+    public DataSource phantomTenant() {
+        final BasicDataSource dataSource = new BasicDataSource();
+        String url = env.getProperty("db.abstract_url");
+        url = url.replaceAll("\\{db_name\\}", "bcrew");
         dataSource.setDriverClassName(this.env.getProperty("db.driver"));
         dataSource.setUrl(url);
         dataSource.setUsername(this.env.getProperty("db.username"));
@@ -90,7 +109,16 @@ public class SpringDataConfiguration {
                 "app.customtenant.events");
         final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
-        em.setJpaProperties(hibernateProperties());
+        Properties hibernateProperties = hibernateProperties();
+        Collection<String> tenants = tenantService.findTenants();
+        TenantConnectionProvider tenantConnectionProvider =
+                multiTenantConnectionProvider(tenants, hibernateProperties);
+        hibernateProperties.put(
+                org.hibernate.cfg.Environment.MULTI_TENANT_CONNECTION_PROVIDER,
+                tenantConnectionProvider);
+        hibernateProperties.put(AvailableSettings.INTERCEPTOR, interceptor);
+        em.setJpaProperties(hibernateProperties);
+
         return em;
     }
 
@@ -117,9 +145,9 @@ public class SpringDataConfiguration {
         return slr;
     }
 
-    @Bean("tenant_conn_provider")
-    public TenantConnectionProvider multiTenantConnectionProvider(Properties properties) {
-        return new TenantConnectionProvider(getDataSource(), env, properties);
+    @Bean(value = "tenant_conn_provider")
+    public TenantConnectionProvider multiTenantConnectionProvider(Collection<String> tenants, Properties properties) {
+        return new TenantConnectionProvider(defaultDataSource(), phantomTenant(), tenants, env, properties);
     }
 
     private Properties hibernateProperties() {
@@ -140,13 +168,6 @@ public class SpringDataConfiguration {
                 AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER,
                 TenantContext.TenantIdentifierResolver.class.getName()
         );
-        TenantConnectionProvider tenantConnectionProvider =
-                multiTenantConnectionProvider(hibernateProperties);
-        hibernateProperties.put(
-                org.hibernate.cfg.Environment.MULTI_TENANT_CONNECTION_PROVIDER,
-                tenantConnectionProvider);
-        hibernateProperties.put(AvailableSettings.INTERCEPTOR, interceptor);
-
         /*hibernateProperties.setProperty("hibernate.jdbc.batch_size",
                 env.getProperty("hibernate.jdbc.batch_size"));
         hibernateProperties.setProperty("hibernate.order_inserts",

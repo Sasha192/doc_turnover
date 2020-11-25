@@ -12,7 +12,7 @@ public class TenantDto {
     private String companyAddress;
 
     @NotNull
-    private String paymentTariff;
+    private String tariff;
 
     @NotNull
     private boolean isPrivate;
@@ -26,7 +26,11 @@ public class TenantDto {
     }
 
     public String getPaymentTariff() {
-        return paymentTariff;
+        return tariff;
+    }
+
+    public String getTariff() {
+        return tariff;
     }
 
     public boolean isPrivate() {

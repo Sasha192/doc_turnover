@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/departments")
+@RequestMapping("/com/departments")
 public class DepartmentsNavigationController extends JsonSupportController {
 
     private static final GsonBuilder BUILDER =

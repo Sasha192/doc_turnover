@@ -1,0 +1,51 @@
+<div class="tool-bar">
+
+</div>
+<div class="body">
+    <div class="user-config d-flex">
+        <div class="user-config__img-block">
+            <div class="user-config__imag-block__name-wrapper">
+                <img id="userImg" class="user-config__img-block__img" /> <span class="user-config__user-name"
+                    id="userName"></span>
+            </div>
+            <div class="user-config__img-block__upload-field">
+                <div class="upload-file" style="flex-grow: 1; display:flex">
+                    <input maxlength="6" id="uploadFilesForm" data-event="uploadFiles" type="file"
+                        accept=".jpg, .png" />
+                    <label for="uploadFilesForm" style="flex-grow: 1;">
+                        <i class="fa fa-file-upload"></i>
+                        <span id="uploadFilesFormName" class="text">Оберіть файл</span>
+                    </label>
+                </div>
+            </div>
+            <button id="uploadFilesFormSubmit" class="user-config__img-block__upload-btn">
+                Завнтажити
+            </button>
+        </div>
+        <div class="user-config__info">
+            <div class="user-config__item">
+                <span class="user-config__item-title">Електронна пошта:</span>
+                <span id="userEmail" class="user-config__item-value"></span>
+            </div>
+
+            <div class="user-config__item">
+                <span class="user-config__item-title">Відділ:</span>
+                <span id="userDepartment" class="user-config__item-value">.</span>
+            </div>
+
+            <div class="user-config__item">
+                <span class="user-config__item-title">Роль:</span>
+                <span id="userRole" class="user-config__item-value"></span>
+            </div>
+        </div>
+        <div class="user-config__change-info">
+            <input id="pass1" class="user-config__change-info__input d-block w-100" type="password"
+                placeholder="Старий пароль">
+            <input id="pass2" class="user-config__change-info__input d-block w-100" type="password"
+                placeholder="Новий пароль">
+            <button id="changePass" class="user-config__change-info__btn w-100">
+                Змінити пароль
+            </button>
+        </div>
+    </div>
+</div>

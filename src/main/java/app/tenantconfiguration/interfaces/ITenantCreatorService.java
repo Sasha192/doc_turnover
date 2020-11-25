@@ -6,4 +6,5 @@ public interface ITenantCreatorService {
 
     String create() throws SQLException;
 
+    void remove(String id) throws SQLException;
 }

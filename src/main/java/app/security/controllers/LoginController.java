@@ -10,6 +10,7 @@ import app.security.wrappers.IAuthenticationManagement;
 import app.security.wrappers.IAuthenticationViaCookies;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import java.io.IOException;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/main/auth")
 public class LoginController extends JsonSupportController {
 
     private static final Logger LOGGER = Logger.getLogger("intExceptionLogger");
@@ -48,27 +49,27 @@ public class LoginController extends JsonSupportController {
                            Constants constants,
                            IAuthenticationManagement authenticationManagement,
                            VerificationCodeUtil codeUtil,
-                           IAuthenticationViaCookies authenticationViaCookies,
-                           GoogleAuthenticator authenticator) {
+                           IAuthenticationViaCookies authenticationViaCookies) {
         this.userService = userService;
         this.encoder = encoder;
         this.constants = constants;
         this.authenticationManagement = authenticationManagement;
         this.codeUtil = codeUtil;
         this.authenticationViaCookies = authenticationViaCookies;
-        this.authenticator = authenticator;
+        this.authenticator = new GoogleAuthenticator();
     }
 
     @PostMapping(value = "/login")
     public void tryAuthViaCookies(HttpServletRequest request,
                                   HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
         CustomUser user = authenticationViaCookies
                 .authenticatedViaCookies(request);
         if (user != null) {
             sendDefaultJson(response, true, "");
         } else {
-            response.sendRedirect("/auth/login/default");
+            request.getRequestDispatcher("/main/auth/login/default")
+                    .forward(request, response);
         }
     }
 
@@ -87,8 +88,10 @@ public class LoginController extends JsonSupportController {
             this.sendDefaultJson(res, false, "Wrong Credentials");
             return;
         }
+        userDto.setLoginOperation(true);
         codeUtil.createVerificationCode(userDto);
         codeUtil.sendVerificationCode(userDto, req, res);
+        sendDefaultJson(res, true, "");
     }
 
     @PostMapping(value = "/login/authenticator")

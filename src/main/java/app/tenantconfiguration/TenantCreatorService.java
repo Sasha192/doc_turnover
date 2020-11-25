@@ -19,9 +19,6 @@ public class TenantCreatorService implements ITenantCreatorService {
     private IFlywayTenantService<String> flywayTenantService;
 
     @Autowired
-    private Datastore datastore;
-
-    @Autowired
     private TenantConnectionProvider provider;
 
     private TimeBasedGenerator generator;
@@ -40,6 +37,11 @@ public class TenantCreatorService implements ITenantCreatorService {
         provider.addTenantConnectionProvider(tenantId, dataSource);
         flywayTenantService.init(dataSource, tenantId);
         return tenantId;
+    }
+
+    @Override
+    public void remove(String id) throws SQLException {
+        provider.remove(id);
     }
 
     private int abs(int hash) {

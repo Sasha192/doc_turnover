@@ -18,7 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/performer")
+@RequestMapping("/com/performer")
 public class PerformerController extends JsonSupportController {
 
     // @TODO : What should we do if connection is not via http ??? Could it be ???

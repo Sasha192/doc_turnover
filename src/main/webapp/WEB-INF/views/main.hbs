@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <script src="/scripts/index.js"></script>
+</head>
+
+<body>
+    <progress-bars>
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
+    </progress-bars>
+    {{> alerts}}
+    <div class="wrapper">
+        <header class="header">
+            <div class="header__inner">
+                <div class="header__logo">Madework.io</div>
+
+                <nav class="nav">
+                    <button id="scrollTTM" class="nav__item">
+                        <i class="fal fa-alarm-clock"></i>
+                        Todo Manager
+                    </button>
+
+                    <button id="scrollTFM" class="nav__item">
+                        <i class="fal fa-folder"></i>
+                        Files Manager
+                    </button>
+
+                    <button id="scrollTCB" class="nav__item">
+                        <i class="fal fa-chart-bar"></i>
+                        Charts
+                    </button>
+
+                    <button id="scrollTCP" class="nav__item">
+                        <i class="fal fa-wrench"></i>
+                        Control Panel
+                    </button>
+
+                    <button id="scrollTPL" class="nav__item">
+                        <i class="fal fa-shopping-cart"></i>
+                        Prices
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="signup-form">
+                <form class="signup-form__main-block">
+                    <button type="button" id="suwf" class="signup-form__btn">
+                        <img src="/img/Без названия.png" alt="" class="signup-form__btn-img" />
+                        Регистрация с Facebook
+                    </button>
+
+                    <button type="button" id="suwg" class="signup-form__btn">
+                        <img src="/img/1004px-Google__G__Logo.svg (1).png" alt="" class="signup-form__btn-img" />
+                        Регистрация с Google
+                    </button>
+
+                    <input placeholder="E-mail" type="email" class="signup-form__input" />
+
+                    <button id="su" type="submit" class="signup-form__btn active">
+                        Зареєструватися
+                    </button>
+
+                    <a class="signup-form__link" href="/main/signin"> Вже маєте аккаунт ? </a>
+                </form>
+
+                <img src="/img/Сгруппировать 39.png" alt="" class="signup-form__img" />
+            </div>
+
+            <div class="main__info">
+                <div id="TM" class="main__info-item">
+                    <div class="main__info-item__body">
+                        <div class="main__info-item__title">
+                            <i class="fal fa-alarm-clock"></i>
+                            Todo Manager
+                        </div>
+
+                        <div class="main__info-item__desc">
+                            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+                            diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                            aliquyam erat, sed diam voluptua. At vero eos et accusam et
+                            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+                            takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
+                            dolor sit amet, consetetur sadipscing elitr,
+                            <br />
+                            <br />
+                            Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                            a liquyam erat, sed diam voluptua. At vero eos et accusam et
+                            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+                            takimata
+                        </div>
+
+                        <div class="main__info-item__customization-element">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <img src="/img/file-manager-2_4x.webp" alt="" class="main__info-item__img" />
+                </div>
+
+                <div id="FM" class="main__info-item reverse">
+                    <div class="main__info-item__body">
+                        <div class="main__info-item__title">
+                            <i class="fal fa-folder"></i>
+                            Files Manager
+                        </div>
+
+                        <div class="main__info-item__desc">
+                            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+                            diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                            <br />
+                            <br />
+                            Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                            a liquyam erat, sed diam voluptua. At vero eos et accusam et
+                            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+                            takimata
+                        </div>
+
+                        <div class="main__info-item__customization-element">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <img src="/img/file-manager-2_4x.webp" alt="" class="main__info-item__img" />
+                </div>
+
+                <div id="CB" class="main__info-item">
+                    <div class="main__info-item__body">
+                        <div class="main__info-item__title">
+                            <i class="fal fa-chart-bar"></i>
+                            Charts
+                        </div>
+
+                        <div class="main__info-item__desc">
+                            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+                            diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                            <br />
+                            <br />
+                            Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                            a liquyam erat, sed diam voluptua. At vero eos et accusam et
+                            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+                            takimata
+                        </div>
+
+                        <div class="main__info-item__customization-element">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <img src="/img/file-manager-2_4x.webp" alt="" class="main__info-item__img" />
+                </div>
+
+                <div id="CP" class="main__info-item reverse">
+                    <div class="main__info-item__body">
+                        <div class="main__info-item__title">
+                            <i class="fal fa-wrench"></i>
+                            Control Panel
+                        </div>
+
+                        <div class="main__info-item__desc">
+                            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+                            diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                            <br />
+                            <br />
+                            Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                            a liquyam erat, sed diam voluptua. At vero eos et accusam et
+                            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+                            takimata
+                        </div>
+
+                        <div class="main__info-item__customization-element">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <img src="/img/file-manager-2_4x.webp" alt="" class="main__info-item__img" />
+                </div>
+            </div>
+        </main>
+
+        <div id="PL" class="prices">
+            <div class="prices__title">
+                <i class="fal fa-shopping-cart"></i>
+                Prices
+            </div>
+
+            <div class="prices__list">
+                <div class="prices__list-item trial">
+                    <div class="prices__list-item__headline">Стандартный</div>
+                    <p class="prices__list-item__short-desc">
+                        Минимум для начала работы
+                    </p>
+                    <p class="prices__list-item__option">10 Пользователей</p>
+                    <p class="prices__list-item__option">5 Гб Хранилище</p>
+                    <p class="prices__list-item__option">3 Отдела</p>
+                    <p class="prices__list-item__option">64 задачи</p>
+                    <p class="prices__list-item__price">200 грн/мес</p>
+                    <div class="prices__list-item__price">
+                        <p class="prices__list-item__price-discount">
+                            <span class="prices__list-item__price-discount__wod">
+                                2400 грн/год
+                            </span>
+
+                            <span class="prices__list-item__price-discount__dp">
+                                ( -20% )
+                            </span>
+                        </p>
+
+                        <p class="prices__list-item__price-wd">1920 грн/год</p>
+                    </div>
+                    <button class="prices__list-item__button">Купить</button>
+                </div>
+
+                <div class="prices__list-item">
+                    <div class="prices__list-item__headline">Стандартный</div>
+                    <p class="prices__list-item__short-desc">
+                        Минимум для начала работы
+                    </p>
+                    <p class="prices__list-item__option">10 Пользователей</p>
+                    <p class="prices__list-item__option">5 Гб Хранилище</p>
+                    <p class="prices__list-item__option">3 Отдела</p>
+                    <p class="prices__list-item__option">64 задачи</p>
+                    <p class="prices__list-item__price">200 грн/мес</p>
+                    <div class="prices__list-item__price">
+                        <p class="prices__list-item__price-discount">
+                            <span class="prices__list-item__price-discount__wod">
+                                2400 грн/год
+                            </span>
+
+                            <span class="prices__list-item__price-discount__dp">
+                                ( -20% )
+                            </span>
+                        </p>
+
+                        <p class="prices__list-item__price-wd">1920 грн/год</p>
+                    </div>
+                    <button class="prices__list-item__button">Купить</button>
+                </div>
+
+                <div class="prices__list-item">
+                    <div class="prices__list-item__headline">Стандартный</div>
+                    <p class="prices__list-item__short-desc">
+                        Минимум для начала работы
+                    </p>
+                    <p class="prices__list-item__option">10 Пользователей</p>
+                    <p class="prices__list-item__option">5 Гб Хранилище</p>
+                    <p class="prices__list-item__option">3 Отдела</p>
+                    <p class="prices__list-item__option">64 задачи</p>
+                    <p class="prices__list-item__price">200 грн/мес</p>
+                    <div class="prices__list-item__price">
+                        <p class="prices__list-item__price-discount">
+                            <span class="prices__list-item__price-discount__wod">
+                                2400 грн/год
+                            </span>
+
+                            <span class="prices__list-item__price-discount__dp">
+                                ( -20% )
+                            </span>
+                        </p>
+
+                        <p class="prices__list-item__price-wd">1920 грн/год</p>
+                    </div>
+                    <button class="prices__list-item__button">Купить</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/libs/jQuery/jQuery.3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="/libs/bootstrap-4.5.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/libs/jquery.lazy-master/jquery.lazy.min.js"></script>
+    <script type="text/javascript" src="/libs/jquery.lazy-master/jquery.lazy.plugins.min.js"></script>
+
+    <scripts>
+        <script src="/scripts/Regexp.js"></script>
+        <script src="/scripts/Alert.js"></script>
+        <script src="/scripts/Http.js"></script>
+        <script src="/scripts/Loader.js"></script>
+        <script src="/scripts/MainPageHandler.js"></script>
+    </scripts>
+</body>
+
+</html>

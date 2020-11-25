@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/auth/verify")
+@RequestMapping("/main/auth/verify")
 public class VerificationCodeController extends JsonSupportController {
 
     // @TODO Verification code : поскольку они хранятся в памяти. Можно ли осуществить атаку DDOS ?
@@ -34,12 +34,12 @@ public class VerificationCodeController extends JsonSupportController {
             throws IOException {
         UserDto dto = codeUtil.verify(request, verificationCode);
         if (dto != null) {
-            authenticationManagement.authenticate(request, res, dto);
-            this.sendDefaultJson(res, true, "");
-            return;
+            if (dto.isLoginOperation()) {
+                authenticationManagement.authenticate(request, res, dto);
+            }
+            sendDefaultJson(res, true, "");
         } else {
-            sendDefaultJson(res, false, "Something go wrong");
-            return;
+            sendDefaultJson(res, false, "Невірний код");
         }
     }
 

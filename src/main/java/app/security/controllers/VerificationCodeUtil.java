@@ -15,19 +15,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class VerificationCodeUtil extends JsonSupportController {
 
-    public static final String TABLE_USER_CODE_STRING = "TABLE_USER_CODE_STRING";
-
     public static final long CODE_EXPIRATION_TIME = 900000L;
 
     private static final Map<Long, VerificationCode> verificationTable = new HashMap<>();
-
-    private static final String USER_DTO = "USER_DTO";
 
     private final IUserService userService;
 
@@ -58,16 +53,15 @@ public class VerificationCodeUtil extends JsonSupportController {
         String html = userDto.getVerificationCode();
         html = verificationMailTemplater.render(html);
         String attachment = constants.get("email_template_path").getStringValue();
-        FileSystemResource file = new FileSystemResource(attachment);
         executionService.pushTask(new ExecutionService
-                .MailSender(mailService, userDto.getEmail(), html, file));
+                .MailSender(mailService, userDto.getEmail(), html));
         HttpSession session = req.getSession(false);
         if (session != null) {
             session.invalidate();
         }
         session = req.getSession(true);
-        session.setAttribute(TABLE_USER_CODE_STRING, userDto.getVerificationCode());
-        session.setAttribute(USER_DTO, userDto);
+        session.setAttribute(Constants.TABLE_USER_CODE_STRING, userDto.getVerificationCode());
+        session.setAttribute(Constants.USER_DTO, userDto);
         sendDefaultJson(res, true, "");
     }
 
@@ -80,11 +74,11 @@ public class VerificationCodeUtil extends JsonSupportController {
     public UserDto verify(HttpServletRequest request, String codeToCheck) {
         HttpSession session = request.getSession();
         if (session != null) {
-            Object o = session.getAttribute(TABLE_USER_CODE_STRING);
+            Object o = session.getAttribute(Constants.TABLE_USER_CODE_STRING);
             if (o != null && o.equals(codeToCheck.trim())) {
-                o = session.getAttribute(USER_DTO);
+                o = session.getAttribute(Constants.USER_DTO);
                 if (o != null && o instanceof UserDto) {
-                    session.invalidate();
+                    session.removeAttribute(Constants.TABLE_USER_CODE_STRING);
                     return (UserDto) o;
                 }
             }

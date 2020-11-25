@@ -6,7 +6,9 @@ import app.controllers.dto.TenantDto;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.service.extapis.GMailService;
 import app.customtenant.service.interfaces.IPerformerService;
+import app.security.models.SimpleRole;
 import app.security.models.auth.CustomUser;
+import app.security.models.auth.UserInfo;
 import app.security.wrappers.ICustomUserWrapper;
 import app.security.wrappers.IPerformerWrapper;
 import app.tenantconfiguration.TenantContext;
@@ -21,7 +23,9 @@ import dev.morphia.Datastore;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -33,7 +37,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/tenants")
+@RequestMapping("/main/tenants")
 public class TenantController extends JsonSupportController {
 
     private static final String ERROR_MSG =
@@ -51,23 +55,18 @@ public class TenantController extends JsonSupportController {
 
     private final IPerformerService performerService;
 
-    private final IPerformerWrapper performerWrapper;
-
-    private GMailService mailService;
-
     @Autowired
     public TenantController(ITenantCreatorService tenantCreatorService,
                             Datastore morphia,
                             ICustomUserWrapper userWrapper,
                             ITenantService tenantService,
                             IPerformerService performerService,
-                            IPerformerWrapper performerWrapper) {
+                            GMailService mailService) {
         this.tenantCreatorService = tenantCreatorService;
         this.morphia = morphia;
         this.userWrapper = userWrapper;
         this.tenantService = tenantService;
         this.performerService = performerService;
-        this.performerWrapper = performerWrapper;
     }
 
     @RequestMapping(value = "/create",
@@ -85,9 +84,38 @@ public class TenantController extends JsonSupportController {
             morphia.save(info);
             user.addTenant(tenantId);
             userWrapper.update(user);
+            UserInfo uInfo = user.getUserInfo();
+            uInfo.setActiveTenant(tenantId);
+            userWrapper.update(uInfo);
+            TenantContext.setTenant(uInfo.getActiveTenant());
+            Performer performer = new Performer(user);
+            performer.setRoles(SimpleRole.ADMIN);
+            performerService.create(performer);
+            request.getSession(true).setAttribute(Constants.PERFORMER_SESSION_KEY, performer);
             sendDefaultJson(response, true, tenantId);
         } catch (SQLException ex) {
             sendDefaultJson(response, false, ERROR_MSG);
+        }
+    }
+
+    @RequestMapping(value = "/remove",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void remove(HttpServletResponse response,
+                       HttpServletRequest request,
+                       @RequestParam("tenantId") String tenantId) {
+        try {
+            TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
+            CustomUser user = userWrapper.retrieveUser(request);
+            user.getTenants().remove(tenantId);
+            userWrapper.update(user);
+            tenantService.remove(tenantId);
+            tenantCreatorService.remove(tenantId);
+            UserInfo info = user.getUserInfo();
+            info.setActiveTenant(TenantContext.PHANTOM_TENANT_IDENTIFIER);
+            userWrapper.update(info);
+            sendDefaultJson(response, true, "");
+        } catch (SQLException e) {
+            sendDefaultJson(response, false, "Помилка на сервері. Спробуйте пізніше");
         }
     }
 
@@ -101,62 +129,63 @@ public class TenantController extends JsonSupportController {
         HttpSession session = request.getSession();
         if (tenants.contains(tenantId) && session != null) {
             TenantContext.setTenant(tenantId);
+            UserInfo info = user.getUserInfo();
+            info.setActiveTenant(tenantId);
+            userWrapper.update(info);
             session.setAttribute(Constants.TENANT_SESSION_ID, tenantId);
+            Performer performer = performerService.retrieveByUserId(user.getId());
+            if (performer == null) {
+                performer = new Performer(user);
+                performerService.create(performer);
+                session.setAttribute(Constants.PERFORMER_SESSION_KEY, performer);
+            }
             sendDefaultJson(response, true, "");
-            //TenantInfoEntity tenant = tenantService.findById(tenantId);
             return;
         } else {
             sendDefaultJson(response, false, "");
         }
     }
 
-    @PostMapping(value = "/connect/invite",
+    @PostMapping(value = "/invite/connect",
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void connectInvite(@RequestBody String body,
+    public void connectInvite(@RequestParam("tenantId") String tenantId,
                               HttpServletRequest request,
                               HttpServletResponse response)
             throws IOException {
-        JsonElement element = JsonParser.parseString(body);
-        if (element.isJsonObject()) {
-            JsonObject o = element.getAsJsonObject();
-            String tenantId = o.get("tenantId").getAsString();
-            JsonArray emails = o.get("emails").getAsJsonArray();
-            CustomUser user = userWrapper.retrieveUser(request);
-            if (user.getTenants().contains(tenantId)) {
-                Iterator<JsonElement> iterator = emails.iterator();
-                while (iterator.hasNext()) {
-                    String email = iterator.next().getAsString();
-                    mailService.send(email, "INVITE LINK", "LINK");
-                    /*HttpSession session = request.getSession();
-                    if (tenant != null && session != null) {
-                        user.addTenant(tenant.getTenantId());
-                        TenantContext.setTenant(tenantId);
-                        session.setAttribute(Constants.TENANT_SESSION_ID, tenantId);
-                        Performer performer = new Performer(user);
-                        performerService.create(performer);
-                        performerWrapper.setPerformer(performer, session);
-                        sendDefaultJson(response, true, "");
-                        return;
-                    }*/
-                }
-            }
+        CustomUser user = userWrapper.retrieveUser(request);
+        if (user == null) {
+            sendDefaultJson(response, false, "Будь ласка, увійдіть до системи і спробуйте знову!");
+            return;
         }
-        sendDefaultJson(response, false, "");
+        Set<String> userTenants = user.getTenants();
+        if (!userTenants.contains(tenantId)) {
+            TenantInfoEntity tenant = tenantService.findById(tenantId);
+            if (tenant == null) {
+                sendDefaultJson(response, false, "Шутки шуткуєш?");
+                return;
+            }
+            user.getTenants().add(tenantId);
+            userWrapper.update(user);
+        }
+        try {
+            request.getRequestDispatcher("/tenants/connect")
+                    .forward(request, response);
+        } catch (ServletException e) {
+            sendDefaultJson(response, false, "Помилка на сервері. Будь ласка, спробуйте пізніше");
+        }
     }
-
-    /*@RequestMapping(value = "/com/list/{page_id}")
-    public void tenantsList(HttpServletResponse response,
-                            @PathVariable("page_id") Integer page)
-            throws IOException {
-        sendDefaultJson(response, tenantService.findPageableOpen(page.intValue()));
-    }*/
 
     @RequestMapping(value = "/com/my/list")
     public void myTenantsList(HttpServletRequest request,
                               HttpServletResponse response)
             throws IOException {
         CustomUser u = userWrapper.retrieveUser(request);
-        sendDefaultJson(response, tenantService.findMyTenants(u.getTenants()));
+        Set<String> tenants = u.getTenants();
+        if (tenants != null && !tenants.isEmpty()) {
+            sendDefaultJson(response, tenantService.findMyTenants(tenants));
+        } else {
+            sendDefaultJson(response, new LinkedList<>());
+        }
     }
 
     @RequestMapping(value = "/com/list/{page_id}",
@@ -164,12 +193,10 @@ public class TenantController extends JsonSupportController {
     public void tenantsListFilter(HttpServletRequest request,
                                   HttpServletResponse response,
                                   @RequestBody BsonDocument filter,
-                                  @PathVariable("page_id") Integer page)
+                                  @PathVariable(value = "page_id") Integer page)
             throws IOException {
-        sendDefaultJson(
-                response, tenantService.findPageableFilter(
-                        page.intValue(), filter)
-        );
+        sendDefaultJson(response, tenantService.findPageableFilter(
+                page, filter));
     }
 
 }

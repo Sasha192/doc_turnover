@@ -9,6 +9,14 @@ import javax.validation.constraints.Null;
 
 public class UserDto {
 
+    public boolean isLoginOperation() {
+        return loginOperation;
+    }
+
+    public void setLoginOperation(boolean loginOperation) {
+        this.loginOperation = loginOperation;
+    }
+
     public interface New {
     }
 
@@ -16,11 +24,9 @@ public class UserDto {
     }
 
     public interface Auth {
-
     }
 
     public interface JsonView {
-
     }
 
     public interface UpdatePassword extends Exist {
@@ -32,34 +38,47 @@ public class UserDto {
     private Long id;
 
     @Expose
-    @NotNull(groups = {New.class, Auth.class})
-    @Null(groups = UpdatePassword.class)
+    @Null(groups = {UpdatePassword.class, New.class})
+    @NotNull(groups = {Auth.class})
     @Email
-    private String login;
+    private String email;
 
     @ValidPasswordPattern(groups = {New.class, UpdatePassword.class})
     @NotNull(groups = {New.class, UpdatePassword.class, Auth.class})
     @Null(groups = {JsonView.class})
-    private String password;
+    private String passwd;
 
+    @Null(groups = {Auth.class})
     private String firstName;
 
+    @Null(groups = {Auth.class})
     private String lastName;
 
+    @Null(groups = {Auth.class})
     private String middleName;
 
-    private Boolean remember;
+    private Boolean rememberMe;
 
     private transient String verificationCode;
 
     private transient long creationTime;
 
+    private transient boolean loginOperation;
+
     public String getPassword() {
-        return password;
+        return passwd;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.passwd = password;
+    }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
     }
 
     public Long getId() {
@@ -71,11 +90,11 @@ public class UserDto {
     }
 
     public String getEmail() {
-        return login;
+        return email;
     }
 
     public String getLogin() {
-        return login;
+        return email;
     }
 
     public String getVerificationCode() {
@@ -99,12 +118,12 @@ public class UserDto {
         this.creationTime = creationTime;
     }
 
-    public Boolean getRemember() {
-        return this.remember;
+    public Boolean getRememberMe() {
+        return rememberMe;
     }
 
-    public void setRemember(final Boolean remember) {
-        this.remember = remember;
+    public void setRememberMe(Boolean rememberMe) {
+        this.rememberMe = rememberMe;
     }
 
     public String getFirstName() {
@@ -120,7 +139,11 @@ public class UserDto {
     }
 
     public void setLogin(String login) {
-        this.login = login;
+        this.email = login;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getMiddleName() {

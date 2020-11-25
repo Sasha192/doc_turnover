@@ -19,7 +19,10 @@ public class SessionRequiredFilter extends GenericFilterBean {
             throws IOException, ServletException {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) request;
-            HttpSession session = req.getSession(true);
+            HttpSession session = req.getSession();
+            if (session == null) {
+                session = req.getSession(true);
+            }
             session.setMaxInactiveInterval(Constants.MAX_INACTIVE_SESSION_INTERVAL_SECONDS);
             chain.doFilter(req, response);
         }

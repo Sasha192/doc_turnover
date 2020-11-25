@@ -4,6 +4,7 @@ import app.customtenant.models.basic.Performer;
 import app.customtenant.models.serialization.ExcludeStrategies;
 import app.customtenant.service.interfaces.IPerformerService;
 import app.security.models.SimpleRole;
+import app.tenantconfiguration.TenantContext;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.List;
@@ -18,8 +19,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/performers")
+@RequestMapping("/com/performers")
 public class PerformersNavigationController extends JsonSupportController {
+
+    private static GsonBuilder builder = new GsonBuilder()
+            .addSerializationExclusionStrategy(
+                    ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+            .setPrettyPrinting();
 
     private final IPerformerService performerService;
 
@@ -40,10 +46,6 @@ public class PerformersNavigationController extends JsonSupportController {
             performers = performerService
                     .findAll();
         }
-        GsonBuilder builder = new GsonBuilder()
-                .addSerializationExclusionStrategy(
-                        ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
-                .setPrettyPrinting();
         writeToResponse(response, builder, performers);
     }
 

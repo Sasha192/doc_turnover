@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/notifications")
+@RequestMapping("/com/notifications")
 public class NotificationsController extends JsonSupportController {
 
     private static final GsonBuilder BUILDER = Constants.BUILDER_JSON_EVENTS;
@@ -57,7 +57,7 @@ public class NotificationsController extends JsonSupportController {
         Performer performer = performerWrapper.retrievePerformer(request);
         List<Event> events = eventService.retrieveForPerformer(page,
                 performer.getId());
-        writeToResponse(response, BUILDER, performer);
+        writeToResponse(response, BUILDER, events);
     }
 
     @RequestMapping(value = "/new/count", method = RequestMethod.GET)

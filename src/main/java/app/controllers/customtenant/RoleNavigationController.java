@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/roles")
+@RequestMapping("/com/roles")
 public class RoleNavigationController extends JsonSupportController {
 
     @RequestMapping("/list")

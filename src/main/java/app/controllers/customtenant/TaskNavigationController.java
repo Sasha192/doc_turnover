@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping(value = "/task")
+@RequestMapping(value = "/com/task")
 /**
  * This request mappings could get access only
  * @see TaskNavigationController#allowOp(Set)
@@ -97,6 +97,12 @@ public class TaskNavigationController extends JsonSupportController {
                     performer.getId());
         }
         writeToResponse(response, Constants.BUILDER_BRIEF, tasks);
+    }
+
+    @RequestMapping(value = "/list/maxpages", method = RequestMethod.GET)
+    public void maxPages(HttpServletResponse response, HttpServletRequest request)
+            throws IOException {
+        writeToResponse(response, Constants.BUILDER_BRIEF, "10");
     }
 
     @RequestMapping(value = "/list/{task_status}/{page_id}", method = RequestMethod.GET)
@@ -220,7 +226,7 @@ public class TaskNavigationController extends JsonSupportController {
         sendDefaultJson(response, false, "Access Denied");
     }
 
-    @RequestMapping(value = "/modify/deadline", method = RequestMethod.GET,
+    @RequestMapping(value = "/modify/control", method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public void changeControlDate(@RequestBody String body,
                                HttpServletResponse response, HttpServletRequest request) {

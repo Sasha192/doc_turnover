@@ -1,6 +1,8 @@
 package app.security.wrappers;
 
 import app.security.models.auth.CustomUser;
+import app.security.models.auth.UserInfo;
+
 import javax.servlet.http.HttpServletRequest;
 
 public interface ICustomUserWrapper {
@@ -10,5 +12,7 @@ public interface ICustomUserWrapper {
     CustomUser retrieveUser();
 
     void update(CustomUser user);
+
+    void update(UserInfo info);
 
 }

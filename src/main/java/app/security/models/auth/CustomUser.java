@@ -56,6 +56,8 @@ public class CustomUser
     @Column(name = "tenant_id")
     private Set<String> tenantsId;
 
+    private transient String notHashedPassword;
+
     public CustomUser() {
         ;
     }
@@ -73,6 +75,12 @@ public class CustomUser
         info.setFirstName(dto.getFirstName());
         info.setLastName(dto.getLastName());
         info.setMiddleName(dto.getMiddleName());
+        String name = info.getFirstName()
+                + " "
+                + info.getMiddleName()
+                + " "
+                + info.getLastName();
+        info.setName(name);
         String imgToken = ImgToken.generate(info);
         info.setImgIdToken(imgToken);
         setUserInfo(info);
@@ -166,5 +174,13 @@ public class CustomUser
 
     public void setTenantsId(Set<String> tenantsId) {
         this.tenantsId = tenantsId;
+    }
+
+    public String getNotHashedPassword() {
+        return notHashedPassword;
+    }
+
+    public void setNotHashedPassword(String notHashedPassword) {
+        this.notHashedPassword = notHashedPassword;
     }
 }

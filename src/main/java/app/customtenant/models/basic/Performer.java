@@ -24,7 +24,13 @@ public class Performer
     private String name;
 
     @Column(name = "department_id")
-    private long departmentId;
+    private Long departmentId;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "img_path")
+    private String imgPath;
 
     @ManyToOne(cascade = {CascadeType.REFRESH},
             fetch = FetchType.LAZY)
@@ -49,7 +55,12 @@ public class Performer
                 + info.getLastName();
         setName(name);
         setRoles(SimpleRole.GUEST);
+        setEmail(user.getEmail());
+        setImgPath(info.getImgPath());
         setUserId(user.getId());
+    }
+
+    public Performer() {
     }
 
     public Long getUserId() {
@@ -80,12 +91,12 @@ public class Performer
         return this.department;
     }
 
-    public Long getId() {
-        return id;
+    public String getImgPath() {
+        return imgPath;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 
     public SimpleRole getRoles() {
@@ -110,6 +121,14 @@ public class Performer
 
     public void addRole(SimpleRole newRole) {
         this.role = newRole;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

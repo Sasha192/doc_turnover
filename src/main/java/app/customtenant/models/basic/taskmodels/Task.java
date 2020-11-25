@@ -111,12 +111,7 @@ public class Task
     @ExcludeForJsonBriefTask
     private Set<BriefDocument> documents;
 
-    @JoinTable(name = "comment_post",
-            joinColumns = @JoinColumn(name = "task_id" ,
-                    insertable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "id"))
-    @OneToMany(cascade = CascadeType.DETACH)
-    @ExcludeForJsonBriefTask
+    @OneToMany(mappedBy = "taskId")
     private Set<TaskHolderComment> comments;
 
     @ElementCollection

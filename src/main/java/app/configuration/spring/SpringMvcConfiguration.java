@@ -82,19 +82,22 @@ public class SpringMvcConfiguration
 
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("scripts/**")
+        registry.addResourceHandler("/scripts/**")
                 .addResourceLocations("classpath:/static/scripts/")
                 .setCachePeriod(60 * 60);
-        registry.addResourceHandler("fonts/**")
+        registry.addResourceHandler("/fonts/**")
                 .addResourceLocations("classpath:/static/fonts/")
                 .setCachePeriod(60 * 60);
-        registry.addResourceHandler("img/**")
+        registry.addResourceHandler("/img/**")
                 .addResourceLocations("classpath:/static/img/")
                 .setCachePeriod(60 * 60);
-        registry.addResourceHandler("libs/**")
+        registry.addResourceHandler("/libs/**")
                 .addResourceLocations("classpath:/static/libs/")
                 .setCachePeriod(60 * 60);
-        registry.addResourceHandler("css/**")
+        registry.addResourceHandler("/icons/**")
+                .addResourceLocations("classpath:/static/icons/")
+                .setCachePeriod(60 * 60);
+        registry.addResourceHandler("/css/**")
                 .addResourceLocations("classpath:/static/css/")
                 .setCachePeriod(60 * 60);
     }

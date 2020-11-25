@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/oauth")
+@RequestMapping("/main/oauth")
 public class OAuthController extends JsonSupportController {
 
     private final IAuthenticationManagement authenticationManagement;

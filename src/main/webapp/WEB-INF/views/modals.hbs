@@ -1,0 +1,656 @@
+<div class="modal fade" data-modal="shareFiles" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="header">
+				<div class="clear flex-grow-1"></div>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<i class="far fa-times"></i>
+				</button>
+			</div>
+			<div class="block-wrapper">
+				<div class="scroll-y block" data-name="files" data-role="files">
+
+				</div>
+				<div class="block">
+					<div class="share-fields">
+						<div class="share-fields__email">
+							<input data-name="email" placeholder="Электронна пошта" type="email" maxlength="4096">
+						</div>
+						<div class="share-fields__message">
+							Повідомлення ( Необов'язкове поле )
+							<textarea data-name="message" maxlength="4192"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="footer">
+				<div class="block">
+
+				</div>
+				<div class="block">
+					<div class="clean"></div>
+					<button type="button" class="button active" data-event="submit">Відправити</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="modal fade" data-modal="existTodo" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="header">
+				<div class="clear flex-grow-1"></div>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<i class="far fa-times"></i>
+				</button>
+			</div>
+			<div class="block-wrapper">
+				<div class="scroll-y block" data-name="files" data-role="files">
+
+				</div>
+				<div class="block" data-name="todos">
+					<form class="findTodo">
+						<input data-name="field" type="text" data-event="findTodo" placeholder="Пошук задачі...">
+						<button type="submit">
+							<i data-event="find" title="Натисніть для пошуку." class="far fa-search"></i>
+						</button>
+					</form>
+					<div data-role="todos" class="todo-list">
+
+					</div>
+					<button title="Натисніть, щоб побачити більше виконавців" data-event="pagination">Більше...</button>
+				</div>
+			</div>
+			<div class="footer">
+				<div class="block">
+
+				</div>
+				<div class="block">
+					<div class="clean"></div>
+					<button type="button" class="button active" data-event="submit">Додати файли</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" data-modal="newTodo" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="header">
+				<input type="text" data-role="name" placeholder="Назва..." maxlength="232" />
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<i class="far fa-times"></i>
+				</button>
+			</div>
+			<div class="block-wrapper">
+				<div class="scroll-y block" data-name="files" data-role="files">
+
+				</div>
+				<div class="block" data-name="performers">
+					<form class="findPerformer">
+						<input data-name="field" type="text" data-event="findTodo" placeholder="Пошук виконавців...">
+						<button type="submit">
+							<i data-event="find" title="Натисніть для пошуку." class="far fa-search"></i>
+						</button>
+					</form>
+					<div data-role="performers" class="scroll-y list">
+
+					</div>
+					<button title="Натисніть, щоб побачити більше виконавців" data-event="pagination">Більше...</button>
+				</div>
+				<div data-name="description" class="block">
+					<div class="title">
+						Опис
+						<i class="fa fa-pencil-alt"></i>
+					</div>
+					<textarea data-role="description" maxlength="2024"> </textarea>
+				</div>
+			</div>
+			<div class="footer">
+				<div class="block">
+					<div data-role="calendar-control" class="calendar drop-down">
+						<button data-event="toggle">
+							Контроль:
+							<span>
+								<span data-name="selectedDate">00.00.0000</span>
+								<i class="fa fa-caret-down"></i>
+							</span>
+						</button>
+						<div class="drop-down_menu">
+							<table class="date-picker" valign="center">
+								<thead>
+									<tr>
+										<td class="week-day">
+											<div>Пн</div>
+										</td>
+										<td class="week-day">
+											<div>Вт</div>
+										</td>
+										<td class="week-day">
+											<div>Ср</div>
+										</td>
+										<td class="week-day">
+											<div>Чт</div>
+										</td>
+										<td class="week-day">
+											<div>Пт</div>
+										</td>
+										<td class="week-day">
+											<div>Сб</div>
+										</td>
+										<td class="week-day">
+											<div>Нд</div>
+										</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<div class="date-item active">1</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="control w-100 d-flex justify-content-between align-items-center"
+								style="padding: 12px">
+								<i class="fa fa-caret-left" data-event="previous"></i>
+								<div class="d-flex">
+									<span data-name="pickerMonth" class="mr-1">Квітень</span>
+									<span data-name="pickerYear" class="ml-1">2020</span>
+								</div>
+								<i class="fa fa-caret-right" data-event="next"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="block">
+					<div data-role="calendar-deadline" class="calendar drop-down">
+						<button data-event="toggle">
+							Дедлайн:
+							<span>
+								<span data-name="selectedDate">00.00.0000</span>
+								<i class="fa fa-caret-down"></i>
+							</span>
+						</button>
+						<div class="drop-down_menu">
+							<table class="date-picker" valign="center">
+								<thead>
+									<tr>
+										<td class="week-day">
+											<div>Пн</div>
+										</td>
+										<td class="week-day">
+											<div>Вт</div>
+										</td>
+										<td class="week-day">
+											<div>Ср</div>
+										</td>
+										<td class="week-day">
+											<div>Чт</div>
+										</td>
+										<td class="week-day">
+											<div>Пт</div>
+										</td>
+										<td class="week-day">
+											<div>Сб</div>
+										</td>
+										<td class="week-day">
+											<div>Нд</div>
+										</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<div class="date-item active">1</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="control w-100 d-flex justify-content-between align-items-center"
+								style="padding: 12px">
+								<i class="fa fa-caret-left" data-event="previous"></i>
+								<div class="d-flex">
+									<span data-name="pickerMonth" class="mr-1">Квітень</span>
+									<span data-name="pickerYear" class="ml-1">2020</span>
+								</div>
+								<i class="fa fa-caret-right" data-event="next"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="block">
+					<div class="clean"></div>
+					<button type="button" class="button active" data-event="submit">Створити</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" data-modal="uploadFiles" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="header">
+				<div class="clear flex-grow-1"></div>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<i class="far fa-times"></i>
+				</button>
+			</div>
+			<div class="block-wrapper">
+				<div class="scroll-y block" data-name="files" data-role="files">
+
+				</div>
+				<div class="block" data-name="uploadForm" style="display: flex; flex-dicretion:column">
+					<div class="upload-file" style="flex-grow: 1; display:flex">
+						<input maxlength="6" id="uploadFilesForm" multiple="true" data-event="uploadFiles" type="file"
+							accept=".csv, .dbf, .doc, .docx, .htm, .html, .info, .jpg, .nfo, .pdf, .png, .ppt, .pptx, .rar, .rtf, .txt, .vcf, .xls, .xlsx, .xml, .zip, .pages" />
+						<label for="uploadFilesForm" style="flex-grow: 1;">
+							<i class="fa fa-file-upload"></i>
+							<span class="text">Оберіть файли</span>
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="footer">
+				<div class="block">
+				</div>
+				<div class="block">
+					<div class="clean"></div>
+					<button type="button" class="button active" data-event="submit">Завантажити</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" data-modal="todoInfo" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div id="todoInfoCarousel" data-interval="false" class="carousel slide" data-ride="carousel">
+				<div class="header">
+					<input type="text" data-role="name"
+						value="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, ducimus."
+						maxlength="232" readonly="true" />
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<i class="far fa-times"></i>
+					</button>
+				</div>
+				<div class="carousel-inner">
+					<div class="carousel-item active">
+						<div data-name="details" class="block-wrapper">
+							<div class="scroll-y block" data-name="files">
+								<button data-event="downloadFiles" class="title">
+									Завантажити
+									<i title="Натисніть щоб завантажити файли" class="fa fa-cloud-download"></i>
+								</button>
+								<div data-role="files">
+
+								</div>
+							</div>
+							<div class="block" data-name="description">
+								<div class="title">
+									Опис
+									<i class="fa fa-pencil-alt"></i>
+								</div>
+								<textarea style="min-height: 250px;" data-role="description" disabled
+									maxlength="2024"></textarea>
+							</div>
+							<div class="block" data-name="performers">
+								<form class="findPerformer">
+									<input data-name="field" type="text" data-event="findTodo"
+										placeholder="Пошук виконавців...">
+									<button type="submit">
+										<i data-event="find" title="Натисніть для пошуку." class="far fa-search"></i>
+									</button>
+								</form>
+								<div data-role="performers" class="scroll-y list">
+
+								</div>
+								<button title="Натисніть, щоб побачити більше виконавців"
+									data-event="pagination">Більше...</button>
+							</div>
+							<div class="block" data-name="comments">
+								<div class="add-comment">
+									<input maxlength="256" placeholder="Коментар" type="text" data-name="comment" />
+									<button type="button" data-event="sendComment">Додати</button>
+								</div>
+								<div data-role="comments" class="comments-wrapper">
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="carousel-item">
+						<div data-name="reports" class="block-wrapper">
+							<div style="min-height: 305px;" class="scroll-y block" data-name="files">
+								<button data-event="downloadReportFiles" class="title">
+									Завантажити
+									<i title="Натисніть щоб завантажити файли" class="fa fa-cloud-download"></i>
+								</button>
+								<div data-role="report-files" class="wrapper">
+
+								</div>
+							</div>
+							<div class="scroll-y block" data-role="upload-files" data-name="files">
+
+							</div>
+							<div class="block" data-name="report">
+								<div class="upload-file">
+									<input data-event="upload-report"
+										accept=".csv, .dbf, .doc, .docx, .htm, .html, .info, .jpg, .nfo, .pdf, .png, .ppt, .pptx, .rar, .rtf, .txt, .vcf, .xls, .xlsx, .xml, .zip, .pages"
+										multiple id="uploadFileReport" type="file" />
+									<label style="min-height: 250px;" for="uploadFileReport">
+										<i class="fa fa-file-upload"></i>
+										<span class="text"> Оберіть файли</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="footer">
+					<div class="block d-flex">
+						<div class="d-flex toggle-buttons">
+							<button data-target="#todoInfoCarousel" data-slide-to="0" type="button"
+								class="button event-details active">
+								Деталі
+							</button>
+							<button data-target="#todoInfoCarousel" data-slide-to="1" type="button"
+								class="button ml-2 event-report">
+								Звіт
+							</button>
+						</div>
+					</div>
+					<div class="block d-flex">
+						<div class="control-buttons" style="display: none;">
+							<button title="Завершити" style="background: #1bc943" class="btn event-complete"
+								type="button">
+								<i class="fa fa-check"></i>
+							</button>
+							<button title="Переробити" style="background: #f44336" class="btn ml-2 event-overdue"
+								type="button">
+								<i class="fa fa-times"></i>
+							</button>
+							<button title="Відкласти" style="background: rgba(67, 78, 106, 50%)"
+								class="btn ml-2 event-onhold" type="button">
+								<i class="fas fa-alarm-clock"></i>
+							</button>
+							<button title="До нових" style="background: #2196f3" class="btn ml-2 event-new"
+								type="button">
+								<i class="fas fa-plus-circle"></i>
+							</button>
+						</div>
+						<button title="До виконання" style="background: #ff9800;" class="btn ml-2 event-inProgress"
+							type="button">
+							<i class="far fa-hourglass-half"></i>
+						</button>
+					</div>
+					<div class="block">
+						<div class="control-buttons" style="display: none;">
+							<button title="Завершити" style="background: #1bc943" class="btn event-complete"
+								type="button">
+								<i class="fa fa-check"></i>
+							</button>
+							<button title="Переробити" style="background: #f44336" class="btn ml-2 event-overdue"
+								type="button">
+								<i class="fa fa-times"></i>
+							</button>
+							<button title="Відкласти" style="background: rgba(67, 78, 106, 50%)"
+								class="btn ml-2 event-onhold" type="button">
+								<i class="fas fa-alarm-clock"></i>
+							</button>
+							<button title="До нових" style="background: #2196f3" class="btn ml-2 event-onhold"
+								type="button">
+								<i class="fas fa-alarm-clock"></i>
+							</button>
+						</div>
+					</div>
+					<div class="block">
+						<div class="clean"></div>
+						<div class="d-flex">
+							<button class="button active upload-files" type="button" style="display: none;">
+								Завантажити
+							</button>
+							<button class="button active ml-2 apply-changes" type="button" style="display: none;
+									">
+								Змінити
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" data-modal="tariffs" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div style="margin: 20px 0" class="block-wrapper">
+				<div class="prices__list-item">
+					<div class="prices__list-item__headline">Стандартний</div>
+					<p class="prices__list-item__short-desc">
+						Минимум для начала работы
+					</p>
+					<p class="prices__list-item__option">10 Співробітників</p>
+					<p class="prices__list-item__option">5 Гб Сховище</p>
+					<p class="prices__list-item__option">3 Відділи</p>
+					<p class="prices__list-item__option">64 задачі</p>
+					<p class="prices__list-item__price">200 грн/міс</p>
+					<div class="prices__list-item__price">
+						<p class="prices__list-item__price-discount">
+							<span class="prices__list-item__price-discount__wod">
+								2400 грн/рік
+							</span>
+
+							<span class="prices__list-item__price-discount__dp">
+								( -20% )
+							</span>
+						</p>
+
+						<p class="prices__list-item__price-wd">1920 грн/рік</p>
+					</div>
+					<button id="standartTariff" class="prices__list-item__button">Придбати</button>
+				</div>
+
+				<div class="prices__list-item">
+					<div class="prices__list-item__headline">Безмежний</div>
+					<p class="prices__list-item__short-desc">
+						Минимум для начала работы
+					</p>
+					<p class="prices__list-item__option">10 Співробітників</p>
+					<p class="prices__list-item__option">5 Гб Сховище</p>
+					<p class="prices__list-item__option">3 Відділи</p>
+					<p class="prices__list-item__option">64 задачі</p>
+					<p class="prices__list-item__price">200 грн/міс</p>
+					<div class="prices__list-item__price">
+						<p class="prices__list-item__price-discount">
+							<span class="prices__list-item__price-discount__wod">
+								2400 грн/рік
+							</span>
+
+							<span class="prices__list-item__price-discount__dp">
+								( -20% )
+							</span>
+						</p>
+
+						<p class="prices__list-item__price-wd">1920 грн/рік</p>
+					</div>
+					<button id="unlimitedTariff" class="prices__list-item__button">Придбати</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" data-modal="filesFilter" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+		<div class="modal-content">
+			<div class="header">
+				<button style="margin-left:auto" type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<i class="far fa-times"></i>
+				</button>
+			</div>
+			<div class="block-wrapper">
+				<input type="text" class="filter__name" placeholder="Повна назва... (необов'язково)">
+			</div>
+			<div class="footer">
+				<div class="block">
+					<div data-role="calendar-from" class="calendar drop-down">
+						<button data-event="toggle">
+							Від:
+							<span>
+								<span data-name="selectedDate">00.00.0000</span>
+								<i class="fa fa-caret-down"></i>
+							</span>
+						</button>
+						<div class="drop-down_menu">
+							<table class="date-picker" valign="center">
+								<thead>
+									<tr>
+										<td class="week-day">
+											<div>Пн</div>
+										</td>
+										<td class="week-day">
+											<div>Вт</div>
+										</td>
+										<td class="week-day">
+											<div>Ср</div>
+										</td>
+										<td class="week-day">
+											<div>Чт</div>
+										</td>
+										<td class="week-day">
+											<div>Пт</div>
+										</td>
+										<td class="week-day">
+											<div>Сб</div>
+										</td>
+										<td class="week-day">
+											<div>Нд</div>
+										</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<div class="date-item active">1</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="control w-100 d-flex justify-content-between align-items-center"
+								style="padding: 12px">
+								<i class="fa fa-caret-left" data-event="previous"></i>
+								<div class="d-flex">
+									<span data-name="pickerMonth" class="mr-1">Квітень</span>
+									<span data-name="pickerYear" class="ml-1">2020</span>
+								</div>
+								<i class="fa fa-caret-right" data-event="next"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="block">
+					<div data-role="calendar-to" class="calendar drop-down">
+						<button data-event="toggle">
+							До:
+							<span>
+								<span data-name="selectedDate">00.00.0000</span>
+								<i class="fa fa-caret-down"></i>
+							</span>
+						</button>
+						<div class="drop-down_menu">
+							<table class="date-picker" valign="center">
+								<thead>
+									<tr>
+										<td class="week-day">
+											<div>Пн</div>
+										</td>
+										<td class="week-day">
+											<div>Вт</div>
+										</td>
+										<td class="week-day">
+											<div>Ср</div>
+										</td>
+										<td class="week-day">
+											<div>Чт</div>
+										</td>
+										<td class="week-day">
+											<div>Пт</div>
+										</td>
+										<td class="week-day">
+											<div>Сб</div>
+										</td>
+										<td class="week-day">
+											<div>Нд</div>
+										</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<div class="date-item active">1</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="control w-100 d-flex justify-content-between align-items-center"
+								style="padding: 12px">
+								<i class="fa fa-caret-left" data-event="previous"></i>
+								<div class="d-flex">
+									<span data-name="pickerMonth" class="mr-1">Квітень</span>
+									<span data-name="pickerYear" class="ml-1">2020</span>
+								</div>
+								<i class="fa fa-caret-right" data-event="next"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="block">
+					<div class="clean"></div>
+					<button type="button" class="button" style="color:#ffff" data-event="submit">Пошук</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" data-modal="addNewEmployes" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="header">
+				<button style="margin-left:auto" type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<i class="far fa-times"></i>
+				</button>
+			</div>
+			<div class="block-wrapper add-employes">
+				<form class="add-employes__input-wrapper">
+					<input class="add-employes__input" type="text" placeholder="E-mail">
+					<button type="submit">
+						<i class="fa fa-plus-circle"></i>
+					</button>
+				</form>
+				<div class="add-employes__list">
+
+				</div>
+			</div>
+			<div class="footer">
+				<div class="block">
+
+				</div>
+				<div class="block">
+					<div class="clean"></div>
+					<button type="button" class="button" style="color:#ffff" data-event="submit">Запросити</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</modals>

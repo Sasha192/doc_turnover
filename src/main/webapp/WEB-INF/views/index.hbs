@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        (async () => {
+            try {
+                const response = await fetch("/com/myinfo", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json;charset=utf-8"
+                    }
+                })
+
+                if (response.ok) {
+                    const result = await response.json()
+                    if (!result.success) window.location.href = "/main"
+                } else console.error("Not al ok...")
+            } catch (error) {
+                console.error(error);
+                window.location.href = "/main"
+            }
+        })()
+    </script>
+    <script src="/scripts/index.js"></script>
+    {{> head}}
+</head>
+
+<body>
+    <progress-bars>
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
+    </progress-bars>
+
+    {{> alerts}}
+    {{> modals}}
+
+    <span class="copy">
+        <span class="m-3">Beta 1.2.0 </span>
+        &copy; &nbsp; 37 Web Production
+    </span>
+
+    {{> navbar}}
+
+    <div class="content-wrapper">
+        <div class="content" id="root">
+
+        </div>
+    </div>
+
+    {{> templates}}
+    {{> scripts}}
+</body>
+
+</html>

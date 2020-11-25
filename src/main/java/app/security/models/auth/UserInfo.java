@@ -23,11 +23,17 @@ public class UserInfo
     @Column(name = "middle_name")
     private String middleName;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "img_path")
     private String imgPath = IMG_DEFAULT;
 
     @Column(name = "img_id_token")
     private String imgIdToken;
+
+    @Column(name = "active_tenant_id")
+    private String activeTenant;
 
     public UserInfo() {
         ;
@@ -71,5 +77,21 @@ public class UserInfo
 
     public void setImgIdToken(String imgIdToken) {
         this.imgIdToken = imgIdToken;
+    }
+
+    public String getActiveTenant() {
+        return activeTenant;
+    }
+
+    public void setActiveTenant(String activeTenant) {
+        this.activeTenant = activeTenant;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -4,6 +4,7 @@ import app.configuration.spring.constants.Constants;
 import app.security.wrappers.IAuthenticated;
 import app.tenantconfiguration.TenantContext;
 import java.io.IOException;
+import java.util.Set;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -30,6 +31,9 @@ public class AuthenticationMeFilter extends GenericFilterBean {
     private IAuthenticated authenticated;
 
     private ApplicationContext context;
+
+    private Set<String> allowedUrls = Set
+            .of("/", "/main", "/main/signup", "/main/signin", "/main/confirm");
 
     @Override
     protected void initFilterBean() throws ServletException {
@@ -66,24 +70,30 @@ public class AuthenticationMeFilter extends GenericFilterBean {
                 return;
             }
             boolean isAuth = isAuthenticated(req);
-            if (uri.startsWith("/")) {
-                if (uri.startsWith("/me")) {
-                    if (isAuth) {
-                        HttpSession session = ((HttpServletRequest) request).getSession();
-                        Object o = null;
-                        if (session != null
-                                && (o = session.getAttribute(Constants.TENANT_SESSION_ID))
-                                != null) {
-                            TenantContext.setTenant((String) o);
-                            chain.doFilter(request, response);
-                            return;
-                        }
-                    }
-                    ((HttpServletResponse) response).sendRedirect("/");
+            HttpSession session = req.getSession(true);
+            if (!isAuth) {
+                if (uri.startsWith("/main/auth")) {
+                    chain.doFilter(request, response);
+                    return;
+                } else if (uri.startsWith("main/tenants/invite/connect")) {
+                    String tenantId = req.getParameter("tenantId");
+                    session.setAttribute(Constants.INVITE_NO_AUTH_TENANT_SESSION_ID, tenantId);
+                    ((HttpServletResponse) response).sendRedirect("/main");
+                } else if (uri.equals("/") || allowedUrls.contains(uri)) {
+                    chain.doFilter(request, response);
                     return;
                 }
+            } else {
+                String tenantId = Constants.INVITE_NO_AUTH_TENANT_SESSION_ID;
+                if ((session.getAttribute(Constants.INVITE_NO_AUTH_TENANT_SESSION_ID)) != null) {
+                    if(uri.startsWith("/tenants")) {
+                        req.getRequestDispatcher("/tenants/invite/connect?tenantId=" + tenantId)
+                                .forward(request, response);
+                        session.removeAttribute(Constants.INVITE_NO_AUTH_TENANT_SESSION_ID);
+                        return;
+                    }
+                }
                 chain.doFilter(request, response);
-                return;
             }
         }
     }
@@ -99,7 +109,7 @@ public class AuthenticationMeFilter extends GenericFilterBean {
         String[] res = Constants.RESOURCES_PATH;
         int len = res.length;
         for (int i = 0; i < len; i++) {
-            if (uri.startsWith(res[i])) {
+            if (uri.contains(res[i])) {
                 return true;
             }
         }

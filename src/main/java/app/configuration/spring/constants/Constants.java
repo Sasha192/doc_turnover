@@ -35,6 +35,9 @@ public class Constants {
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter
             .ofPattern(DATE_FORMAT.toPattern());
     public static final GsonBuilder BUILDER_JSON_EVENTS;
+    public static final String IS_LOGIN_SESSION_KEY = "IS_LOGIN_SESSION_KEY";
+    public static final String LOGIN_DTO = "LOGIN_DTO";
+    public static final Object LOGIN_SESSION_KEY = "LOGIN" ;
     public static List<String> appImageFormats;
     public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
     public static final GsonBuilder BUILDER_BRIEF;
@@ -60,7 +63,10 @@ public class Constants {
     };
     public static final int VALID_REMEMBER_ME_TOKEN_TIME_SEC =
             60 * 60 * 24 * 7;
-    public static final String TENANT_SESSION_ID = "tenant_id";
+    public static final String TENANT_SESSION_ID = "TENANT_ID";
+    public static final String INVITE_NO_AUTH_TENANT_SESSION_ID = "INVITE_TENANT_ID";
+    public static final String USER_DTO = "USER_DTO";
+    public static final String TABLE_USER_CODE_STRING = "TABLE_USER_CODE_STRING";
     public static final int DEFAULT_PAGE_SIZE = 30;
 
     static {
@@ -82,11 +88,11 @@ public class Constants {
         REMEMBER_ME_UUID = enc.encodeToString(
                 "REMEMBERMEUUID"
                         .getBytes(StandardCharsets.UTF_8)
-        );
+        ).replaceAll("[^A-Za-z]", "");
         REMEMBER_ME_ID = enc.encodeToString(
                 "REMEMBERMEID"
                         .getBytes(StandardCharsets.UTF_8)
-        );
+        ).replaceAll("[^A-Za-z]", "");
     }
 
     private ICorePropertyService corePropertyService;

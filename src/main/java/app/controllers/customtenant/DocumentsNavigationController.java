@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -46,7 +47,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@RequestMapping("archive/doc")
+@RequestMapping("/com/archive/doc")
 public class DocumentsNavigationController extends JsonSupportController {
 
     private static final String IOEXCEPTION_WHILE_SENDING_DATA_ =
@@ -83,17 +84,28 @@ public class DocumentsNavigationController extends JsonSupportController {
         this.documentStorage = documentStorage;
     }
 
+    @RequestMapping(value = "/list/maxpages",
+            method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void maxPage(final HttpServletRequest request,
+                        HttpServletResponse response)
+            throws IOException {
+        sendDefaultJson(response, "10");
+    }
+
     @RequestMapping(value = "/list/{pageId}",
             method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public void list(final HttpServletResponse response, final HttpServletRequest request,
                      @PathVariable(name = "pageId") @NotNull final Integer pageId,
-                     @RequestParam(name = "reverse") Boolean reverse,
-                     @RequestBody String body)
+                     @RequestParam(name = "reverse", required = false) Boolean reverse)
             throws IOException {
+        String body = new String(request.getInputStream().readAllBytes(),
+                StandardCharsets.UTF_8);
         JsonElement element = JsonParser.parseString(body);
         if (!element.isJsonObject()) {
-            sendDefaultJson(response, false, "");
+            sendDefaultJson(response, new LinkedList<>());
+            return;
         }
         Date startTime = null;
         Date endTime = null;

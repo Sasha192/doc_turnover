@@ -2,6 +2,8 @@ package app.tenantdefault.service;
 
 import app.tenantdefault.models.TenantInfoEntity;
 import java.util.Collection;
+import java.util.List;
+
 import org.bson.BsonDocument;
 
 public interface ITenantService {
@@ -13,4 +15,8 @@ public interface ITenantService {
     Collection<TenantInfoEntity> findMyTenants(Collection<String> uuids);
 
     TenantInfoEntity findById(String tenantId);
+
+    Collection<String> findTenants();
+
+    void remove(String tenantId);
 }

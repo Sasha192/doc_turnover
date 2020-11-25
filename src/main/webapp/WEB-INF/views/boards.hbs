@@ -1,0 +1,105 @@
+<div class="tool-bar">
+    <div class="notifications">
+        <i data-role="button" data-event="toggle" class="fa fa-bell"></i>
+        <div class="notifications-wrapper">
+            <div class="title">
+                Оповіщення
+            </div>
+            <div class="notifications-list">
+            </div>
+            <span data-event="more" style="color: #2196f3; cursor:pointer; padding: 10px"
+                class="w-100 d-flex justify-content-center">Більше</span>
+        </div>
+    </div>
+    <div class="body">
+        <div>
+            <button id="newTodo" class="item">
+                Нова задача
+                <i class="fas fa-plus-circle"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="body">
+    <table>
+        <thead>
+            <tr>
+                <td>
+                    Назва
+                </td>
+                <td>
+                    Дата контролю
+                </td>
+                <td>
+                    Дата дедлайну
+                </td>
+                <td>
+                    <div class="drop-down">
+                        <button data-event="toggle">
+                            Статус
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="drop-down_menu">
+                            <div id="boardFilterByStatus" class="drop-down__list">
+                                <div value="all" class="item">
+                                    Усі
+                                </div>
+                                <div value="new" class="item">
+                                    Нові
+                                </div>
+                                <div value="inProgress" class="item">
+                                    В процесі
+                                </div>
+                                <div value="ovedue" class="item">
+                                    Дедлайн простротечнно
+                                </div>
+                                <div value="completed" class="item">
+                                    Завершені
+                                </div>
+                                <div value="onhold" class="item">
+                                    Відкладені
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    Виконавці
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+<div class="footer">
+    <div class="filter-group">
+        <div class="sort dropdown" id="sortByDepartment">
+            <button role="button" id="sort-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Дошка: <span id="selected-option">Усі</span>
+                <i class="fas fa-caret-down"></i>
+            </button>
+
+            <div id="departmentsList" class="dropdown-menu" aria-labelledby="sort-options">
+                <div class="dropdown-divider"></div>
+                <button data-event="alldeps" class="dropdown-item" href="#">Усі</button>
+            </div>
+        </div>
+    </div>
+    <div class="pagination">
+        <button class="control page-num first-page">
+            <i class="fad fa-chevron-double-left"></i>
+        </button>
+        <button class="control page-num previous-page">
+            <i class="far fa-chevron-left"></i>
+        </button>
+        <span class="page-num current-page">1</span>
+        <button class="control page-num next-page">
+            <i class="far fa-chevron-right"></i>
+        </button>
+        <button class="control page-num last-page">
+            <i class="fad fa-chevron-double-right"></i>
+        </button>
+    </div>
+</div>

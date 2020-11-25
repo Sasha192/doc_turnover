@@ -6,6 +6,8 @@ public class TenantContext {
 
     public static final String DEFAULT_TENANT_IDENTIFIER = "bcrew_default";
 
+    public static final String PHANTOM_TENANT_IDENTIFIER = "bcrew";
+
     private static final ThreadLocal<String> TENANT_IDENTIFIER =
             new ThreadLocal<>();
 

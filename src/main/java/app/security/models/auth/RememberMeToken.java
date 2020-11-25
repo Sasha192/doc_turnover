@@ -25,7 +25,7 @@ public class RememberMeToken {
             columnDefinition = "BINARY(16)", nullable = false)
     private UUID uuid;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private CustomUser user;
 

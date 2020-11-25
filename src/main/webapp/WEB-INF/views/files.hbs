@@ -1,0 +1,84 @@
+<div class="tool-bar">
+    <div class="notifications">
+        <i data-role="button" data-event="toggle" class="fa fa-bell"></i>
+        <div class="notifications-wrapper">
+            <div class="title">
+                Оповіщення
+            </div>
+            <div class="notifications-list">
+            </div>
+            <span data-event="more" style="color: #2196f3; cursor:pointer; padding: 10px"
+                class="w-100 d-flex justify-content-center">Більше</span>
+        </div>
+    </div>
+    <div class="collapse-bar">
+        <button class="toggle-btn">
+            <i class="far fa-bars"></i>
+        </button>
+        <div class="body">
+            <div>
+                <button id="newTodo" class="item">
+                    Нова задача
+                    <i class="fas fa-plus-circle"></i>
+                </button>
+                <button id="existTodo" class="item">
+                    До існуючих
+                    <i class="fas fa-plus-circle"></i>
+                </button>
+                <button id="shareFiles" class="item">
+                    Поділитися
+                    <i class="fas fa-share"></i>
+                </button>
+                <button id="downloadFiles" class="item">
+                    Скачати
+                    <i class="fas fa-cloud-download-alt"></i>
+                </button>
+            </div>
+            <button id="uploadFiles" class="item">
+                Завантаити
+                <i class="fas fa-cloud-download-alt"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="body">
+    <table>
+        <thead>
+            <tr>
+                <td>
+                    Назва
+                </td>
+                <td id="sortByData">
+                    Дата
+                    <i class="fa fa-caret-down ml-2" style="vertical-align: inherit;"></i>
+                </td>
+                <td>
+                    Автор
+                </td>
+            </tr>
+        </thead>
+        <tbody> </tbody>
+    </table>
+</div>
+<div class="footer">
+    <div class="filter-group">
+        <button id="filter" class="filter-toggle">
+            Фильтр <i class="fas fa-sort"></i>
+        </button>
+    </div>
+    <div class="pagination">
+        <button class="control page-num first-page">
+            <i class="fad fa-chevron-double-left"></i>
+        </button>
+        <button class="control page-num previous-page">
+            <i class="far fa-chevron-left"></i>
+        </button>
+        <span class="page-num current-page">1</span>
+        <button class="control page-num next-page">
+            <i class="far fa-chevron-right"></i>
+        </button>
+        <button class="control page-num last-page">
+            <i class="fad fa-chevron-double-right"></i>
+        </button>
+    </div>
+</div>

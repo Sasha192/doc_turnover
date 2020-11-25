@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@RequestMapping("/report")
+@RequestMapping("/com/report")
 public class ReportController extends JsonSupportController {
 
     private final ReportsUploader uploader;

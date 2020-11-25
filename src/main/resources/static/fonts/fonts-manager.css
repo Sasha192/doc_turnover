@@ -1,0 +1,44 @@
+@font-face {
+  font-family: "Roboto regular";
+  src: url("Roboto/Roboto-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Roboto light";
+  src: url("Roboto/Roboto-Light.ttf");
+}
+
+@font-face {
+  font-family: "Roboto medium";
+  src: url("Roboto/Roboto-Medium.ttf");
+}
+
+@font-face {
+  font-family: "Helvetica regular";
+  src: url("Helvetica/HelveticaRegular.ttf");
+}
+
+@font-face {
+  font-family: "Helvetica light";
+  src: url("./");
+}
+
+@font-face {
+  font-family: "Opensans regular";
+  src: url("Opensans/OpenSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Opensans semibold";
+  src: url("Opensans/OpenSans-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: "Opensans light";
+  src: url("Opensans/OpenSans-Light.ttf");
+}
+
+@font-face {
+  font-family: "Noto regular";
+  src: url("Noto/NotoSans-Regular.ttf");
+}
