@@ -5,6 +5,7 @@ import app.security.models.auth.UserInfo;
 import java.io.File;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,27 +27,37 @@ public class ImageStorageUtil implements IimageStorage {
     public void upload(MultipartFile mfile, UserInfo info)
             throws IOException {
         String fileName = StringToUtf8Utils
-                .encodeUtf8(
+                .convertToUtf8(
                         mfile.getOriginalFilename()
                 );
         String extension = FileExtensionUtil.getExtension(fileName);
-        extension = Constants.DOT + extension;
-        if (scanUtil.check(mfile) && Constants
+        if (!Constants.appImageFormats.contains(extension)) {
+            return;
+        }
+        fileName = info.getImgIdToken() + extension;
+        String fileFullPath = new ClassPathResource("/static/img")
+                .getFile()
+                .getAbsolutePath();
+        fileFullPath = fileFullPath
+                + '/'
+                + fileName;
+        File file = new File(fileFullPath);
+        if (file.exists()) {
+            file.delete();
+        }
+        file.createNewFile();
+        mfile.transferTo(file);
+        if (scanUtil.check(file) && Constants
                 .appImageFormats.contains(extension)) {
-            String fileFullPath = constants
-                    .get("full_path_to_image_storage")
-                    .getStringValue();
-            fileFullPath = fileFullPath + Constants.SLASH + info.getImgIdToken();
-            File file = new File(fileFullPath);
-            if (file.exists()) {
-                file.delete();
-            }
-            file.createNewFile();
-            mfile.transferTo(file);
             String staticPath = constants
                     .get("static_resource_img")
                     .getStringValue();
+            staticPath = staticPath + '/'
+                    + (fileName);
             info.setImgPath(staticPath);
+        } else {
+            file.delete();
+            info.setImgPath(Constants.IMG_DEFAULT);
         }
     }
 }

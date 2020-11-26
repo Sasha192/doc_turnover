@@ -18,6 +18,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
@@ -45,15 +46,30 @@ public class VirusTotalScan implements IMaliciousScan {
     }
 
     @Override
-    public boolean scan(File file)
-            throws FileNotFoundException {
-        try (FileInputStream stream = new FileInputStream(file)) {
-            return scan(new FileInputStream(file));
-        } catch (FileNotFoundException e) {
+    public boolean scan(File file) {
+        return scanFile(file);
+    }
+
+    private boolean scanFile(File file) {
+        try {
+            String id = getIdForFile(file);
+            HttpGet request = new HttpGet(ANALYSIS_URL.concat(id));
+            request.setHeader("x-apikey", apiKeyVt);
+            HttpResponse response = HttpClientFactory.getClient().execute(request);
+            JsonObject jsonObject = responseToJson(response, "data", "attributes", "stats")
+                    .getAsJsonObject();
+            int harmless = jsonObject.get("harmless").getAsInt();
+            int malicious = jsonObject.get("malicious").getAsInt();
+            int suspicious = jsonObject.get("suspicious").getAsInt();
+            if (harmless == 0 && malicious == 0 && (suspicious < THRESHOLD)) {
+                return true;
+            }
+        } catch (ClientProtocolException e) {
             return false;
         } catch (IOException e) {
             return false;
         }
+        return false;
     }
 
     @Override
@@ -67,7 +83,7 @@ public class VirusTotalScan implements IMaliciousScan {
             String id = getIdForFile(inputStream);
             HttpGet request = new HttpGet(ANALYSIS_URL.concat(id));
             request.setHeader("x-apikey", apiKeyVt);
-            HttpResponse response = client.execute(request);
+            HttpResponse response = HttpClientFactory.getClient().execute(request);
             JsonObject jsonObject = responseToJson(response, "data", "attributes", "stats")
                     .getAsJsonObject();
             int harmless = jsonObject.get("harmless").getAsInt();
@@ -87,14 +103,34 @@ public class VirusTotalScan implements IMaliciousScan {
     private String getIdForFile(InputStream stream) throws IOException {
         HttpEntity entity = MultipartEntityBuilder
                 .create()
-                .addBinaryBody("file", stream)
+                .addBinaryBody("file", stream.readAllBytes())
                 .build();
         HttpPost request = new HttpPost(UPLOAD_URL);
         request.setEntity(entity);
         request.setHeader("x-apikey", apiKeyVt);
         HttpResponse response = null;
         try {
-            response = client.execute(request);
+            response = HttpClientFactory.getClient().execute(request);
+            return responseToJson(response, "data", "id").getAsString();
+        } catch (IOException e) {
+            EXCEPTIONS_LOGGER.error("IOEXCEPTION : " + e.getMessage());
+            return null;
+        } finally {
+            request.releaseConnection();
+        }
+    }
+
+    private String getIdForFile(File file) throws IOException {
+        HttpEntity entity = MultipartEntityBuilder
+                .create()
+                .addBinaryBody("file", file)
+                .build();
+        HttpPost request = new HttpPost(UPLOAD_URL);
+        request.setEntity(entity);
+        request.setHeader("x-apikey", apiKeyVt);
+        HttpResponse response = null;
+        try {
+            response = HttpClientFactory.getClient().execute(request);
             return responseToJson(response, "data", "id").getAsString();
         } catch (IOException e) {
             EXCEPTIONS_LOGGER.error("IOEXCEPTION : " + e.getMessage());

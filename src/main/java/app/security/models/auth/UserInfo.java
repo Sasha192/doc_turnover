@@ -6,13 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import static app.configuration.spring.constants.Constants.IMG_DEFAULT;
+
 @Entity
 @Table(name = "user_info", schema = "bcrew_default")
 public class UserInfo
         extends IdentityBaseEntity
         implements Serializable {
-
-    private static final String IMG_DEFAULT = "/img/default.jpg";
 
     @Column(name = "first_name")
     private String firstName;

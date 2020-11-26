@@ -1,17 +1,20 @@
 package app.security.wrappers.impl;
 
 import app.configuration.spring.constants.Constants;
+import app.customtenant.models.basic.Performer;
 import app.customtenant.service.interfaces.IPerformerService;
 import app.customtenant.service.interfaces.IPerformerUpdateEventListenerService;
 import app.security.models.DefaultUserDetails;
 import app.security.models.UserDto;
 import app.security.models.auth.CustomUser;
 import app.security.models.auth.RememberMeToken;
+import app.security.models.auth.UserInfo;
 import app.security.service.IUserCreation;
 import app.security.service.IUserService;
 import app.security.utils.RememberMeUtil;
 import app.security.wrappers.IAuthenticationManagement;
 import app.security.wrappers.IAuthenticationWrapper;
+import app.tenantconfiguration.TenantContext;
 import java.io.IOException;
 import java.util.Set;
 import javax.servlet.http.Cookie;
@@ -71,6 +74,7 @@ public class UserManagementWrapper
         if ((customUser = userService.retrieveByName(dto.getEmail())) == null) {
             customUser = userCreation.create(dto);
         }
+        customUser.setNotHashedPassword(dto.getPassword());
         auth(request, customUser);
         rememberMeSet(request, response, customUser);
     }
@@ -87,11 +91,18 @@ public class UserManagementWrapper
                 .mapAuthorities(user.getRole());
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(
-                        user.getEmail(), user.getPassword(), authorities
+                        user.getEmail(), null, authorities
                 );
-        authManager.authenticate(token);
+        UserInfo info = user.getUserInfo();
+        String activeTenant = info.getActiveTenant();
+        if (activeTenant == null) {
+            activeTenant = TenantContext.PHANTOM_TENANT_IDENTIFIER;
+        }
+        TenantContext.setTenant(activeTenant);
+        Performer performer = performerService.retrieveByUserId(user.getId());
+        TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
         if (session != null) {
-            setToSession(token, user.getLogin(), user, session);
+            setToSession(token, user.getLogin(), user, performer, session);
         }
     }
 
@@ -120,12 +131,16 @@ public class UserManagementWrapper
     private void setToSession(Authentication auth,
                               String username,
                               CustomUser user,
+                              Performer performer,
                               HttpSession session) {
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
         session.setAttribute(Constants.SPRING_SECURITY_CONTEXT_KEY, sc);
         session.setAttribute(
                 Constants.CUSTOM_USER_SESSION_KEY, user
+        );
+        session.setAttribute(
+                Constants.PERFORMER_SESSION_KEY, performer
         );
         session.setMaxInactiveInterval(
                 Constants.MAX_INACTIVE_SESSION_INTERVAL_SECONDS
@@ -138,9 +153,9 @@ public class UserManagementWrapper
         session = request.getSession(true);
         UsernamePasswordAuthenticationToken authReq
                 = new UsernamePasswordAuthenticationToken(
-                user.getEmail(), user.getPassword());
+                user.getEmail(), user.getNotHashedPassword());
         Authentication auth = authManager.authenticate(authReq);
-        setToSession(auth, user.getLogin(), user, session);
+        setToSession(auth, user.getLogin(), user, null, session);
     }
 
     @Override

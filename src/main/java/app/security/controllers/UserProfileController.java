@@ -81,13 +81,14 @@ public class UserProfileController
                             HttpServletRequest request,
                             @RequestParam("file") final MultipartFile mfile)
             throws IOException {
+        String prev = TenantContext.getTenant();
+        TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
         CustomUser user = userWrapper.retrieveUser(request);
         UserInfo info = user.getUserInfo();
         imageStorage.upload(mfile, info);
         userService.updateUserInfo(info);
         sendDefaultJson(response, true, "");
         Set<String> tenants = user.getTenants();
-        String prev = TenantContext.getTenant();
         for (String tenant : tenants) {
             TenantContext.setTenant(tenant);
             Performer perf = performerService.retrieveByUserId(user.getId());

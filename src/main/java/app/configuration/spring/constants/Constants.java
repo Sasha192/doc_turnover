@@ -38,6 +38,7 @@ public class Constants {
     public static final String IS_LOGIN_SESSION_KEY = "IS_LOGIN_SESSION_KEY";
     public static final String LOGIN_DTO = "LOGIN_DTO";
     public static final Object LOGIN_SESSION_KEY = "LOGIN" ;
+    public static final String IMG_DEFAULT = "/img/default.jpg";
     public static List<String> appImageFormats;
     public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
     public static final GsonBuilder BUILDER_BRIEF;

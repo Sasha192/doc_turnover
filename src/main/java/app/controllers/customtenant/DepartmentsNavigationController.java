@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/com/departments")
-public class DepartmentsNavigationController extends JsonSupportController {
+public class DepartmentsNavigationController
+        extends JsonSupportController {
 
     private static final GsonBuilder BUILDER =
             new GsonBuilder()
