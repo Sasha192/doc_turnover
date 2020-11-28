@@ -90,6 +90,7 @@ public class DepartmentsNavigationController
         Performer performer = wrapper.retrievePerformer(request);
         if (allowCreationOp(performer.getRoles())) {
             departmentService.deleteById(depoId);
+            sendDefaultJson(response, true, "");
         } else {
             sendDefaultJson(response, false, "Access Denied");
         }

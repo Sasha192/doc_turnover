@@ -96,7 +96,7 @@
 
                     $(files).append(`
                         <div class="file" data-file-id="${fileId}">
-                            <img class="img" data-src="./img/docs-img/${fileExt.substr(1)}.png" alt="" />
+                            <img class="img" data-src="/img/docs-img/${fileExt.substr(1)}.png" alt="" />
                             <span class="name">
                                 ${fileName}
                             </span>
@@ -265,7 +265,7 @@
 
                     $(files).append(`
                             <div class="file" data-file-id="${fileId}">
-                                <img class="img" data-src="./img/docs-img/${fileExt.substr(1)}.png" alt="" />
+                                <img class="img" data-src="/img/docs-img/${fileExt.substr(1)}.png" alt="" />
                                 <span class="name">
                                     ${fileName}
                                 </span>
@@ -333,7 +333,7 @@
 
                             $(files).prepend(`
                             <div class="file" data-file-id="${encodeURIComponent(name)}">
-                                <img class="img" src="./img/docs-img/${ext.substr(1)}.png" alt="" />
+                                <img class="img" src="/img/docs-img/${ext.substr(1)}.png" alt="" />
                                 <span class="name">
                                     ${decodeURIComponent(name)}
                                 </span>
@@ -361,10 +361,12 @@
                     data.forEach(f => formData.append("files", f));
                     $(modal).modal("hide");this.Loader.show("infinity");
 
-                    this.Http.postFIle("/com/archive/doc/upload", formData, res => {
+                    this.Http.postFile("/com/archive/doc/upload", formData, res => {
                         this.Loader.hide();setTimeout(() => {
                             if (res.success) {
                                 this.Alert.render("success", "Файли завантажено.");
+                                const Handler = Factory.getClass("FilesHandler")
+                                this.Data.update("Files").then(data => Handler.render(data))
                             } else {
                                 this.Alert.render("danger", "Сталася помилка." + res.msg.substr(0, 32) + "...");
                             }
@@ -410,7 +412,7 @@
 
                     $(files).append(`
                             <div class="file" data-file-id="${fileId}">
-                                <img class="img" data-src="./img/docs-img/${fileExt.substr(1)}.png" alt="" />
+                                <img class="img" data-src="/img/docs-img/${fileExt.substr(1)}.png" alt="" />
                                 <span class="name">
                                     ${fileName}
                                 </span>
@@ -518,7 +520,7 @@
 
                             $(files).prepend(`
                                 <div class="file" data-file-id="${fileId}">
-                                    <img class="img" src="./img/docs-img/${fileExt.substr(1)}.png" alt="" />
+                                    <img class="img" src="/img/docs-img/${fileExt.substr(1)}.png" alt="" />
                                     <span class="name">
                                         ${fileName}
                                     </span>
@@ -686,7 +688,7 @@
 
                             $(rFiles).prepend(`
                                 <div class="file" data-report-id="${t.report.id}" data-file-id="${fileId}">
-                                    <img class="img" src="./img/docs-img/${fileExt.substr(1)}.png" alt="" />
+                                    <img class="img" src="/img/docs-img/${fileExt.substr(1)}.png" alt="" />
                                     <span class="name">
                                         ${fileName}
                                     </span>
@@ -982,7 +984,7 @@
 
                                 $(uploadFiles).prepend(`
                                 <div class="file" data-file-id="${encodeURIComponent(name)}">
-                                    <img class="img" src="./img/docs-img/${ext.substr(1)}.png" alt="" />
+                                    <img class="img" src="/img/docs-img/${ext.substr(1)}.png" alt="" />
                                     <span class="name">
                                         ${decodeURIComponent(name)}
                                     </span>
@@ -1122,7 +1124,7 @@
                     this.Loader.show("infinity");
                     this.Http.post("/com/tenants/invite", {
                         emails: Array.from(list.querySelectorAll(".add-employes__item")).map(e => e.querySelector(".add-employes__item-name").innerText.trim()),
-                        tenantId: d.id
+                        tenantId: d
                     }, res => {
                         this.Loader.hide(() => {
                             console.log({ employes: Array.from(list.querySelectorAll(".add-employes__item")).map(e => e.querySelector(".add-employes__item-name").innerText.trim()) });

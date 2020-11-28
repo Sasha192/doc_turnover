@@ -52,6 +52,8 @@
                     value = btn.innerText.trim(),
                     role = Object.keys(this.Lang.words).find(key => this.Lang.words[key] === value);
 
+                role = role.toUpperCase()
+
                 btn.style.pointerEvents = "none";
                 this.Alert.render("confirm", "Роль буде змінено. Ви впевнені?", {
                     confirm: () => {
@@ -81,7 +83,7 @@
                 if (btn.closest('td').querySelector('[data-event="toggle"]').innerText.trim() == btn.innerText.trim()) return;
 
                 let userId = btn.closest(".department__user").dataset.userId,
-                    value = btn.dataset.depId;
+                    value = btn.dataset.departmentId;
 
                 btn.style.pointerEvents = "none";
                 this.Alert.render("confirm", "Відділ буде змінено. Ви впевнені?", {
@@ -89,7 +91,6 @@
                         this.Loader.show("infinity");
                         this.Http.post("/com/performers/modify/department", { performerId: userId, departmentId: value }, res => {
                             btn.style.pointerEvents = "auto";
-                            console.log({ performerId: userId, value });
                             this.Loader.hide(() => {
                                 if (res.success) {
                                     this.Alert.render("success", "Відділ змінено.");
@@ -190,7 +191,8 @@
                     </tr>`);
                         this._table[0].querySelector(`[data-department-id="${u.department.id}"] [value="delete"]`).onclick = e => removeDep(e);
                     }
-                } else {
+                } else if(lastDep !== "Нерозподілені"){
+                    lastDep = "Нерозподілені"
                     this._table.append(` 
                     <tr class="department__name"><td>Нерозподілені</td><td>
                     </tr>`);

@@ -65,7 +65,7 @@ public class Constants {
     public static final int VALID_REMEMBER_ME_TOKEN_TIME_SEC =
             60 * 60 * 24 * 7;
     public static final String TENANT_SESSION_ID = "TENANT_ID";
-    public static final String INVITE_NO_AUTH_TENANT_SESSION_ID = "INVITE_TENANT_ID";
+    public static final String INVITE_NO_AUTH_TENANT_SESSION_ID;
     public static final String USER_DTO = "USER_DTO";
     public static final String TABLE_USER_CODE_STRING = "TABLE_USER_CODE_STRING";
     public static final int DEFAULT_PAGE_SIZE = 30;
@@ -92,6 +92,11 @@ public class Constants {
         ).replaceAll("[^A-Za-z]", "");
         REMEMBER_ME_ID = enc.encodeToString(
                 "REMEMBERMEID"
+                        .getBytes(StandardCharsets.UTF_8)
+        ).replaceAll("[^A-Za-z]", "");
+
+        INVITE_NO_AUTH_TENANT_SESSION_ID = enc.encodeToString(
+                "INVITE_TENANT_ID"
                         .getBytes(StandardCharsets.UTF_8)
         ).replaceAll("[^A-Za-z]", "");
     }

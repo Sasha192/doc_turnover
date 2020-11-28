@@ -4,10 +4,12 @@ import app.controllers.customtenant.JsonSupportController;
 import app.customtenant.service.extapis.GMailService;
 import app.security.models.auth.CustomUser;
 import app.security.wrappers.ICustomUserWrapper;
+import app.tenantconfiguration.TenantContext;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.internal.$Gson$Preconditions;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,6 +43,8 @@ public class TenantInviteController
                        HttpServletResponse response) {
         JsonElement element = JsonParser.parseString(body);
         if (element.isJsonObject()) {
+            String prev = TenantContext.getTenant();
+            TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
             JsonObject o = element.getAsJsonObject();
             String tenantId = o.get("tenantId").getAsString();
             JsonArray emails = o.get("emails").getAsJsonArray();
@@ -49,7 +53,7 @@ public class TenantInviteController
                 Iterator<JsonElement> iterator = emails.iterator();
                 while (iterator.hasNext()) {
                     String email = iterator.next().getAsString();
-                    String baseUrl = String.format("%s://%s:%d/tenants/invite/connect?tenantId=%s",
+                    String baseUrl = String.format("%s://%s:%d/main/tenants/invite/connect/view?tenantId=%s",
                             request.getScheme(),
                             request.getServerName(),
                             request.getServerPort(),
@@ -57,7 +61,8 @@ public class TenantInviteController
                     mailService.send(email, "INVITE LINK", baseUrl);
                 }
             }
+            TenantContext.setTenant(prev);
         }
-        sendDefaultJson(response, false, "");
+        sendDefaultJson(response, true, "");
     }
 }

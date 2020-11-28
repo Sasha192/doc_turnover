@@ -19,6 +19,11 @@ public class DepartmentDao extends GenericJpaRepository<Department>
     private static final String UPDATE_NAME =
             "UPDATE Department SET department_name = :newName_ WHERE id = :depoId_";
 
+    private static final String INCREMENT_COUNTER =
+            "UPDATE departments d "
+                    + "SET d.perf_counter = d.perf_counter + 1 "
+                    + " WHERE id = :depoId_";
+
     public DepartmentDao() {
         setClazz(Department.class);
     }
@@ -47,6 +52,13 @@ public class DepartmentDao extends GenericJpaRepository<Department>
         getEntityManager().createQuery(UPDATE_NAME)
                 .setParameter("newName_", newName)
                 .setParameter("depoId_", depId)
+                .executeUpdate();
+    }
+
+    @Override
+    public int incrementCounter(long departmentId) {
+        return getEntityManager().createNativeQuery(INCREMENT_COUNTER)
+                .setParameter("depoId_", departmentId)
                 .executeUpdate();
     }
 }

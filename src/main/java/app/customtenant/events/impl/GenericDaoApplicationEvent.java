@@ -8,8 +8,6 @@ public class GenericDaoApplicationEvent
 
     private Event.EventType type;
 
-    private String tenant;
-
     public GenericDaoApplicationEvent(Event source,
                                       Event.EventType type,
                                       String tenant) {
@@ -19,10 +17,6 @@ public class GenericDaoApplicationEvent
 
     public Event.EventType getType() {
         return type;
-    }
-
-    public String getTenant() {
-        return tenant;
     }
 
     @Override

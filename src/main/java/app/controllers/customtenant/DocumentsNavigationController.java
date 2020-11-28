@@ -98,36 +98,26 @@ public class DocumentsNavigationController extends JsonSupportController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public void list(final HttpServletResponse response, final HttpServletRequest request,
                      @PathVariable(name = "pageId") @NotNull final Integer pageId,
+                     @RequestParam(name = "startDate", required = false) String startDate,
+                     @RequestParam(name = "endDate", required = false) String endDate,
+                     @RequestParam(name = "name", required = false) String word,
                      @RequestParam(name = "reverse", required = false) Boolean reverse)
             throws IOException {
-        String body = new String(request.getInputStream().readAllBytes(),
-                StandardCharsets.UTF_8);
-        JsonElement element = JsonParser.parseString(body);
-        if (!element.isJsonObject()) {
-            sendDefaultJson(response, new LinkedList<>());
-            return;
-        }
         Date startTime = null;
         Date endTime = null;
-        String word = null;
         try {
-            JsonObject json = element.getAsJsonObject();
-            if (json.has("startDate") && json.has("endDate")) {
-                String dateStr = json.get("startDate").getAsString();
-                String endStr = json.get("endDate").getAsString();
-                startTime = Constants.DATE_FORMAT.parse(dateStr);
-                endTime = Constants.DATE_FORMAT.parse(endStr);
-            }
-            if (json.has("name")) {
-                word = json.get("name").getAsString();
+            if (startDate != null && endDate != null) {
+                startTime = Constants.DATE_FORMAT.parse(startDate);
+                endTime = Constants.DATE_FORMAT.parse(endDate);
             }
         } catch (ParseException | NumberFormatException ignored) {
-            ;
+            sendDefaultJson(response, false, "Некоректні дані");
+            return;
         }
         Performer performer = performerWrapper.retrievePerformer(request);
         SimpleRole roles = performer.getRoles();
         List<BriefDocument> list = null;
-        if (startTime != null && endTime != null){
+        if (startTime != null && endTime != null) {
             if (allowListArchive(roles)) {
                 list = docService.findBy(pageId, null, startTime.getTime(), endTime.getTime(), word);
             } else {
@@ -138,6 +128,8 @@ public class DocumentsNavigationController extends JsonSupportController {
                     list = docService.findByAndPerformerInTaskId(pageId, endTime, performer.getId());
                 }
             }
+        } else {
+            list = docService.findBy(pageId, null, null, null, word);
         }
         writeToResponse(response, builder, list);
     }

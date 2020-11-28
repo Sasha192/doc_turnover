@@ -33,7 +33,7 @@ public class Performer
     private String imgPath;
 
     @ManyToOne(cascade = {CascadeType.REFRESH},
-            fetch = FetchType.LAZY)
+            fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id",
             insertable = false, updatable = false)
     private Department department;

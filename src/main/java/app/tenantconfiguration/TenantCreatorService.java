@@ -12,7 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("tenant_default_creator")
-public class TenantCreatorService implements ITenantCreatorService {
+public class TenantCreatorService
+        implements ITenantCreatorService {
 
     @Autowired
     @Qualifier("flyway_default_service")

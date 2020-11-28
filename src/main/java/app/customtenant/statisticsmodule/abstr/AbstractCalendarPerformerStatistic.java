@@ -67,8 +67,10 @@ public abstract class AbstractCalendarPerformerStatistic
         if (expiration >= 0) {
             end.setTimeInMillis(start.getTimeInMillis() + expiration);
         } else {
-            end.setTimeInMillis(Long.MAX_VALUE);
+            end.add(Calendar.YEAR, 100);
         }
+        this.start = start;
+        this.end = end;
     }
 
     public Calendar getStart() {

@@ -121,30 +121,6 @@ CREATE TABLE `comment_post` (
   CONSTRAINT `comment_post_tasks_id_fk` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `bcrew` CHARACTER SET utf8 COLLATE utf8_general_ci ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50032 DROP TRIGGER IF EXISTS comment_post_on_null_date_time */;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`bcrew_user`@`%`*/ /*!50003 trigger comment_post_on_null_date_time
-    before insert
-    on comment_post for each row
-begin
-    SET NEW.time = IFNULL(NEW.time, TIME(NOW()));
-    SET NEW.date = IFNULL(NEW.date, DATE(NOW()));
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `bcrew` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 
 --
 -- Table structure for table `departments`
@@ -157,6 +133,7 @@ CREATE TABLE `departments` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `department_name` varchar(512) NOT NULL,
   `parent_department_id` bigint(20) DEFAULT NULL,
+  `perf_counter` int(11) NOT NULL COMMENT 'NUMBER OF PERFORMERS IN DEPARTMENT\n',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -177,9 +154,10 @@ CREATE TABLE `performers` (
   `email` varchar(255) NOT NULL,
   `img_path` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `performers_user_id_uindex` (`user_id`),
   KEY `performers_departments_id_fk` (`department_id`),
-  CONSTRAINT `performers_departments_id_fk` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+  CONSTRAINT `performers_departments_id_fk` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -301,32 +279,6 @@ CREATE TABLE `tasks_documents` (
   CONSTRAINT `tasks_documents_tasks_id_fk` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `bcrew` CHARACTER SET utf8 COLLATE utf8_bin ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50032 DROP TRIGGER IF EXISTS doc_task_statistic_Trigger */;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`bcrew_user`@`%`*/ /*!50003 TRIGGER doc_task_statistic_Trigger
-    AFTER INSERT
-    ON tasks_documents FOR EACH ROW
-BEGIN
-    insert into doc_statistics (doc_id, task_counter) VALUES (NEW.doc_id, 1) ON DUPLICATE KEY UPDATE
-        task_counter=task_counter+1;
-    insert into task_statistics (task_id, doc_counter) VALUES (NEW.task_id, 1) ON DUPLICATE KEY UPDATE
-        doc_counter=doc_counter+1;
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `bcrew` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 
 --
 -- Table structure for table `tasks_keys`
@@ -337,9 +289,9 @@ DROP TABLE IF EXISTS `tasks_keys`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tasks_keys` (
   `task_id` bigint(20) NOT NULL,
-  `key` varchar(255) NOT NULL,
+  `key_word` varchar(255) NOT NULL,
   KEY `tasks_keys_tasks_id_fk` (`task_id`),
-  KEY `tasks_keys_key_index` (`key`),
+  KEY `tasks_keys_key_index` (`key_word`),
   CONSTRAINT `tasks_keys_tasks_id_fk` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -387,4 +339,23 @@ CREATE TABLE `words_documents` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-24 15:23:22
+-- Dump completed on 2020-11-28 13:20:52
+
+ALTER TABLE app_event CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE brief_documents CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE cal_perf_statistics CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE comment_post CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE departments CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE flyway_schema_history CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE performers CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE performers_events CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE reports CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE reports_docs CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE tasks CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE tasks_documents CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE tasks_keys CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE tasks_performers CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE words_documents CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+alter table app_event change time creation_time bigint not null;
+

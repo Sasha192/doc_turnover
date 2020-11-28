@@ -61,7 +61,9 @@ public class Task
     @Column(name = "task_owner_id")
     private long ownerId;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH},
+    @ManyToOne(cascade = {
+            CascadeType.DETACH,
+            CascadeType.REMOVE},
             fetch = FetchType.EAGER)
     @JoinColumn(name = "task_owner_id",
             insertable = false,
@@ -87,7 +89,9 @@ public class Task
     @Column(name = "report_id")
     private Long reportId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {
+            CascadeType.DETACH,
+            CascadeType.REMOVE})
     @JoinColumn(name = "report_id",
             referencedColumnName = "id",
             updatable = false, insertable = false)
@@ -98,7 +102,7 @@ public class Task
     @CollectionTable(name = "tasks_keys",
             joinColumns = @JoinColumn(name = "task_id")
     )
-    @Column(name = "key")
+    @Column(name = "key_word")
     @ExcludeForJsonBriefTask
     private Set<String> keys;
 
@@ -133,12 +137,19 @@ public class Task
             throws ParseException {
         this();
         this.ownerId = taskOwnerIdd;
-        this.status = TaskStatus.getByName(dto.getStatus());
+        String status = dto.getStatus();
+        if (status != null) {
+            this.status = TaskStatus.getByName(dto.getStatus());
+        } else {
+            this.status = TaskStatus.NEW;
+        }
         this.controlDate = CustomAppDateTimeUtil.parse(dto.getDateControl());
         this.deadlineDate = CustomAppDateTimeUtil.parse(dto.getDateDeadline());
         this.description = dto.getDescription();
         this.name = dto.getName();
         this.keys = new HashSet<>();
+        this.documentsIds = new HashSet<>();
+        this.performerIds = new HashSet<>();
         Collections.addAll(keys, name.trim().toLowerCase().split(" "));
         Collections.addAll(keys, description.trim().toLowerCase().split(" "));
         Collections.addAll(documentsIds, dto.getDocList());

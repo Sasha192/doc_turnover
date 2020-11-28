@@ -8,6 +8,7 @@ import dev.morphia.Datastore;
 import java.util.*;
 import javax.annotation.PostConstruct;
 
+import dev.morphia.query.internal.MorphiaCursor;
 import org.bson.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -86,10 +87,15 @@ public class TenantDao implements ITenantDao {
 
     @Override
     public TenantInfoEntity findById(String tenantId) {
-        BsonDocument filter = new BsonDocument();
-        filter.append("_id", new BsonString(tenantId));
-        return (TenantInfoEntity) tenantCol.find(filter)
-                .first();
+        MorphiaCursor<TenantInfoEntity> cursor = datastore
+                .find(TenantInfoEntity.class)
+                .field("_id")
+                .equal(tenantId)
+                .find();
+        if (cursor.hasNext()) {
+            return cursor.next();
+        }
+        return null;
     }
 
     @Override

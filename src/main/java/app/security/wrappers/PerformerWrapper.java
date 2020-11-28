@@ -3,6 +3,7 @@ package app.security.wrappers;
 import app.configuration.spring.constants.Constants;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.service.interfaces.IPerformerService;
+import app.customtenant.service.interfaces.IPerformerUpdateEventListenerService;
 import app.security.models.auth.CustomUser;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,11 +17,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class PerformerWrapper implements IPerformerWrapper {
 
-    @Autowired
-    private IPerformerService performerService;
+    private final IPerformerService performerService;
 
-    @Autowired
-    private ICustomUserWrapper userWrapper;
+    private final ICustomUserWrapper userWrapper;
+
+    private final IPerformerUpdateEventListenerService performerUpdateService;
+
+    public PerformerWrapper(IPerformerUpdateEventListenerService performerUpdateService,
+                            IPerformerService performerService,
+                            ICustomUserWrapper userWrapper) {
+        this.performerUpdateService = performerUpdateService;
+        this.performerService = performerService;
+        this.userWrapper = userWrapper;
+    }
 
     @Override
     public Performer retrievePerformer(HttpServletRequest request) {
@@ -29,16 +38,18 @@ public class PerformerWrapper implements IPerformerWrapper {
         if (o == null) {
             return setPerformer(request, session);
         }
-        return (Performer) o;
+        Performer performer = (Performer) o;
+        if (performerUpdateService.toUpdate(performer.getId())) {
+            performer = setPerformer(request, session);
+            performerUpdateService.wasUpdated(performer.getId());
+        }
+        return performer;
     }
 
     private Performer setPerformer(HttpServletRequest req, HttpSession session) {
         CustomUser user = userWrapper.retrieveUser(req);
-        if (user == null) {
-            return null;
-        }
         UserInfo info = user.getUserInfo();
-        String activeTenant = (String) session.getAttribute(Constants.TENANT_SESSION_ID);
+        String activeTenant = info.getActiveTenant();
         String prevTenant = TenantContext.getTenant();
         TenantContext.setTenant(activeTenant);
         Performer performer = performerService.retrieveByUserId(user.getId());

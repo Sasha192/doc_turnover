@@ -165,7 +165,7 @@ public class TaskNavigationController extends JsonSupportController {
     @RequestMapping(value = "/create",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void create(@Validated @RequestBody TaskDto dto,
+    public void create(@Validated(TaskDto.NewTask.class) @RequestBody TaskDto dto,
                        HttpServletResponse response,
                        HttpServletRequest request) {
         Performer ownerPerformer = performerWrapper.retrievePerformer(request);

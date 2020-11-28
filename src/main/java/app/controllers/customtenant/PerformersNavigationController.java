@@ -4,6 +4,9 @@ import app.customtenant.models.basic.Performer;
 import app.customtenant.models.serialization.ExcludeStrategies;
 import app.customtenant.service.interfaces.IPerformerService;
 import app.security.models.SimpleRole;
+import app.security.models.auth.CustomUser;
+import app.security.models.auth.UserInfo;
+import app.security.service.IUserService;
 import app.tenantconfiguration.TenantContext;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
@@ -29,9 +32,12 @@ public class PerformersNavigationController extends JsonSupportController {
 
     private final IPerformerService performerService;
 
-    @Autowired
-    public PerformersNavigationController(IPerformerService performerService) {
+    private final IUserService userService;
+
+    public PerformersNavigationController(IPerformerService performerService,
+                                          IUserService userService) {
         this.performerService = performerService;
+        this.userService = userService;
     }
 
     @GetMapping(value = {"/list", "/list/{depo_id}"})
@@ -59,6 +65,7 @@ public class PerformersNavigationController extends JsonSupportController {
             long performerId = o.get("performerId").getAsLong();
             long departmentId = o.get("departmentId").getAsLong();
             performerService.updatePerformerDepartment(performerId, departmentId);
+
             sendDefaultJson(response, true, "");
             return;
         }
@@ -85,14 +92,23 @@ public class PerformersNavigationController extends JsonSupportController {
     public void removePerformer(HttpServletResponse response,
                                 @RequestBody String body) {
         JsonElement element = JsonParser.parseString(body);
+        String prev = TenantContext.getTenant();
         if (element.isJsonObject()) {
             JsonObject o = element.getAsJsonObject();
             long performerId = o.get("performerId").getAsLong();
-            performerService.deleteById(performerId);
+            Performer performer = performerService.findOne(performerId);
             sendDefaultJson(response, true, "");
-            return;
+            TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
+            CustomUser user = userService.findOne(performer.getUserId());
+            UserInfo info = user.getUserInfo();
+            user.getTenants().remove(prev);
+            info.setActiveTenant(TenantContext.PHANTOM_TENANT_IDENTIFIER);
+            userService.update(user);
+            userService.updateUserInfo(info);
+        } else {
+            sendDefaultJson(response, false, "");
         }
-        sendDefaultJson(response, false, "");
+        TenantContext.setTenant(prev);
     }
 
     @PostMapping(value = "/undistrib", consumes = MediaType.APPLICATION_JSON_VALUE)

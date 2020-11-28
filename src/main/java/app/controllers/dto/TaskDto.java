@@ -1,8 +1,13 @@
 package app.controllers.dto;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 public class TaskDto {
+
+    public interface NewTask {
+
+    }
 
     @NotNull
     private String name;
@@ -22,7 +27,7 @@ public class TaskDto {
     @NotNull
     private Long[] docList;
 
-    @NotNull
+    @Null(groups = {NewTask.class})
     private String status;
 
     public String getName() {

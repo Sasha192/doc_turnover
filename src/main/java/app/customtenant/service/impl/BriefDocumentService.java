@@ -53,7 +53,7 @@ public class BriefDocumentService
         } else if (start != null && end != null) {
             return dao.findBy(page, pageSize, start, end);
         } else {
-            return new LinkedList<>();
+            return dao.findAll(page, pageSize);
         }
     }
 

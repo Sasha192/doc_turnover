@@ -37,6 +37,7 @@ public class TaskApplicationEventListener
     public void onApplicationEvent(TaskApplicationEvent event) {
         String tenant = event.getTenant();
         String prevTenant = TenantContext.getTenant();
+        TenantContext.setTenant(tenant);
         List<ITaskApplicationEventService> services = servicesMap.get(event.getType());
         for (ITaskApplicationEventService service : services) {
             service.service(event);

@@ -46,10 +46,12 @@ public class GMailService implements IMailService {
             if (to == null) {
                 return false;
             }
-            Message message = createMessage(to, subject, plainText);
+            Message message = createMimeMessageHelper(to, subject, plainText, null);
             Transport.send(message);
             return true;
         } catch (MessagingException e) {
+            ;
+        } catch (IOException e) {
             ;
         }
         return false;

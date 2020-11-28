@@ -22,6 +22,7 @@ import com.google.gson.JsonParser;
 import dev.morphia.Datastore;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
@@ -82,7 +83,9 @@ public class TenantController extends JsonSupportController {
             info.setTenantId(tenantId);
             info.setOwnerId(user.getId());
             morphia.save(info);
-            user.addTenant(tenantId);
+            Set<String> tenants = new HashSet<>(user.getTenants());
+            tenants.add(tenantId);
+            user.setTenantsId(tenants);
             userWrapper.update(user);
             UserInfo uInfo = user.getUserInfo();
             uInfo.setActiveTenant(tenantId);
@@ -128,26 +131,25 @@ public class TenantController extends JsonSupportController {
         Set<String> tenants = user.getTenants();
         HttpSession session = request.getSession();
         if (tenants.contains(tenantId) && session != null) {
-            TenantContext.setTenant(tenantId);
             UserInfo info = user.getUserInfo();
             info.setActiveTenant(tenantId);
             userWrapper.update(info);
             session.setAttribute(Constants.TENANT_SESSION_ID, tenantId);
+            TenantContext.setTenant(tenantId);
             Performer performer = performerService.retrieveByUserId(user.getId());
             if (performer == null) {
                 performer = new Performer(user);
                 performerService.create(performer);
                 session.setAttribute(Constants.PERFORMER_SESSION_KEY, performer);
             }
+            TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
             sendDefaultJson(response, true, "");
-            return;
         } else {
             sendDefaultJson(response, false, "");
         }
     }
 
-    @PostMapping(value = "/invite/connect",
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/invite/connect")
     public void connectInvite(@RequestParam("tenantId") String tenantId,
                               HttpServletRequest request,
                               HttpServletResponse response)
@@ -158,20 +160,69 @@ public class TenantController extends JsonSupportController {
             return;
         }
         Set<String> userTenants = user.getTenants();
+        if (userTenants == null) {
+            userTenants = new HashSet<>();
+        }
         if (!userTenants.contains(tenantId)) {
             TenantInfoEntity tenant = tenantService.findById(tenantId);
             if (tenant == null) {
                 sendDefaultJson(response, false, "Шутки шуткуєш?");
                 return;
             }
-            user.getTenants().add(tenantId);
+            userTenants.add(tenantId);
+            user.setTenantsId(userTenants);
             userWrapper.update(user);
         }
         try {
-            request.getRequestDispatcher("/tenants/connect")
+            request.getRequestDispatcher("/main/tenants/connect")
                     .forward(request, response);
         } catch (ServletException e) {
             sendDefaultJson(response, false, "Помилка на сервері. Будь ласка, спробуйте пізніше");
+        }
+    }
+
+    @GetMapping(value = "/invite/connect/view")
+    public String connectInviteView(@RequestParam("tenantId") String tenantId,
+                              HttpServletRequest request)
+            throws IOException {
+        CustomUser user = userWrapper.retrieveUser(request);
+        if (user == null) {
+            return "main";
+        }
+        Set<String> userTenants = user.getTenants();
+        if (userTenants == null) {
+            userTenants = new HashSet<>();
+        }
+        if (!userTenants.contains(tenantId)) {
+            TenantInfoEntity tenant = tenantService.findById(tenantId);
+            if (tenant == null) {
+                return "index";
+            }
+            userTenants.add(tenantId);
+            user.setTenantsId(userTenants);
+            userWrapper.update(user);
+        }
+        connectView(tenantId, user, request.getSession());
+        return "index";
+    }
+
+    private void connectView(String tenantId,
+                        CustomUser user, HttpSession session)
+            throws IOException {
+        Set<String> tenants = user.getTenants();
+        if (tenants.contains(tenantId) && session != null) {
+            UserInfo info = user.getUserInfo();
+            info.setActiveTenant(tenantId);
+            userWrapper.update(info);
+            session.setAttribute(Constants.TENANT_SESSION_ID, tenantId);
+            TenantContext.setTenant(tenantId);
+            Performer performer = performerService.retrieveByUserId(user.getId());
+            if (performer == null) {
+                performer = new Performer(user);
+                performerService.create(performer);
+                session.setAttribute(Constants.PERFORMER_SESSION_KEY, performer);
+            }
+            TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
         }
     }
 

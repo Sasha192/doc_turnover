@@ -11,7 +11,7 @@ public interface IPerformerService extends IOperations<Performer> {
 
     Performer retrieveByUserId(Long id);
 
-    int updatePerformerDepartment(long perfId, long depoId);
+    void updatePerformerDepartment(long perfId, long depoId);
 
-    int updatePerformerRole(Long performerId, SimpleRole role);
+    void updatePerformerRole(Long performerId, SimpleRole role);
 }

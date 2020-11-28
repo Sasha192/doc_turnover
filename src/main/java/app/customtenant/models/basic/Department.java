@@ -28,6 +28,9 @@ public class Department
     @Column(name = "parent_department_id")
     private Long parentDepartmentId;
 
+    @Column(name = "perf_counter")
+    private int performerCounter;
+
     public Department() {
     }
 
@@ -61,6 +64,14 @@ public class Department
 
     public void setParentDepartmentId(Long parentDepartmentId) {
         this.parentDepartmentId = parentDepartmentId;
+    }
+
+    public int getPerformerCounter() {
+        return performerCounter;
+    }
+
+    public void setPerformerCounter(int performerCounter) {
+        this.performerCounter = performerCounter;
     }
 
     @Override

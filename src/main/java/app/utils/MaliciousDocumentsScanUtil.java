@@ -16,11 +16,16 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class MaliciousDocumentsScanUtil {
+
+    private String tempArchive;
 
     private final IMaliciousScan scan;
 
@@ -31,6 +36,18 @@ public class MaliciousDocumentsScanUtil {
                                       Constants constants) {
         this.scan = scan;
         this.constants = constants;
+    }
+
+    @PostConstruct
+    public void init()
+            throws IOException {
+        File cpTempResource = new ClassPathResource("/").getFile();
+        File tempArchiveFile = new File(
+                cpTempResource.getAbsolutePath() + "/temp");
+        if (!tempArchiveFile.exists()) {
+            tempArchiveFile.mkdirs();
+        }
+        this.tempArchive = tempArchiveFile.getAbsolutePath();
     }
 
     public List<DocumentEntity> checkAndGet(MultipartFile... mfiles)
@@ -44,8 +61,7 @@ public class MaliciousDocumentsScanUtil {
                     StandardCharsets.UTF_8
             );
             String ext = FileExtensionUtil.getExtension(fileName);
-            String fullPath = constants.get("path_to_archive")
-                    .getStringValue();
+            String fullPath = tempArchive;
             fullPath = fullPath + '/' + (System.currentTimeMillis() + ext);
             File file = new File(fullPath);
             if (file.exists()) {

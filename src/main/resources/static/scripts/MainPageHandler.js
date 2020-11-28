@@ -50,7 +50,7 @@
             e.preventDefault();
 
             this.Loader.show("infinity");
-            this.Http.get(`/main/auth/reg/send?email=${efield}`, res => {
+            this.Http.get(`/main/auth/reg/send?email=${efield.trim()}`, res => {
                 this.Loader.hide(() => {
                     if (res.success) {
                         window.location.href = "/main/confirm";

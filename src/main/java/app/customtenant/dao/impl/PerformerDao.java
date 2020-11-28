@@ -5,6 +5,7 @@ import app.customtenant.dao.persistance.GenericJpaRepository;
 import app.customtenant.models.basic.Performer;
 import app.security.models.SimpleRole;
 import java.util.List;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +25,7 @@ public class PerformerDao extends GenericJpaRepository<Performer>
                     + "where perf.id = :id_ ";
 
     private static final String UPDATE_PERF_ROLE =
-            " update Performer perf set perf.roles = :role_id "
+            " update Performer perf set perf.role = :role_id "
                     + "where perf.id = :id_ ";
 
     public PerformerDao() {
@@ -41,10 +42,14 @@ public class PerformerDao extends GenericJpaRepository<Performer>
 
     @Override
     public Performer retrieveByUserId(Long id) {
-        TypedQuery<Performer> typedQuery = getEntityManager()
-                .createQuery(WHERE_USER_ID, Performer.class);
-        typedQuery.setParameter("user_id", id);
-        return typedQuery.getSingleResult();
+        try {
+            TypedQuery<Performer> typedQuery = getEntityManager()
+                    .createQuery(WHERE_USER_ID, Performer.class);
+            typedQuery.setParameter("user_id", id);
+            return typedQuery.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override

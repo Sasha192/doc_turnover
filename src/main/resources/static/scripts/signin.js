@@ -24,7 +24,7 @@
             this.Loader.show("infinity");
 
             this.Http.post("/main/auth/login/", {
-                email: this.email.val(),
+                email: this.email.val().trim(),
                 passwd: this.passwd.val(),
                 rememberMe: this.rmme.checked
             }, res => {

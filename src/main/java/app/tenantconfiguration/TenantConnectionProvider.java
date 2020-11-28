@@ -141,6 +141,11 @@ public class TenantConnectionProvider
         getAnyConnectionProvider().getConnection()
                 .createStatement()
                 .execute("CREATE SCHEMA " + tenantId);
+        String alterToUtf8 = "ALTER DATABASE %s CHARACTER SET utf8 COLLATE utf8_general_ci";
+        alterToUtf8 = String.format(alterToUtf8, tenantId);
+        getAnyConnectionProvider().getConnection()
+                .createStatement()
+                .execute(alterToUtf8);
         return createDataSource(tenantId);
     }
 

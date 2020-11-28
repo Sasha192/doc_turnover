@@ -10,6 +10,8 @@ public interface IDepartmentDao extends IGenericDao<Department> {
     List<Department> retrieveByParent(Long parentId);
 
     void changeDeparmentName(String newName, Long depId);
+
+    int incrementCounter(long departmentId);
     //
 
 }

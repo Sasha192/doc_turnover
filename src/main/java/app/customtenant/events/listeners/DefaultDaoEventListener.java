@@ -38,9 +38,9 @@ public class DefaultDaoEventListener
     @Async
     public void onApplicationEvent(GenericDaoApplicationEvent genEvent) {
         String prevTenant = TenantContext.getTenant();
-        String tenant = genEvent.getTenant();
-        TenantContext.setTenant(tenant);
         Event event = genEvent.getSource();
+        String tenant = event.getTenantId();
+        TenantContext.setTenant(tenant);
         eventService.create(event);
         Set<Long> performerIds = event.getPerformersId();
         JsonElement element = BUILDER.create().toJsonTree(event);

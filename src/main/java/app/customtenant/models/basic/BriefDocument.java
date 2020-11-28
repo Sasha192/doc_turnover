@@ -30,7 +30,7 @@ public class BriefDocument
     @Column(name = "ext_name")
     private String extName;
 
-    @Column(name = "path_uuid")
+    @Column(name = "uuid")
     private String uuid;
 
     @Column(name = "creation_time")
@@ -61,6 +61,7 @@ public class BriefDocument
         setExtName(ex);
         setName(nm);
         setUuid(entity.getId());
+        ex = ex.substring(1);
         addSearchWord(ex);
         for (String word : nm.split(" ")) {
             addSearchWord(word);

@@ -1,7 +1,9 @@
 package app.customtenant.service.impl;
 
+import app.customtenant.dao.interfaces.IDepartmentDao;
 import app.customtenant.dao.interfaces.IPerformerDao;
 import app.customtenant.dao.persistance.IGenericDao;
+import app.customtenant.models.basic.Department;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.service.abstraction.AbstractService;
 import app.customtenant.service.interfaces.IPerformerService;
@@ -17,24 +19,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerformerService extends AbstractService<Performer>
         implements IPerformerService {
 
-    @Autowired
-    private IPerformerDao dao;
+    private final IPerformerDao dao;
 
-    @Autowired
-    @Qualifier("perf_update_listener")
-    private IPerformerUpdateEventListenerService listenerService;
+    private final IDepartmentDao departmentDao;
 
-    public PerformerService() {
+    private final IPerformerUpdateEventListenerService listenerService;
 
+    public PerformerService(IPerformerDao dao,
+                            IDepartmentDao departmentDao,
+                            @Qualifier("perf_update_listener")
+                                    IPerformerUpdateEventListenerService listenerService) {
+
+        this.dao = dao;
+        this.departmentDao = departmentDao;
+        this.listenerService = listenerService;
     }
 
     @Override
     protected IGenericDao<Performer> getDao() {
         return dao;
-    }
-
-    public void setDao(final IPerformerDao dao) {
-        this.dao = dao;
     }
 
     @Override
@@ -50,19 +53,24 @@ public class PerformerService extends AbstractService<Performer>
 
     @Override
     public Performer update(Performer entity) {
-        listenerService.setUpdate(entity.getId());
+        updated(entity.getId());
         return super.update(entity);
     }
 
     @Override
-    public int updatePerformerDepartment(long perfId, long depoId) {
-        listenerService.setUpdate(perfId);
-        return dao.updatePerformerDepartment(perfId, depoId);
+    public void updatePerformerDepartment(long performerId, long departmentId) {
+        dao.updatePerformerDepartment(performerId, departmentId);
+        departmentDao.incrementCounter(departmentId);
+        updated(performerId);
     }
 
     @Override
-    public int updatePerformerRole(Long performerId, SimpleRole role) {
+    public void updatePerformerRole(Long performerId, SimpleRole role) {
+        updated(performerId);
+        dao.updatePerformerRole(performerId, role);
+    }
+
+    private void updated(Long performerId) {
         listenerService.setUpdate(performerId);
-        return dao.updatePerformerRole(performerId, role);
     }
 }
