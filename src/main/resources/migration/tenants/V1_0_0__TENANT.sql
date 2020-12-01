@@ -346,7 +346,9 @@ ALTER TABLE brief_documents CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_c
 ALTER TABLE cal_perf_statistics CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE comment_post CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE departments CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+/*
 ALTER TABLE flyway_schema_history CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+*/
 ALTER TABLE performers CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE performers_events CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE reports CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -359,3 +361,28 @@ ALTER TABLE words_documents CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_c
 
 alter table app_event change time creation_time bigint not null;
 
+alter table comment_post modify date_time bigint not null;
+
+alter table app_event
+	add task_name varchar(255) null;
+
+
+/*
+create table pages_number
+(
+	page_id varchar(63) not null,
+	page_size bigint not null
+);
+
+create unique index pages_number_page_id_uindex
+	on pages_number (page_id);
+
+alter table pages_number
+	add constraint pages_number_pk
+		primary key (page_id);
+
+INSERT INTO pages_number VALUES ('task_pages', 0)
+INSERT INTO pages_number VALUES ('app_event', 0)
+INSERT INTO pages_number VALUES ('brief_documents', 0)
+INSERT INTO pages_number VALUES ('task_pages', 0)
+INSERT INTO pages_number VALUES ('task_pages', 0)*/

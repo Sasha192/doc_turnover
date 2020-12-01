@@ -31,7 +31,7 @@
                         resolve(JSON.parse(data));
                     } else {
                         this.Http.get(path, data => {
-                            this.Cookie.set(key, path, { "max-age": 600 });
+                            this.Cookie.set(key, path, { "max-age": 300 });
                             sessionStorage.setItem(key, JSON.stringify(data));
                             resolve(data);
                         });
@@ -48,7 +48,7 @@
             let path = this.Cookie.get(key);
             return new Promise((resolve, reject) => {
                 this.Http.get(path, data => {
-                    this.Cookie.set(key, path, { "max-age": 900 });
+                    this.Cookie.set(key, path, { "max-age": 300 });
                     sessionStorage.setItem(key, JSON.stringify(data));
                     resolve(data);
                 });

@@ -14,8 +14,12 @@ public class DeadlinePublishingEvent
     private Long taskId;
 
     public DeadlinePublishingEvent(String message) {
-        setEventTypeEnum(EventType.DEADLINE_NOTIFICATION);
+        this();
         setMessage(message);
+    }
+
+    public DeadlinePublishingEvent() {
+        setEventTypeEnum(EventType.DEADLINE_NOTIFICATION);
     }
 
     public Long getTaskId() {

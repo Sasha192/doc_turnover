@@ -7,6 +7,7 @@ import app.tenantconfiguration.TenantContext;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
@@ -19,7 +20,7 @@ public class TaskApplicationEventListener
     private EnumMap<TaskEventEnum, List<ITaskApplicationEventService>> servicesMap;
 
     @Autowired
-    public TaskApplicationEventListener(List<ITaskApplicationEventService> services) {
+    public TaskApplicationEventListener(Set<ITaskApplicationEventService> services) {
         servicesMap = new EnumMap<TaskEventEnum,
                 List<ITaskApplicationEventService>>(TaskEventEnum.class);
         for (ITaskApplicationEventService service : services) {

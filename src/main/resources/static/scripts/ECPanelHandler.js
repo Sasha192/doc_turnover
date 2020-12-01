@@ -27,7 +27,7 @@
                             this.Alert.render("success", " створено.");
                             this.Data.update("Enterprises").then(data => this.render(data));
                             this.Modal.render("tariffs", res.msg);
-                        } else this.Alert.render("danger", "Сталася помилка." + res.msg.substr(0, 32) + "...");
+                        } else this.Alert.render("danger", res.msg.substr(0, 64) + "...");
                     });
                 });
             };

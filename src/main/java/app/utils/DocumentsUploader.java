@@ -4,6 +4,7 @@ import app.customtenant.models.basic.BriefDocument;
 import app.customtenant.models.basic.Performer;
 import app.customtenant.service.interfaces.IBriefDocumentService;
 import app.tenantdefault.models.DocumentEntity;
+import app.tenantdefault.service.IDocumentStorage;
 import dev.morphia.Datastore;
 import java.io.IOException;
 import java.util.List;
@@ -19,15 +20,15 @@ public class DocumentsUploader {
             Logger.getLogger("intExceptionLogger");
 
     private final IBriefDocumentService documentService;
-    private final Datastore datastore;
+    private final IDocumentStorage datastorage;
     private final MaliciousDocumentsScanUtil scan;
 
     @Autowired
     public DocumentsUploader(IBriefDocumentService documentService,
-                             Datastore datastore,
+                             IDocumentStorage datastorage,
                              MaliciousDocumentsScanUtil scan) {
         this.documentService = documentService;
-        this.datastore = datastore;
+        this.datastorage = datastorage;
         this.scan = scan;
     }
 
@@ -35,7 +36,7 @@ public class DocumentsUploader {
             throws IOException {
         List<DocumentEntity> documents = scan.checkAndGet(mfiles);
         for (DocumentEntity entity : documents) {
-            datastore.save(entity);
+            datastorage.save(entity);
             BriefDocument doc = new BriefDocument(entity, performer.getId());
             documentService.create(doc);
         }

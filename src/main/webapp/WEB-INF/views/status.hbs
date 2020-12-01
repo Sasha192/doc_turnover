@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Помилка</title>
+    <link rel="stylesheet" href="/fonts/fonts-manager.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="shortcut icon" href="/img/services/logo.png" type="image/x-icon">
+    <style>
+
+        .wrapper {
+            position: absolute;
+            top:0;
+            left:0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .page_404 {
+            padding: 40px 0;
+            background: #fff;
+            font-family: "Roboto regular";
+            color:#777777;
+            font-size: 14px;
+        }
+
+        .page_404 img {
+            width: 100%;
+        }
+
+        .four_zero_four_bg {
+            background-image: url("/img/services/dribbble_1.gif");
+            background-repeat: no-repeat;
+            height: 400px;
+            background-position: center;
+            min-width: 500px;
+        }
+
+
+        .four_zero_four_bg h1 {
+            font-size: 60px;
+            font-family: "Helvetica medium";
+            color:#777777
+        }
+
+        .four_zero_four_bg h3 {
+            font-size: 80px;
+        }
+
+        .link_404 {
+            color: #fff !important;
+            padding: 10px 20px;
+            background: #34ace0;
+            margin: 20px 0;
+            display: inline-block;
+            text-decoration:none;
+        }
+
+        .contant_box_404 {
+            margin-top: -50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contant_box_404 p {
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="wrapper">
+    <section class="page_404">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <div class="col-sm-10 col-sm-offset-1  text-center">
+                        <div class="four_zero_four_bg">
+                            <h1 class="text-center">{{status}}</h1>
+                        </div>
+
+                        <div class="contant_box_404">
+                            <h3 class="h2">
+                                Ой! Помилка...
+                            </h3>
+
+                            <p>{{msg}}</p>
+
+                            <a href="/" class="link_404">На головну!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+
+</html>

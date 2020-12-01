@@ -1,29 +1,31 @@
 package app.customtenant.events.impl;
 
 import app.customtenant.events.Event;
+import app.customtenant.models.basic.TaskStatus;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "control_date_pub_event")
-public class ControlDatePublishingEvent
+@DiscriminatorValue(value = "task_status")
+public class TaskStatusModificationEvent
         extends Event {
-
-    @Column(name = "task_name")
-    private String taskName;
 
     @Column(name = "task_id")
     private Long taskId;
 
-    public ControlDatePublishingEvent(String message, String taskName) {
+    @Column(name = "task_name")
+    private String taskName;
+
+    public TaskStatusModificationEvent(String taskName, Long taskId, TaskStatus newStatus) {
         this();
+        this.taskId = taskId;
         this.taskName = taskName;
-        setMessage(message);
+        this.message = newStatus.getMessage();
     }
 
-    public ControlDatePublishingEvent() {
-        setEventTypeEnum(EventType.CONTROL_DATE_NOTIFICATION);
+    public TaskStatusModificationEvent() {
+        setEventTypeEnum(EventType.TASK_STATUS_MODIFICATION);
     }
 
     public Long getTaskId() {

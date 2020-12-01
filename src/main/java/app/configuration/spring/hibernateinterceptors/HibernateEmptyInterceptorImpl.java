@@ -3,6 +3,7 @@ package app.configuration.spring.hibernateinterceptors;
 import java.io.Serializable;
 
 import app.customtenant.eventdriven.publishers.TaskEventPublisher;
+import app.customtenant.events.pub.TaskStatusModificationEventPublisher;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.basic.taskmodels.Task;
 import app.customtenant.models.basic.taskmodels.TaskStatusValidator;
@@ -67,9 +68,11 @@ public class HibernateEmptyInterceptorImpl extends EmptyInterceptor {
         switch (propertyName) {
             case "status": {
                 processTaskNewState(entity, (TaskStatus) current, (TaskStatus) prev);
+                break;
             }
             case "deadline": {
                 processTaskDeadlineSet(entity, (Boolean) current);
+                break;
             }
             default:
                 break;

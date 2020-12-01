@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bson.BsonDocument;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +26,7 @@ public class TenantService implements ITenantService {
     }
 
     @Override
-    public Collection<TenantInfoEntity> findPageableOpen(int page) {
-        return dao.findPageableOpen(page);
-    }
-
-    @Override
-    public Collection<TenantInfoEntity> findPageableFilter(int page, BsonDocument filter) {
-        return dao.findPageableFilter(page, filter);
-    }
-
-    @Override
-    public Collection<TenantInfoEntity> findMyTenants(Collection<String> uuids) {
+    public Collection<Document> findMyTenants(Collection<String> uuids) {
         return dao.findMyTenants(uuids);
     }
 
@@ -52,5 +43,10 @@ public class TenantService implements ITenantService {
     @Override
     public void remove(String tenantId) {
         dao.remove(tenantId);
+    }
+
+    @Override
+    public void update(TenantInfoEntity entity) {
+        dao.update(entity);
     }
 }

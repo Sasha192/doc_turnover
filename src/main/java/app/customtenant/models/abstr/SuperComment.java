@@ -31,7 +31,8 @@ public abstract class SuperComment
     protected Time time;
 
     @Column(name = "date_time")
-    protected Timestamp dateTime;
+    protected long dateTime =
+            System.currentTimeMillis();
 
     public SuperComment() {
         this.date = CustomAppDateTimeUtil.now();
@@ -68,14 +69,6 @@ public abstract class SuperComment
 
     public void setTime(Time time) {
         this.time = time;
-    }
-
-    public Timestamp getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(Timestamp dateTime) {
-        this.dateTime = dateTime;
     }
 
     /**

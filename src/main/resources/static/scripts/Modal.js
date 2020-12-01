@@ -135,21 +135,21 @@
                         this.Loader.hide();setTimeout(() => {
                             if (res.success) {
                                 this.Alert.render("success", "Задачу створено.");
+                                this.Data.update('Todos')
                             } else {
                                 this.Alert.render("danger", "Сталася помилка. " + res.msg.substr(0, 32) + "...");
                             }
                         }, 400);
-                        console.log({
-                            name: name.value.trim(),
-                            description: description.value.trim(),
-                            performerList: performers,
-                            docList: Array.from(files.querySelectorAll(".file"), f => f.dataset.fileId),
-                            dateControl: control.getDate(), deadline: dateDeadline.getDate()
-                        });
                         $(modal).modal("hide");name.value = "";description.innerHTML = "";
                     });
                 };
-            });
+            }); $('[data-modal="newTodo"]').on("hidden.bs.modal", () => {
+                this.Data.get("Performers").then(data => {
+                    data.forEach(p => {
+                        if(p.checked) delete p.checked
+                    })
+                })
+            })
 
             this.init("existTodo", document.querySelector('[data-modal="existTodo"]'), d => {
                 if (d.length == 0) return this.Alert.render("warning", "Оберіть файли...");
@@ -169,11 +169,11 @@
                     if (clear) todos.innerHTML = "";
 
                     data.forEach(t => {
-                        let status = Factory.getClass("Lang").get(status);
+                        status = Factory.getClass("Lang").get(status);
 
                         $(todos).append(`
                         <div class="todo" data-todo-id="${t.id}">
-                            <img data-placement="top" data-toggle="tooltip" title="${t.manager.firstName} ${t.manager.lastName}" data-src="${t.manager.imgPath}" alt="">
+                            <img data-placement="top" data-toggle="tooltip" title="${t.owner.name}" data-src="${t.owner.imgPath}" alt="">
                             <div class="body">
                                 <div class="name">
                                    ${t.name}
@@ -255,6 +255,14 @@
                     };
                 });
 
+                $('[data-modal="existTodo"]').on("hidden.bs.modal", () => {
+                    this.Data.get("Todos").then(data => {
+                        data.forEach(p => {
+                            if (p.checked) delete p.checked
+                        })
+                    })
+                })
+
                 // Files    
                 files.innerHTML = "";
                 d.forEach(f => {
@@ -301,13 +309,9 @@
                                 this.Alert.render("danger", "Сталася помилка." + res.msg.substr(0, 32) + "...");
                             }
                         }, 400);
-                        console.log({
-                            todos: todos,
-                            documents: Array.from(files.querySelectorAll(".file"), f => f.dataset.fileId)
-                        });
                     });
                 };
-            });
+            }); $("")
 
             this.init("uploadFiles", document.querySelector('[data-modal="uploadFiles"]'), () => {
                 return "done";
@@ -441,8 +445,7 @@
                     }, res => {
                         this.Loader.hide();setTimeout(() => {
                             if (res.success) {
-                                this.Alert.render("success", "Файли відправлено.");
-                                console.log({ documents: Array.from(files.querySelectorAll(".file"), f => f.dataset.fileId), message: msg.value.trim(), email: email.value.trim() });
+                                this.Alert.render("success", "Файли відправлено.")
                             } else {
                                 this.Alert.render("danger", "Сталася помилка." + res.msg.substr(0, 32) + "...");
                             }
@@ -570,9 +573,16 @@
 
                     {
                         // Comments
-                        if (t.comments) t.comments.forEach(c => {
-                            let author = Factory.getClass("User").get(c.authorId);
-                            $(comments).prepend(`
+
+
+                        if (t.comments) {
+                            let _comments = t.comments;
+                            _comments.sort((a, b) => {
+                                return (a.dateTime - b.dateTime);
+                            });
+                            t.comments.forEach(c => {
+                                Factory.getClass("User").get(c.authorId).then(author => {
+                                    $(comments).prepend(`
                                 <div class="comment" data-comment-id="${c.id}">
                                     <img data-src="${author.imgPath}" alt="" />
                                     <div class="body">
@@ -591,42 +601,45 @@
                                     </div>
                                 </div>`);
 
-                            comments.querySelector(`[data-comment-id="${c.id}"] [data-event="dismiss"]`).onclick = e => {
-                                let commentId = e.target.closest(".comment").dataset.commentId,
-                                    comment = e.target.closest(".comment"),
-                                    btn = e.target.closest('[data-event="dismiss"]');
+                                    $(comments).find('[data-src]').Lazy({
+                                        effect: 'fadeIn',
+                                        autoDestroy: true,
+                                        effectTime: 200,
+                                        threshold: files.scrollHeight,
+                                        visibleOnly: false,
+                                        onError: function (element) {
+                                            console.log('error loading ' + element.data('src'));
+                                        }
+                                    });
+                                    comments.querySelector(`[data-comment-id="${c.id}"] [data-event="dismiss"]`).onclick = e => {
+                                        let commentId = e.target.closest(".comment").dataset.commentId,
+                                            comment = e.target.closest(".comment"),
+                                            btn = e.target.closest('[data-event="dismiss"]');
 
-                                btn.setAttribute("disabled", "true");
-                                this.Alert.render("confirm", "Коментар буде видално. Ви впевнені?", {
-                                    confirm: () => {
-                                        this.Loader.show("infinity");
-                                        this.Http.post("/com/task/comment/remove", { taskId: d.dataset.todoId, commentId }, res => {
-                                            this.Loader.hide();setTimeout(() => {
-                                                if (res.success) {
-                                                    $(comment).slideUp(100, () => comment.remove());
-                                                    this.Alert.render("success", "Коментар видалено.");
-                                                } else {
-                                                    this.Alert.render("danger", "Сталася помилка.");
-                                                    btn.removeAttribute("disabled");
-                                                }
-                                            }, 400);
+                                        btn.setAttribute("disabled", "true");
+                                        this.Alert.render("confirm", "Коментар буде видално. Ви впевнені?", {
+                                            confirm: () => {
+                                                this.Loader.show("infinity");
+                                                this.Http.post("/com/task/comment/remove", { taskId: d.dataset.todoId, commentId }, res => {
+                                                    this.Loader.hide();setTimeout(() => {
+                                                        if (res.success) {
+                                                            $(comment).slideUp(100, () => comment.remove());
+                                                            this.Alert.render("success", "Коментар видалено.");
+                                                        } else {
+                                                            this.Alert.render("danger", "Сталася помилка.");
+                                                            btn.removeAttribute("disabled");
+                                                        }
+                                                    }, 400);
+                                                });
+                                            },
+                                            unConfirm: () => {
+                                                btn.removeAttribute("disabled");
+                                            }
                                         });
-                                    },
-                                    unConfirm: () => {
-                                        btn.removeAttribute("disabled");
-                                    }
-                                });
-                            };
-                        });$(comments).find('[data-src]').Lazy({
-                            effect: 'fadeIn',
-                            autoDestroy: true,
-                            effectTime: 200,
-                            threshold: files.scrollHeight,
-                            visibleOnly: false,
-                            onError: function (element) {
-                                console.log('error loading ' + element.data('src'));
-                            }
-                        });
+                                    };
+                                })
+                            });
+                        }
 
                         let commentsBlock = comments.closest('[data-name="comments"]'),
                             commentInput = commentsBlock.querySelector('.add-comment [data-name="comment"'),
@@ -681,7 +694,7 @@
 
                     {
                         // Files - Report
-                        if (t.report.documents) t.report.documents.forEach(f => {
+                        if (t.report) t.report.documents.forEach(f => {
                             let fileName = f.name,
                                 fileExt = f.extName,
                                 fileId = f.id;
@@ -708,8 +721,7 @@
                                     confirm: () => {
                                         this.Loader.show("infinity");
                                         this.Http.post("/com/report/doc/remove", { reportId: e.target.closest(".file").dataset.reportId, docId: fileId }, res => {
-                                            this.Loader.hide(() => {
-                                                console.log({ reportId: e.target.closest(".file").dataset.reportId, fileId });
+                                            this.Loader.hide(() => {;
                                                 if (res.success) {
                                                     file.slideUp(100, () => file.remove());
                                                     this.Alert.render("success", "Файл прибрано.");
@@ -740,7 +752,7 @@
                     {
                         // User rights
                         this.Data.get("User").then(user => {
-                            if (user.role == "MANAGER" || user.role == "G_MANAGER" || user.role == "ADMIN") {
+                            if (user.performer.role == "MANAGER" || user.performer.role == "G_MANAGER" || user.performer.role == "ADMIN") {
                                 controlBtns.style.display = "flex";
                                 modal.querySelectorAll('[data-event="dismiss"]').forEach(b => b.style.display = "block");
                                 description.removeAttribute("disabled");
@@ -812,7 +824,7 @@
                                     this.Data.get("Performers").then(data => {
 
                                         data.forEach(p => pList.set(p.id, p));
-                                        t.performerList.forEach(id => pList.get(id).checked = true);
+                                        t.performerIds.forEach(id => pList.get(id).checked = true);
 
                                         data.sort((perf1, perf2) => {
                                             let p1 = perf1.checked;
@@ -853,28 +865,30 @@
                                     });
                                 }
                             } else {
-                                t.performerList.forEach(id => {
-                                    let user = User.get(id);
-
-                                    $(performers).append(`
+                                t.performerIds.forEach(id => {
+                                    Factory.getClass("User").get(id).then(user => {
+                                        $(performers).append(`
                                     <div class="performer" data-performer-id="${user.id}">
                                         <div class="user-block">
                                             <img class="img" data-src="${user.imgPath}" alt="" />
                                             <span class="name">${user.name}</span>
                                         </div>
                                     </div>`);
-                                });
 
-                                $(performers).find('[data-src]').Lazy({
-                                    effect: 'fadeIn',
-                                    autoDestroy: true,
-                                    effectTime: 200,
-                                    threshold: performers.scrollHeight,
-                                    visibleOnly: false,
-                                    onError: function (element) {
-                                        console.log('error loading ' + element.data('src'));
-                                    }
-                                });
+                                        $(performers).find('[data-src]').Lazy({
+                                            effect: 'fadeIn',
+                                            autoDestroy: true,
+                                            effectTime: 200,
+                                            threshold: performers.scrollHeight,
+                                            visibleOnly: false,
+                                            onError: function (element) {
+                                                console.log('error loading ' + element.data('src'));
+                                            }
+                                        });
+
+                                    });
+
+                                })
                             }
 
                             if (t.status !== "INPROGRESS") {
@@ -1011,10 +1025,9 @@
                             let formData = new FormData();
                             data.forEach(f => formData.append("files", f));
                             $(modal).modal("hide");this.Loader.show("infinity");
-                            console.log(formData.getAll("files"));
                             formData.append("taskId", d.dataset.todoId);
 
-                            this.Http.postFIle("/com/report/upload", formData, res => {
+                            this.Http.postFile("/com/report/upload", formData, res => {
                                 this.Loader.hide();setTimeout(() => {
                                     if (res.success) {
                                         this.Alert.render("success", "Файли завантажено.");
@@ -1040,7 +1053,7 @@
                                     this.BoardsHandler = Factory.getClass("BoardsHandler");
                                     this.Data.update("Todos").then(data => this.BoardsHandler.render(data));
                                 } else {
-                                    this.Alert.render("danger", "Сталася помилка.");
+                                    this.Alert.render("danger", res.msg);
                                 }
                             });
                         });
@@ -1127,7 +1140,7 @@
                         tenantId: d
                     }, res => {
                         this.Loader.hide(() => {
-                            console.log({ employes: Array.from(list.querySelectorAll(".add-employes__item")).map(e => e.querySelector(".add-employes__item-name").innerText.trim()) });
+
                             if (res.success) {
                                 this.Alert.render("success", "Запрошення відправлено.");
                             } else {

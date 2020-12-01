@@ -19,8 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class TaskStatusModificationApplicationEventService
         implements ITaskApplicationEventService<TaskStatusModificationEvent> {
 
-    @Autowired
-    private ICalendarStatistic statistic;
+    private final ICalendarStatistic statistic;
+
+    public TaskStatusModificationApplicationEventService(
+            ICalendarStatistic statistic) {
+        this.statistic = statistic;
+    }
 
     @Override
     public TaskEventEnum getType() {

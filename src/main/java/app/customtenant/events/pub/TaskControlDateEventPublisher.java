@@ -32,7 +32,8 @@ public class TaskControlDateEventPublisher
         Date now = CustomAppDateTimeUtil.now();
         try {
             String message = createMessage(now, controlDate);
-            ControlDatePublishingEvent event = new ControlDatePublishingEvent(message);
+            ControlDatePublishingEvent event =
+                    new ControlDatePublishingEvent(message, entity.getToDo());
             event.setTaskId(entity.getId());
             Set<Long> ids = new HashSet<>(entity.getPerformerIds());
             if (author != null) {

@@ -89,7 +89,19 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                 return f();
                             });
                         });
-                    });
+                    })
+
+                    Factory.getClass("Data").get("User").then(user => {
+                        if(user.performer.role == "G_MANAGER" || user.performer.role == "ADMIN") {
+
+                        } else {
+                            obj[key].forEach(function (node) {
+                                if(key == "charts"  || key == "clPanel") {
+                                    node.style.display = "none"
+                                }
+                            })
+                        }
+                    })
                 };
 
                 for (var key in obj) {

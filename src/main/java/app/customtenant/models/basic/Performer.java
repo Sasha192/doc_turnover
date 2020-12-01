@@ -43,6 +43,7 @@ public class Performer
     private SimpleRole role;
 
     @OneToMany(mappedBy = "performer")
+    @ExcludeForJsonPerformer
     private Set<AbstractCalendarPerformerStatistic> statistics;
 
     public Performer(CustomUser user) {

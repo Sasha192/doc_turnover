@@ -16,6 +16,11 @@ public enum TaskStatus {
         public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
             return StatisticUnaryOperators.DEC_COMPLETED;
         }
+
+        @Override
+        public String message() {
+            return "Завершено";
+        }
     },ONHOLD("ONHOLD") {
         @Override
         public UnaryOperator<AbstractCalendarPerformerStatistic> increment() {
@@ -25,6 +30,11 @@ public enum TaskStatus {
         @Override
         public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
             return StatisticUnaryOperators.DEC_ONHOLD;
+        }
+
+        @Override
+        public String message() {
+            return "Відкладено";
         }
     }, INPROGRESS("INPROGRESS") {
         @Override
@@ -36,6 +46,11 @@ public enum TaskStatus {
         public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
             return StatisticUnaryOperators.DEC_INPROGRESS;
         }
+
+        @Override
+        public String message() {
+            return "На виконанні";
+        }
     }, OVERDUE("OVERDUE") {
         @Override
         public UnaryOperator<AbstractCalendarPerformerStatistic> increment() {
@@ -46,6 +61,11 @@ public enum TaskStatus {
         public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
             return StatisticUnaryOperators.DEC_OVERDUE;
         }
+
+        @Override
+        public String message() {
+            return "На доопрацювання";
+        }
     }, NEW("NEW") {
         @Override
         public UnaryOperator<AbstractCalendarPerformerStatistic> increment() {
@@ -55,6 +75,11 @@ public enum TaskStatus {
         @Override
         public UnaryOperator<AbstractCalendarPerformerStatistic> decrement() {
             return StatisticUnaryOperators.DEC_NEW;
+        }
+
+        @Override
+        public String message() {
+            return "Новий";
         }
     };
 
@@ -86,4 +111,10 @@ public enum TaskStatus {
     public abstract UnaryOperator<AbstractCalendarPerformerStatistic> increment();
 
     public abstract UnaryOperator<AbstractCalendarPerformerStatistic> decrement();
+
+    protected abstract String message();
+
+    public String getMessage() {
+        return "Статус задачі було змінено : " + message();
+    }
 }

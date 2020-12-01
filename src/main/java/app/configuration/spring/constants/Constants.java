@@ -39,6 +39,7 @@ public class Constants {
     public static final String LOGIN_DTO = "LOGIN_DTO";
     public static final Object LOGIN_SESSION_KEY = "LOGIN" ;
     public static final String IMG_DEFAULT = "/img/default.jpg";
+    public static int TENANTS_NUMBER = 0;
     public static List<String> appImageFormats;
     public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
     public static final GsonBuilder BUILDER_BRIEF;
@@ -70,9 +71,12 @@ public class Constants {
     public static final String TABLE_USER_CODE_STRING = "TABLE_USER_CODE_STRING";
     public static final int DEFAULT_PAGE_SIZE = 30;
 
+    /*public static final GsonBuilder BUILDER_JSON_TASK_DETAILS;*/
+
     static {
         BUILDER_BRIEF = new GsonBuilder().setPrettyPrinting()
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_BRIEF_TASK)
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
                 .setDateFormat(Constants.DATE_FORMAT.toPattern());
         BUILDER_DETAILS = new GsonBuilder().setPrettyPrinting()
                 .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_COMMENT)
@@ -85,6 +89,9 @@ public class Constants {
                 .setExclusionStrategies(ExcludeStrategies.EXCLUDE_FOR_JSON_EVENT)
                 .setDateFormat(Constants.DATE_FORMAT.toPattern())
                 .setPrettyPrinting();
+        /*BUILDER_JSON_TASK_DETAILS = new GsonBuilder().setPrettyPrinting()
+                .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+                .setDateFormat(Constants.DATE_FORMAT.toPattern());*/
         Base64.Encoder enc = Base64.getEncoder();
         REMEMBER_ME_UUID = enc.encodeToString(
                 "REMEMBERMEUUID"

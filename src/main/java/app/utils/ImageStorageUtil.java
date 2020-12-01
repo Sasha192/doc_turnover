@@ -49,9 +49,7 @@ public class ImageStorageUtil implements IimageStorage {
         mfile.transferTo(file);
         if (scanUtil.check(file) && Constants
                 .appImageFormats.contains(extension)) {
-            String staticPath = constants
-                    .get("static_resource_img")
-                    .getStringValue();
+            String staticPath = "/img";
             staticPath = staticPath + '/'
                     + (fileName);
             info.setImgPath(staticPath);

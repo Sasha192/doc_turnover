@@ -12,8 +12,17 @@ public class TaskEvent extends Event {
     @Column(name = "task_id")
     private Long taskId;
 
+    @Column(name = "task_name")
+    private String taskName;
+
+    public TaskEvent(String taskName) {
+        this();
+        this.taskName = taskName;
+    }
+
     public TaskEvent() {
         setEventTypeEnum(EventType.TASK_PUB);
+        setMessage("Створено задачу");
     }
 
     public Long getTaskId() {

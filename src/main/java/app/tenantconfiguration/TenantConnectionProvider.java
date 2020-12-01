@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
+
+import app.configuration.spring.constants.Constants;
 import net.ttddyy.dsproxy.support.ProxyDataSource;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -44,6 +46,7 @@ public class TenantConnectionProvider
             addTenantConnectionProvider(TenantContext.PHANTOM_TENANT_IDENTIFIER);
             for (String id : tenants) {
                 addTenantConnectionProvider(id);
+                Constants.TENANTS_NUMBER++;
             }
         } else {
             throw new UnsatisfiedDependencyException(TenantConnectionProvider.class.getName(),

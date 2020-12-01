@@ -746,7 +746,7 @@ a:hover {
   background-color: #f44336;
 }
 
-.content-wrapper .content .body table [data-name="status"] .status.INPRGORESS {
+.content-wrapper .content .body table [data-name="status"] .status.INPROGRESS {
   background-color: #ff9800;
 }
 

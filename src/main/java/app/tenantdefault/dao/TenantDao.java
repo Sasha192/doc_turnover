@@ -1,6 +1,7 @@
 package app.tenantdefault.dao;
 
 import app.tenantdefault.models.TenantInfoEntity;
+import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import dev.morphia.Datastore;
@@ -8,6 +9,7 @@ import dev.morphia.Datastore;
 import java.util.*;
 import javax.annotation.PostConstruct;
 
+import dev.morphia.Morphia;
 import dev.morphia.query.internal.MorphiaCursor;
 import org.bson.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,33 +48,7 @@ public class TenantDao implements ITenantDao {
     }
 
     @Override
-    public Collection<TenantInfoEntity> findPageableOpen(int page) {
-        BsonDocument filter = new BsonDocument();
-        filter.append("privateAccount", new BsonBoolean(false));
-        return findPageableFilter(page, filter);
-    }
-
-    @Override
-    public Collection<TenantInfoEntity> findPageableFilter(int page, BsonDocument filter) {
-        int ski = (page - 1) * pageSize;
-        MongoCursor cursor = tenantCol.find(filter)
-                .projection(projection)
-                .limit(pageSize)
-                .skip(ski)
-                .iterator();
-        List<TenantInfoEntity> tenants = new LinkedList<>();
-        int counter = 0;
-        Object o = null;
-        while (cursor.hasNext() && counter++ < pageSize) {
-            if ((o = cursor.next()) instanceof TenantInfoEntity) {
-                tenants.add((TenantInfoEntity) o);
-            }
-        }
-        return tenants;
-    }
-
-    @Override
-    public Collection<TenantInfoEntity> findMyTenants(Collection<String> uuids) {
+    public Collection<Document> findMyTenants(Collection<String> uuids) {
         BsonDocument filter = new BsonDocument();
         BsonArray array = new BsonArray();
         for (String id : uuids) {
@@ -81,7 +57,7 @@ public class TenantDao implements ITenantDao {
         BsonDocument in = new BsonDocument();
         in.append("$in", array);
         filter.append("_id", in);
-        List<TenantInfoEntity> tenants = new LinkedList<>();
+        List<Document> tenants = new LinkedList<>();
         return tenantCol.find(filter).projection(projection).into(tenants);
     }
 
@@ -114,5 +90,10 @@ public class TenantDao implements ITenantDao {
         BsonDocument document = new BsonDocument();
         document.append("_id", new BsonString(tenantId));
         tenantCol.deleteOne(document);
+    }
+
+    @Override
+    public void update(TenantInfoEntity entity) {
+        datastore.merge(entity);
     }
 }

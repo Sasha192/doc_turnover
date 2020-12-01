@@ -29,10 +29,12 @@ public class MongoConfiguration {
         String host = environment.getProperty("mongo.host");
         String port = environment.getProperty("mongo.port");
         String db = environment.getProperty("mongo.db");
+        String authSource = environment.getProperty("mongo.auth_source");
         String uri = String.format(
-                "mongodb://%1$s:%2$s@%3$s:%4$s/%5$s?authSource=admin",
+                "mongodb://%1$s:%2$s@%3$s:%4$s/%5$s",
                 username, pwd, host, port, db
         );
+        MongoClient mc = new MongoClient(new MongoClientURI(uri));
         return new MongoClient(new MongoClientURI(uri));
     }
 

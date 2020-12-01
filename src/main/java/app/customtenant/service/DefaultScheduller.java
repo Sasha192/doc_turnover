@@ -28,6 +28,12 @@ public class DefaultScheduller {
     private static final String MSG_STRING = "TENANT_ID=%s\n%s\nLASTED : "
             + "HOURS = %d MIN = %d SEC = %d";
 
+    private static final String DEADLINE =
+            DefaultScheduller.class + "#deadLineDateNotification";
+
+    private static final String CONTROL_DATE =
+            DefaultScheduller.class + "#controlDateNotification";
+
     static {
         String className = DefaultScheduller.class.getName();
         statisticManagerWorkMethodName = className + ".statisticManagerWork";
@@ -104,6 +110,11 @@ public class DefaultScheduller {
         List<Task> tasks = null;
         for (int page = 1; ;page++) {
             tasks = taskService.findOnDeadlineDate(page, pageSize, date);
+            LOGGER.info(DEADLINE
+                    + " : FOR PAGE "
+                    + page + " NUMBER OF TASKS = "
+                    + (tasks != null ? tasks.size() : "null")
+            );
             if (tasks == null || tasks.isEmpty()) {
                 break;
             }
@@ -130,6 +141,11 @@ public class DefaultScheduller {
         List<Task> tasks = null;
         for (int page = 1; ;page++) {
             tasks = taskService.findOnControlDate(page, pageSize, date);
+            LOGGER.info(CONTROL_DATE
+                    + " : FOR PAGE "
+                    + page + " NUMBER OF TASKS = "
+                    + (tasks != null ? tasks.size() : "null")
+            );
             if (tasks == null || tasks.isEmpty()) {
                 break;
             }

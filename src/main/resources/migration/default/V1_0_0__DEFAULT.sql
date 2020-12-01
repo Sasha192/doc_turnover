@@ -102,3 +102,13 @@ CREATE TABLE `users` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2020-10-07 10:45:40
+
+ALTER DATABASE bcrew_default CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+ALTER TABLE bcrew_default.core_properties CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew_default.flyway_schema_history CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew_default.rem_me_tokens CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew_default.user_info CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew_default.users CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE bcrew_default.users_tenants CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;

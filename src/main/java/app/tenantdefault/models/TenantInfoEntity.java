@@ -23,13 +23,11 @@ public class TenantInfoEntity implements Serializable {
 
     private PaymentTariff tariff;
 
-    private boolean privateAccount;
-
     private java.util.Date creationDate;
 
     private int number = 0;
 
-    private boolean active = true;
+    private boolean active = false;
 
     private long space = 0;
 
@@ -52,7 +50,6 @@ public class TenantInfoEntity implements Serializable {
         creationDate = java.util.Calendar
                 .getInstance()
                 .getTime();
-        setPrivateAccount(dto.isPrivate());
         String invite = dto.getCompanyName().hashCode()
                 + UUID.randomUUID().toString()
                 .replace("-", "");
@@ -102,11 +99,35 @@ public class TenantInfoEntity implements Serializable {
         return creationDate;
     }
 
-    public void setPrivateAccount(boolean privateAccount) {
-        this.privateAccount = privateAccount;
+    public int getNumber() {
+        return number;
     }
 
-    public boolean isPrivateAccount() {
-        return privateAccount;
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public long getSpace() {
+        return space;
+    }
+
+    public void setSpace(long space) {
+        this.space = space;
+    }
+
+    public long getMaxSpace() {
+        return maxSpace;
+    }
+
+    public void setMaxSpace(long maxSpace) {
+        this.maxSpace = maxSpace;
     }
 }

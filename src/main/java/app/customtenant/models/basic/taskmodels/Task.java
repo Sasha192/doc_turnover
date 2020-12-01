@@ -68,7 +68,6 @@ public class Task
     @JoinColumn(name = "task_owner_id",
             insertable = false,
             updatable = false)
-    @ExcludeForJsonBriefTask
     private Performer owner;
 
     @ElementCollection
@@ -89,7 +88,7 @@ public class Task
     @Column(name = "report_id")
     private Long reportId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {
+    @OneToOne(fetch = FetchType.EAGER, cascade = {
             CascadeType.DETACH,
             CascadeType.REMOVE})
     @JoinColumn(name = "report_id",

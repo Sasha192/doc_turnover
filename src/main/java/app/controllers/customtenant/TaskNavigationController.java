@@ -9,6 +9,7 @@ import app.customtenant.models.basic.Performer;
 import app.customtenant.models.basic.TaskComment;
 import app.customtenant.models.basic.TaskStatus;
 import app.customtenant.models.basic.taskmodels.Task;
+import app.customtenant.models.serialization.ExcludeStrategies;
 import app.customtenant.service.interfaces.IPerformerService;
 import app.customtenant.service.interfaces.ITaskCommentService;
 import app.customtenant.service.interfaces.ITaskService;
@@ -21,6 +22,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -42,6 +44,11 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @see TaskNavigationController#allowOp(Set)
  */
 public class TaskNavigationController extends JsonSupportController {
+
+    private static final GsonBuilder DETAILS_BUILDER = new GsonBuilder()
+            .setPrettyPrinting()
+            .addSerializationExclusionStrategy(ExcludeStrategies.EXCLUDE_FOR_JSON_PERFORMER)
+            .setDateFormat(Constants.DATE_FORMAT.toPattern());
 
     private static final Logger LOGGER = Logger.getLogger("errorLogger");
 
@@ -140,7 +147,7 @@ public class TaskNavigationController extends JsonSupportController {
     @RequestMapping(value = "/doc/remove",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void create(@RequestBody String body,
+    public void remove(@RequestBody String body,
                        HttpServletResponse response,
                        HttpServletRequest request) {
         JsonObject object = JsonParser.parseString(body).getAsJsonObject();
@@ -184,20 +191,28 @@ public class TaskNavigationController extends JsonSupportController {
         }
     }
 
-    @RequestMapping(value = "/modify/status", method = RequestMethod.GET,
+    @RequestMapping(value = "/modify/status", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void changeStatus(@RequestParam("status") String newStatus,
-                             @RequestParam("taskId") Long taskId,
+    public void changeStatus(@RequestBody String body,
                              HttpServletResponse response, HttpServletRequest request) {
+        JsonElement element = JsonParser.parseString(body);
+        if (!element.isJsonObject()) {
+            sendDefaultJson(response, false, "Помилка. Передано некоректні дані");
+            return;
+        }
+        JsonObject o = element.getAsJsonObject();
+        String newStatus = o.get("status").getAsString();
+        long taskId = o.get("taskId").getAsLong();
         Task task = taskService.findOne(taskId);
         TaskStatus status = TaskStatus.getByName(newStatus);
         Performer performer = performerWrapper.retrievePerformer(request);
-        if (task.getPerformerIds().contains(performer.getId())) {
+        if (task.getPerformerIds().contains(performer.getId())
+                || performer.getId().equals(task.getTaskOwnerId())) {
             task.setStatus(status);
             taskService.update(task);
             sendDefaultJson(response, true, "");
         } else {
-            sendDefaultJson(response, false, "Access Denied");
+            sendDefaultJson(response, false, "Помилка. Немає прав");
         }
     }
 
@@ -364,7 +379,7 @@ public class TaskNavigationController extends JsonSupportController {
             sendDefaultJson(response, false, "");
             return;
         }
-        sendDefaultJson(response, task);
+        writeToResponse(response, DETAILS_BUILDER, task);
     }
 
     @RequestMapping(value = "/modify/docs",

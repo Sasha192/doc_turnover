@@ -14,7 +14,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             key: "download",
             value: function download(data) {
                 if (data.length == 0) return Factory.getClass("Alert").render("warning", "Обріть файли");
-                var download = window.open("/archive/doc/download?docId=" + data.join("docId="), "Download");download.close();
+                var download = window.open("/com/archive/doc/download?docId=" + data.join("&docId="), "Download");
+/*                download.close();*/
             }
         }]);
 

@@ -15,7 +15,16 @@ public class TaskCommentPublishingEvent extends Event {
     @Column(name = "task_id")
     private Long taskId;
 
+    @Column(name = "task_name")
+    private String taskName;
+
+    public TaskCommentPublishingEvent(String taskName) {
+        this();
+        this.taskName = taskName;
+    }
+
     public TaskCommentPublishingEvent() {
+        setMessage("Отримано коментар");
         setEventTypeEnum(EventType.COMMENT_PUB);
     }
 

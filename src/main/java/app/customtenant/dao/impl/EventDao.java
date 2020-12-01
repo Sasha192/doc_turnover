@@ -21,10 +21,8 @@ public class EventDao
                     + "WHERE evnt.id.performerId=:performer_id_ ";
 
     private static final String FIND_FOR_PERF =
-            "SELECT ev.id, time_stamp, date, time, "
-                    + "       event_type_enum, event_type, "
-                    + "       performer_id, comment_id, "
-                    + "       report_id, doc_id, task_id, pe.perf_id "
+            "SELECT id, time_stamp, date, creation_time, event_type_enum, event_type, " +
+                    " performer_id, comment_id, report_id, doc_id, task_id, event_message, task_name "
                     + "FROM app_event ev "
                     + "INNER JOIN performers_events pe on ev.id = pe.event_id "
                     + "WHERE pe.perf_id = :perf_id "

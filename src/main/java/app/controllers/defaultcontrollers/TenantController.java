@@ -10,27 +10,20 @@ import app.security.models.SimpleRole;
 import app.security.models.auth.CustomUser;
 import app.security.models.auth.UserInfo;
 import app.security.wrappers.ICustomUserWrapper;
-import app.security.wrappers.IPerformerWrapper;
 import app.tenantconfiguration.TenantContext;
 import app.tenantconfiguration.interfaces.ITenantCreatorService;
 import app.tenantdefault.models.TenantInfoEntity;
 import app.tenantdefault.service.ITenantService;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import dev.morphia.Datastore;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.bson.BsonDocument;
+import org.bson.BsonBoolean;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -78,12 +71,24 @@ public class TenantController extends JsonSupportController {
                        @Validated @RequestBody TenantDto dto) {
         TenantInfoEntity info = new TenantInfoEntity(dto);
         CustomUser user = userWrapper.retrieveUser(request);
+        Set<String> tenants = user.getTenants();
+        if ((tenants != null && !tenants.isEmpty())
+                || Constants.TENANTS_NUMBER > 1) {
+            sendDefaultJson(response,
+                    false,
+                    "Операцію заблоковано : сервіс у тестовому режимі"
+            );
+            return;
+        }
         try {
             String tenantId = tenantCreatorService.create();
             info.setTenantId(tenantId);
             info.setOwnerId(user.getId());
             morphia.save(info);
-            Set<String> tenants = new HashSet<>(user.getTenants());
+            if (tenants == null) {
+                tenants = new HashSet<>();
+            }
+            tenants = new HashSet<>(tenants);
             tenants.add(tenantId);
             user.setTenantsId(tenants);
             userWrapper.update(user);
@@ -109,10 +114,13 @@ public class TenantController extends JsonSupportController {
         try {
             TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
             CustomUser user = userWrapper.retrieveUser(request);
+            TenantInfoEntity entity = tenantService.findById(tenantId);
+            if (entity.getOwnerId().equals(user.getId())) {
+                tenantService.remove(tenantId);
+                tenantCreatorService.remove(tenantId);
+            }
             user.getTenants().remove(tenantId);
             userWrapper.update(user);
-            tenantService.remove(tenantId);
-            tenantCreatorService.remove(tenantId);
             UserInfo info = user.getUserInfo();
             info.setActiveTenant(TenantContext.PHANTOM_TENANT_IDENTIFIER);
             userWrapper.update(info);
@@ -140,8 +148,11 @@ public class TenantController extends JsonSupportController {
             if (performer == null) {
                 performer = new Performer(user);
                 performerService.create(performer);
-                session.setAttribute(Constants.PERFORMER_SESSION_KEY, performer);
+                TenantInfoEntity tenant = tenantService.findById(tenantId);
+                tenant.setNumber(tenant.getNumber() + 1);
+                tenantService.update(tenant);
             }
+            session.setAttribute(Constants.PERFORMER_SESSION_KEY, performer);
             TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
             sendDefaultJson(response, true, "");
         } else {
@@ -221,6 +232,9 @@ public class TenantController extends JsonSupportController {
                 performer = new Performer(user);
                 performerService.create(performer);
                 session.setAttribute(Constants.PERFORMER_SESSION_KEY, performer);
+                TenantInfoEntity tenant = tenantService.findById(tenantId);
+                tenant.setNumber(tenant.getNumber() + 1);
+                tenantService.update(tenant);
             }
             TenantContext.setTenant(TenantContext.DEFAULT_TENANT_IDENTIFIER);
         }
@@ -232,22 +246,24 @@ public class TenantController extends JsonSupportController {
             throws IOException {
         CustomUser u = userWrapper.retrieveUser(request);
         Set<String> tenants = u.getTenants();
-        if (tenants != null && !tenants.isEmpty()) {
-            sendDefaultJson(response, tenantService.findMyTenants(tenants));
+        Collection<Document> entities = new LinkedList<>();
+        if (tenants != null) {
+            entities = tenantService.findMyTenants(tenants);
+        }
+        String active = u.getUserInfo().getActiveTenant();
+        Optional<Document> entity = entities
+                .stream()
+                .filter(t -> t.get("_id")
+                        .equals(active))
+                .findAny();
+        entity.ifPresent(bsonDocument -> bsonDocument
+                .put("active", new BsonBoolean(Boolean.TRUE))
+        );
+        if (!entities.isEmpty()) {
+            sendDefaultJson(response, entities);
         } else {
             sendDefaultJson(response, new LinkedList<>());
         }
-    }
-
-    @RequestMapping(value = "/com/list/{page_id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void tenantsListFilter(HttpServletRequest request,
-                                  HttpServletResponse response,
-                                  @RequestBody BsonDocument filter,
-                                  @PathVariable(value = "page_id") Integer page)
-            throws IOException {
-        sendDefaultJson(response, tenantService.findPageableFilter(
-                page, filter));
     }
 
 }

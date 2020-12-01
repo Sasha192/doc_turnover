@@ -28,7 +28,6 @@ public abstract class AbstractPerformerStatistics
     @ManyToOne(cascade = {
             CascadeType.REMOVE,
             CascadeType.DETACH })
-    @ExcludeForJsonPerformer
     private Performer performer;
 
     @Override

@@ -52,7 +52,6 @@ public class VerificationCodeUtil extends JsonSupportController {
             throws IOException {
         String html = userDto.getVerificationCode();
         html = verificationMailTemplater.render(html);
-        String attachment = constants.get("email_template_path").getStringValue();
         executionService.pushTask(new ExecutionService
                 .MailSender(mailService, userDto.getEmail(), html));
         HttpSession session = req.getSession(false);

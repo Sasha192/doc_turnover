@@ -106,20 +106,24 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
                 var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
                 this._table.innerHTML = "";
                 data.forEach(function (f) {
-                    return $(_this2._table).append("\n                <tr class=\"table-row\" data-file-id=\"".concat(f.id, "\">\n                    <td>\n                        <div class=\"td-wrapper\">\n                            <img data-src=\"/img/docs-img/").concat(f.extName.substr(1), ".png\" alt=\"\" />\n                            <span class=\"name\">\n                               ").concat(f.name, "\n                            </span>\n                            <span class=\"extension\" style=\"opacity:0\">\n                                ").concat(f.extName, "\n                            </span>\n                        </div>\n                    </td>\n                    <td data-name=\"date\">").concat(f.date, "</td>\n                    <td data-name=\"performer\">").concat(Factory.getClass("User").get(f.performerId).name, "</td>\n                    <td data-name=\"tools\">\n                        <div class=\"td-wrapper\">\n                            <div class=\"form-check\">\n                                <input class=\"form-check-input position-static\" type=\"checkbox\" />\n                            </div>\n                        </div>\n                    </td>\n                </tr>"));
+                    Factory.getClass("User").get(f.performerId).then(p => {
+                         $(_this2._table).append("\n                <tr class=\"table-row\" data-file-id=\"".concat(f.id, "\">\n                    <td>\n                        <div class=\"td-wrapper\">\n                            <img data-src=\"/img/docs-img/").concat(f.extName.substr(1), ".png\" alt=\"\" />\n                            <span class=\"name\">\n                               ").concat(f.name, "\n                            </span>\n                            <span class=\"extension\" style=\"opacity:0\">\n                                ").concat(f.extName, "\n                            </span>\n                        </div>\n                    </td>\n                    <td data-name=\"date\">").concat(f.date, "</td>\n                    <td data-name=\"performer\">").concat(p.name, "</td>\n                    <td data-name=\"tools\">\n                        <div class=\"td-wrapper\">\n                            <div class=\"form-check\">\n                                <input class=\"form-check-input position-static\" type=\"checkbox\" />\n                            </div>\n                        </div>\n                    </td>\n                </tr>"));
+                        $(_this2._table).find('.table-row [data-src]').Lazy({
+                            effect: 'fadeIn',
+                            effectTime: 200,
+                            threshold: _this2._table.scrollHeight,
+                            visibleOnly: false,
+                            onError: function onError(element) {
+                                console.log('error loading ' + element.data('src'));
+                            },
+                            autoDestroy: true
+                        });
+
+                        _this2.Selector.init(document.querySelectorAll('.body .table-row:last-child'));
+                    })
+
                 });
                 Loader.hide();
-                $(this._table).find('[data-src]').Lazy({
-                    effect: 'fadeIn',
-                    effectTime: 200,
-                    threshold: this._table.scrollHeight,
-                    visibleOnly: false,
-                    onError: function onError(element) {
-                        console.log('error loading ' + element.data('src'));
-                    },
-                    autoDestroy: true
-                });
-                this.Selector.init(document.querySelectorAll('.body .table-row'));
             }
         }]);
 

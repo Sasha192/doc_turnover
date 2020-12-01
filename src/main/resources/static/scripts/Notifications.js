@@ -12,9 +12,12 @@
 
             this.Data.get("Notifications").then(data => {
                 const renderNotifications = (data = []) => {
+                    data.sort((a, b) => {
+                        return b.creationTime - a.creationTime;
+                    })
                     data.forEach(n => {
-                        let author = Factory.getClass("User").get(n.authorId);
-                        $(list).append(`
+                         Factory.getClass("User").get(n.authorId).then(author => {
+                            $(list).append(`
                         <div class="notification"}>
                             <img data-src="${author.imgPath}" alt="" />
                             <div class="body">
@@ -22,33 +25,35 @@
                                 ${author.name}
                                 </div>
                                 <div class="msg">
-                                    ${n.task ? `<a data-todo-id="${n.task.id}" role="button" class="link">${n.task.name.substr(0, 32)}... -</a>` : ""}
+                                    ${n.taskName ? `<a data-todo-id="${n.taskId}" role="button" class="link">${n.taskName.substr(0, 32)}... -</a>` : ""}
                                     "${n.message.substr(0, 256)}..."
                                 </div>
                                 <div class="meta">${n.date}</div>
                             </div>
                         </div>`);
 
-                        if (n.todo) {
-                            list.querySelector(".notification:last-child .link").onclick = e => {
-                                Factory.getClass("Modal").render("todoInfo", e.target);
-                            };
-                        }
+                             $(list).find('.notification [data-src]').Lazy({
+                                 effect: 'fadeIn',
+                                 effectTime: 200,
+                                 threshold: list.scrollHeight,
+                                 visibleOnly: false,
+                                 onError: function (element) {
+                                     console.log('error loading ' + element.data('src'));
+                                 },
+                                 autoDestroy: true,
+                                 onFinishedAll: () => {
+                                     Loader.hide();
+                                 }
+                             });
+
+                            if (n.todo) {
+                                list.querySelector(".notification:last-child .link").onclick = e => {
+                                    Factory.getClass("Modal").render("todoInfo", e.target);
+                                };
+                            }
+                        })
                     });
 
-                    $(list).find('[data-src]').Lazy({
-                        effect: 'fadeIn',
-                        effectTime: 200,
-                        threshold: list.scrollHeight,
-                        visibleOnly: false,
-                        onError: function (element) {
-                            console.log('error loading ' + element.data('src'));
-                        },
-                        autoDestroy: true,
-                        onFinishedAll: () => {
-                            Loader.hide();
-                        }
-                    });
                 };renderNotifications(data);
 
                 let counter = 1;
