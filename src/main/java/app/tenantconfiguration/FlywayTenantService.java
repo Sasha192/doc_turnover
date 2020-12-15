@@ -34,25 +34,21 @@ public class FlywayTenantService implements IFlywayTenantService<String> {
 
     @Override
     public void init(DataSource dataSource, String tenant) {
-        Flyway flyway = Flyway.configure()
-                .locations(migrationPath)
-                .dataSource(dataSource)
-                .schemas(tenant)
-                .baselineDescription(migrationBaseLine)
-                .load();
-        flyway.migrate();
-        map.put(tenant, flyway);
+        refresh(dataSource, tenant);
     }
 
     @Override
     public void connect(DataSource dataSource, String tenant) {
-        Flyway flyway = Flyway.configure()
-                .locations(migrationPath)
-                .dataSource(dataSource)
-                .schemas(tenant)
-                .baselineDescription(migrationBaseLine)
-                .baselineOnMigrate(true)
-                .load();
+        refresh(dataSource, tenant);
+    }
+
+    private void refresh(DataSource dataSource, String tenant) {
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(dataSource);
+        flyway.setLocations(migrationPath);
+        flyway.setSchemas(tenant);
+        flyway.setBaselineDescription(migrationBaseLine);
+        flyway.setBaselineOnMigrate(true);
         flyway.migrate();
         map.put(tenant, flyway);
     }

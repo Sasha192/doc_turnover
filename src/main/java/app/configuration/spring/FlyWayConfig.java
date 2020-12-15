@@ -20,13 +20,12 @@ public class FlyWayConfig {
         String defaultMigrations = environment
                 .getProperty("flyway.default_migrations.path");
         String baseLine = environment.getProperty("flyway.default_migrations.baseLine");
-        Flyway flyway = Flyway.configure()
-                .locations(defaultMigrations)
-                .dataSource(dataSource)
-                .schemas(TenantContext.DEFAULT_TENANT_IDENTIFIER)
-                .baselineDescription(baseLine)
-                .baselineOnMigrate(true)
-                .load();
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(dataSource);
+        flyway.setLocations(defaultMigrations);
+        flyway.setSchemas(TenantContext.DEFAULT_TENANT_IDENTIFIER);
+        flyway.setBaselineDescription(baseLine);
+        flyway.setBaselineOnMigrate(true);
         flyway.migrate();
         return flyway;
     }

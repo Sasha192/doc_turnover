@@ -31,7 +31,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
         }
 
-        _createClass(Pagination, [{
+        _createClass(Pagination, [
+             {
+                key: "formatUrl",
+                value: function formatUrl(url, insertPath) {
+                    var startIdx = url.indexOf('?');
+                    if (startIdx < 0) {
+                        url = url + "/" + insertPath;
+                    } else {
+                        url = url.splice(startIdx, 0, "/" + insertPath);
+                    }
+                    return url;
+                }
+            },
+            {
             key: "render",
             value: function render(selector, path, num, maxpages, handler) {
                 var _this = this;
@@ -69,17 +82,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 firstPage.onclick = function () {
                     return changePage(1);
                 };
-            }
-        }, {
-            key: "formatUrl",
-            value: function formatUrl(url, insertPath) {
-                var startIdx = url.indexOf('?');
-                if (startIdx < 0) {
-                    url = url + "/" + insertPath;
-                } else {
-                    url = url.splice(startIdx, 0, "/" + insertPath);
-                }
-                return url;
             }
         }, {
             key: "init",

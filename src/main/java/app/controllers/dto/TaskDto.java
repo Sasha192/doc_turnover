@@ -24,7 +24,6 @@ public class TaskDto {
     @NotNull
     private Long[] performerList;
 
-    @NotNull
     private Long[] docList;
 
     @Null(groups = {NewTask.class})
